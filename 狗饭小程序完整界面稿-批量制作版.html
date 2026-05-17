@@ -1163,6 +1163,33 @@
       font-size: 10px;
       font-weight: 800;
     }
+
+    .dog-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .select-block {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+
+    .select-filter.wide {
+      min-height: 54px;
+      padding: 8px 12px;
+    }
+
+    .select-filter em {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      font-style: normal;
+      line-height: 1.35;
+    }
   </style>
 </head>
 <body data-theme="fresh">
@@ -1170,15 +1197,15 @@
     <section class="cover">
       <div>
         <h1>狗饭微信小程序完整界面稿</h1>
-        <p>批量制作版。食谱详情只展示食材比例；生成清单前选择制作周期，结合狗狗每日餐数计算每餐重量和周期总量。采购与制作合并为一个清单，并在底部提供导出图片和分享。</p>
+        <p>批量制作版。食谱筛选默认按全部狗狗档案推荐，首页展示所有狗狗，不再设置当前狗。生成清单前选择制作对象和周期，支持单只狗狗或多只狗共同制作。</p>
       </div>
       <div class="spec-card">
         <strong>设计约束</strong>
         <span>白色原生导航栏</span>
         <span>固定胶囊按钮</span>
-        <span>三组下拉筛选</span>
+        <span>档案智能筛选</span>
         <span>自定义食谱建议</span>
-        <span>批量制作周期</span>
+        <span>多狗制作对象</span>
         <span>合并清单</span>
         <span>触控 44px+</span>
         <div class="theme-select">
@@ -1244,24 +1271,31 @@
       </article>
 
       <article class="shot">
-        <div class="shot-title">02 食谱列表 <small>年龄 / 疾病功能 / 过敏下拉筛选</small></div>
+        <div class="shot-title">02 食谱列表 <small>自定义筛选展开状态</small></div>
         <div class="phone">
           <div class="status"><span>9:41</span><span>5G 100%</span></div>
           <div class="native-nav"><div class="native-title">食谱</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content">
             <div class="search">搜索食材或食谱名称</div>
+            <div class="select-block">
+              <div class="select-filter wide">
+                <b>筛选方式</b>
+                <span>自定义筛选</span>
+                <em>可选：适合全部狗狗 / 适合某只狗狗 / 自定义筛选</em>
+              </div>
+            </div>
             <div class="filter-row">
-              <div class="select-filter"><b>年龄</b><span>全部</span></div>
-              <div class="select-filter"><b>疾病/功能</b><span>肠胃</span></div>
+              <div class="select-filter"><b>年龄</b><span>老年犬</span></div>
+              <div class="select-filter"><b>疾病/功能</b><span>低脂</span></div>
               <div class="select-filter"><b>过敏</b><span>避开鸡肉</span></div>
             </div>
-            <div class="notice good">有现成食材？创建自定义食谱，按布丁档案检查是否合适。</div>
+            <div class="notice good">正在按自定义条件筛选：老年犬、低脂、避开鸡肉。</div>
             <div class="recipe-card">
               <div class="thumb fish"><span></span><span></span><span></span></div>
               <div>
                 <div class="recipe-title">低脂鳕鱼饭</div>
                 <div class="tiny">适合：低脂、老年犬、避开鸡肉</div>
-                <div class="tags"><span class="tag good">适合当前筛选</span><span class="tag">20 分钟</span></div>
+                <div class="tags"><span class="tag good">符合自定义条件</span><span class="tag">20 分钟</span></div>
               </div>
             </div>
             <div class="recipe-card">
@@ -1269,7 +1303,7 @@
               <div>
                 <div class="recipe-title">牛肉胡萝卜饭</div>
                 <div class="tiny">适合：成年犬、日常、活跃犬</div>
-                <div class="tags"><span class="tag">日常</span><span class="tag">30 分钟</span></div>
+                <div class="tags"><span class="tag warning">可乐低脂慎选</span><span class="tag">30 分钟</span></div>
               </div>
             </div>
             <div class="recipe-card">
@@ -1389,36 +1423,37 @@
       </article>
 
       <article class="shot">
-        <div class="shot-title">06 已建档首页 <small>当前狗狗和推荐内容</small></div>
+        <div class="shot-title">06 已建档首页 <small>展示全部狗狗档案</small></div>
         <div class="phone">
           <div class="status"><span>9:41</span><span>5G 100%</span></div>
           <div class="native-nav"><div class="native-title">狗饭</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content">
-            <div class="dog-card">
-              <div class="tiny">当前狗狗</div>
-              <h2>布丁</h2>
-              <div class="tiny">成年犬｜12kg｜每日 2 餐｜日常饮食</div>
-              <div class="stats">
-                <div class="stat"><strong>12kg</strong><span>体重</span></div>
-                <div class="stat"><strong>鸡肉</strong><span>过敏源</span></div>
-                <div class="stat"><strong>2餐</strong><span>每日餐数</span></div>
+            <div class="dog-list">
+              <div class="dog-card">
+                <div class="tiny">狗狗档案</div>
+                <h2>布丁</h2>
+                <div class="tiny">成年犬｜12kg｜每日 2 餐｜鸡肉过敏</div>
+              </div>
+              <div class="panel">
+                <div class="row"><span>可乐</span><strong>8kg</strong></div>
+                <p class="tiny">老年犬｜每日 3 餐｜低脂｜肠胃友好</p>
               </div>
             </div>
-            <div class="section-head"><h3>适合布丁</h3><a>换一批</a></div>
+            <div class="section-head"><h3>适合全部狗狗</h3><a>换一批</a></div>
             <div class="recipe-card">
               <div class="thumb fish"><span></span><span></span><span></span></div>
               <div>
                 <div class="recipe-title">低脂鳕鱼饭</div>
                 <div class="tiny">避开鸡肉，适合日常换口味</div>
-                <div class="tags"><span class="tag good">适合当前狗狗</span><span class="tag">20 分钟</span></div>
+                <div class="tags"><span class="tag good">全部可吃</span><span class="tag">20 分钟</span></div>
               </div>
             </div>
             <div class="recipe-card">
               <div class="thumb beef"><span></span><span></span><span></span></div>
               <div>
                 <div class="recipe-title">牛肉胡萝卜饭</div>
-                <div class="tiny">适合成年犬，食材简单</div>
-                <div class="tags"><span class="tag good">可选择</span><span class="tag">30 分钟</span></div>
+                <div class="tiny">布丁可吃；可乐低脂目标下慎选</div>
+                <div class="tags"><span class="tag warning">不适合全部</span><span class="tag">30 分钟</span></div>
               </div>
             </div>
             <div class="notice good">最近一次清单：低脂鳕鱼饭，15 天批量制作，已保存 2 天前。</div>
@@ -1441,7 +1476,7 @@
             <div class="detail-cover"></div>
             <h2 class="detail-title">鸡肉南瓜饭</h2>
             <div class="tags"><span class="tag good">成年犬</span><span class="tag warning">含鸡肉</span><span class="tag">25 分钟</span></div>
-            <div class="notice warning">不建议选择：布丁的档案里标记了鸡肉过敏。</div>
+            <div class="notice warning">不建议给全部狗狗一起做：布丁标记鸡肉过敏；可乐处于低脂目标。</div>
             <div class="panel">
               <h3>食材比例</h3>
               <div class="row"><span>鸡胸肉</span><strong>约 50%</strong></div>
@@ -1451,7 +1486,7 @@
             </div>
             <div class="panel">
               <h3>适合情况</h3>
-              <p class="tiny">适合成年犬、日常饮食。对鸡肉过敏的狗狗不建议选择。</p>
+              <p class="tiny">布丁不建议选择；可乐如需低脂也建议优先换鳕鱼或低脂食谱。</p>
             </div>
           </div>
           <div class="bottom-cta">
@@ -1470,7 +1505,14 @@
             <div class="lead">
               <div class="lead-label">低脂鳕鱼饭</div>
               <h2>这次准备多少天？</h2>
-              <p>布丁每日 2 餐。选择周期后，系统会计算每餐重量和采购总量。</p>
+              <p>家里有多只狗狗，先选择这批饭给谁吃，再计算每餐重量和采购总量。</p>
+            </div>
+            <div class="select-block">
+              <div class="select-filter wide">
+                <b>这批饭给谁吃</b>
+                <span>布丁｜12kg｜每日 2 餐</span>
+                <em>可选：布丁 / 可乐 / 布丁和可乐共同食用</em>
+              </div>
             </div>
             <div class="period-grid">
               <div class="period-option">7 天</div>
@@ -1481,7 +1523,7 @@
             <div class="mini-summary">
               <div><strong>30 餐</strong><span>共需份数</span></div>
               <div><strong>2 餐</strong><span>每日餐数</span></div>
-              <div><strong>12kg</strong><span>布丁体重</span></div>
+              <div><strong>布丁</strong><span>制作对象</span></div>
             </div>
             <div class="panel">
               <h3>预估用量</h3>
@@ -1557,11 +1599,11 @@
             </div>
             <div class="section-head"><h3>狗狗档案</h3><a>新增</a></div>
             <div class="panel">
-              <div class="row"><span>布丁</span><strong>当前</strong></div>
+              <div class="row"><span>布丁</span><strong>修改</strong></div>
               <p class="tiny">成年犬｜12kg｜每日 2 餐｜鸡肉过敏｜日常饮食</p>
             </div>
             <div class="panel">
-              <div class="row"><span>可乐</span><strong>切换</strong></div>
+              <div class="row"><span>可乐</span><strong>修改</strong></div>
               <p class="tiny">老年犬｜8kg｜每日 3 餐｜低脂｜肠胃友好</p>
             </div>
             <div class="menu">
@@ -1587,9 +1629,9 @@
           <div class="native-nav"><div class="native-back">‹</div><div class="native-title">自定义食谱</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content no-tab cta-space">
             <div class="lead">
-              <div class="lead-label">给布丁检查一份食谱</div>
+              <div class="lead-label">给狗狗检查一份食谱</div>
               <h2>输入单餐参考量</h2>
-              <p>系统会按布丁的年龄、体重、每日餐数、过敏源和忌口给出建议，不替代兽医判断。</p>
+              <p>系统会按所选狗狗的年龄、体重、每日餐数、过敏源和忌口给出建议，不替代兽医判断。</p>
             </div>
             <div class="form">
               <div class="field"><label>食谱名称</label><div>家里剩菜简单饭</div></div>
@@ -1607,8 +1649,14 @@
               </div>
               <div class="add-line">添加一种食材</div>
               <div class="panel">
-                <h3>当前狗狗</h3>
-                <p class="tiny">布丁｜成年犬｜12kg｜每日 2 餐｜鸡肉过敏｜日常饮食</p>
+                <h3>制作对象</h3>
+                <div class="select-block" style="margin-bottom:0">
+                  <div class="select-filter wide">
+                    <b>这批饭给谁吃</b>
+                    <span>布丁｜12kg｜每日 2 餐</span>
+                    <em>可选：布丁 / 可乐 / 布丁和可乐共同食用</em>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
