@@ -1,0 +1,29 @@
+# macOS 系统文件
+.DS_Store
+
+# 编辑器和本地环境
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 依赖和构建产物
+node_modules/
+miniprogram_npm/
+dist/
+build/
+coverage/
+
+# 日志和临时文件
+*.log
+*.tmp
+*.temp
+
+# 本地验证截图和临时产物
+.design-check/
+.workbuddy/
+
+# 环境变量和密钥
+.env
+.env.*
+!.env.example

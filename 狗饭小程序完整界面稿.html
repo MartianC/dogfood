@@ -1,0 +1,1271 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>狗饭微信小程序完整界面稿</title>
+  <style>
+    :root {
+      --canvas: #eee8dc;
+      --phone-bg: #f8f5ee;
+      --surface: #fffdf8;
+      --surface-2: #f2eadc;
+      --ink: #20241f;
+      --text: #383a34;
+      --muted: #777367;
+      --line: #ddd4c4;
+      --line-strong: #cdbfa9;
+      --primary: #2f6f55;
+      --primary-weak: #e2eee7;
+      --warning: #b65738;
+      --warning-weak: #f5e4dc;
+      --note: #916f35;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --shadow-card: 0 6px 16px rgba(35, 28, 20, 0.06);
+      --phone-w: 375px;
+      --phone-h: 812px;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+    }
+
+    .page {
+      padding: 40px 48px 72px;
+    }
+
+    .cover {
+      max-width: 1340px;
+      margin: 0 auto 40px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .cover h1 {
+      margin: 0 0 12px;
+      font-size: 42px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .cover p {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .spec-card {
+      min-width: 360px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 253, 248, 0.86);
+      box-shadow: var(--shadow-card);
+    }
+
+    .spec-card strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .spec-card span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      margin: 4px 4px 0 0;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--primary-weak);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .board {
+      max-width: 1760px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(375px, 1fr));
+      gap: 42px 36px;
+      align-items: start;
+    }
+
+    .shot {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+    }
+
+    .shot-title {
+      width: var(--phone-w);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #4b463d;
+    }
+
+    .shot-title small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      overflow: hidden;
+      border: 10px solid #171917;
+      border-radius: 42px;
+      background: var(--phone-bg);
+      box-shadow: 0 24px 54px rgba(32, 27, 20, 0.26);
+    }
+
+    .status {
+      height: 34px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+      background: var(--phone-bg);
+    }
+
+    .native-nav {
+      position: relative;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 104px 0 52px;
+      background: var(--phone-bg);
+      border-bottom: 1px solid rgba(221, 212, 196, 0.72);
+    }
+
+    .native-title {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .native-back {
+      position: absolute;
+      left: 16px;
+      top: 8px;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .menu-capsule {
+      position: absolute;
+      top: 7px;
+      right: 12px;
+      width: 86px;
+      height: 32px;
+      border: 1px solid rgba(120, 112, 98, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.74);
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .menu-capsule::before {
+      content: "...";
+      margin-top: -8px;
+      color: #111;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .menu-capsule::after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      border: 1.6px solid #111;
+      border-radius: 50%;
+    }
+
+    .capsule-line {
+      width: 1px;
+      height: 18px;
+      background: rgba(120, 112, 98, 0.22);
+    }
+
+    .content {
+      height: calc(100% - 34px - 46px - 70px);
+      overflow: hidden;
+      padding: 16px 16px 18px;
+    }
+
+    .content.no-tab {
+      height: calc(100% - 34px - 46px);
+      padding-bottom: 24px;
+    }
+
+    .content.cta-space {
+      height: calc(100% - 34px - 46px - 110px);
+    }
+
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 70px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 10px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 253, 248, 0.98);
+    }
+
+    .tab {
+      min-height: 44px;
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tab-icon {
+      width: 20px;
+      height: 20px;
+      border: 1.7px solid currentColor;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    .tab-icon.list::before,
+    .tab-icon.check::before,
+    .tab-icon.user::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      top: 6px;
+      height: 1.7px;
+      background: currentColor;
+      box-shadow: 0 5px 0 currentColor;
+    }
+
+    .tab-icon.check {
+      border-radius: 50%;
+    }
+
+    .tab-icon.check::before {
+      left: 5px;
+      top: 4px;
+      width: 8px;
+      height: 12px;
+      background: transparent;
+      border: solid currentColor;
+      border-width: 0 2px 2px 0;
+      box-shadow: none;
+      transform: rotate(45deg);
+    }
+
+    .tab-icon.user {
+      border-radius: 50%;
+    }
+
+    .tab.active {
+      color: var(--primary);
+    }
+
+    h2, h3, h4, p {
+      margin: 0;
+    }
+
+    .lead {
+      margin-bottom: 16px;
+    }
+
+    .lead-label {
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .lead h2 {
+      font-size: 28px;
+      line-height: 1.18;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .lead p,
+    .muted {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .card,
+    .recipe-card,
+    .dog-card,
+    .panel,
+    .field,
+    .list-block {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+    }
+
+    .card {
+      padding: 14px;
+    }
+
+    .panel {
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .panel h3,
+    .section-title {
+      margin-bottom: 10px;
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 18px 0 10px;
+    }
+
+    .section-head h3 {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .section-head a {
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .button {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--primary);
+      border-radius: var(--radius-md);
+      background: var(--primary);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      touch-action: manipulation;
+    }
+
+    .button.secondary {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--line-strong);
+    }
+
+    .button.warning {
+      background: var(--warning);
+      border-color: var(--warning);
+    }
+
+    .hero-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+    }
+
+    .hero-card h2 {
+      max-width: 260px;
+    }
+
+    .hero-actions {
+      margin-top: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .recipe-card {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .thumb {
+      width: 64px;
+      height: 64px;
+      border: 1px solid #d9c7a8;
+      border-radius: 12px;
+      background: #ead5ac;
+      padding: 9px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .thumb span {
+      display: block;
+      height: 8px;
+      border-radius: 999px;
+      background: #af6c42;
+    }
+
+    .thumb span:nth-child(2) {
+      width: 72%;
+      background: #d59b3d;
+    }
+
+    .thumb span:nth-child(3) {
+      width: 54%;
+      background: #5d8a60;
+    }
+
+    .thumb.fish {
+      background: #d7e3dc;
+    }
+
+    .thumb.fish span {
+      background: #7d9aa1;
+    }
+
+    .thumb.fish span:nth-child(2) {
+      background: #f0eadb;
+    }
+
+    .thumb.beef span {
+      background: #9d4435;
+    }
+
+    .recipe-title {
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      min-height: 22px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: #625a4b;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .tag.good {
+      background: var(--primary-weak);
+      color: var(--primary);
+    }
+
+    .tag.warning {
+      background: var(--warning-weak);
+      color: var(--warning);
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px 0 14px;
+    }
+
+    .select-filter {
+      min-height: 48px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      color: var(--text);
+      box-shadow: var(--shadow-card);
+    }
+
+    .select-filter b {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .select-filter span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .select-filter span::after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid var(--muted);
+      flex: 0 0 auto;
+    }
+
+    .search {
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .detail-cover {
+      height: 126px;
+      border: 1px solid #d9c7a8;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(90deg, #dfc18a 0 28%, #f0e0bd 28% 48%, #d99663 48% 72%, #6f9569 72% 100%);
+    }
+
+    .detail-title {
+      margin: 14px 0 8px;
+      font-size: 25px;
+      line-height: 1.18;
+      font-weight: 800;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(221, 212, 196, 0.76);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .row:first-of-type {
+      border-top: none;
+    }
+
+    .row strong {
+      color: var(--primary);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .notice {
+      margin: 10px 0;
+      padding: 11px 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .notice.good {
+      background: var(--primary-weak);
+      color: var(--primary);
+      border: 1px solid rgba(47, 111, 85, 0.22);
+    }
+
+    .notice.warning {
+      background: var(--warning-weak);
+      color: var(--warning);
+      border: 1px solid rgba(182, 87, 56, 0.22);
+    }
+
+    .bottom-cta {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .modal-mask {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+      background: rgba(25, 24, 21, 0.44);
+    }
+
+    .sheet {
+      width: 100%;
+      padding: 18px;
+      border-radius: 22px;
+      background: var(--surface);
+      box-shadow: 0 -18px 34px rgba(27, 22, 16, 0.22);
+    }
+
+    .sheet h3 {
+      margin-bottom: 8px;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .sheet-actions {
+      margin-top: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field {
+      min-height: 64px;
+      padding: 10px 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .field div {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .option-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .option {
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--text);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .option.active {
+      background: var(--primary-weak);
+      border-color: rgba(47, 111, 85, 0.28);
+      color: var(--primary);
+    }
+
+    .dog-card {
+      padding: 15px;
+      color: #fff;
+      background: #2f6f55;
+      border-color: #2f6f55;
+    }
+
+    .dog-card h2 {
+      margin: 3px 0 5px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .dog-card .tiny {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat {
+      min-height: 52px;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.13);
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 14px;
+    }
+
+    .stat span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .segment {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      background: var(--surface-2);
+      margin-bottom: 12px;
+    }
+
+    .segment span {
+      min-height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .segment .active {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--line);
+    }
+
+    .list-block {
+      padding: 13px;
+      margin-bottom: 10px;
+    }
+
+    .list-block h4 {
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--line-strong);
+      border-radius: 6px;
+      flex: 0 0 auto;
+    }
+
+    .check.done {
+      position: relative;
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .check.done::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--primary-weak);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid #d2b78d;
+      background: linear-gradient(135deg, #c18a4e 0 50%, #f3dfbd 50% 100%);
+      flex: 0 0 auto;
+    }
+
+    .menu {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .menu-item {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      font-size: 14px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="cover">
+      <div>
+        <h1>狗饭微信小程序完整界面稿</h1>
+        <p>修订版按微信小程序默认导航栏和右上固定胶囊处理，不在标题栏放业务按钮。食谱筛选改为年龄、疾病或功能、过敏三个下拉入口，视觉从装饰化 mock 收敛为真实工具型小程序。</p>
+      </div>
+      <div class="spec-card">
+        <strong>设计约束</strong>
+        <span>默认导航栏</span>
+        <span>固定胶囊按钮</span>
+        <span>三组下拉筛选</span>
+        <span>触控 44px+</span>
+        <span>低装饰工具界面</span>
+      </div>
+    </section>
+
+    <section class="board">
+      <article class="shot">
+        <div class="shot-title">01 游客首页 <small>默认标题栏，不放业务按钮</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-title">狗饭</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content">
+            <div class="hero-card">
+              <div class="lead-label">今天做一顿简单狗饭</div>
+              <div class="lead">
+                <h2>先看食谱，需要清单时再建档</h2>
+                <p>浏览食谱不需要登录。添加狗狗后，会按体重换算食材份量。</p>
+              </div>
+              <div class="hero-actions">
+                <button class="button">添加狗狗档案</button>
+                <button class="button secondary">先浏览食谱</button>
+              </div>
+            </div>
+            <div class="section-head"><h3>推荐食谱</h3><a>全部</a></div>
+            <div class="recipe-card">
+              <div class="thumb"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">鸡肉南瓜饭</div>
+                <div class="tiny">鸡胸肉、南瓜、胡萝卜</div>
+                <div class="tags"><span class="tag good">肠胃友好</span><span class="tag">25 分钟</span></div>
+              </div>
+            </div>
+            <div class="recipe-card">
+              <div class="thumb beef"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">牛肉胡萝卜饭</div>
+                <div class="tiny">牛肉、胡萝卜、熟米饭</div>
+                <div class="tags"><span class="tag">日常</span><span class="tag">成年犬</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab active"><span class="tab-icon"></span><span>首页</span></div>
+            <div class="tab"><span class="tab-icon list"></span><span>食谱</span></div>
+            <div class="tab"><span class="tab-icon check"></span><span>清单</span></div>
+            <div class="tab"><span class="tab-icon user"></span><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">02 食谱列表 <small>年龄 / 疾病功能 / 过敏下拉筛选</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-title">食谱</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content">
+            <div class="search">搜索食材或食谱名称</div>
+            <div class="filter-row">
+              <div class="select-filter"><b>年龄</b><span>全部</span></div>
+              <div class="select-filter"><b>疾病/功能</b><span>肠胃</span></div>
+              <div class="select-filter"><b>过敏</b><span>避开鸡肉</span></div>
+            </div>
+            <div class="recipe-card">
+              <div class="thumb fish"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">低脂鳕鱼饭</div>
+                <div class="tiny">适合：低脂、老年犬、避开鸡肉</div>
+                <div class="tags"><span class="tag good">适合当前筛选</span><span class="tag">20 分钟</span></div>
+              </div>
+            </div>
+            <div class="recipe-card">
+              <div class="thumb beef"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">牛肉胡萝卜饭</div>
+                <div class="tiny">适合：成年犬、日常、活跃犬</div>
+                <div class="tags"><span class="tag">日常</span><span class="tag">30 分钟</span></div>
+              </div>
+            </div>
+            <div class="recipe-card">
+              <div class="thumb"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">鸡肉南瓜饭</div>
+                <div class="tiny">适合：成年犬、肠胃友好</div>
+                <div class="tags"><span class="tag warning">鸡肉过敏慎选</span></div>
+              </div>
+            </div>
+            <div class="recipe-card">
+              <div class="thumb"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">蛋黄红薯饭</div>
+                <div class="tiny">适合：挑食、日常</div>
+                <div class="tags"><span class="tag warning">蛋类过敏慎选</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab"><span class="tab-icon"></span><span>首页</span></div>
+            <div class="tab active"><span class="tab-icon list"></span><span>食谱</span></div>
+            <div class="tab"><span class="tab-icon check"></span><span>清单</span></div>
+            <div class="tab"><span class="tab-icon user"></span><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">03 游客食谱详情 <small>通用比例，生成时再拦截</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-back">‹</div><div class="native-title">食谱详情</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content no-tab cta-space">
+            <div class="detail-cover"></div>
+            <h2 class="detail-title">鸡肉南瓜饭</h2>
+            <div class="tags"><span class="tag good">成年犬</span><span class="tag good">肠胃友好</span><span class="tag">25 分钟</span></div>
+            <div class="panel" style="margin-top:12px">
+              <h3>通用食材比例</h3>
+              <div class="row"><span>鸡胸肉</span><strong>150g</strong></div>
+              <div class="row"><span>南瓜</span><strong>70g</strong></div>
+              <div class="row"><span>胡萝卜</span><strong>35g</strong></div>
+              <div class="row"><span>熟米饭</span><strong>50g</strong></div>
+            </div>
+            <div class="panel">
+              <h3>制作步骤</h3>
+              <div class="row"><span class="step-num">1</span><span>食材清洗后切成小块</span></div>
+              <div class="row"><span class="step-num">2</span><span>鸡胸肉煮熟，南瓜蒸熟</span></div>
+            </div>
+          </div>
+          <div class="bottom-cta">
+            <button class="button">生成采购单</button>
+            <button class="button secondary">先看看其他食谱</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">04 登录建档引导 <small>系统导航不承载业务动作</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-back">‹</div><div class="native-title">食谱详情</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content no-tab cta-space">
+            <div class="detail-cover"></div>
+            <h2 class="detail-title">鸡肉南瓜饭</h2>
+            <div class="panel" style="margin-top:12px">
+              <h3>通用食材比例</h3>
+              <div class="row"><span>鸡胸肉</span><strong>150g</strong></div>
+              <div class="row"><span>南瓜</span><strong>70g</strong></div>
+              <div class="row"><span>胡萝卜</span><strong>35g</strong></div>
+            </div>
+          </div>
+          <div class="modal-mask">
+            <div class="sheet">
+              <div class="lead-label">生成专属清单</div>
+              <h3>先添加狗狗档案</h3>
+              <p class="muted">添加后会按狗狗体重换算份量，并提醒过敏或忌口食材。</p>
+              <div class="sheet-actions">
+                <button class="button">微信登录并添加狗狗</button>
+                <button class="button secondary">先看看食谱</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">05 快速建档 <small>表单触控尺寸和标签清楚</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-back">‹</div><div class="native-title">添加狗狗</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content no-tab cta-space">
+            <div class="lead">
+              <div class="lead-label">快速建档</div>
+              <h2>只填生成清单必需信息</h2>
+              <p>其他资料可以稍后在“我的”里补充。</p>
+            </div>
+            <div class="form">
+              <div class="field"><label>狗狗名字</label><div>布丁</div></div>
+              <div class="field"><label>年龄阶段</label><div>成年犬</div></div>
+              <div class="field"><label>体重</label><div>12 kg</div></div>
+              <div class="field"><label>过敏源，可跳过</label><div>鸡肉</div></div>
+              <div class="panel">
+                <h3>饮食目标</h3>
+                <div class="option-row">
+                  <span class="option active">日常</span>
+                  <span class="option">低脂</span>
+                  <span class="option">增重</span>
+                  <span class="option">肠胃友好</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-cta"><button class="button">保存并生成清单</button></div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">06 已建档首页 <small>当前狗狗和推荐内容</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-title">狗饭</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content">
+            <div class="dog-card">
+              <div class="tiny">当前狗狗</div>
+              <h2>布丁</h2>
+              <div class="tiny">成年犬｜12kg｜日常饮食</div>
+              <div class="stats">
+                <div class="stat"><strong>12kg</strong><span>体重</span></div>
+                <div class="stat"><strong>鸡肉</strong><span>过敏源</span></div>
+                <div class="stat"><strong>正常</strong><span>活动量</span></div>
+              </div>
+            </div>
+            <div class="section-head"><h3>适合布丁</h3><a>换一批</a></div>
+            <div class="recipe-card">
+              <div class="thumb fish"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">低脂鳕鱼饭</div>
+                <div class="tiny">避开鸡肉，适合日常换口味</div>
+                <div class="tags"><span class="tag good">适合当前狗狗</span><span class="tag">20 分钟</span></div>
+              </div>
+            </div>
+            <div class="recipe-card">
+              <div class="thumb beef"><span></span><span></span><span></span></div>
+              <div>
+                <div class="recipe-title">牛肉胡萝卜饭</div>
+                <div class="tiny">适合成年犬，食材简单</div>
+                <div class="tags"><span class="tag good">可选择</span><span class="tag">30 分钟</span></div>
+              </div>
+            </div>
+            <div class="notice good">最近一次清单：低脂鳕鱼饭，已保存 2 天前。</div>
+          </div>
+          <div class="tabbar">
+            <div class="tab active"><span class="tab-icon"></span><span>首页</span></div>
+            <div class="tab"><span class="tab-icon list"></span><span>食谱</span></div>
+            <div class="tab"><span class="tab-icon check"></span><span>清单</span></div>
+            <div class="tab"><span class="tab-icon user"></span><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">07 个性化食谱详情 <small>风险明确但不制造焦虑</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-back">‹</div><div class="native-title">食谱详情</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content no-tab cta-space">
+            <div class="detail-cover"></div>
+            <h2 class="detail-title">鸡肉南瓜饭</h2>
+            <div class="tags"><span class="tag good">成年犬</span><span class="tag warning">含鸡肉</span><span class="tag">25 分钟</span></div>
+            <div class="notice warning">不建议选择：布丁的档案里标记了鸡肉过敏。</div>
+            <div class="panel">
+              <h3>布丁建议份量</h3>
+              <div class="row"><span>鸡胸肉</span><strong>180g</strong></div>
+              <div class="row"><span>南瓜</span><strong>85g</strong></div>
+              <div class="row"><span>胡萝卜</span><strong>40g</strong></div>
+              <div class="row"><span>熟米饭</span><strong>60g</strong></div>
+            </div>
+            <div class="panel">
+              <h3>适合情况</h3>
+              <p class="tiny">适合成年犬、日常饮食。对鸡肉过敏的狗狗不建议选择。</p>
+            </div>
+          </div>
+          <div class="bottom-cta">
+            <button class="button warning">仍然生成清单</button>
+            <button class="button secondary">换一道无鸡肉食谱</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">08 采购单 <small>类别分组，可勾选</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-title">清单</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content">
+            <div class="segment"><span class="active">采购单</span><span>制作单</span></div>
+            <div class="dog-card">
+              <div class="tiny">低脂鳕鱼饭</div>
+              <h2>布丁的一顿饭</h2>
+              <div class="tiny">按 12kg 体重换算，约 20 分钟完成</div>
+            </div>
+            <div class="list-block">
+              <h4>肉类</h4>
+              <div class="row"><span class="check done"></span><span style="flex:1">鳕鱼</span><strong>170g</strong></div>
+            </div>
+            <div class="list-block">
+              <h4>蔬菜</h4>
+              <div class="row"><span class="check"></span><span style="flex:1">西蓝花</span><strong>50g</strong></div>
+              <div class="row"><span class="check"></span><span style="flex:1">胡萝卜</span><strong>45g</strong></div>
+            </div>
+            <div class="list-block">
+              <h4>主食</h4>
+              <div class="row"><span class="check"></span><span style="flex:1">熟米饭</span><strong>60g</strong></div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab"><span class="tab-icon"></span><span>首页</span></div>
+            <div class="tab"><span class="tab-icon list"></span><span>食谱</span></div>
+            <div class="tab active"><span class="tab-icon check"></span><span>清单</span></div>
+            <div class="tab"><span class="tab-icon user"></span><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">09 制作单 <small>厨房操作优先</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-title">清单</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content">
+            <div class="segment"><span>采购单</span><span class="active">制作单</span></div>
+            <div class="panel">
+              <h3>制作前确认</h3>
+              <p class="tiny">食材蒸熟后放凉再喂。剩余部分建议分装冷藏或冷冻。</p>
+            </div>
+            <div class="list-block">
+              <h4>制作步骤</h4>
+              <div class="row"><span class="step-num">1</span><span>鳕鱼检查鱼刺后切小块</span></div>
+              <div class="row"><span class="step-num">2</span><span>西蓝花和胡萝卜洗净切碎</span></div>
+              <div class="row"><span class="step-num">3</span><span>鱼肉蒸熟，蔬菜蒸软</span></div>
+              <div class="row"><span class="step-num">4</span><span>和熟米饭混合均匀</span></div>
+              <div class="row"><span class="step-num">5</span><span>放凉后按每顿分装</span></div>
+            </div>
+            <div class="notice good">这道食谱避开鸡肉，适合布丁当前档案。</div>
+          </div>
+          <div class="tabbar">
+            <div class="tab"><span class="tab-icon"></span><span>首页</span></div>
+            <div class="tab"><span class="tab-icon list"></span><span>食谱</span></div>
+            <div class="tab active"><span class="tab-icon check"></span><span>清单</span></div>
+            <div class="tab"><span class="tab-icon user"></span><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">10 我的与档案 <small>设置入口留在页面内容区</small></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="native-nav"><div class="native-title">我的</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
+          <div class="content">
+            <div class="profile">
+              <div class="avatar"></div>
+              <div style="flex:1">
+                <div class="recipe-title">微信用户</div>
+                <div class="tiny">已创建 2 只狗狗档案</div>
+              </div>
+              <span class="tag good">已登录</span>
+            </div>
+            <div class="section-head"><h3>狗狗档案</h3><a>新增</a></div>
+            <div class="panel">
+              <div class="row"><span>布丁</span><strong>当前</strong></div>
+              <p class="tiny">成年犬｜12kg｜鸡肉过敏｜日常饮食</p>
+            </div>
+            <div class="panel">
+              <div class="row"><span>可乐</span><strong>切换</strong></div>
+              <p class="tiny">老年犬｜8kg｜低脂｜肠胃友好</p>
+            </div>
+            <div class="menu">
+              <div class="menu-item"><span>历史清单</span><span>›</span></div>
+              <div class="menu-item"><span>饮食偏好</span><span>›</span></div>
+              <div class="menu-item"><span>过敏源管理</span><span>›</span></div>
+              <div class="menu-item"><span>关于狗饭</span><span>›</span></div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab"><span class="tab-icon"></span><span>首页</span></div>
+            <div class="tab"><span class="tab-icon list"></span><span>食谱</span></div>
+            <div class="tab"><span class="tab-icon check"></span><span>清单</span></div>
+            <div class="tab active"><span class="tab-icon user"></span><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
