@@ -1,5 +1,5 @@
-const calculator = require('../utils/calculator')
-const risk = require('../utils/risk')
+const calculator = require('../../../utils/calculator')
+const risk = require('../../../utils/risk')
 
 async function generate({ recipe, dogs, periodDays, targetDogIds, options = {} }) {
   if (options.algorithmMode && options.algorithmMode !== 'local') {

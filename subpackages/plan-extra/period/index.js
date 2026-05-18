@@ -1,7 +1,7 @@
 const dogService = require('../../../services/dogService')
-const planCalculatorService = require('../../../services/planCalculatorService')
+const planCalculatorService = require('../services/planCalculatorService')
 const mealPlanService = require('../../../services/mealPlanService')
-const customRecipeService = require('../../../services/customRecipeService')
+const customRecipeService = require('../services/customRecipeService')
 const recipeUtils = require('../../../utils/recipe')
 const calculator = require('../../../utils/calculator')
 

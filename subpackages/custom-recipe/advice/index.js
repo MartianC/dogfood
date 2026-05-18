@@ -1,4 +1,4 @@
-const customRecipeService = require('../../../services/customRecipeService')
+const customRecipeService = require('../services/customRecipeService')
 
 Page({
   data: {

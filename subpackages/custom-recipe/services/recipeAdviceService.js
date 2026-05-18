@@ -1,4 +1,4 @@
-const ingredientAdvice = require('../utils/ingredientAdvice')
+const ingredientAdvice = require('../../../utils/ingredientAdvice')
 
 async function buildAdvice({ customRecipe, dogs, options = {} }) {
   if (options.algorithmMode && options.algorithmMode !== 'local') {

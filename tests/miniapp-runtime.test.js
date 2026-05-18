@@ -26,6 +26,12 @@ test('app.js 不直接 require JSON 数据文件', () => {
   assert.match(appSource, /require\(['"]\.\/data\/recipes['"]\)/)
 })
 
+test('app.json 启用组件按需注入', () => {
+  const appConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.json'), 'utf8'))
+
+  assert.equal(appConfig.lazyCodeLoading, 'requiredComponents')
+})
+
 test('小程序图片兜底资源存在', () => {
   const expected = [
     'assets/recipes/chicken-pumpkin.jpg',
@@ -40,5 +46,29 @@ test('小程序图片兜底资源存在', () => {
     const fullPath = path.join(__dirname, '..', assetPath)
     assert.ok(fs.existsSync(fullPath), `${assetPath} 不存在`)
     assert.ok(fs.statSync(fullPath).size > 0, `${assetPath} 是空文件`)
+  })
+})
+
+test('小程序图片资源不超过 200K', () => {
+  const roots = ['assets']
+  const imageFiles = []
+
+  function collectImages(dir) {
+    fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
+      const entryPath = path.join(dir, entry.name)
+      if (entry.isDirectory()) {
+        collectImages(entryPath)
+        return
+      }
+      if (/\.(png|jpe?g|gif|webp)$/i.test(entry.name)) {
+        imageFiles.push(entryPath)
+      }
+    })
+  }
+
+  roots.forEach((root) => collectImages(path.join(__dirname, '..', root)))
+  imageFiles.forEach((file) => {
+    const relativePath = path.relative(path.join(__dirname, '..'), file)
+    assert.ok(fs.statSync(file).size <= 200 * 1024, `${relativePath} 超过 200K`)
   })
 })

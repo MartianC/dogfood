@@ -2,7 +2,7 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 
 const calculator = require('../utils/calculator')
-const planCalculatorService = require('../services/planCalculatorService')
+const planCalculatorService = require('../subpackages/plan-extra/services/planCalculatorService')
 
 const recipe = {
   id: 'fish-light',

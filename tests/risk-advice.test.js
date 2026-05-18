@@ -2,7 +2,7 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 
 const risk = require('../utils/risk')
-const recipeAdviceService = require('../services/recipeAdviceService')
+const recipeAdviceService = require('../subpackages/custom-recipe/services/recipeAdviceService')
 
 test('风险提示按过敏源、忌口、年龄和饮食目标生成', () => {
   const recipe = {

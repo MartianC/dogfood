@@ -1,6 +1,6 @@
-const env = require('../config/env')
-const storage = require('../utils/storage')
-const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./adapters/mock')
+const env = require('../../../config/env')
+const storage = require('../../../utils/storage')
+const adapter = env.useCloudBase ? require('../../../services/adapters/cloudbase') : require('../../../services/adapters/mock')
 
 function saveDraft(draft) {
   storage.setSync('customRecipeDraft', {

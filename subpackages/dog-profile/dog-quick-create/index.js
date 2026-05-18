@@ -1,6 +1,6 @@
 const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
-const fileService = require('../../../services/fileService')
+const fileService = require('../services/fileService')
 const { ageStageOptions, dietGoalOptions } = require('../../../data/options')
 const assets = require('../../../utils/assets')
 

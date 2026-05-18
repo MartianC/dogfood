@@ -1,7 +1,31 @@
-const auth = require('../../../utils/auth')
+const authService = require('../../../services/authService')
 const dogService = require('../../../services/dogService')
-const customRecipeService = require('../../../services/customRecipeService')
-const recipeAdviceService = require('../../../services/recipeAdviceService')
+const customRecipeService = require('../services/customRecipeService')
+const recipeAdviceService = require('../services/recipeAdviceService')
+
+function currentPageRoute() {
+  if (typeof getCurrentPages !== 'function') return ''
+  const pages = getCurrentPages()
+  const page = pages[pages.length - 1]
+  if (!page) return ''
+  const query = page.options ? Object.keys(page.options).map((key) => `${key}=${page.options[key]}`).join('&') : ''
+  return `/${page.route}${query ? `?${query}` : ''}`
+}
+
+async function requireProfileAuth(options = {}) {
+  const state = authService.getAuthState()
+  if (state === 'guest') {
+    const ok = await authService.login()
+    if (!ok) return false
+  }
+  const nextState = authService.getAuthState()
+  if (options.requireProfile && nextState !== 'has-profile') {
+    const redirect = encodeURIComponent(options.redirect || currentPageRoute())
+    wx.navigateTo({ url: `/subpackages/dog-profile/dog-quick-create/index?redirect=${redirect}` })
+    return false
+  }
+  return true
+}
 
 Page({
   data: {
@@ -16,7 +40,7 @@ Page({
   },
 
   async onLoad() {
-    const passed = await auth.requireAuth({ requireProfile: true, redirect: '/subpackages/custom-recipe/edit/index' })
+    const passed = await requireProfileAuth({ requireProfile: true, redirect: '/subpackages/custom-recipe/edit/index' })
     if (!passed) return
     const draft = customRecipeService.getDraft()
     const dogs = await dogService.listDogs()
