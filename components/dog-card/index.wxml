@@ -1,0 +1,8 @@
+<view class="dog-card">
+  <view>
+    <view class="name">{{dog.name}}</view>
+    <view class="meta">{{ageStageLabels[dog.ageStage]}}｜{{dog.weightKg}}kg｜每日 {{dog.dailyMeals}} 餐</view>
+    <view class="goal">{{dietGoalLabels[dog.dietGoal] || '日常'}}饮食</view>
+  </view>
+  <button wx:if="{{editable}}" class="edit" bindtap="onEdit">修改</button>
+</view>

@@ -1,0 +1,38 @@
+.advice {
+  padding: 22rpx;
+  border-radius: 18rpx;
+  background: #ffffff;
+  border: 1rpx solid #d8e1da;
+}
+
+.advice.adjust,
+.advice.avoid {
+  background: #f6e8e1;
+  border-color: #e6c6b8;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.name {
+  font-weight: 800;
+}
+
+.level {
+  color: #25684a;
+  font-weight: 700;
+}
+
+.avoid .level,
+.adjust .level {
+  color: #a84f34;
+}
+
+.reason {
+  margin-top: 12rpx;
+  color: #6f7b73;
+  line-height: 1.45;
+}

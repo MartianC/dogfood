@@ -1,0 +1,36 @@
+.guard {
+  padding: 28rpx;
+  border-radius: 20rpx;
+  background: #ffffff;
+  border: 1rpx solid #d8e1da;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 30rpx;
+}
+
+.desc {
+  margin-top: 12rpx;
+  color: #6f7b73;
+  line-height: 1.5;
+}
+
+.button {
+  margin-top: 22rpx;
+  width: 100%;
+  min-height: 96rpx;
+  box-sizing: border-box;
+  padding: 0 28rpx;
+  border-radius: 24rpx;
+  background: #25684a;
+  color: #ffffff;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button::after {
+  border: 0;
+}

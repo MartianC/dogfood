@@ -1,0 +1,10 @@
+<view class="period">
+  <view class="options">
+    <view wx:for="{{options}}" wx:key="*this" data-value="{{item}}" bindtap="onSelect" class="option {{value === item ? 'active' : ''}}">{{item}} 天</view>
+  </view>
+  <view class="custom">
+    <text>自定义</text>
+    <input class="custom-input" type="number" value="{{value}}" bindinput="onInput" />
+    <text>天</text>
+  </view>
+</view>

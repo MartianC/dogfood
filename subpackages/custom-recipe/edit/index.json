@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "自定义食谱",
+  "usingComponents": {
+    "dog-target-selector": "../../../components/dog-target-selector/index",
+    "ingredient-editor": "../../../components/ingredient-editor/index"
+  }
+}

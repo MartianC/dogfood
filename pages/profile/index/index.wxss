@@ -1,0 +1,138 @@
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 26rpx;
+  border: 1rpx solid #d8e1da;
+  border-radius: 24rpx;
+  background: #ffffff;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.07);
+}
+
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  flex: 0 0 96rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid #b7c7bc;
+  background: linear-gradient(135deg, #b97642 0 50%, #ead8b8 50% 100%);
+}
+
+.profile-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-title {
+  color: #17201b;
+  font-size: 30rpx;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.profile-meta {
+  margin-top: 8rpx;
+  color: #6f7b73;
+  font-size: 22rpx;
+  line-height: 1.45;
+}
+
+.status-tag {
+  flex: 0 0 auto;
+  min-height: 44rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #edf4ee;
+  color: #6f7b73;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 44rpx;
+}
+
+.status-tag.good {
+  background: #e3f0e8;
+  color: #25684a;
+}
+
+.guest-panel,
+.dog-panel,
+.menu-item {
+  border: 1rpx solid #d8e1da;
+  border-radius: 24rpx;
+  background: #ffffff;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+}
+
+.guest-panel {
+  padding: 28rpx;
+}
+
+.guest-panel .button {
+  margin-top: 24rpx;
+}
+
+.panel-title {
+  color: #17201b;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.panel-desc {
+  margin-top: 12rpx;
+  color: #6f7b73;
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.profile-dog-list,
+.menu {
+  display: grid;
+  gap: 16rpx;
+}
+
+.dog-panel {
+  padding: 26rpx;
+}
+
+.dog-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  color: #17201b;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.edit-link {
+  color: #25684a;
+  font-size: 26rpx;
+}
+
+.dog-meta {
+  margin-top: 10rpx;
+  color: #6f7b73;
+  font-size: 23rpx;
+  line-height: 1.45;
+}
+
+.menu {
+  margin-top: 32rpx;
+}
+
+.menu-item {
+  min-height: 96rpx;
+  box-sizing: border-box;
+  padding: 0 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #17201b;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.chevron {
+  color: #6f7b73;
+  font-size: 34rpx;
+}

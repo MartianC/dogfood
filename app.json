@@ -1,0 +1,72 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/recipes/list/index",
+    "pages/recipes/detail/index",
+    "pages/plan/index/index",
+    "pages/profile/index/index"
+  ],
+  "subpackages": [
+    {
+      "root": "subpackages/dog-profile",
+      "pages": [
+        "dog-edit/index",
+        "dog-quick-create/index"
+      ]
+    },
+    {
+      "root": "subpackages/plan-extra",
+      "pages": [
+        "period/index",
+        "detail/index"
+      ]
+    },
+    {
+      "root": "subpackages/custom-recipe",
+      "pages": [
+        "edit/index",
+        "advice/index"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTitleText": "狗饭",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4f8f3"
+  },
+  "tabBar": {
+    "color": "#6f7b73",
+    "selectedColor": "#25684a",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/recipes/list/index",
+        "text": "食谱",
+        "iconPath": "assets/tabbar/recipes.png",
+        "selectedIconPath": "assets/tabbar/recipes-active.png"
+      },
+      {
+        "pagePath": "pages/plan/index/index",
+        "text": "清单",
+        "iconPath": "assets/tabbar/plan.png",
+        "selectedIconPath": "assets/tabbar/plan-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index/index",
+        "text": "我的",
+        "iconPath": "assets/tabbar/profile.png",
+        "selectedIconPath": "assets/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

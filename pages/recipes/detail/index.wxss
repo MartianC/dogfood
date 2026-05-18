@@ -1,0 +1,33 @@
+.tag-list {
+  margin-top: 18rpx;
+}
+
+.ratio-row,
+.step-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #edf4ee;
+}
+
+.ratio-row:last-child,
+.step-row:last-child {
+  border-bottom: 0;
+}
+
+.step-row {
+  justify-content: flex-start;
+  line-height: 1.5;
+}
+
+.step-num {
+  flex: 0 0 44rpx;
+  height: 44rpx;
+  border-radius: 999rpx;
+  background: #e3f0e8;
+  color: #25684a;
+  text-align: center;
+  line-height: 44rpx;
+  font-weight: 800;
+}

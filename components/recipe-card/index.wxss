@@ -1,0 +1,89 @@
+.recipe-card {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #d8e1da;
+  border-radius: 20rpx;
+  background: #ffffff;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+}
+
+.thumb {
+  width: 104rpx;
+  height: 104rpx;
+  flex: 0 0 104rpx;
+  border-radius: 18rpx;
+  background: #ead8b8;
+  color: #25684a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42rpx;
+  font-weight: 800;
+}
+
+.body {
+  min-width: 0;
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.name {
+  font-size: 31rpx;
+  font-weight: 800;
+  color: #17201b;
+}
+
+.fit {
+  flex: 0 0 auto;
+  padding: 6rpx 12rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  background: #edf4ee;
+  color: #34423a;
+}
+
+.fit.ok {
+  background: #e3f0e8;
+  color: #25684a;
+}
+
+.fit.warning,
+.fit.danger {
+  background: #f6e8e1;
+  color: #a84f34;
+}
+
+.desc,
+.ingredients {
+  margin-top: 10rpx;
+  color: #6f7b73;
+  line-height: 1.45;
+  font-size: 24rpx;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+
+.tag {
+  padding: 6rpx 12rpx;
+  border-radius: 999rpx;
+  background: #edf4ee;
+  color: #34423a;
+  font-size: 22rpx;
+}
+
+.tag.good {
+  background: #e3f0e8;
+  color: #25684a;
+}

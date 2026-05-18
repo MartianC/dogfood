@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "食谱建议",
+  "usingComponents": {
+    "advice-card": "../../../components/advice-card/index"
+  }
+}

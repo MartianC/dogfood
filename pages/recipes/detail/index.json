@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "食谱详情",
+  "usingComponents": {
+    "risk-badge": "../../../components/risk-badge/index"
+  }
+}

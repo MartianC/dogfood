@@ -1,0 +1,27 @@
+<view class="page with-bottom-action">
+  <view class="hero">
+    <view class="eyebrow">自定义食谱</view>
+    <view class="title">输入单餐参考量</view>
+    <view class="subtitle">系统会结合狗狗档案给出建议与理由，不做医疗判断。</view>
+  </view>
+
+  <view class="section card">
+    <view class="field">
+      <label>食谱名称</label>
+      <input class="input" value="{{title}}" bindinput="onTitle" placeholder="例如 家里简单饭" />
+    </view>
+  </view>
+
+  <view class="section">
+    <dog-target-selector dogs="{{dogs}}" selectedDogIds="{{selectedDogIds}}" bind:change="onTargetChange" />
+  </view>
+
+  <view class="section">
+    <ingredient-editor ingredients="{{ingredients}}" bind:change="onIngredients" />
+  </view>
+
+  <view class="bottom-action">
+    <button class="button" bindtap="onCheckAdvice">检查并生成建议</button>
+    <button class="button secondary" bindtap="onSaveDraft">保存草稿</button>
+  </view>
+</view>

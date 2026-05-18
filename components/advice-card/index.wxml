@@ -1,0 +1,7 @@
+<view class="advice {{advice.level}}">
+  <view class="row">
+    <view class="name">{{advice.ingredientName}}</view>
+    <view class="level">{{advice.suggestion}}</view>
+  </view>
+  <view class="reason">{{advice.reason}}</view>
+</view>

@@ -1,0 +1,51 @@
+.empty {
+  padding: 64rpx 32rpx;
+  text-align: center;
+  border: 1rpx solid #d8e1da;
+  border-radius: 20rpx;
+  background: #ffffff;
+}
+
+.icon {
+  width: 96rpx;
+  height: 96rpx;
+  margin: 0 auto;
+  border-radius: 999rpx;
+  background: #e3f0e8;
+  color: #25684a;
+  line-height: 96rpx;
+  font-weight: 800;
+}
+
+.title {
+  margin-top: 24rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.desc {
+  margin-top: 12rpx;
+  color: #6f7b73;
+  line-height: 1.5;
+}
+
+.button {
+  margin-top: 28rpx;
+  width: 100%;
+  min-height: 96rpx;
+  box-sizing: border-box;
+  padding: 0 28rpx;
+  border-radius: 24rpx;
+  color: #ffffff;
+  background: #25684a;
+  font-size: 28rpx;
+  font-weight: 800;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button::after {
+  border: 0;
+}

@@ -1,0 +1,20 @@
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #edf4ee;
+  line-height: 1.45;
+}
+
+.summary-row:last-child {
+  border-bottom: 0;
+}
+
+.share-canvas {
+  width: 320px;
+  height: 420px;
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+}

@@ -1,0 +1,48 @@
+<view class="page with-bottom-action">
+  <view class="hero">
+    <view class="eyebrow">狗狗档案</view>
+    <view class="title">{{id ? '修改档案' : '添加狗狗'}}</view>
+    <view class="subtitle">生成清单需要名字、年龄阶段、体重和每日餐数，其他资料可以稍后补充。</view>
+  </view>
+
+  <view class="section card">
+    <view class="field">
+      <label>狗狗名字</label>
+      <input class="input" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
+    </view>
+    <view class="field">
+      <label>年龄阶段</label>
+      <picker range="{{ageStageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
+        <view class="picker-value">{{ageStageOptions[ageIndex].label}}</view>
+      </picker>
+    </view>
+    <view class="field">
+      <label>体重 kg</label>
+      <input class="input" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
+    </view>
+    <view class="field">
+      <label>每日餐数</label>
+      <input class="input" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如 2" />
+    </view>
+    <view class="field">
+      <label>饮食目标</label>
+      <picker range="{{dietGoalOptions}}" range-key="label" value="{{goalIndex}}" bindchange="onGoal">
+        <view class="picker-value">{{dietGoalOptions[goalIndex].label}}</view>
+      </picker>
+    </view>
+    <view class="field">
+      <label>过敏源，可跳过</label>
+      <input class="input" value="{{allergenText}}" bindinput="onAllergenText" placeholder="例如 chicken 或 鸡肉" />
+    </view>
+    <view class="field">
+      <label>忌口食材，可跳过</label>
+      <input class="input" value="{{avoidText}}" bindinput="onAvoidText" placeholder="例如 南瓜、熟米饭" />
+    </view>
+  </view>
+
+  <button wx:if="{{id}}" class="button secondary delete" bindtap="onDelete">删除档案</button>
+
+  <view class="bottom-action">
+    <button class="button" bindtap="onSave">保存</button>
+  </view>
+</view>

@@ -1,0 +1,58 @@
+<view class="page">
+  <empty-state wx:if="{{!plan}}" title="还没有生成清单" description="选择一道食谱后，可以生成批量制作清单。" actionText="去选食谱" bind:action="onGoRecipes" />
+
+  <view wx:else>
+    <view class="hero">
+      <view class="eyebrow">{{plan.periodDays}} 天｜共 {{plan.totalPortions}} 份</view>
+      <view class="title">{{plan.recipeName}}清单</view>
+      <view class="subtitle">按每餐重量分装后冷冻保存，喂食前充分加热后放凉。</view>
+    </view>
+
+    <view class="section grid-2">
+      <view class="metric">
+        <strong>{{plan.totalPortions}}</strong>
+        <span>分装总数</span>
+      </view>
+      <view class="metric">
+        <strong>{{plan.targetMode === 'multipleDogs' ? '多狗' : '单狗'}}</strong>
+        <span>制作对象</span>
+      </view>
+    </view>
+
+    <view class="section card">
+      <view class="section-title">分装参考</view>
+      <view wx:for="{{plan.dogMealSummaries}}" wx:key="dogId" class="summary-row">
+        <text>{{item.dogName}}：每日 {{item.dailyMeals}} 餐，共 {{item.totalMeals}} 份</text>
+        <text>每份约 {{item.perMealTotalGram}}g</text>
+      </view>
+    </view>
+
+    <view wx:if="{{perMealItems.length}}" class="section">
+      <view class="section-head">
+        <view class="section-title">每餐食材</view>
+        <view class="tiny">单只狗狗制作</view>
+      </view>
+      <ingredient-list items="{{perMealItems}}" />
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <view class="section-title">采购食材</view>
+        <view class="tiny">勾选状态仅保存在本机</view>
+      </view>
+      <ingredient-list items="{{totalItems}}" checkedMap="{{checkedMap}}" showCheckbox bind:checkitem="onCheckItem" />
+    </view>
+
+    <view class="section card">
+      <view class="section-title">制作和分装</view>
+      <view wx:for="{{plan.cookingSteps}}" wx:key="*this" class="summary-row">
+        <text>{{index + 1}}. {{item}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <share-card plan="{{plan}}" bind:export="onExport" />
+    </view>
+    <canvas canvas-id="shareCanvas" class="share-canvas"></canvas>
+  </view>
+</view>

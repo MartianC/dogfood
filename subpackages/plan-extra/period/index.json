@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "制作周期",
+  "usingComponents": {
+    "dog-target-selector": "../../../components/dog-target-selector/index",
+    "period-selector": "../../../components/period-selector/index",
+    "ingredient-list": "../../../components/ingredient-list/index"
+  }
+}

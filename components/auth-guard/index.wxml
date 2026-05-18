@@ -1,0 +1,6 @@
+<view wx:if="{{authState !== 'has-profile'}}" class="guard">
+  <view class="title">生成专属清单需要先添加狗狗档案</view>
+  <view class="desc">添加后会按狗狗体重、每日餐数和制作周期自动换算食材份量。</view>
+  <button class="button" bindtap="onLogin">微信登录并添加狗狗</button>
+</view>
+<slot wx:else></slot>

@@ -1,0 +1,53 @@
+.ingredient-list {
+  border: 1rpx solid #d8e1da;
+  border-radius: 18rpx;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 92rpx;
+  padding: 0 22rpx;
+  border-bottom: 1rpx solid #edf4ee;
+}
+
+.item:last-child {
+  border-bottom: 0;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.check {
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid #b7c7bc;
+}
+
+.check.checked {
+  background: #25684a;
+  border-color: #25684a;
+}
+
+.name {
+  font-weight: 700;
+  color: #17201b;
+}
+
+.category {
+  margin-top: 4rpx;
+  color: #6f7b73;
+  font-size: 22rpx;
+}
+
+.amount {
+  color: #25684a;
+  font-weight: 800;
+}

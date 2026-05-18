@@ -1,0 +1,8 @@
+<view class="share-card">
+  <view class="title">{{plan.recipeName || '狗饭批量制作清单'}}</view>
+  <view class="meta">{{plan.periodDays}} 天｜共 {{plan.totalPortions}} 份</view>
+  <view class="actions">
+    <button class="button secondary" bindtap="exportImage">导出图片</button>
+    <button class="button" open-type="share">分享</button>
+  </view>
+</view>

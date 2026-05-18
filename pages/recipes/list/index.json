@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "食谱",
+  "usingComponents": {
+    "recipe-card": "../../../components/recipe-card/index"
+  }
+}

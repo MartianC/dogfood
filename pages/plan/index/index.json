@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "清单",
+  "usingComponents": {
+    "ingredient-list": "../../../components/ingredient-list/index",
+    "empty-state": "../../../components/empty-state/index",
+    "share-card": "../../../components/share-card/index"
+  }
+}

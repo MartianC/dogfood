@@ -1,0 +1,36 @@
+<view wx:if="{{recipe}}" class="page with-bottom-action">
+  <view class="hero">
+    <view class="eyebrow">{{recipe.cookingTimeMinutes}} 分钟</view>
+    <view class="title">{{recipe.title}}</view>
+    <view class="subtitle">{{recipe.description}}</view>
+    <view class="tag-list">
+      <text wx:for="{{recipe.tags}}" wx:key="*this" class="tag good">{{item}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{warnings.length}}" class="section">
+    <risk-badge warnings="{{warnings}}" />
+  </view>
+
+  <view class="section card">
+    <view class="section-title">食材比例</view>
+    <view wx:for="{{recipe.ingredients}}" wx:key="name" class="ratio-row">
+      <text>{{item.name}}</text>
+      <text>{{item.ratioPercent}}%</text>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">制作步骤</view>
+    <view wx:for="{{recipe.steps}}" wx:key="*this" class="step-row">
+      <text class="step-num">{{index + 1}}</text>
+      <text>{{item}}</text>
+    </view>
+  </view>
+
+  <view class="section notice">食谱详情只展示通用比例，选择制作周期后再按狗狗体重和每日餐数换算克重。</view>
+
+  <view class="bottom-action">
+    <button class="button" bindtap="onChoosePeriod">选择制作周期</button>
+  </view>
+</view>

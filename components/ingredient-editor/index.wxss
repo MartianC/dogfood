@@ -1,0 +1,50 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.ingredient {
+  display: grid;
+  grid-template-columns: 1fr 140rpx 140rpx 72rpx;
+  gap: 12rpx;
+  align-items: center;
+  padding: 18rpx;
+  border: 1rpx solid #d8e1da;
+  border-radius: 18rpx;
+  background: #ffffff;
+}
+
+.input,
+.picker-value {
+  min-height: 58rpx;
+  line-height: 58rpx;
+  font-size: 26rpx;
+}
+
+.amount {
+  text-align: right;
+}
+
+.remove {
+  color: #a84f34;
+  font-size: 24rpx;
+}
+
+.add {
+  width: 100%;
+  min-height: 88rpx;
+  box-sizing: border-box;
+  padding: 0 24rpx;
+  border-radius: 20rpx;
+  background: #edf4ee;
+  color: #25684a;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add::after {
+  border: 0;
+}

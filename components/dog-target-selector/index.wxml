@@ -1,0 +1,11 @@
+<view class="selector">
+  <view class="head">
+    <text>这批饭给谁吃</text>
+    <text wx:if="{{dogs.length > 1}}" class="all" bindtap="onAll">全部狗狗</text>
+  </view>
+  <view class="chips">
+    <view wx:for="{{displayDogs}}" wx:key="id" data-id="{{item.id}}" bindtap="onToggle" class="chip {{item.selected ? 'active' : ''}}">
+      {{item.name}}
+    </view>
+  </view>
+</view>

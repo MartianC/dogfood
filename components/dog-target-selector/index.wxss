@@ -1,0 +1,36 @@
+.selector {
+  padding: 24rpx;
+  border: 1rpx solid #d8e1da;
+  border-radius: 20rpx;
+  background: #ffffff;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+}
+
+.all {
+  color: #25684a;
+  font-weight: 600;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 18rpx;
+}
+
+.chip {
+  padding: 14rpx 20rpx;
+  border-radius: 999rpx;
+  background: #edf4ee;
+  color: #34423a;
+}
+
+.chip.active {
+  background: #25684a;
+  color: #ffffff;
+}

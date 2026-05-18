@@ -1,0 +1,43 @@
+.period {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14rpx;
+}
+
+.option {
+  height: 82rpx;
+  border-radius: 18rpx;
+  background: #edf4ee;
+  color: #34423a;
+  line-height: 82rpx;
+  text-align: center;
+  font-weight: 700;
+}
+
+.option.active {
+  background: #25684a;
+  color: #ffffff;
+}
+
+.custom {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 22rpx;
+  border-radius: 18rpx;
+  background: #ffffff;
+  border: 1rpx solid #d8e1da;
+}
+
+.custom-input {
+  flex: 1;
+  min-height: 58rpx;
+  text-align: center;
+  font-weight: 800;
+}

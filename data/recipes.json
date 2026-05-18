@@ -1,0 +1,191 @@
+[
+  {
+    "id": "chicken-pumpkin",
+    "title": "鸡肉南瓜饭",
+    "description": "日常好上手的一餐，适合没有鸡肉过敏的成年犬。",
+    "tags": ["日常", "肠胃友好", "适合成年犬"],
+    "suitableAgeStages": ["adult"],
+    "suitableDietGoals": ["daily", "stomachFriendly"],
+    "unsuitableTags": ["鸡肉过敏"],
+    "mainIngredients": ["鸡胸肉", "南瓜", "胡萝卜"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 260,
+    "cookingTimeMinutes": 25,
+    "ingredients": [
+      { "name": "鸡胸肉", "category": "meat", "baseAmountGram": 150, "ratioPercent": 58, "allergenKey": "chicken" },
+      { "name": "南瓜", "category": "vegetable", "baseAmountGram": 55, "ratioPercent": 21 },
+      { "name": "胡萝卜", "category": "vegetable", "baseAmountGram": 30, "ratioPercent": 12 },
+      { "name": "熟米饭", "category": "carb", "baseAmountGram": 25, "ratioPercent": 9, "allergenKey": "grain" }
+    ],
+    "steps": ["食材清洗并切小块", "鸡胸肉煮熟后撕碎", "南瓜和胡萝卜蒸熟", "全部食材混合均匀后按餐分装"],
+    "notes": "第一次尝试建议少量观察。"
+  },
+  {
+    "id": "fish-light",
+    "title": "低脂鳕鱼饭",
+    "description": "脂肪较低，适合作为需要控制油脂时的清淡选择。",
+    "tags": ["低脂", "老年犬", "肠胃友好"],
+    "suitableAgeStages": ["adult", "senior"],
+    "suitableDietGoals": ["lowFat", "stomachFriendly"],
+    "unsuitableTags": ["鱼肉过敏"],
+    "mainIngredients": ["鳕鱼", "西蓝花", "胡萝卜"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 250,
+    "cookingTimeMinutes": 20,
+    "ingredients": [
+      { "name": "鳕鱼", "category": "meat", "baseAmountGram": 140, "ratioPercent": 56, "allergenKey": "fish" },
+      { "name": "西蓝花", "category": "vegetable", "baseAmountGram": 40, "ratioPercent": 16 },
+      { "name": "胡萝卜", "category": "vegetable", "baseAmountGram": 35, "ratioPercent": 14 },
+      { "name": "熟米饭", "category": "carb", "baseAmountGram": 35, "ratioPercent": 14, "allergenKey": "grain" }
+    ],
+    "steps": ["鳕鱼去刺后蒸熟", "蔬菜蒸熟切碎", "和熟米饭混合", "按每餐重量分装冷冻"],
+    "notes": "喂食前充分加热后放凉。"
+  },
+  {
+    "id": "beef-potato",
+    "title": "牛肉土豆饭",
+    "description": "能量更足，适合活动量正常且不对牛肉敏感的狗狗。",
+    "tags": ["日常", "增重"],
+    "suitableAgeStages": ["adult"],
+    "suitableDietGoals": ["daily", "gainWeight"],
+    "unsuitableTags": ["牛肉过敏"],
+    "mainIngredients": ["牛肉", "土豆", "西葫芦"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 285,
+    "cookingTimeMinutes": 35,
+    "ingredients": [
+      { "name": "牛肉", "category": "meat", "baseAmountGram": 160, "ratioPercent": 56, "allergenKey": "beef" },
+      { "name": "土豆", "category": "carb", "baseAmountGram": 60, "ratioPercent": 21 },
+      { "name": "西葫芦", "category": "vegetable", "baseAmountGram": 45, "ratioPercent": 16 },
+      { "name": "蛋黄", "category": "other", "baseAmountGram": 20, "ratioPercent": 7, "allergenKey": "eggYolk" }
+    ],
+    "steps": ["牛肉煮熟后切碎", "土豆蒸熟压块", "西葫芦焯熟", "混合后分装"],
+    "notes": "低脂目标下建议减少蛋黄。"
+  },
+  {
+    "id": "duck-rice",
+    "title": "鸭肉米饭",
+    "description": "口味温和，适合想避开鸡肉时作为替代。",
+    "tags": ["日常", "避开鸡肉"],
+    "suitableAgeStages": ["adult", "senior"],
+    "suitableDietGoals": ["daily"],
+    "unsuitableTags": ["明显控脂"],
+    "mainIngredients": ["鸭胸肉", "米饭", "冬瓜"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 270,
+    "cookingTimeMinutes": 30,
+    "ingredients": [
+      { "name": "鸭胸肉", "category": "meat", "baseAmountGram": 145, "ratioPercent": 54, "allergenKey": "duck" },
+      { "name": "冬瓜", "category": "vegetable", "baseAmountGram": 45, "ratioPercent": 17 },
+      { "name": "熟米饭", "category": "carb", "baseAmountGram": 60, "ratioPercent": 22, "allergenKey": "grain" },
+      { "name": "菠菜", "category": "vegetable", "baseAmountGram": 20, "ratioPercent": 7 }
+    ],
+    "steps": ["鸭肉去皮后煮熟", "冬瓜和菠菜蒸熟", "加入熟米饭混合", "按餐分装"],
+    "notes": "需要低脂时优先选择鳕鱼饭。"
+  },
+  {
+    "id": "turkey-sweet-potato",
+    "title": "火鸡红薯饭",
+    "description": "肉类和红薯比例清楚，适合日常批量制作。",
+    "tags": ["日常", "适合成年犬"],
+    "suitableAgeStages": ["adult"],
+    "suitableDietGoals": ["daily", "stomachFriendly"],
+    "unsuitableTags": ["禽肉过敏"],
+    "mainIngredients": ["火鸡肉", "红薯", "青豆"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 265,
+    "cookingTimeMinutes": 30,
+    "ingredients": [
+      { "name": "火鸡肉", "category": "meat", "baseAmountGram": 150, "ratioPercent": 57, "allergenKey": "turkey" },
+      { "name": "红薯", "category": "carb", "baseAmountGram": 55, "ratioPercent": 21 },
+      { "name": "青豆", "category": "vegetable", "baseAmountGram": 35, "ratioPercent": 13 },
+      { "name": "胡萝卜", "category": "vegetable", "baseAmountGram": 25, "ratioPercent": 9 }
+    ],
+    "steps": ["火鸡肉煮熟切碎", "红薯蒸熟", "蔬菜焯熟", "混合后分装冷冻"],
+    "notes": "红薯比例不宜继续加高。"
+  },
+  {
+    "id": "salmon-broccoli",
+    "title": "三文鱼西蓝花饭",
+    "description": "鱼肉香味明显，适合没有鱼肉过敏且愿意尝试新口味的狗狗。",
+    "tags": ["日常", "皮肤敏感"],
+    "suitableAgeStages": ["adult"],
+    "suitableDietGoals": ["daily"],
+    "unsuitableTags": ["鱼肉过敏", "严格低脂"],
+    "mainIngredients": ["三文鱼", "西蓝花", "藜麦"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 260,
+    "cookingTimeMinutes": 25,
+    "ingredients": [
+      { "name": "三文鱼", "category": "meat", "baseAmountGram": 135, "ratioPercent": 52, "allergenKey": "fish" },
+      { "name": "西蓝花", "category": "vegetable", "baseAmountGram": 45, "ratioPercent": 17 },
+      { "name": "藜麦", "category": "carb", "baseAmountGram": 50, "ratioPercent": 19, "allergenKey": "grain" },
+      { "name": "南瓜", "category": "vegetable", "baseAmountGram": 30, "ratioPercent": 12 }
+    ],
+    "steps": ["三文鱼蒸熟并检查鱼刺", "藜麦提前煮熟", "蔬菜蒸熟切碎", "混合并分装"],
+    "notes": "鱼肉过敏的狗狗不要选择。"
+  },
+  {
+    "id": "egg-vegetable",
+    "title": "鸡蛋蔬菜饭",
+    "description": "食材容易准备，适合临时少量制作。",
+    "tags": ["日常", "快手"],
+    "suitableAgeStages": ["adult"],
+    "suitableDietGoals": ["daily"],
+    "unsuitableTags": ["蛋类过敏"],
+    "mainIngredients": ["鸡蛋", "鸡胸肉", "胡萝卜"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 245,
+    "cookingTimeMinutes": 18,
+    "ingredients": [
+      { "name": "鸡蛋", "category": "other", "baseAmountGram": 45, "ratioPercent": 18, "allergenKey": "egg" },
+      { "name": "鸡胸肉", "category": "meat", "baseAmountGram": 110, "ratioPercent": 45, "allergenKey": "chicken" },
+      { "name": "胡萝卜", "category": "vegetable", "baseAmountGram": 45, "ratioPercent": 18 },
+      { "name": "燕麦", "category": "carb", "baseAmountGram": 45, "ratioPercent": 18, "allergenKey": "grain" }
+    ],
+    "steps": ["鸡蛋煮熟切碎", "鸡胸肉煮熟", "胡萝卜蒸熟", "和燕麦混合分装"],
+    "notes": "蛋类过敏时不要选择。"
+  },
+  {
+    "id": "senior-soft",
+    "title": "老年犬软糯饭",
+    "description": "质地更软，适合老年犬少量尝试。",
+    "tags": ["老年犬", "肠胃友好"],
+    "suitableAgeStages": ["senior"],
+    "suitableDietGoals": ["stomachFriendly", "lowFat"],
+    "unsuitableTags": ["鸡肉过敏"],
+    "mainIngredients": ["鸡胸肉", "南瓜", "山药"],
+    "baseWeightKg": 10,
+    "baseServingTotalGram": 240,
+    "cookingTimeMinutes": 30,
+    "ingredients": [
+      { "name": "鸡胸肉", "category": "meat", "baseAmountGram": 125, "ratioPercent": 52, "allergenKey": "chicken" },
+      { "name": "南瓜", "category": "vegetable", "baseAmountGram": 50, "ratioPercent": 21 },
+      { "name": "山药", "category": "carb", "baseAmountGram": 45, "ratioPercent": 19 },
+      { "name": "西蓝花", "category": "vegetable", "baseAmountGram": 20, "ratioPercent": 8 }
+    ],
+    "steps": ["所有食材蒸到软烂", "鸡胸肉撕碎", "混合成软糯质地", "按每餐重量分装"],
+    "notes": "老年犬有疾病时请按兽医建议调整。"
+  },
+  {
+    "id": "puppy-growth",
+    "title": "幼犬成长饭",
+    "description": "给幼犬尝试的生活化配方，首次喂食要少量观察。",
+    "tags": ["幼犬", "增重"],
+    "suitableAgeStages": ["puppy"],
+    "suitableDietGoals": ["gainWeight", "daily"],
+    "unsuitableTags": ["蛋类过敏"],
+    "mainIngredients": ["牛肉", "鸡蛋", "南瓜"],
+    "baseWeightKg": 5,
+    "baseServingTotalGram": 170,
+    "cookingTimeMinutes": 30,
+    "ingredients": [
+      { "name": "牛肉", "category": "meat", "baseAmountGram": 85, "ratioPercent": 50, "allergenKey": "beef" },
+      { "name": "鸡蛋", "category": "other", "baseAmountGram": 30, "ratioPercent": 18, "allergenKey": "egg" },
+      { "name": "南瓜", "category": "vegetable", "baseAmountGram": 35, "ratioPercent": 21 },
+      { "name": "熟米饭", "category": "carb", "baseAmountGram": 20, "ratioPercent": 12, "allergenKey": "grain" }
+    ],
+    "steps": ["牛肉完全煮熟切碎", "鸡蛋煮熟", "南瓜蒸熟", "混合后少量分装"],
+    "notes": "幼犬阶段更建议先咨询兽医确认饮食。"
+  }
+]

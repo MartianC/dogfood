@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "历史清单",
+  "usingComponents": {
+    "empty-state": "../../../components/empty-state/index"
+  }
+}

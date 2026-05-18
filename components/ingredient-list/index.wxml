@@ -1,0 +1,12 @@
+<view class="ingredient-list">
+  <view wx:for="{{items}}" wx:key="name" class="item">
+    <view class="left" bindtap="onCheck" data-key="{{item.name}}">
+      <view wx:if="{{showCheckbox}}" class="check {{checkedMap[item.name] ? 'checked' : ''}}"></view>
+      <view>
+        <view class="name">{{item.name}}</view>
+        <view class="category">{{item.category}}</view>
+      </view>
+    </view>
+    <view class="amount">{{item.displayAmount || item.amountGram + 'g'}}</view>
+  </view>
+</view>

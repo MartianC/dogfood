@@ -1,0 +1,40 @@
+<view class="page with-bottom-action">
+  <view class="hero">
+    <view class="eyebrow">快速建档</view>
+    <view class="title">只填生成清单必需信息</view>
+    <view class="subtitle">其他资料可以稍后在“我的”里补充。</view>
+  </view>
+
+  <view class="section card">
+    <view class="field">
+      <label>狗狗名字</label>
+      <input class="input" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
+    </view>
+    <view class="field">
+      <label>年龄阶段</label>
+      <picker range="{{ageStageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
+        <view class="picker-value">{{ageStageOptions[ageIndex].label}}</view>
+      </picker>
+    </view>
+    <view class="field">
+      <label>体重 kg</label>
+      <input class="input" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
+    </view>
+    <view class="field">
+      <label>每日餐数</label>
+      <input class="input" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" />
+    </view>
+    <view class="field">
+      <label>过敏源，可跳过</label>
+      <input class="input" value="{{allergenText}}" bindinput="onAllergen" placeholder="例如 chicken" />
+    </view>
+    <view class="field">
+      <label>忌口食材，可跳过</label>
+      <input class="input" value="{{avoidText}}" bindinput="onAvoid" placeholder="例如 南瓜" />
+    </view>
+  </view>
+
+  <view class="bottom-action">
+    <button class="button" bindtap="onSave">保存并继续</button>
+  </view>
+</view>
