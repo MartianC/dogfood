@@ -223,6 +223,20 @@
       align-items: start;
     }
 
+    .asset-credits {
+      max-width: 1340px;
+      margin: 36px auto 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .asset-credits a {
+      color: var(--primary);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
     .shot {
       display: grid;
       justify-items: center;
@@ -548,54 +562,50 @@
 
     .recipe-card {
       display: grid;
-      grid-template-columns: 64px 1fr;
-      gap: 12px;
-      padding: 12px;
+      grid-template-columns: 120px minmax(0, 1fr);
+      height: 90px;
+      padding: 0;
       margin-bottom: 10px;
+      overflow: hidden;
+      align-items: stretch;
     }
 
     .thumb {
-      width: 64px;
-      height: 64px;
-      border: 1px solid #d9c7a8;
-      border-radius: 12px;
-      background: var(--thumb-bg);
-      padding: 9px;
-      display: grid;
-      gap: 5px;
+      width: 100%;
+      height: 90px;
+      aspect-ratio: 4 / 3;
+      border-right: 1px solid var(--line);
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+      background: var(--surface-2);
+      overflow: hidden;
     }
 
-    .thumb span {
+    .thumb img,
+    .detail-cover img,
+    .dog-avatar img,
+    .avatar img,
+    .avatar-preview img {
+      width: 100%;
+      height: 100%;
       display: block;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--thumb-a);
+      object-fit: cover;
     }
 
-    .thumb span:nth-child(2) {
-      width: 72%;
-      background: var(--thumb-b);
+    .recipe-body {
+      min-width: 0;
+      padding: 10px 11px 10px 12px;
+      align-self: center;
     }
 
-    .thumb span:nth-child(3) {
-      width: 54%;
-      background: var(--thumb-c);
+    .recipe-card .tiny {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .thumb.fish {
-      background: #d7e3dc;
-    }
-
-    .thumb.fish span {
-      background: #7d9aa1;
-    }
-
-    .thumb.fish span:nth-child(2) {
-      background: #f0eadb;
-    }
-
-    .thumb.beef span {
-      background: #9d4435;
+    .recipe-card .tags {
+      gap: 4px;
+      margin-top: 6px;
     }
 
     .recipe-title {
@@ -702,11 +712,11 @@
     }
 
     .detail-cover {
-      height: 126px;
-      border: 1px solid #d9c7a8;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line);
       border-radius: var(--radius-lg);
-      background:
-        linear-gradient(90deg, var(--thumb-b) 0 28%, var(--thumb-bg) 28% 48%, var(--thumb-a) 48% 72%, var(--thumb-c) 72% 100%);
+      background: var(--surface-2);
+      overflow: hidden;
     }
 
     .detail-title {
@@ -810,6 +820,87 @@
       gap: 10px;
     }
 
+    .avatar-picker {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .avatar-preview {
+      width: 64px;
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      background: var(--surface-2);
+      overflow: hidden;
+    }
+
+    .avatar-picker strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .avatar-picker span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .profile-form {
+      gap: 8px;
+    }
+
+    .profile-form .avatar-picker {
+      padding: 10px;
+      grid-template-columns: 54px 1fr;
+      gap: 10px;
+    }
+
+    .profile-form .avatar-preview {
+      width: 54px;
+      border-radius: 14px;
+    }
+
+    .profile-form .field {
+      min-height: 54px;
+      padding: 8px 10px;
+    }
+
+    .profile-form .field div {
+      font-size: 14px;
+    }
+
+    .profile-form .panel {
+      padding: 10px;
+      margin-bottom: 0;
+    }
+
+    .profile-form .panel h3 {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .profile-form .option {
+      min-height: 30px;
+      padding: 0 9px;
+    }
+
+    .form-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
     .field {
       min-height: 64px;
       padding: 10px 12px;
@@ -858,6 +949,27 @@
       color: #fff;
       background: var(--dog-bg);
       border-color: var(--dog-bg);
+    }
+
+    .dog-card.with-avatar {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .dog-card-copy {
+      min-width: 0;
+    }
+
+    .dog-avatar {
+      width: 56px;
+      aspect-ratio: 1 / 1;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 15px;
+      background: var(--surface-2);
+      overflow: hidden;
+      flex: 0 0 auto;
     }
 
     .dog-card h2 {
@@ -984,11 +1096,34 @@
 
     .avatar {
       width: 48px;
-      height: 48px;
+      aspect-ratio: 1 / 1;
       border-radius: 12px;
       border: 1px solid var(--line-strong);
-      background: linear-gradient(135deg, var(--thumb-a) 0 50%, var(--thumb-bg) 50% 100%);
+      background: var(--surface-2);
+      overflow: hidden;
       flex: 0 0 auto;
+    }
+
+    .dog-panel {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .dog-panel .dog-avatar {
+      width: 44px;
+      border-color: var(--line-strong);
+      border-radius: 12px;
+    }
+
+    .dog-panel .row {
+      padding: 0;
+      border-top: none;
+    }
+
+    .dog-panel p {
+      margin-top: 4px;
     }
 
     .menu {
@@ -1245,16 +1380,16 @@
             </div>
             <div class="section-head"><h3>推荐食谱</h3><a>全部</a></div>
             <div class="recipe-card">
-              <div class="thumb"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/chicken-pumpkin.jpg" alt="鸡肉南瓜饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">鸡肉南瓜饭</div>
                 <div class="tiny">鸡胸肉、南瓜、胡萝卜</div>
                 <div class="tags"><span class="tag good">肠胃友好</span><span class="tag">25 分钟</span></div>
               </div>
             </div>
             <div class="recipe-card">
-              <div class="thumb beef"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/beef-broccoli.jpg" alt="牛肉胡萝卜饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">牛肉胡萝卜饭</div>
                 <div class="tiny">牛肉、胡萝卜、熟米饭</div>
                 <div class="tags"><span class="tag">日常</span><span class="tag">成年犬</span></div>
@@ -1291,32 +1426,32 @@
             </div>
             <div class="notice good">正在按自定义条件筛选：老年犬、低脂、避开鸡肉。</div>
             <div class="recipe-card">
-              <div class="thumb fish"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/fish-rice.jpg" alt="低脂鳕鱼饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">低脂鳕鱼饭</div>
                 <div class="tiny">适合：低脂、老年犬、避开鸡肉</div>
                 <div class="tags"><span class="tag good">符合自定义条件</span><span class="tag">20 分钟</span></div>
               </div>
             </div>
             <div class="recipe-card">
-              <div class="thumb beef"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/beef-broccoli.jpg" alt="牛肉胡萝卜饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">牛肉胡萝卜饭</div>
                 <div class="tiny">适合：成年犬、日常、活跃犬</div>
                 <div class="tags"><span class="tag warning">可乐低脂慎选</span><span class="tag">30 分钟</span></div>
               </div>
             </div>
             <div class="recipe-card">
-              <div class="thumb"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/chicken-pumpkin.jpg" alt="鸡肉南瓜饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">鸡肉南瓜饭</div>
                 <div class="tiny">适合：成年犬、肠胃友好</div>
                 <div class="tags"><span class="tag warning">鸡肉过敏慎选</span></div>
               </div>
             </div>
             <div class="recipe-card">
-              <div class="thumb"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/dog-food-bowl.jpg" alt="蛋黄红薯饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">蛋黄红薯饭</div>
                 <div class="tiny">适合：挑食、日常</div>
                 <div class="tags"><span class="tag warning">蛋类过敏慎选</span></div>
@@ -1338,7 +1473,7 @@
           <div class="status"><span>9:41</span><span>5G 100%</span></div>
           <div class="native-nav"><div class="native-back">‹</div><div class="native-title">食谱详情</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content no-tab cta-space">
-            <div class="detail-cover"></div>
+            <div class="detail-cover"><img src=".design-assets/recipes/chicken-pumpkin.jpg" alt="鸡肉南瓜饭成品"></div>
             <h2 class="detail-title">鸡肉南瓜饭</h2>
             <div class="tags"><span class="tag good">成年犬</span><span class="tag good">肠胃友好</span><span class="tag">25 分钟</span></div>
             <div class="panel" style="margin-top:12px">
@@ -1356,7 +1491,6 @@
           </div>
           <div class="bottom-cta">
             <button class="button">选择制作周期</button>
-            <button class="button secondary">先看看其他食谱</button>
           </div>
         </div>
       </article>
@@ -1367,7 +1501,7 @@
           <div class="status"><span>9:41</span><span>5G 100%</span></div>
           <div class="native-nav"><div class="native-back">‹</div><div class="native-title">食谱详情</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content no-tab cta-space">
-            <div class="detail-cover"></div>
+            <div class="detail-cover"><img src=".design-assets/recipes/chicken-pumpkin.jpg" alt="鸡肉南瓜饭成品"></div>
             <h2 class="detail-title">鸡肉南瓜饭</h2>
             <div class="panel" style="margin-top:12px">
               <h3>食材比例</h3>
@@ -1383,7 +1517,6 @@
               <p class="muted">添加后会按狗狗体重、每日餐数和制作周期换算总量，并提醒过敏或忌口食材。</p>
               <div class="sheet-actions">
                 <button class="button">微信登录并添加狗狗</button>
-                <button class="button secondary">先看看食谱</button>
               </div>
             </div>
           </div>
@@ -1401,12 +1534,23 @@
               <h2>只填生成清单必需信息</h2>
               <p>其他资料可以稍后在“我的”里补充。</p>
             </div>
-            <div class="form">
+            <div class="form profile-form">
+              <div class="avatar-picker">
+                <div class="avatar-preview"><img src=".design-assets/dogs/buding.jpg" alt="布丁头像预览"></div>
+                <div>
+                  <strong>狗狗头像</strong>
+                  <span>点击更换照片，保存后用于档案和制作对象选择。</span>
+                </div>
+              </div>
               <div class="field"><label>狗狗名字</label><div>布丁</div></div>
-              <div class="field"><label>年龄阶段</label><div>成年犬</div></div>
-              <div class="field"><label>体重</label><div>12 kg</div></div>
-              <div class="field"><label>每日餐数</label><div>2 餐</div></div>
-              <div class="field"><label>过敏源，可跳过</label><div>鸡肉</div></div>
+              <div class="form-pair">
+                <div class="field"><label>年龄阶段</label><div>成年犬</div></div>
+                <div class="field"><label>体重</label><div>12 kg</div></div>
+              </div>
+              <div class="form-pair">
+                <div class="field"><label>每日餐数</label><div>2 餐</div></div>
+                <div class="field"><label>过敏源，可跳过</label><div>鸡肉</div></div>
+              </div>
               <div class="panel">
                 <h3>饮食目标</h3>
                 <div class="option-row">
@@ -1429,28 +1573,34 @@
           <div class="native-nav"><div class="native-title">狗饭</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content">
             <div class="dog-list">
-              <div class="dog-card">
-                <div class="tiny">狗狗档案</div>
-                <h2>布丁</h2>
-                <div class="tiny">成年犬｜12kg｜每日 2 餐｜鸡肉过敏</div>
+              <div class="dog-card with-avatar">
+                <div class="dog-avatar"><img src=".design-assets/dogs/buding.jpg" alt="布丁头像"></div>
+                <div class="dog-card-copy">
+                  <div class="tiny">狗狗档案</div>
+                  <h2>布丁</h2>
+                  <div class="tiny">成年犬｜12kg｜每日 2 餐｜鸡肉过敏</div>
+                </div>
               </div>
-              <div class="panel">
-                <div class="row"><span>可乐</span><strong>8kg</strong></div>
-                <p class="tiny">老年犬｜每日 3 餐｜低脂｜肠胃友好</p>
+              <div class="panel dog-panel">
+                <div class="dog-avatar"><img src=".design-assets/dogs/kele.jpg" alt="可乐头像"></div>
+                <div>
+                  <div class="row"><span>可乐</span><strong>8kg</strong></div>
+                  <p class="tiny">老年犬｜每日 3 餐｜低脂｜肠胃友好</p>
+                </div>
               </div>
             </div>
             <div class="section-head"><h3>适合全部狗狗</h3><a>换一批</a></div>
             <div class="recipe-card">
-              <div class="thumb fish"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/fish-rice.jpg" alt="低脂鳕鱼饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">低脂鳕鱼饭</div>
                 <div class="tiny">避开鸡肉，适合日常换口味</div>
                 <div class="tags"><span class="tag good">全部可吃</span><span class="tag">20 分钟</span></div>
               </div>
             </div>
             <div class="recipe-card">
-              <div class="thumb beef"><span></span><span></span><span></span></div>
-              <div>
+              <div class="thumb"><img src=".design-assets/recipes/beef-broccoli.jpg" alt="牛肉胡萝卜饭成品"></div>
+              <div class="recipe-body">
                 <div class="recipe-title">牛肉胡萝卜饭</div>
                 <div class="tiny">布丁可吃；可乐低脂目标下慎选</div>
                 <div class="tags"><span class="tag warning">不适合全部</span><span class="tag">30 分钟</span></div>
@@ -1473,7 +1623,7 @@
           <div class="status"><span>9:41</span><span>5G 100%</span></div>
           <div class="native-nav"><div class="native-back">‹</div><div class="native-title">食谱详情</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content no-tab cta-space">
-            <div class="detail-cover"></div>
+            <div class="detail-cover"><img src=".design-assets/recipes/chicken-pumpkin.jpg" alt="鸡肉南瓜饭成品"></div>
             <h2 class="detail-title">鸡肉南瓜饭</h2>
             <div class="tags"><span class="tag good">成年犬</span><span class="tag warning">含鸡肉</span><span class="tag">25 分钟</span></div>
             <div class="notice warning">不建议给全部狗狗一起做：布丁标记鸡肉过敏；可乐处于低脂目标。</div>
@@ -1491,7 +1641,6 @@
           </div>
           <div class="bottom-cta">
             <button class="button warning">仍然选择周期</button>
-            <button class="button secondary">换一道无鸡肉食谱</button>
           </div>
         </div>
       </article>
@@ -1588,7 +1737,7 @@
           <div class="native-nav"><div class="native-title">我的</div><div class="menu-capsule"><span class="capsule-line"></span></div></div>
           <div class="content">
             <div class="profile">
-              <div class="avatar"></div>
+              <div class="avatar"><img src=".design-assets/dogs/buding.jpg" alt="微信用户头像"></div>
               <div style="flex:1">
                 <div class="recipe-title">微信用户</div>
                 <div class="tiny">已创建 2 只狗狗档案</div>
@@ -1596,13 +1745,19 @@
               <span class="tag good">已登录</span>
             </div>
             <div class="section-head"><h3>狗狗档案</h3><a>新增</a></div>
-            <div class="panel">
-              <div class="row"><span>布丁</span><strong>修改</strong></div>
-              <p class="tiny">成年犬｜12kg｜每日 2 餐｜鸡肉过敏｜日常饮食</p>
+            <div class="panel dog-panel">
+              <div class="dog-avatar"><img src=".design-assets/dogs/buding.jpg" alt="布丁头像"></div>
+              <div>
+                <div class="row"><span>布丁</span><strong>修改</strong></div>
+                <p class="tiny">成年犬｜12kg｜每日 2 餐｜鸡肉过敏｜日常饮食</p>
+              </div>
             </div>
-            <div class="panel">
-              <div class="row"><span>可乐</span><strong>修改</strong></div>
-              <p class="tiny">老年犬｜8kg｜每日 3 餐｜低脂｜肠胃友好</p>
+            <div class="panel dog-panel">
+              <div class="dog-avatar"><img src=".design-assets/dogs/kele.jpg" alt="可乐头像"></div>
+              <div>
+                <div class="row"><span>可乐</span><strong>修改</strong></div>
+                <p class="tiny">老年犬｜8kg｜每日 3 餐｜低脂｜肠胃友好</p>
+              </div>
             </div>
             <div class="menu">
               <div class="menu-item"><span>历史清单</span><span>›</span></div>
@@ -1699,6 +1854,15 @@
           </div>
         </div>
       </article>
+    </section>
+    <section class="asset-credits">
+      图片来源：Wikimedia Commons，本地化保存到 <strong>.design-assets/</strong> 后在界面稿中引用。
+      <a href="https://commons.wikimedia.org/wiki/File:Pumpkin,_mushroom,_chicken,_Indian_basmati_rice_cooked.jpg">Pumpkin, mushroom, chicken, Indian basmati rice cooked</a>、
+      <a href="https://commons.wikimedia.org/wiki/File:Kao_hnyin_baung_-_cooked_glutinous_rice_with_fried_fish_on_a_banana_leaf.jpg">Kao hnyin baung with fried fish</a>、
+      <a href="https://commons.wikimedia.org/wiki/File:Dog_food_in_a_bowl.jpg">Dog food in a bowl</a>、
+      <a href="https://commons.wikimedia.org/wiki/File:Rice,_Beef_and_Broccoli_with_Soy_Sauce.jpg">Rice, Beef and Broccoli with Soy Sauce</a>、
+      <a href="https://commons.wikimedia.org/wiki/File:Dog_beagle.jpg">Dog beagle</a>、
+      <a href="https://commons.wikimedia.org/wiki/File:Golden_Retriever.jpg">Golden Retriever</a>。
     </section>
   </main>
   <script>

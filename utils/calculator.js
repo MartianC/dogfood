@@ -90,6 +90,7 @@ function calcBatchPlanForDogs(recipe, dogs, periodDays) {
   const targetDogSnapshots = dogs.map((dog) => ({
     dogId: dog.id,
     dogName: dog.name,
+    avatarUrl: dog.avatarUrl || '',
     weightKg: Number(dog.weightKg),
     dailyMeals: Number(dog.dailyMeals)
   }))

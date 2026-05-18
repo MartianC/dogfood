@@ -1,6 +1,8 @@
 const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
+const fileService = require('../../../services/fileService')
 const { ageStageOptions, dietGoalOptions, allergenOptions } = require('../../../data/options')
+const assets = require('../../../utils/assets')
 
 function toText(list) {
   return (list || []).join('、')
@@ -18,6 +20,7 @@ Page({
       ageStage: 'adult',
       weightKg: '',
       dailyMeals: 2,
+      avatarUrl: '',
       dietGoal: 'daily',
       allergens: [],
       avoidIngredients: []
@@ -28,7 +31,8 @@ Page({
     dietGoalOptions,
     allergenOptions,
     ageIndex: 1,
-    goalIndex: 0
+    goalIndex: 0,
+    defaultDogAvatar: assets.defaultDogAvatar
   },
 
   async onLoad(options) {
@@ -62,6 +66,23 @@ Page({
   onGoal(e) {
     const option = this.data.dietGoalOptions[Number(e.detail.value)]
     this.setData({ goalIndex: Number(e.detail.value), 'form.dietGoal': option.value })
+  },
+
+  onGoalTap(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    const option = this.data.dietGoalOptions[index]
+    this.setData({ goalIndex: index, 'form.dietGoal': option.value })
+  },
+
+  async onChooseAvatar() {
+    try {
+      const tempFilePath = await fileService.chooseLocalImage()
+      if (!tempFilePath) return
+      const avatarUrl = await fileService.saveLocalImage(tempFilePath)
+      this.setData({ 'form.avatarUrl': avatarUrl })
+    } catch (error) {
+      wx.showToast({ title: '未选择头像', icon: 'none' })
+    }
   },
 
   onAllergenText(e) {

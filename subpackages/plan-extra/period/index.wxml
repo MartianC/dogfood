@@ -14,10 +14,14 @@
     <period-selector value="{{periodDays}}" bind:change="onPeriodChange" />
   </view>
 
-  <view wx:if="{{preview}}" class="section grid-2">
+  <view wx:if="{{preview}}" class="section summary-grid">
     <view class="metric">
       <strong>{{preview.totalPortions}}</strong>
       <span>分装总数</span>
+    </view>
+    <view class="metric">
+      <strong>{{selectedDogIds.length}} 只</strong>
+      <span>制作对象</span>
     </view>
     <view class="metric">
       <strong>{{periodDays}} 天</strong>
@@ -30,6 +34,10 @@
     <view wx:for="{{preview.dogMealSummaries}}" wx:key="dogId" class="preview-row">
       <text>{{item.dogName}}：{{item.totalMeals}} 份</text>
       <text>每份约 {{item.perMealTotalGram}}g</text>
+    </view>
+    <view class="preview-row">
+      <text>采购预估</text>
+      <text>{{purchaseSummary}}</text>
     </view>
   </view>
 

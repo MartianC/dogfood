@@ -1,8 +1,8 @@
 <view class="page with-bottom-action">
   <view class="hero">
-    <view class="eyebrow">自定义食谱</view>
+    <view class="eyebrow">给狗狗检查一份食谱</view>
     <view class="title">输入单餐参考量</view>
-    <view class="subtitle">系统会结合狗狗档案给出建议与理由，不做医疗判断。</view>
+    <view class="subtitle">系统会按所选狗狗的年龄、体重、每日餐数、过敏源和忌口给出建议，不替代兽医判断。</view>
   </view>
 
   <view class="section card">
@@ -13,11 +13,11 @@
   </view>
 
   <view class="section">
-    <dog-target-selector dogs="{{dogs}}" selectedDogIds="{{selectedDogIds}}" bind:change="onTargetChange" />
+    <ingredient-editor ingredients="{{ingredients}}" bind:change="onIngredients" />
   </view>
 
   <view class="section">
-    <ingredient-editor ingredients="{{ingredients}}" bind:change="onIngredients" />
+    <dog-target-selector dogs="{{dogs}}" selectedDogIds="{{selectedDogIds}}" bind:change="onTargetChange" />
   </view>
 
   <view class="bottom-action">

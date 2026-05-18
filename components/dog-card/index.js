@@ -1,4 +1,5 @@
 const { ageStageLabels, dietGoalLabels } = require('../../utils/risk')
+const assets = require('../../utils/assets')
 
 Component({
   properties: {
@@ -13,7 +14,8 @@ Component({
   },
   data: {
     ageStageLabels,
-    dietGoalLabels
+    dietGoalLabels,
+    defaultDogAvatar: assets.defaultDogAvatar
   },
   methods: {
     onEdit() {

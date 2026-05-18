@@ -1,7 +1,9 @@
 .share-card {
   padding: 24rpx;
   border-radius: 20rpx;
-  background: #e3f0e8;
+  background: #ffffff;
+  border: 1rpx solid #d8e1da;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
 }
 
 .title {
@@ -30,6 +32,7 @@
   background: #25684a;
   color: #ffffff;
   line-height: 1.2;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;

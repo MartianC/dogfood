@@ -1,3 +1,5 @@
+const assets = require('../../utils/assets')
+
 Component({
   properties: {
     recipe: {
@@ -8,6 +10,9 @@ Component({
       type: Boolean,
       value: true
     }
+  },
+  data: {
+    defaultRecipeImage: assets.defaultRecipeImage
   },
   methods: {
     onTap() {

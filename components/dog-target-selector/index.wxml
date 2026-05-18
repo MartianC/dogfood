@@ -5,7 +5,11 @@
   </view>
   <view class="chips">
     <view wx:for="{{displayDogs}}" wx:key="id" data-id="{{item.id}}" bindtap="onToggle" class="chip {{item.selected ? 'active' : ''}}">
-      {{item.name}}
+      <image class="avatar" src="{{item.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+      <view class="dog-copy">
+        <view class="dog-name">{{item.name}}</view>
+        <view class="dog-meta">{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐</view>
+      </view>
     </view>
   </view>
 </view>

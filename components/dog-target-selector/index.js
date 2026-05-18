@@ -1,3 +1,5 @@
+const assets = require('../../utils/assets')
+
 Component({
   properties: {
     dogs: {
@@ -20,7 +22,8 @@ Component({
     }
   },
   data: {
-    displayDogs: []
+    displayDogs: [],
+    defaultDogAvatar: assets.defaultDogAvatar
   },
   methods: {
     onToggle(e) {

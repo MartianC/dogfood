@@ -12,6 +12,7 @@ function normalize(doc) {
     ageStage: doc.ageStage,
     weightKg: doc.weightKg,
     dailyMeals: doc.dailyMeals,
+    avatarUrl: doc.avatarUrl || '',
     breed: doc.breed || '',
     neutered: Boolean(doc.neutered),
     activityLevel: doc.activityLevel || 'normal',

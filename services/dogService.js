@@ -9,6 +9,7 @@ function normalizeDog(payload) {
     ageStage: payload.ageStage || 'adult',
     weightKg: Number(payload.weightKg || 0),
     dailyMeals: Number(payload.dailyMeals || 2),
+    avatarUrl: payload.avatarUrl || '',
     breed: payload.breed || '',
     neutered: Boolean(payload.neutered),
     activityLevel: payload.activityLevel || 'normal',

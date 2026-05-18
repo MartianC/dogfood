@@ -1,6 +1,7 @@
 const authService = require('../../../services/authService')
 const dogService = require('../../../services/dogService')
 const { ageStageLabels, dietGoalLabels } = require('../../../utils/risk')
+const assets = require('../../../utils/assets')
 
 Page({
   data: {
@@ -8,7 +9,8 @@ Page({
     user: null,
     dogs: [],
     ageStageLabels,
-    dietGoalLabels
+    dietGoalLabels,
+    defaultDogAvatar: assets.defaultDogAvatar
   },
 
   async onShow() {

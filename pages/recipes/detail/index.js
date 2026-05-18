@@ -1,14 +1,18 @@
 const dogService = require('../../../services/dogService')
+const authService = require('../../../services/authService')
 const recipeUtils = require('../../../utils/recipe')
 const risk = require('../../../utils/risk')
-const auth = require('../../../utils/auth')
+const assets = require('../../../utils/assets')
 
 Page({
   data: {
     recipe: null,
     dogs: [],
     warnings: [],
-    authState: 'guest'
+    authState: 'guest',
+    hasDanger: false,
+    showAuthSheet: false,
+    defaultRecipeImage: assets.defaultRecipeImage
   },
 
   async onLoad(options) {
@@ -25,22 +29,22 @@ Page({
     if (app.globalData.authReady) await app.globalData.authReady
     const recipe = recipeUtils.findRecipeById(app.globalData.recipes, this.recipeId)
     const dogs = await dogService.listDogs()
+    const riskWarnings = risk.checkRisksForDogs(recipe, dogs)
     this.setData({
       recipe,
       dogs,
-      authState: app.globalData.authState,
-      warnings: risk.checkRisksForDogs(recipe, dogs)
+      authState: authService.getAuthState(),
+      warnings: riskWarnings,
+      hasDanger: riskWarnings.some((item) => item.level === 'danger')
     })
   },
 
   async onChoosePeriod() {
-    const passed = await auth.requireAuth({
-      requireProfile: true,
-      redirect: `/pages/recipes/detail/index?id=${this.data.recipe.id}`
-    })
-    if (!passed) return
-    const hasDanger = this.data.warnings.some((item) => item.level === 'danger')
-    if (hasDanger) {
+    if (this.data.authState !== 'has-profile') {
+      this.setData({ showAuthSheet: true })
+      return
+    }
+    if (this.data.hasDanger) {
       wx.showModal({
         title: '确认继续',
         content: '这道食谱和狗狗档案存在明显冲突，建议换一道更合适的食谱。',
@@ -54,5 +58,21 @@ Page({
       return
     }
     wx.navigateTo({ url: `/subpackages/plan-extra/period/index?recipeId=${this.data.recipe.id}` })
+  },
+
+  onCloseAuthSheet() {
+    this.setData({ showAuthSheet: false })
+  },
+
+  noop() {},
+
+  async onAuthAndCreate() {
+    if (authService.getAuthState() === 'guest') {
+      const ok = await authService.login()
+      if (!ok) return
+    }
+    this.setData({ showAuthSheet: false })
+    const redirect = encodeURIComponent(`/pages/recipes/detail/index?id=${this.data.recipe.id}`)
+    wx.navigateTo({ url: `/subpackages/dog-profile/dog-quick-create/index?redirect=${redirect}` })
   }
 })

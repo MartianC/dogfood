@@ -60,7 +60,8 @@ module.exports = [
       "南瓜和胡萝卜蒸熟",
       "全部食材混合均匀后按餐分装"
     ],
-    "notes": "第一次尝试建议少量观察。"
+    "notes": "第一次尝试建议少量观察。",
+    "imageUrl": "/assets/recipes/chicken-pumpkin.jpg"
   },
   {
     "id": "fish-light",
@@ -124,7 +125,8 @@ module.exports = [
       "和熟米饭混合",
       "按每餐重量分装冷冻"
     ],
-    "notes": "喂食前充分加热后放凉。"
+    "notes": "喂食前充分加热后放凉。",
+    "imageUrl": "/assets/recipes/fish-rice.jpg"
   },
   {
     "id": "beef-potato",
@@ -186,7 +188,8 @@ module.exports = [
       "西葫芦焯熟",
       "混合后分装"
     ],
-    "notes": "低脂目标下建议减少蛋黄。"
+    "notes": "低脂目标下建议减少蛋黄。",
+    "imageUrl": "/assets/recipes/beef-broccoli.jpg"
   },
   {
     "id": "duck-rice",
@@ -248,7 +251,8 @@ module.exports = [
       "加入熟米饭混合",
       "按餐分装"
     ],
-    "notes": "需要低脂时优先选择鳕鱼饭。"
+    "notes": "需要低脂时优先选择鳕鱼饭。",
+    "imageUrl": "/assets/recipes/dog-food-bowl.jpg"
   },
   {
     "id": "turkey-sweet-potato",
@@ -309,7 +313,8 @@ module.exports = [
       "蔬菜焯熟",
       "混合后分装冷冻"
     ],
-    "notes": "红薯比例不宜继续加高。"
+    "notes": "红薯比例不宜继续加高。",
+    "imageUrl": "/assets/recipes/chicken-pumpkin.jpg"
   },
   {
     "id": "salmon-broccoli",
@@ -371,7 +376,8 @@ module.exports = [
       "蔬菜蒸熟切碎",
       "混合并分装"
     ],
-    "notes": "鱼肉过敏的狗狗不要选择。"
+    "notes": "鱼肉过敏的狗狗不要选择。",
+    "imageUrl": "/assets/recipes/fish-rice.jpg"
   },
   {
     "id": "egg-vegetable",
@@ -433,7 +439,8 @@ module.exports = [
       "胡萝卜蒸熟",
       "和燕麦混合分装"
     ],
-    "notes": "蛋类过敏时不要选择。"
+    "notes": "蛋类过敏时不要选择。",
+    "imageUrl": "/assets/recipes/dog-food-bowl.jpg"
   },
   {
     "id": "senior-soft",
@@ -494,7 +501,8 @@ module.exports = [
       "混合成软糯质地",
       "按每餐重量分装"
     ],
-    "notes": "老年犬有疾病时请按兽医建议调整。"
+    "notes": "老年犬有疾病时请按兽医建议调整。",
+    "imageUrl": "/assets/recipes/dog-food-bowl.jpg"
   },
   {
     "id": "puppy-growth",
@@ -557,6 +565,7 @@ module.exports = [
       "南瓜蒸熟",
       "混合后少量分装"
     ],
-    "notes": "幼犬阶段更建议先咨询兽医确认饮食。"
+    "notes": "幼犬阶段更建议先咨询兽医确认饮食。",
+    "imageUrl": "/assets/recipes/beef-broccoli.jpg"
   }
 ]

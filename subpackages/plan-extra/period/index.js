@@ -16,7 +16,8 @@ Page({
     selectedDogIds: [],
     periodDays: 15,
     preview: null,
-    totalItems: []
+    totalItems: [],
+    purchaseSummary: ''
   },
 
   async onLoad(options) {
@@ -65,7 +66,12 @@ Page({
         targetDogIds: this.data.selectedDogIds,
         options: { algorithmMode: 'local' }
       })
-      this.setData({ preview, totalItems: withDisplay(preview.totalItems) })
+      const totalItems = withDisplay(preview.totalItems)
+      this.setData({
+        preview,
+        totalItems,
+        purchaseSummary: totalItems.length ? `${totalItems[0].name} ${totalItems[0].displayAmount} 等` : '暂无采购项'
+      })
     } catch (error) {
       wx.showToast({ title: error.message, icon: 'none' })
     }

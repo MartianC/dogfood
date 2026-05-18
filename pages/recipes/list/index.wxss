@@ -1,34 +1,58 @@
 .search {
-  min-height: 82rpx;
+  min-height: 88rpx;
   padding: 0 24rpx;
-  border-radius: 18rpx;
+  border-radius: 20rpx;
   background: #ffffff;
   border: 1rpx solid #d8e1da;
   display: flex;
   align-items: center;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
 }
 
 .search input {
   width: 100%;
 }
 
-.filter-card {
+.select-block {
   margin-top: 20rpx;
-  padding: 22rpx;
+  display: grid;
+  gap: 16rpx;
+}
+
+.select-filter {
+  min-height: 96rpx;
+  padding: 14rpx 18rpx;
+  box-sizing: border-box;
+  border: 1rpx solid #d8e1da;
   border-radius: 20rpx;
   background: #ffffff;
-  border: 1rpx solid #d8e1da;
-}
-
-.picker-row {
   display: flex;
-  justify-content: space-between;
-  padding: 18rpx 0;
-  border-bottom: 1rpx solid #edf4ee;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
 }
 
-.picker-row:last-child {
-  border-bottom: 0;
+.filter-label {
+  color: #6f7b73;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.filter-value {
+  margin-top: 4rpx;
+  color: #17201b;
+  font-size: 26rpx;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-help {
+  margin-top: 6rpx;
+  color: #6f7b73;
+  font-size: 22rpx;
+  line-height: 1.35;
 }
 
 .custom-filter {
@@ -38,16 +62,22 @@
   margin-top: 18rpx;
 }
 
-.small-picker {
-  min-height: 66rpx;
-  border-radius: 16rpx;
-  background: #edf4ee;
-  color: #34423a;
-  line-height: 66rpx;
-  text-align: center;
-  font-size: 23rpx;
+.select-filter.small {
+  min-height: 96rpx;
+  padding: 12rpx 14rpx;
+  box-shadow: none;
 }
 
 .notice {
   margin-top: 20rpx;
+}
+
+.filter-notice {
+  font-weight: 700;
+}
+
+.recipe-link {
+  background: #ffffff;
+  border: 1rpx solid #d8e1da;
+  color: #34423a;
 }

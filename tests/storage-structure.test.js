@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 const mealPlanService = require('../services/mealPlanService')
+const dogService = require('../services/dogService')
 
 test('清单保存失败时进入本地待同步队列并可重试', async () => {
   const memory = new Map()
@@ -72,4 +73,16 @@ test('食谱详情页只保留选择制作周期按钮', () => {
   assert.match(wxml, /选择制作周期/)
   assert.doesNotMatch(wxml, /查看其他食谱|先看看其他食谱/)
   assert.doesNotMatch(js, /onBrowseMore/)
+})
+
+test('狗狗档案标准化保留头像字段', () => {
+  const dog = dogService.normalizeDog({
+    name: '布丁',
+    ageStage: 'adult',
+    weightKg: 12,
+    dailyMeals: 2,
+    avatarUrl: '/assets/dogs/default-dog.jpg'
+  })
+
+  assert.equal(dog.avatarUrl, '/assets/dogs/default-dog.jpg')
 })

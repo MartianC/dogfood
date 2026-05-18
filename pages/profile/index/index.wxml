@@ -1,6 +1,6 @@
 <view class="page profile-page">
   <view class="profile-card">
-    <view class="avatar"></view>
+    <image class="avatar" src="{{(user && user.avatarUrl) || defaultDogAvatar}}" mode="aspectFill" />
     <view class="profile-main">
       <view class="profile-title">{{authState === 'guest' ? '游客模式' : (user.nickname || '微信用户')}}</view>
       <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案、历史清单和自定义食谱' : ('已创建 ' + dogs.length + ' 只狗狗档案')}}</view>
@@ -21,14 +21,17 @@
     </view>
     <view wx:if="{{dogs.length}}" class="profile-dog-list">
       <view wx:for="{{dogs}}" wx:key="id" class="dog-panel">
-        <view class="dog-panel-head">
-          <text>{{item.name}}</text>
-          <text class="edit-link" data-id="{{item.id}}" bindtap="onEditDogPanel">修改</text>
+        <image class="dog-avatar" src="{{item.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+        <view class="dog-copy">
+          <view class="dog-panel-head">
+            <text>{{item.name}}</text>
+            <text class="edit-link" data-id="{{item.id}}" bindtap="onEditDogPanel">修改</text>
+          </view>
+          <view class="dog-meta">{{ageStageLabels[item.ageStage]}}｜{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
         </view>
-        <view class="dog-meta">{{ageStageLabels[item.ageStage]}}｜{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
       </view>
     </view>
-    <empty-state wx:else title="还没有狗狗档案" description="先添加一只狗狗，生成清单时会自动换算份量。" actionText="添加狗狗" bind:action="onAddDog" />
+    <empty-state wx:else title="还没有狗狗档案" description="先添加一只狗狗，生成清单时会自动换算份量。" actionText="添加狗狗" image-url="{{defaultDogAvatar}}" bind:action="onAddDog" />
   </view>
 
   <view class="menu">

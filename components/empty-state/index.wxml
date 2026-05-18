@@ -1,5 +1,5 @@
 <view class="empty">
-  <view class="icon">饭</view>
+  <image class="icon-image" src="{{imageUrl || defaultImage}}" mode="aspectFill" />
   <view class="title">{{title}}</view>
   <view class="desc">{{description}}</view>
   <button wx:if="{{actionText}}" class="button" bindtap="onAction">{{actionText}}</button>

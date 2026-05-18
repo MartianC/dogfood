@@ -1,15 +1,15 @@
 <view class="recipe-card" bindtap="onTap">
   <view class="thumb">
-    <text>饭</text>
+    <image class="thumb-image" src="{{recipe.imageUrl || defaultRecipeImage}}" mode="aspectFill" />
   </view>
   <view class="body">
-    <view class="row">
+    <view class="row title-row">
       <view class="name">{{recipe.title}}</view>
-      <view wx:if="{{showFit && recipe.fit && recipe.fit.label}}" class="fit {{recipe.fit.status}}">{{recipe.fit.label}}</view>
     </view>
     <view class="desc">{{recipe.description}}</view>
     <view class="ingredients">主食材：{{recipe.mainIngredientText}}</view>
     <view class="meta">
+      <text wx:if="{{showFit && recipe.fit && recipe.fit.label}}" class="tag fit {{recipe.fit.status}}">{{recipe.fit.label}}</text>
       <text wx:for="{{recipe.tags}}" wx:key="*this" class="tag {{index === 0 ? 'good' : ''}}">{{item}}</text>
       <text class="tag">{{recipe.cookingTimeMinutes}} 分钟</text>
     </view>

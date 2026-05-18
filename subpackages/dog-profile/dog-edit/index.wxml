@@ -5,34 +5,45 @@
     <view class="subtitle">生成清单需要名字、年龄阶段、体重和每日餐数，其他资料可以稍后补充。</view>
   </view>
 
-  <view class="section card">
+  <view class="section card profile-form">
+    <view class="avatar-picker" bindtap="onChooseAvatar">
+      <image class="avatar-preview" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+      <view class="avatar-copy">
+        <view class="avatar-title">狗狗头像</view>
+        <view class="avatar-desc">点击更换照片，保存后用于档案和制作对象选择。</view>
+      </view>
+    </view>
     <view class="field">
       <label>狗狗名字</label>
       <input class="input" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
     </view>
-    <view class="field">
-      <label>年龄阶段</label>
-      <picker range="{{ageStageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
-        <view class="picker-value">{{ageStageOptions[ageIndex].label}}</view>
-      </picker>
+    <view class="form-pair">
+      <view class="field">
+        <label>年龄阶段</label>
+        <picker range="{{ageStageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
+          <view class="picker-value">{{ageStageOptions[ageIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <label>体重 kg</label>
+        <input class="input" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
+      </view>
     </view>
-    <view class="field">
-      <label>体重 kg</label>
-      <input class="input" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
+    <view class="form-pair">
+      <view class="field">
+        <label>每日餐数</label>
+        <input class="input" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如 2" />
+      </view>
+      <view class="field">
+        <label>过敏源，可跳过</label>
+        <input class="input" value="{{allergenText}}" bindinput="onAllergenText" placeholder="例如 鸡肉" />
+      </view>
     </view>
-    <view class="field">
-      <label>每日餐数</label>
-      <input class="input" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如 2" />
-    </view>
-    <view class="field">
-      <label>饮食目标</label>
-      <picker range="{{dietGoalOptions}}" range-key="label" value="{{goalIndex}}" bindchange="onGoal">
-        <view class="picker-value">{{dietGoalOptions[goalIndex].label}}</view>
-      </picker>
-    </view>
-    <view class="field">
-      <label>过敏源，可跳过</label>
-      <input class="input" value="{{allergenText}}" bindinput="onAllergenText" placeholder="例如 chicken 或 鸡肉" />
+    <view class="target-panel">
+      <view class="panel-title">饮食目标</view>
+      <view class="option-row">
+        <view wx:for="{{dietGoalOptions}}" wx:key="value" data-index="{{index}}" bindtap="onGoalTap" class="option {{goalIndex === index ? 'active' : ''}}">{{item.label}}</view>
+      </view>
     </view>
     <view class="field">
       <label>忌口食材，可跳过</label>

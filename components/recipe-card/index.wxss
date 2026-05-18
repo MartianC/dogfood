@@ -1,30 +1,37 @@
 .recipe-card {
   display: flex;
-  gap: 20rpx;
-  padding: 24rpx;
+  height: 180rpx;
+  padding: 0;
   border: 1rpx solid #d8e1da;
   border-radius: 20rpx;
   background: #ffffff;
   box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+  overflow: hidden;
 }
 
 .thumb {
-  width: 104rpx;
-  height: 104rpx;
-  flex: 0 0 104rpx;
-  border-radius: 18rpx;
-  background: #ead8b8;
-  color: #25684a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42rpx;
-  font-weight: 800;
+  width: 240rpx;
+  height: 180rpx;
+  flex: 0 0 240rpx;
+  background: #edf4ee;
+  border-right: 1rpx solid #d8e1da;
+  overflow: hidden;
+}
+
+.thumb-image {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .body {
   min-width: 0;
   flex: 1;
+  padding: 18rpx 22rpx 18rpx 24rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .row {
@@ -34,17 +41,21 @@
   gap: 12rpx;
 }
 
+.title-row {
+  min-width: 0;
+}
+
 .name {
-  font-size: 31rpx;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 30rpx;
   font-weight: 800;
   color: #17201b;
 }
 
 .fit {
-  flex: 0 0 auto;
-  padding: 6rpx 12rpx;
-  border-radius: 999rpx;
-  font-size: 22rpx;
   background: #edf4ee;
   color: #34423a;
 }
@@ -62,25 +73,33 @@
 
 .desc,
 .ingredients {
-  margin-top: 10rpx;
+  margin-top: 7rpx;
   color: #6f7b73;
-  line-height: 1.45;
-  font-size: 24rpx;
+  line-height: 1.35;
+  font-size: 22rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10rpx;
-  margin-top: 14rpx;
+  gap: 8rpx;
+  margin-top: 10rpx;
+  max-height: 38rpx;
+  overflow: hidden;
 }
 
 .tag {
-  padding: 6rpx 12rpx;
+  height: 34rpx;
+  padding: 0 12rpx;
   border-radius: 999rpx;
   background: #edf4ee;
   color: #34423a;
-  font-size: 22rpx;
+  font-size: 20rpx;
+  line-height: 34rpx;
+  font-weight: 700;
 }
 
 .tag.good {

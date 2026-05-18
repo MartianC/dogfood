@@ -6,15 +6,13 @@
   background: #ffffff;
 }
 
-.icon {
+.icon-image {
   width: 96rpx;
   height: 96rpx;
   margin: 0 auto;
   border-radius: 999rpx;
+  display: block;
   background: #e3f0e8;
-  color: #25684a;
-  line-height: 96rpx;
-  font-weight: 800;
 }
 
 .title {
@@ -35,10 +33,10 @@
   min-height: 96rpx;
   box-sizing: border-box;
   padding: 0 28rpx;
-  border-radius: 24rpx;
+  border-radius: 20rpx;
   color: #ffffff;
   background: #25684a;
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: 800;
   line-height: 1.2;
   display: flex;

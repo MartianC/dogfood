@@ -9,10 +9,11 @@
   grid-template-columns: 1fr 140rpx 140rpx 72rpx;
   gap: 12rpx;
   align-items: center;
-  padding: 18rpx;
+  padding: 20rpx;
   border: 1rpx solid #d8e1da;
-  border-radius: 18rpx;
+  border-radius: 20rpx;
   background: #ffffff;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
 }
 
 .input,
@@ -39,6 +40,7 @@
   border-radius: 20rpx;
   background: #edf4ee;
   color: #25684a;
+  border: 1rpx dashed #b7c7bc;
   line-height: 1.2;
   display: flex;
   align-items: center;

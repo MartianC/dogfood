@@ -29,6 +29,7 @@ async function createDog(payload) {
     userId: env.mockUser.id,
     allergens: [],
     avoidIngredients: [],
+    avatarUrl: '',
     dietGoal: 'daily',
     activityLevel: 'normal',
     createdAt: now(),

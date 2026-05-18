@@ -1,8 +1,9 @@
 <view wx:if="{{draft}}" class="page with-bottom-action">
   <view class="hero">
-    <view class="eyebrow">建议结果</view>
+    <view class="eyebrow">食谱建议</view>
     <view class="title">{{draft.title}}</view>
     <view class="subtitle">{{draft.adviceSummary}}</view>
+    <view class="meter"><view></view></view>
   </view>
 
   <view class="section stack">

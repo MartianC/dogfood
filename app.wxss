@@ -9,7 +9,7 @@ page {
 .page {
   min-height: 100vh;
   box-sizing: border-box;
-  padding: 32rpx 28rpx 48rpx;
+  padding: 32rpx 32rpx 48rpx;
 }
 
 .page.with-bottom-action {
@@ -134,11 +134,11 @@ page {
   min-height: 96rpx;
   box-sizing: border-box;
   padding: 0 28rpx;
-  border-radius: 24rpx;
+  border-radius: 20rpx;
   background: #25684a;
   color: #ffffff;
-  font-weight: 700;
-  font-size: 28rpx;
+  font-weight: 800;
+  font-size: 30rpx;
   border: 1rpx solid #25684a;
   line-height: 1.2;
   display: flex;
@@ -166,8 +166,8 @@ page {
   position: fixed;
   left: 32rpx;
   right: 32rpx;
-  bottom: calc(32rpx + constant(safe-area-inset-bottom));
-  bottom: calc(32rpx + env(safe-area-inset-bottom));
+  bottom: calc(28rpx + constant(safe-area-inset-bottom));
+  bottom: calc(28rpx + env(safe-area-inset-bottom));
   display: grid;
   gap: 16rpx;
   z-index: 20;

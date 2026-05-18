@@ -11,18 +11,20 @@
 }
 
 .option {
-  height: 82rpx;
+  height: 78rpx;
+  border: 1rpx solid #d8e1da;
   border-radius: 18rpx;
-  background: #edf4ee;
+  background: #ffffff;
   color: #34423a;
-  line-height: 82rpx;
+  line-height: 78rpx;
   text-align: center;
   font-weight: 700;
 }
 
 .option.active {
-  background: #25684a;
-  color: #ffffff;
+  border-color: rgba(37, 104, 74, 0.28);
+  background: #e3f0e8;
+  color: #25684a;
 }
 
 .custom {

@@ -15,7 +15,8 @@
   flex: 0 0 96rpx;
   border-radius: 24rpx;
   border: 1rpx solid #b7c7bc;
-  background: linear-gradient(135deg, #b97642 0 50%, #ead8b8 50% 100%);
+  background: #edf4ee;
+  display: block;
 }
 
 .profile-main {
@@ -91,7 +92,24 @@
 }
 
 .dog-panel {
-  padding: 26rpx;
+  padding: 22rpx;
+  display: grid;
+  grid-template-columns: 88rpx 1fr;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.dog-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border: 1rpx solid #b7c7bc;
+  border-radius: 24rpx;
+  background: #edf4ee;
+  display: block;
+}
+
+.dog-copy {
+  min-width: 0;
 }
 
 .dog-panel-head {

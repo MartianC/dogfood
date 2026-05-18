@@ -1,5 +1,19 @@
+.detail-cover {
+  width: 100%;
+  height: 390rpx;
+  border: 1rpx solid #d8e1da;
+  border-radius: 28rpx;
+  background: #edf4ee;
+  display: block;
+  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+}
+
+.detail-head {
+  margin-top: 26rpx;
+}
+
 .tag-list {
-  margin-top: 18rpx;
+  margin-top: 16rpx;
 }
 
 .ratio-row,
@@ -24,10 +38,49 @@
 .step-num {
   flex: 0 0 44rpx;
   height: 44rpx;
-  border-radius: 999rpx;
+  border-radius: 14rpx;
   background: #e3f0e8;
   color: #25684a;
   text-align: center;
   line-height: 44rpx;
   font-weight: 800;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  padding: 32rpx;
+  box-sizing: border-box;
+  background: rgba(25, 24, 21, 0.44);
+}
+
+.sheet {
+  width: 100%;
+  padding: 36rpx;
+  box-sizing: border-box;
+  border-radius: 44rpx;
+  background: #ffffff;
+  box-shadow: 0 -36rpx 68rpx rgba(27, 22, 16, 0.22);
+}
+
+.sheet-title {
+  margin-top: 8rpx;
+  color: #17201b;
+  font-size: 44rpx;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.sheet-desc {
+  margin-top: 16rpx;
+  color: #6f7b73;
+  font-size: 26rpx;
+  line-height: 1.55;
+}
+
+.sheet .button {
+  margin-top: 32rpx;
 }

@@ -32,7 +32,20 @@
   "condition": {},
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": ".design-assets"
+      },
+      {
+        "type": "folder",
+        "value": ".design-check"
+      },
+      {
+        "type": "file",
+        "value": "狗饭小程序完整界面稿-批量制作版.html"
+      }
+    ],
     "include": []
   },
   "editorSetting": {}

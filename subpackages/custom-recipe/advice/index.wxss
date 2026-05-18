@@ -1,1 +1,14 @@
-/* 建议结果页复用全局卡片样式。 */
+.meter {
+  height: 12rpx;
+  margin-top: 22rpx;
+  border-radius: 999rpx;
+  background: #edf4ee;
+  overflow: hidden;
+}
+
+.meter view {
+  width: 72%;
+  height: 100%;
+  border-radius: 999rpx;
+  background: #25684a;
+}
