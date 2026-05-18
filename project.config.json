@@ -94,7 +94,28 @@
         "value": "微信开发者工具代码质量扫描修复记录.md"
       }
     ],
-    "include": []
+    "include": [
+      {
+        "type": "file",
+        "value": "subpackages/custom-recipe/services/customRecipeService.js"
+      },
+      {
+        "type": "file",
+        "value": "subpackages/custom-recipe/services/recipeAdviceService.js"
+      },
+      {
+        "type": "file",
+        "value": "subpackages/dog-profile/services/fileService.js"
+      },
+      {
+        "type": "file",
+        "value": "subpackages/plan-extra/services/customRecipeService.js"
+      },
+      {
+        "type": "file",
+        "value": "subpackages/plan-extra/services/planCalculatorService.js"
+      }
+    ]
   },
   "editorSetting": {}
 }

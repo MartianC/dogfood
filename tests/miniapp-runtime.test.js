@@ -72,3 +72,20 @@ test('小程序图片资源不超过 200K', () => {
     assert.ok(fs.statSync(file).size <= 200 * 1024, `${relativePath} 超过 200K`)
   })
 })
+
+test('分包服务文件显式进入开发者工具打包清单', () => {
+  const projectConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'project.config.json'), 'utf8'))
+  const includes = new Set((projectConfig.packOptions && projectConfig.packOptions.include || []).map((item) => item.value))
+  const requiredServiceFiles = [
+    'subpackages/custom-recipe/services/customRecipeService.js',
+    'subpackages/custom-recipe/services/recipeAdviceService.js',
+    'subpackages/dog-profile/services/fileService.js',
+    'subpackages/plan-extra/services/customRecipeService.js',
+    'subpackages/plan-extra/services/planCalculatorService.js'
+  ]
+
+  requiredServiceFiles.forEach((servicePath) => {
+    assert.ok(fs.existsSync(path.join(__dirname, '..', servicePath)), `${servicePath} 不存在`)
+    assert.ok(includes.has(servicePath), `${servicePath} 未加入 packOptions.include`)
+  })
+})
