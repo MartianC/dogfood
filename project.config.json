@@ -35,15 +35,11 @@
     "ignore": [
       {
         "type": "folder",
-        "value": ".design-assets"
+        "value": "docs"
       },
       {
         "type": "folder",
         "value": ".design-check"
-      },
-      {
-        "type": "file",
-        "value": "狗饭小程序完整界面稿-批量制作版.html"
       },
       {
         "type": "folder",
@@ -72,26 +68,6 @@
       {
         "type": "file",
         "value": "AGENTS.md"
-      },
-      {
-        "type": "file",
-        "value": "基础功能.md"
-      },
-      {
-        "type": "file",
-        "value": "微信小程序设计文档.md"
-      },
-      {
-        "type": "file",
-        "value": "小程序架构设计.md"
-      },
-      {
-        "type": "file",
-        "value": "狗饭小程序设计审核.md"
-      },
-      {
-        "type": "file",
-        "value": "微信开发者工具代码质量扫描修复记录.md"
       }
     ],
     "include": [
