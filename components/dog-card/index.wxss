@@ -39,21 +39,3 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-.edit {
-  width: 116rpx;
-  height: 60rpx;
-  border-radius: 999rpx;
-  color: #25684a;
-  background: #ffffff;
-  font-size: 24rpx;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.2;
-}
-
-.edit::after {
-  border: 0;
-}

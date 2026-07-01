@@ -1,9 +1,8 @@
-<view class="dog-card">
+<view class="dog-card" bindtap="onEdit">
   <image class="avatar" src="{{dog.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
   <view class="body">
     <view class="name">{{dog.name}}</view>
     <view class="meta">{{ageStageLabels[dog.ageStage]}}｜{{dog.weightKg}}kg｜每日 {{dog.dailyMeals}} 餐</view>
     <view class="goal">{{dietGoalLabels[dog.dietGoal] || '日常'}}饮食</view>
   </view>
-  <button wx:if="{{editable}}" class="edit" bindtap="onEdit">修改</button>
 </view>

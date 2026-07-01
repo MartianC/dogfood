@@ -19,6 +19,7 @@ Component({
   },
   methods: {
     onEdit() {
+      if (!this.data.editable) return
       this.triggerEvent('editdog', { dog: this.data.dog })
     }
   }

@@ -98,3 +98,11 @@ test('自定义食谱分包建议服务不依赖主包专用算法文件', () =>
   assert.doesNotMatch(serviceSource, /\.\.\/\.\.\/\.\.\/utils\/ingredientAdvice/)
   assert.match(serviceSource, /require\(['"]\.\/ingredientAdvice['"]\)/)
 })
+
+test('狗狗档案卡片整卡可点击且不显示修改按钮', () => {
+  const wxml = fs.readFileSync(path.join(__dirname, '..', 'components/dog-card/index.wxml'), 'utf8')
+
+  assert.match(wxml, /<view class="dog-card" bindtap="onEdit">/)
+  assert.doesNotMatch(wxml, /<button/)
+  assert.doesNotMatch(wxml, />修改</)
+})
