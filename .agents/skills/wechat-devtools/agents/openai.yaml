@@ -1,0 +1,4 @@
+interface:
+  display_name: "微信开发者工具"
+  short_description: "通过官方 CLI 和自动化 SDK 控制微信开发者工具"
+  default_prompt: "$wechat-devtools：使用微信开发者工具打开、预览、上传或自动化测试一个小程序项目"
