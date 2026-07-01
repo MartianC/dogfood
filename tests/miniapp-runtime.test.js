@@ -78,6 +78,7 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
   const includes = new Set((projectConfig.packOptions && projectConfig.packOptions.include || []).map((item) => item.value))
   const requiredServiceFiles = [
     'subpackages/custom-recipe/services/customRecipeService.js',
+    'subpackages/custom-recipe/services/ingredientAdvice.js',
     'subpackages/custom-recipe/services/recipeAdviceService.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
@@ -88,4 +89,12 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
     assert.ok(fs.existsSync(path.join(__dirname, '..', servicePath)), `${servicePath} 不存在`)
     assert.ok(includes.has(servicePath), `${servicePath} 未加入 packOptions.include`)
   })
+})
+
+test('自定义食谱分包建议服务不依赖主包专用算法文件', () => {
+  const servicePath = path.join(__dirname, '..', 'subpackages/custom-recipe/services/recipeAdviceService.js')
+  const serviceSource = fs.readFileSync(servicePath, 'utf8')
+
+  assert.doesNotMatch(serviceSource, /\.\.\/\.\.\/\.\.\/utils\/ingredientAdvice/)
+  assert.match(serviceSource, /require\(['"]\.\/ingredientAdvice['"]\)/)
 })

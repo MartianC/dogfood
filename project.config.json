@@ -77,6 +77,10 @@
       },
       {
         "type": "file",
+        "value": "subpackages/custom-recipe/services/ingredientAdvice.js"
+      },
+      {
+        "type": "file",
         "value": "subpackages/custom-recipe/services/recipeAdviceService.js"
       },
       {
