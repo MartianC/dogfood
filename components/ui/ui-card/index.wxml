@@ -1,0 +1,3 @@
+<view class="ui-card ui-card--{{variant}} ui-card--{{padding}}">
+  <slot />
+</view>

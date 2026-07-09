@@ -1,0 +1,3 @@
+<text class="ui-tag ui-tag--{{variant}} ui-tag--{{size}}">
+  <slot />
+</text>

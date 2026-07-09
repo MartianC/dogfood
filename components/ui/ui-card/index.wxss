@@ -1,0 +1,40 @@
+@import "../../../styles/tokens.wxss";
+
+.ui-card {
+  box-sizing: border-box;
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-card);
+}
+
+.ui-card--plain {
+  background: var(--df-color-surface);
+}
+
+.ui-card--soft {
+  background: var(--df-color-surface-muted);
+  box-shadow: none;
+}
+
+.ui-card--primary {
+  color: var(--df-color-on-primary);
+  background: var(--df-color-primary);
+  border-color: var(--df-color-primary);
+}
+
+.ui-card--none {
+  padding: 0;
+}
+
+.ui-card--small {
+  padding: var(--df-space-4);
+}
+
+.ui-card--medium {
+  padding: var(--df-space-5);
+}
+
+.ui-card--large {
+  padding: var(--df-space-6);
+}

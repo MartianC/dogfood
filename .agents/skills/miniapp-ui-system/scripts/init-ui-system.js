@@ -723,6 +723,25 @@ console.log('UI system checks passed.')
 
 const packageScript = 'node scripts/check-ui-system.js'
 const figmaPackageScript = `node scripts/figma-tokens-to-wxss.js --input docs/ui/figma-token-map.json --output styles/tokens.wxss --prefix ${tokenPrefix} --dry-run`
+const aiEntrypointCandidates = [
+  'AGENTS.md',
+  'CLAUDE.md',
+  'GEMINI.md',
+  '.github/copilot-instructions.md',
+  '.cursorrules',
+  '.windsurfrules',
+  'docs/README.md',
+]
+const aiDocsIndexStart = '<!-- miniapp-ui-system:docs:start -->'
+const aiDocsIndexEnd = '<!-- miniapp-ui-system:docs:end -->'
+const aiDocsIndexBlock = `${aiDocsIndexStart}
+### UI 系统文档入口
+
+- \`docs/ui/design-system.md\`：设计 token、颜色语义、排版、间距、圆角、阴影和页面布局规则。
+- \`docs/ui/component-contracts.md\`：\`components/ui/*\` 的 props、events、slots、状态和样式隔离契约。
+- \`docs/ui/ai-frontend-rules.md\`：AI 或开发者修改 UI 前后的规则、禁止项和验证命令。
+- \`scripts/check-ui-system.js\` 与 \`scripts/check-ui-baseline.json\`：UI 静态检查入口和迁移期 baseline。
+${aiDocsIndexEnd}`
 
 const figmaFiles = {
   'docs/ui/figma-handoff.md': `# Figma Handoff
@@ -865,6 +884,16 @@ function ensureDir(filePath) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true })
 }
 
+function walkFiles(dir, files = []) {
+  if (!fs.existsSync(dir)) return files
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) walkFiles(full, files)
+    else files.push(full)
+  }
+  return files
+}
+
 function writeFile(rel, content) {
   const full = path.join(projectRoot, rel)
   const exists = fs.existsSync(full)
@@ -910,6 +939,54 @@ function updatePackageJson() {
   }
 }
 
+function collectCursorRuleFiles() {
+  const rulesDir = path.join(projectRoot, '.cursor/rules')
+  if (!fs.existsSync(rulesDir)) return []
+  const result = []
+  for (const file of walkFiles(rulesDir)) {
+    const rel = path.relative(projectRoot, file)
+    if (/\.(md|mdc|txt)$/.test(rel)) result.push(rel)
+  }
+  return result
+}
+
+function collectAiEntrypoints() {
+  return [...new Set([...aiEntrypointCandidates, ...collectCursorRuleFiles()])]
+    .filter((rel) => fs.existsSync(path.join(projectRoot, rel)))
+}
+
+function upsertAiDocsIndex(content) {
+  const escapedStart = aiDocsIndexStart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const escapedEnd = aiDocsIndexEnd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const re = new RegExp(`${escapedStart}[\\s\\S]*?${escapedEnd}`)
+  if (re.test(content)) return content.replace(re, aiDocsIndexBlock)
+  return content.replace(/\s*$/, '') + '\n\n' + aiDocsIndexBlock + '\n'
+}
+
+function updateAiEntrypointDocs() {
+  const entrypoints = collectAiEntrypoints()
+  if (!entrypoints.length) {
+    console.log('skip AI entry docs (not found)')
+    return
+  }
+  for (const rel of entrypoints) {
+    const full = path.join(projectRoot, rel)
+    const current = fs.readFileSync(full, 'utf8')
+    const next = upsertAiDocsIndex(current)
+    const changed = next !== current
+    if (dryRun) {
+      console.log(`${changed ? 'update' : 'skip'} ${rel} UI docs index`)
+      continue
+    }
+    if (changed) {
+      fs.writeFileSync(full, next)
+      console.log(`update ${rel} UI docs index`)
+    } else {
+      console.log(`skip ${rel} UI docs index`)
+    }
+  }
+}
+
 if (!fs.existsSync(projectRoot)) {
   console.error(`Project path not found: ${projectRoot}`)
   process.exit(1)
@@ -926,5 +1003,6 @@ if (withFigma) {
 }
 
 updatePackageJson()
+updateAiEntrypointDocs()
 
 console.log(dryRun ? 'Dry run complete.' : 'UI system scaffold initialized.')

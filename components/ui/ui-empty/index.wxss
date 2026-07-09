@@ -1,0 +1,36 @@
+@import "../../../styles/tokens.wxss";
+
+.ui-empty {
+  box-sizing: border-box;
+  padding: 64rpx 32rpx;
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface);
+  text-align: center;
+}
+
+.ui-empty__image {
+  width: 96rpx;
+  height: 96rpx;
+  display: block;
+  margin: 0 auto;
+  border-radius: var(--df-radius-pill);
+  background: var(--df-color-primary-soft);
+}
+
+.ui-empty__title {
+  margin-top: 24rpx;
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 800;
+}
+
+.ui-empty__description {
+  margin-top: 12rpx;
+  color: var(--df-color-muted);
+  line-height: 1.5;
+}
+
+.ui-empty__action {
+  margin-top: 28rpx;
+}

@@ -1,0 +1,36 @@
+@import "../../../styles/tokens.wxss";
+
+.ui-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44rpx;
+  box-sizing: border-box;
+  padding: 0 16rpx;
+  border-radius: var(--df-radius-pill);
+  font-size: 23rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: normal;
+  word-break: break-all;
+}
+
+.ui-tag--small {
+  min-height: 34rpx;
+  padding: 0 12rpx;
+  font-size: 20rpx;
+}
+
+.ui-tag--neutral {
+  color: var(--df-color-text-secondary);
+  background: var(--df-color-surface-muted);
+}
+
+.ui-tag--good {
+  color: var(--df-color-primary);
+  background: var(--df-color-primary-soft);
+}
+
+.ui-tag--warning {
+  color: var(--df-color-warning);
+  background: var(--df-color-warning-soft);
+}

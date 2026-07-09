@@ -1,0 +1,8 @@
+<view class="ui-field">
+  <view wx:if="{{label}}" class="ui-field__label">{{label}}</view>
+  <view class="ui-field__body">
+    <slot />
+  </view>
+  <view wx:if="{{errorText}}" class="ui-field__error">{{errorText}}</view>
+  <view wx:elif="{{helpText}}" class="ui-field__help">{{helpText}}</view>
+</view>

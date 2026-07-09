@@ -1,0 +1,9 @@
+<button
+  class="ui-button ui-button--{{variant}} ui-button--{{size}} {{block ? 'ui-button--block' : ''}}"
+  disabled="{{disabled || loading}}"
+  loading="{{loading}}"
+  open-type="{{openType}}"
+  bindtap="handleTap"
+>
+  <slot />
+</button>

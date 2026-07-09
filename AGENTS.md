@@ -71,6 +71,15 @@
 - 如果设计文档之间存在冲突，先指出冲突并说明采用依据；不要把 `AGENTS.md` 当作产品事实来源。
 - 每次对项目做代码、配置、资源、设计稿或文档改动后，必须在 `docs/work-logs/YYYY-MM-DD.md` 追加工作日志；日志需包含时间、改动摘要、原因、验证结果和提交信息（如已提交）。
 
+<!-- miniapp-ui-system:docs:start -->
+### UI 系统文档入口
+
+- `docs/ui/design-system.md`：设计 token、颜色语义、排版、间距、圆角、阴影和页面布局规则。
+- `docs/ui/component-contracts.md`：`components/ui/*` 的 props、events、slots、状态和样式隔离契约。
+- `docs/ui/ai-frontend-rules.md`：AI 或开发者修改 UI 前后的规则、禁止项和验证命令。
+- `scripts/check-ui-system.js` 与 `scripts/check-ui-baseline.json`：UI 静态检查入口和迁移期 baseline。
+<!-- miniapp-ui-system:docs:end -->
+
 ## 通用设计和实现风格
 
 - 文案保持清晰、克制、生活化；避免不必要的专业术语和无法兑现的承诺。

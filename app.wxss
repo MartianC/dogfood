@@ -1,7 +1,11 @@
+@import "./styles/tokens.wxss";
+@import "./styles/typography.wxss";
+@import "./styles/utilities.wxss";
+
 page {
   min-height: 100vh;
-  background: #f4f8f3;
-  color: #17201b;
+  background: var(--df-color-bg);
+  color: var(--df-color-text);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   font-size: 28rpx;
 }
@@ -19,14 +23,14 @@ page {
 
 .hero {
   padding: 32rpx;
-  border: 1rpx solid #d8e1da;
+  border: 1rpx solid var(--df-color-line);
   border-radius: 24rpx;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.07);
+  background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-hero);
 }
 
 .eyebrow {
-  color: #25684a;
+  color: var(--df-color-primary);
   font-size: 24rpx;
   font-weight: 700;
 }
@@ -36,12 +40,12 @@ page {
   font-size: 44rpx;
   line-height: 1.2;
   font-weight: 800;
-  color: #17201b;
+  color: var(--df-color-text);
 }
 
 .subtitle {
   margin-top: 16rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   line-height: 1.55;
 }
 
@@ -62,15 +66,15 @@ page {
 }
 
 .link {
-  color: #25684a;
+  color: var(--df-color-primary);
   font-size: 26rpx;
 }
 
 .card {
-  border: 1rpx solid #d8e1da;
+  border: 1rpx solid var(--df-color-line);
   border-radius: 20rpx;
-  background: #ffffff;
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+  background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-card);
   padding: 24rpx;
 }
 
@@ -88,12 +92,12 @@ page {
 }
 
 .muted {
-  color: #6f7b73;
+  color: var(--df-color-muted);
 }
 
 .tiny {
   font-size: 24rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
 }
 
 .tag-list {
@@ -108,19 +112,19 @@ page {
   min-height: 44rpx;
   padding: 0 16rpx;
   border-radius: 999rpx;
-  background: #edf4ee;
-  color: #34423a;
+  background: var(--df-color-surface-muted);
+  color: var(--df-color-text-secondary);
   font-size: 23rpx;
 }
 
 .tag.good {
-  background: #e3f0e8;
-  color: #25684a;
+  background: var(--df-color-primary-soft);
+  color: var(--df-color-primary);
 }
 
 .tag.warning {
-  background: #f6e8e1;
-  color: #a84f34;
+  background: var(--df-color-warning-soft);
+  color: var(--df-color-warning);
 }
 
 .button-row {
@@ -135,11 +139,11 @@ page {
   box-sizing: border-box;
   padding: 0 28rpx;
   border-radius: 20rpx;
-  background: #25684a;
-  color: #ffffff;
+  background: var(--df-color-primary);
+  color: var(--df-color-on-primary);
   font-weight: 800;
   font-size: 30rpx;
-  border: 1rpx solid #25684a;
+  border: 1rpx solid var(--df-color-primary);
   line-height: 1.2;
   display: flex;
   align-items: center;
@@ -152,14 +156,14 @@ page {
 }
 
 .button.secondary {
-  background: #ffffff;
-  color: #34423a;
-  border-color: #b7c7bc;
+  background: var(--df-color-surface);
+  color: var(--df-color-text-secondary);
+  border-color: var(--df-color-line-strong);
 }
 
 .button.warning {
-  background: #a84f34;
-  border-color: #a84f34;
+  background: var(--df-color-warning);
+  border-color: var(--df-color-warning);
 }
 
 .bottom-action {
@@ -176,37 +180,37 @@ page {
 .notice {
   padding: 20rpx 22rpx;
   border-radius: 18rpx;
-  background: #edf4ee;
-  color: #34423a;
+  background: var(--df-color-surface-muted);
+  color: var(--df-color-text-secondary);
   line-height: 1.5;
 }
 
 .notice.good {
-  background: #e3f0e8;
-  color: #25684a;
+  background: var(--df-color-primary-soft);
+  color: var(--df-color-primary);
 }
 
 .notice.warning {
-  background: #f6e8e1;
-  color: #a84f34;
+  background: var(--df-color-warning-soft);
+  color: var(--df-color-warning);
 }
 
 .field {
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #d8e1da;
+  border-bottom: 1rpx solid var(--df-color-line);
 }
 
 .field label {
   display: block;
   margin-bottom: 10rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 24rpx;
 }
 
 .input,
 .picker-value {
   min-height: 64rpx;
-  color: #17201b;
+  color: var(--df-color-text);
   font-size: 30rpx;
 }
 
@@ -219,18 +223,18 @@ page {
 .metric {
   padding: 20rpx;
   border-radius: 18rpx;
-  background: #edf4ee;
+  background: var(--df-color-surface-muted);
 }
 
 .metric strong {
   display: block;
   font-size: 34rpx;
-  color: #17201b;
+  color: var(--df-color-text);
 }
 
 .metric span {
   display: block;
   margin-top: 6rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 24rpx;
 }
