@@ -27,6 +27,8 @@
 | event | `tap` | 非禁用、非加载时触发 |
 | slot | 默认 | 按钮文案或少量内联内容 |
 
+`ui-button` 的组件 host 为块级并默认撑满父容器。需要窄按钮时，由外层业务容器控制宽度，不在页面直接重写按钮内部样式。
+
 ## ui-card
 
 路径：`components/ui/ui-card`
@@ -36,6 +38,8 @@
 | prop | `variant` | `plain | soft | primary`，默认 `plain` |
 | prop | `padding` | `none | small | medium | large`，默认 `medium` |
 | slot | 默认 | 卡片内容 |
+
+`ui-card` 只提供容器视觉，不承担列表间距、页面分区或点击业务语义。列表间距由页面或业务组件自己的布局类控制。
 
 ## ui-tag
 
@@ -70,6 +74,8 @@
 | prop | `helpText` | 辅助说明 |
 | prop | `errorText` | 错误文案；存在时优先展示并覆盖 `helpText` |
 | slot | 默认 | `input`、`picker` 展示值或其他表单控件 |
+
+`ui-field` 用于字段边框、label、帮助和错误文案。输入控件的取值、单位、对齐和 picker 数据仍由业务组件负责。
 
 ## ui-empty
 

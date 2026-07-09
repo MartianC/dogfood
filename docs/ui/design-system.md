@@ -30,7 +30,7 @@
 
 ## 字体层级
 
-`styles/typography.wxss` 提供少量全局排版类：`df-heading-xl`、`df-heading-lg`、`df-body`、`df-caption`。页面迁移时优先使用这些层级或组件内部样式，不新增 `.title`、`.subtitle` 等泛名。
+`styles/typography.wxss` 提供少量全局排版类：`df-heading-xl`、`df-heading-lg`、`df-body`、`df-caption`。页面标题、卡片标题和说明文字优先使用这些层级或组件内部样式，不新增 `.title`、`.subtitle`、`.section-title` 等泛名。
 
 ## 间距、圆角和阴影
 
@@ -38,7 +38,21 @@
 
 ## 页面布局规则
 
-`styles/utilities.wxss` 只保留少量布局工具：`df-stack`、`df-row`、`df-page`、`df-page-with-bottom-action`。页面 WXSS 应只负责列表间距、分区布局、固定底部操作等页面结构，不重新实现按钮、卡片、标签、提示和表单字段。
+`app.wxss` 只保留小程序页面基础样式和少量页面布局类：
+
+- `page`
+- `.page`
+- `.page.with-bottom-action`
+- `.page.with-bottom-action.with-stacked-actions`
+- `.section`
+- `.section-head`
+- `.stack`
+- `.bottom-action`
+- `.grid-2`
+
+`styles/utilities.wxss` 只保留少量可复用布局工具：`df-stack`、`df-row`、`df-page`、`df-page-with-bottom-action`。页面 WXSS 应只负责列表间距、分区布局、固定底部操作等页面结构，不重新实现按钮、卡片、标签、提示和表单字段。
+
+固定底部操作只用于必须常驻的主动作。单按钮页面使用 `.page.with-bottom-action`；两个固定按钮页面同时加 `.with-stacked-actions`。动态表单页面优先使用页面内流动操作区，避免遮挡新增项、选择器或安全区。
 
 ## 基础组件
 
@@ -68,3 +82,5 @@
 ## UI 检查
 
 `npm run check:ui` 通过 `scripts/check-ui-system.js` 对全项目执行严格检查。普通页面和业务组件不得新增裸色值、基础按钮、第三方标签或禁用泛名；检查失败时应修复实现，不再通过迁移期 baseline 放行。
+
+禁用泛名包括 `.hero`、`.title`、`.subtitle`、`.section-title`、`.link`、`.card`、`.row`、`.tag`、`.button`、`.notice`、`.field`、`.input`、`.metric`。业务类必须使用有明确归属的前缀或语义，例如 `.recipe-title`、`.plan-metric`、`.selector-chip`。
