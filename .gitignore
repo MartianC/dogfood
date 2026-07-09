@@ -22,6 +22,7 @@ coverage/
 # 本地验证截图和临时产物
 .design-check/
 .workbuddy/
+.superpowers/
 
 # 环境变量和密钥
 .env
