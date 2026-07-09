@@ -5,10 +5,22 @@ const path = require('path')
 
 const root = process.cwd()
 const errors = []
-const baselinePath = path.join(root, 'scripts/check-ui-baseline.json')
-const shouldUpdateBaseline = process.argv.includes('--update-baseline')
-const forbiddenClassNames = ['button', 'card', 'tag', 'notice', 'title', 'row', 'input']
-const forbiddenWxmlClassNames = ['button', 'card', 'tag', 'notice', 'input']
+const forbiddenClassNames = [
+  'hero',
+  'title',
+  'subtitle',
+  'section-title',
+  'link',
+  'card',
+  'row',
+  'tag',
+  'button',
+  'notice',
+  'field',
+  'input',
+  'metric',
+]
+const forbiddenWxmlClassNames = forbiddenClassNames
 const thirdPartyTags = [
   { library: 'TDesign', pattern: /<\s*t-[a-z0-9-]+/gi },
   { library: 'Vant', pattern: /<\s*van-[a-z0-9-]+/gi },
@@ -54,18 +66,6 @@ function readJsonIfExists(rel) {
   } catch (error) {
     report(rel + ': JSON 格式无效，' + error.message)
     return null
-  }
-}
-
-function readBaseline() {
-  if (!fs.existsSync(baselinePath)) return new Set()
-  try {
-    const data = JSON.parse(fs.readFileSync(baselinePath, 'utf8'))
-    const issues = Array.isArray(data) ? data : data.issues
-    return new Set(Array.isArray(issues) ? issues : [])
-  } catch (error) {
-    report('scripts/check-ui-baseline.json: JSON 格式无效，' + error.message)
-    return new Set()
   }
 }
 
@@ -194,25 +194,9 @@ validateFigmaComponentMap()
 
 const uniqueErrors = [...new Set(errors)].sort()
 
-if (shouldUpdateBaseline) {
-  fs.writeFileSync(
-    baselinePath,
-    JSON.stringify({
-      description: '迁移期 UI 检查 baseline。只允许记录未迁移文件的既有问题，完成迁移后删除 issues。',
-      issues: uniqueErrors,
-    }, null, 2) + '\n',
-  )
-  console.log('UI baseline updated: ' + uniqueErrors.length + ' issue(s).')
-  process.exit(0)
-}
-
-const baseline = readBaseline()
-const unexpected = uniqueErrors.filter((item) => !baseline.has(item))
-
-if (unexpected.length) {
-  console.error(unexpected.map((item) => '- ' + item).join('\n'))
+if (uniqueErrors.length) {
+  console.error(uniqueErrors.map((item) => '- ' + item).join('\n'))
   process.exit(1)
 }
 
-const legacyCount = uniqueErrors.filter((item) => baseline.has(item)).length
-console.log('UI system checks passed. Legacy baseline issue(s): ' + legacyCount + '.')
+console.log('UI system checks passed.')

@@ -1,5 +1,10 @@
 @import "../../../styles/tokens.wxss";
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .ui-button {
   min-height: var(--df-touch-min);
   box-sizing: border-box;

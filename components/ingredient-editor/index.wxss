@@ -8,7 +8,7 @@
 
 .ingredient-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 156rpx 156rpx 96rpx;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 0.9fr);
   gap: 12rpx;
   align-items: stretch;
 }
@@ -25,6 +25,12 @@
 }
 
 .remove-action {
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+}
+
+.remove-button-shell {
+  width: 144rpx;
 }

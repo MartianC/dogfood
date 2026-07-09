@@ -28,7 +28,7 @@ Component({
       })
     },
     removeItem(e) {
-      const index = Number(e.currentTarget.dataset.index)
+      const index = Number(e.detail.eventValue)
       this.triggerEvent('change', {
         ingredients: this.data.ingredients.filter((item, itemIndex) => itemIndex !== index)
       })

@@ -23,6 +23,7 @@
 | prop | `loading` | 加载态，默认 `false` |
 | prop | `block` | 是否撑满容器，默认 `true` |
 | prop | `openType` | 透传小程序 button `open-type` |
+| prop | `eventValue` | 可选事件值，会随 `tap` 事件放入 `detail.eventValue` |
 | event | `tap` | 非禁用、非加载时触发 |
 | slot | 默认 | 按钮文案或少量内联内容 |
 

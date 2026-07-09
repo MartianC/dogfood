@@ -1,5 +1,19 @@
 @import "../../../styles/tokens.wxss";
 
+.advice-eyebrow {
+  color: var(--df-color-primary);
+  font-weight: 700;
+}
+
+.advice-title {
+  margin-top: 12rpx;
+}
+
+.advice-subtitle {
+  margin-top: 16rpx;
+  color: var(--df-color-muted);
+}
+
 .meter {
   height: 12rpx;
   margin-top: 22rpx;

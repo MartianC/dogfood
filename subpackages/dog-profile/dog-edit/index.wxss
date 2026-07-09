@@ -1,5 +1,19 @@
 @import "../../../styles/tokens.wxss";
 
+.form-eyebrow {
+  color: var(--df-color-primary);
+  font-weight: 700;
+}
+
+.form-title {
+  margin-top: 12rpx;
+}
+
+.form-subtitle {
+  margin-top: 16rpx;
+  color: var(--df-color-muted);
+}
+
 .profile-form {
   display: grid;
   gap: 16rpx;

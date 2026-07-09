@@ -13,7 +13,7 @@
 - `docs/ui/design-system.md`：设计 token、颜色语义、排版、间距、圆角、阴影和页面布局规则。
 - `docs/ui/component-contracts.md`：`components/ui/*` 的 props、events、slots、状态和样式隔离契约。
 - `docs/ui/ai-frontend-rules.md`：AI 或开发者修改 UI 前后的规则、禁止项和验证命令。
-- `scripts/check-ui-system.js` 与 `scripts/check-ui-baseline.json`：UI 静态检查入口和迁移期 baseline。
+- `scripts/check-ui-system.js`：UI 静态检查入口；全项目必须通过，不再使用迁移期 baseline。
 <!-- miniapp-ui-system:docs:end -->
 
 ## 工作日志格式建议

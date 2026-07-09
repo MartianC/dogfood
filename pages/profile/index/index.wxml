@@ -22,8 +22,8 @@
 
   <view wx:else class="section">
     <view class="section-head">
-      <view class="section-title">狗狗档案</view>
-      <view class="link" bindtap="onAddDog">新增</view>
+      <view class="df-heading-lg">狗狗档案</view>
+      <view class="section-action" bindtap="onAddDog">新增</view>
     </view>
     <view wx:if="{{dogs.length}}" class="profile-dog-list">
       <ui-card wx:for="{{dogs}}" wx:key="id">

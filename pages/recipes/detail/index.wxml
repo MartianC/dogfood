@@ -1,12 +1,12 @@
 <view wx:if="{{recipe}}" class="page with-bottom-action">
   <image class="detail-cover" src="{{recipe.imageUrl || defaultRecipeImage}}" mode="aspectFill" />
   <view class="detail-head">
-    <view class="title">{{recipe.title}}</view>
+    <view class="detail-title df-heading-xl">{{recipe.title}}</view>
     <view class="tag-list">
       <ui-tag wx:for="{{recipe.tags}}" wx:key="*this" variant="good">{{item}}</ui-tag>
       <ui-tag>{{recipe.cookingTimeMinutes}} 分钟</ui-tag>
     </view>
-    <view class="subtitle">{{recipe.description}}</view>
+    <view class="detail-desc df-body">{{recipe.description}}</view>
   </view>
 
   <view wx:if="{{warnings.length}}" class="section">
@@ -15,7 +15,7 @@
 
   <view class="section">
     <ui-card>
-      <view class="section-title">食材比例</view>
+      <view class="df-heading-lg">食材比例</view>
       <view wx:for="{{recipe.ingredients}}" wx:key="name" class="ratio-row">
         <text>{{item.name}}</text>
         <text>{{item.ratioPercent}}%</text>
@@ -25,7 +25,7 @@
 
   <view class="section">
     <ui-card>
-      <view class="section-title">制作步骤</view>
+      <view class="df-heading-lg">制作步骤</view>
       <view wx:for="{{recipe.steps}}" wx:key="*this" class="step-row">
         <text class="step-num">{{index + 1}}</text>
         <text>{{item}}</text>
@@ -43,7 +43,7 @@
 
   <view wx:if="{{showAuthSheet}}" class="modal-mask" bindtap="onCloseAuthSheet">
     <view class="sheet" catchtap="noop">
-      <view class="eyebrow">生成专属清单</view>
+      <view class="sheet-eyebrow df-caption">生成专属清单</view>
       <view class="sheet-title">先添加狗狗档案</view>
       <view class="sheet-desc">添加后会按狗狗体重、每日餐数和制作周期换算总量，并提醒过敏或忌口食材。</view>
       <view class="sheet-action">

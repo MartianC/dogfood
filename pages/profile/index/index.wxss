@@ -52,6 +52,11 @@
   line-height: 1.5;
 }
 
+.section-action {
+  color: var(--df-color-primary);
+  font-size: 26rpx;
+}
+
 .profile-dog-list,
 .menu {
   display: grid;

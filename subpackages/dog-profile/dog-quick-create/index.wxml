@@ -1,9 +1,9 @@
 <view class="page with-bottom-action">
-  <view class="hero">
-    <view class="eyebrow">快速建档</view>
-    <view class="title">只填生成清单必需信息</view>
-    <view class="subtitle">其他资料可以稍后在“我的”里补充。</view>
-  </view>
+  <ui-card>
+    <view class="form-eyebrow df-caption">快速建档</view>
+    <view class="form-title df-heading-xl">只填生成清单必需信息</view>
+    <view class="form-subtitle df-body">其他资料可以稍后在“我的”里补充。</view>
+  </ui-card>
 
   <view class="section">
     <ui-card>

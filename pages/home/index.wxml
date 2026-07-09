@@ -1,18 +1,18 @@
 <view class="page">
-  <view wx:if="{{authState !== 'has-profile'}}" class="hero">
-    <view class="eyebrow">狗饭清单工具</view>
-    <view class="title">先看食谱，需要清单时再建档</view>
-    <view class="subtitle">浏览食谱不需要登录。添加狗狗后，可按每日餐数和制作周期换算采购总量。</view>
-    <view class="button-row">
+  <ui-card wx:if="{{authState !== 'has-profile'}}">
+    <view class="home-eyebrow df-caption">狗饭清单工具</view>
+    <view class="home-title df-heading-xl">先看食谱，需要清单时再建档</view>
+    <view class="home-subtitle df-body">浏览食谱不需要登录。添加狗狗后，可按每日餐数和制作周期换算采购总量。</view>
+    <view class="home-actions">
       <ui-button bind:tap="onAddDog">添加狗狗档案</ui-button>
       <ui-button variant="secondary" bind:tap="onBrowseRecipes">先浏览食谱</ui-button>
     </view>
-  </view>
+  </ui-card>
 
   <view wx:else class="section">
     <view class="section-head">
-      <view class="section-title">全部狗狗档案</view>
-      <view class="link" bindtap="onAddDog">新增</view>
+      <view class="df-heading-lg">全部狗狗档案</view>
+      <view class="section-action" bindtap="onAddDog">新增</view>
     </view>
     <view class="stack">
       <dog-card wx:for="{{dogs}}" wx:key="id" dog="{{item}}" editable bind:editdog="onEditDog" />
@@ -21,8 +21,8 @@
 
   <view class="section">
     <view class="section-head">
-      <view class="section-title">{{authState === 'has-profile' ? '适合全部狗狗' : '推荐食谱'}}</view>
-      <view class="link" bindtap="onBrowseRecipes">全部</view>
+      <view class="df-heading-lg">{{authState === 'has-profile' ? '适合全部狗狗' : '推荐食谱'}}</view>
+      <view class="section-action" bindtap="onBrowseRecipes">全部</view>
     </view>
     <view class="stack">
       <recipe-card wx:for="{{recommendations}}" wx:key="id" recipe="{{item}}" showFit="{{authState === 'has-profile'}}" bind:taprecipe="onRecipeTap" />

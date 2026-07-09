@@ -47,6 +47,6 @@ npm run check:ui
 npm test
 ```
 
-迁移期间 `scripts/check-ui-baseline.json` 只允许记录旧页面和旧业务组件的既有问题。完成迁移后删除 baseline issues，让全项目受严格规则约束。
+`npm run check:ui` 现在按全项目严格规则运行，不再使用迁移期 baseline。检查失败时先修复违规的裸色值、基础泛名、直接按钮或第三方标签，再继续交付。
 
 Figma 设计稿落地后，还要写 `docs/ui/figma-implementation-notes.md`，记录设计稿来源、实现差异和无法等价还原的原因。

@@ -13,11 +13,11 @@
     </ui-card>
 
     <view class="section grid-2">
-      <view class="metric">
+      <view class="plan-metric">
         <strong>{{plan.totalPortions}}</strong>
         <span>分装总数</span>
       </view>
-      <view class="metric">
+      <view class="plan-metric">
         <strong>{{plan.targetMode === 'multipleDogs' ? '多狗' : '单狗'}}</strong>
         <span>制作对象</span>
       </view>
@@ -25,7 +25,7 @@
 
     <view class="section">
       <ui-card>
-        <view class="section-title">分装参考</view>
+        <view class="df-heading-lg">分装参考</view>
         <view wx:for="{{plan.dogMealSummaries}}" wx:key="dogId" class="summary-row">
           <text>{{item.dogName}}：每日 {{item.dailyMeals}} 餐，共 {{item.totalMeals}} 份</text>
           <text>每份约 {{item.perMealTotalGram}}g</text>
@@ -35,23 +35,23 @@
 
     <view wx:if="{{perMealItems.length}}" class="section">
       <view class="section-head">
-        <view class="section-title">每餐食材</view>
-        <view class="tiny">单只狗狗制作</view>
+        <view class="df-heading-lg">每餐食材</view>
+        <view class="df-caption">单只狗狗制作</view>
       </view>
       <ingredient-list items="{{perMealItems}}" />
     </view>
 
     <view class="section">
       <view class="section-head">
-        <view class="section-title">采购食材</view>
-        <view class="tiny">勾选状态仅保存在本机</view>
+        <view class="df-heading-lg">采购食材</view>
+        <view class="df-caption">勾选状态仅保存在本机</view>
       </view>
       <ingredient-list items="{{totalItems}}" checkedMap="{{checkedMap}}" showCheckbox bind:checkitem="onCheckItem" />
     </view>
 
     <view class="section">
       <ui-card>
-        <view class="section-title">制作和分装</view>
+        <view class="df-heading-lg">制作和分装</view>
         <view wx:for="{{plan.cookingSteps}}" wx:key="*this" class="summary-row step-row">
           <text class="step-num">{{index + 1}}</text>
           <text>{{item}}</text>

@@ -12,6 +12,15 @@
   margin-top: 26rpx;
 }
 
+.detail-title {
+  margin-top: 0;
+}
+
+.detail-desc {
+  margin-top: 16rpx;
+  color: var(--df-color-muted);
+}
+
 .tag-list {
   margin-top: 16rpx;
 }
@@ -64,6 +73,11 @@
   border-radius: 44rpx;
   background: var(--df-color-surface);
   box-shadow: var(--df-shadow-sheet);
+}
+
+.sheet-eyebrow {
+  color: var(--df-color-primary);
+  font-weight: 700;
 }
 
 .sheet-title {

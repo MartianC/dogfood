@@ -12,8 +12,10 @@
       <ui-field label="每餐 g">
         <input class="editor-control amount-control" type="number" placeholder="0" value="{{item.perMealAmountGram}}" data-index="{{index}}" bindinput="onAmount" />
       </ui-field>
-      <view class="remove-action" data-index="{{index}}" bindtap="removeItem">
-        <ui-button variant="warning" size="small">删除</ui-button>
+      <view class="remove-action">
+        <view class="remove-button-shell">
+          <ui-button variant="warning" size="small" event-value="{{index}}" bind:tap="removeItem">删除</ui-button>
+        </view>
       </view>
     </view>
   </ui-card>

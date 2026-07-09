@@ -65,6 +65,6 @@
 
 `pages/plan/index/index.js` 的分享图使用 `SHARE_COLORS` 常量集中映射 `surface`、`text`、`primary`、`textSecondary`、`muted`，并与本文件 token 保持一致。
 
-## 迁移期检查
+## UI 检查
 
-`scripts/check-ui-baseline.json` 只记录未迁移页面和业务组件的既有问题。新建 `styles/*`、`components/ui/*` 和完成迁移的页面不得新增裸色值、基础按钮、第三方标签或禁用泛名。
+`npm run check:ui` 通过 `scripts/check-ui-system.js` 对全项目执行严格检查。普通页面和业务组件不得新增裸色值、基础按钮、第三方标签或禁用泛名；检查失败时应修复实现，不再通过迁移期 baseline 放行。

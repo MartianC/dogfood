@@ -6,11 +6,15 @@ Component({
     disabled: { type: Boolean, value: false },
     loading: { type: Boolean, value: false },
     openType: { type: String, value: '' },
+    eventValue: { type: String, value: '' },
   },
   methods: {
     handleTap(event) {
       if (this.properties.disabled || this.properties.loading) return
-      this.triggerEvent('tap', event.detail)
+      this.triggerEvent('tap', {
+        ...event.detail,
+        eventValue: this.properties.eventValue,
+      })
     },
   },
 })

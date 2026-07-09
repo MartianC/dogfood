@@ -1,9 +1,9 @@
 <view class="page with-bottom-action">
-  <view class="hero">
-    <view class="eyebrow">狗狗档案</view>
-    <view class="title">{{id ? '修改档案' : '添加狗狗'}}</view>
-    <view class="subtitle">生成清单需要名字、年龄阶段、体重和每日餐数，其他资料可以稍后补充。</view>
-  </view>
+  <ui-card>
+    <view class="form-eyebrow df-caption">狗狗档案</view>
+    <view class="form-title df-heading-xl">{{id ? '修改档案' : '添加狗狗'}}</view>
+    <view class="form-subtitle df-body">生成清单需要名字、年龄阶段、体重和每日餐数，其他资料可以稍后补充。</view>
+  </ui-card>
 
   <view class="section">
     <ui-card>
