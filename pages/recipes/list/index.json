@@ -1,6 +1,8 @@
 {
   "navigationBarTitleText": "食谱",
   "usingComponents": {
-    "recipe-card": "../../../components/recipe-card/index"
+    "recipe-card": "../../../components/recipe-card/index",
+    "ui-field": "../../../components/ui/ui-field/index",
+    "ui-notice": "../../../components/ui/ui-notice/index"
   }
 }

@@ -1,37 +1,17 @@
-.guard {
-  padding: 28rpx;
-  border-radius: 20rpx;
-  background: #ffffff;
-  border: 1rpx solid #d8e1da;
-}
+@import "../../styles/tokens.wxss";
 
-.title {
+.auth-title {
   font-weight: 800;
   font-size: 30rpx;
+  color: var(--df-color-text);
 }
 
-.desc {
+.auth-desc {
   margin-top: 12rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   line-height: 1.5;
 }
 
-.button {
+.auth-action {
   margin-top: 22rpx;
-  width: 100%;
-  min-height: 96rpx;
-  box-sizing: border-box;
-  padding: 0 28rpx;
-  border-radius: 20rpx;
-  background: #25684a;
-  color: #ffffff;
-  font-weight: 800;
-  line-height: 1.2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.button::after {
-  border: 0;
 }

@@ -3,8 +3,8 @@
   <view class="detail-head">
     <view class="title">{{recipe.title}}</view>
     <view class="tag-list">
-      <text wx:for="{{recipe.tags}}" wx:key="*this" class="tag good">{{item}}</text>
-      <text class="tag">{{recipe.cookingTimeMinutes}} 分钟</text>
+      <ui-tag wx:for="{{recipe.tags}}" wx:key="*this" variant="good">{{item}}</ui-tag>
+      <ui-tag>{{recipe.cookingTimeMinutes}} 分钟</ui-tag>
     </view>
     <view class="subtitle">{{recipe.description}}</view>
   </view>
@@ -13,26 +13,32 @@
     <risk-badge warnings="{{warnings}}" />
   </view>
 
-  <view class="section card">
-    <view class="section-title">食材比例</view>
-    <view wx:for="{{recipe.ingredients}}" wx:key="name" class="ratio-row">
-      <text>{{item.name}}</text>
-      <text>{{item.ratioPercent}}%</text>
-    </view>
+  <view class="section">
+    <ui-card>
+      <view class="section-title">食材比例</view>
+      <view wx:for="{{recipe.ingredients}}" wx:key="name" class="ratio-row">
+        <text>{{item.name}}</text>
+        <text>{{item.ratioPercent}}%</text>
+      </view>
+    </ui-card>
   </view>
 
-  <view class="section card">
-    <view class="section-title">制作步骤</view>
-    <view wx:for="{{recipe.steps}}" wx:key="*this" class="step-row">
-      <text class="step-num">{{index + 1}}</text>
-      <text>{{item}}</text>
-    </view>
+  <view class="section">
+    <ui-card>
+      <view class="section-title">制作步骤</view>
+      <view wx:for="{{recipe.steps}}" wx:key="*this" class="step-row">
+        <text class="step-num">{{index + 1}}</text>
+        <text>{{item}}</text>
+      </view>
+    </ui-card>
   </view>
 
-  <view class="section notice">食谱详情只展示通用比例，选择制作周期后再按狗狗体重和每日餐数换算克重。</view>
+  <view class="section">
+    <ui-notice>食谱详情只展示通用比例，选择制作周期后再按狗狗体重和每日餐数换算克重。</ui-notice>
+  </view>
 
   <view class="bottom-action">
-    <button class="button {{hasDanger ? 'warning' : ''}}" bindtap="onChoosePeriod">{{hasDanger ? '仍然选择周期' : '选择制作周期'}}</button>
+    <ui-button variant="{{hasDanger ? 'warning' : 'primary'}}" bind:tap="onChoosePeriod">{{hasDanger ? '仍然选择周期' : '选择制作周期'}}</ui-button>
   </view>
 
   <view wx:if="{{showAuthSheet}}" class="modal-mask" bindtap="onCloseAuthSheet">
@@ -40,7 +46,9 @@
       <view class="eyebrow">生成专属清单</view>
       <view class="sheet-title">先添加狗狗档案</view>
       <view class="sheet-desc">添加后会按狗狗体重、每日餐数和制作周期换算总量，并提醒过敏或忌口食材。</view>
-      <button class="button" bindtap="onAuthAndCreate">微信登录并添加狗狗</button>
+      <view class="sheet-action">
+        <ui-button bind:tap="onAuthAndCreate">微信登录并添加狗狗</ui-button>
+      </view>
     </view>
   </view>
 </view>

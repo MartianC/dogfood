@@ -1,17 +1,21 @@
 <view class="recipe-card" bindtap="onTap">
-  <view class="thumb">
-    <image class="thumb-image" src="{{recipe.imageUrl || defaultRecipeImage}}" mode="aspectFill" />
-  </view>
-  <view class="body">
-    <view class="row title-row">
-      <view class="name">{{recipe.title}}</view>
+  <ui-card padding="none">
+    <view class="recipe-card__inner">
+      <view class="recipe-card__thumb">
+        <image class="recipe-card__thumb-image" src="{{recipe.imageUrl || defaultRecipeImage}}" mode="aspectFill" />
+      </view>
+      <view class="recipe-card__body">
+        <view class="recipe-card__title-row">
+          <view class="recipe-card__name">{{recipe.title}}</view>
+        </view>
+        <view class="recipe-card__desc">{{recipe.description}}</view>
+        <view class="recipe-card__ingredients">主食材：{{recipe.mainIngredientText}}</view>
+        <view class="recipe-card__meta">
+          <ui-tag wx:if="{{showFit && recipe.fit && recipe.fit.label}}" size="small" variant="{{recipe.fit.status === 'ok' ? 'good' : (recipe.fit.status === 'warning' || recipe.fit.status === 'danger' ? 'warning' : 'neutral')}}">{{recipe.fit.label}}</ui-tag>
+          <ui-tag wx:for="{{recipe.tags}}" wx:key="*this" size="small" variant="{{index === 0 ? 'good' : 'neutral'}}">{{item}}</ui-tag>
+          <ui-tag size="small">{{recipe.cookingTimeMinutes}} 分钟</ui-tag>
+        </view>
+      </view>
     </view>
-    <view class="desc">{{recipe.description}}</view>
-    <view class="ingredients">主食材：{{recipe.mainIngredientText}}</view>
-    <view class="meta">
-      <text wx:if="{{showFit && recipe.fit && recipe.fit.label}}" class="tag fit {{recipe.fit.status}}">{{recipe.fit.label}}</text>
-      <text wx:for="{{recipe.tags}}" wx:key="*this" class="tag {{index === 0 ? 'good' : ''}}">{{item}}</text>
-      <text class="tag">{{recipe.cookingTimeMinutes}} 分钟</text>
-    </view>
-  </view>
+  </ui-card>
 </view>

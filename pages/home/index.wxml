@@ -4,8 +4,8 @@
     <view class="title">先看食谱，需要清单时再建档</view>
     <view class="subtitle">浏览食谱不需要登录。添加狗狗后，可按每日餐数和制作周期换算采购总量。</view>
     <view class="button-row">
-      <button class="button" bindtap="onAddDog">添加狗狗档案</button>
-      <button class="button secondary" bindtap="onBrowseRecipes">先浏览食谱</button>
+      <ui-button bind:tap="onAddDog">添加狗狗档案</ui-button>
+      <ui-button variant="secondary" bind:tap="onBrowseRecipes">先浏览食谱</ui-button>
     </view>
   </view>
 
@@ -30,6 +30,6 @@
   </view>
 
   <view wx:if="{{latestPlan}}" class="section">
-    <view class="notice good" bindtap="onOpenPlan">最近一次清单：{{latestPlan.recipeName}}，{{latestPlan.periodDays}} 天批量制作。</view>
+    <ui-notice variant="good" clickable="{{true}}" bind:tap="onOpenPlan">最近一次清单：{{latestPlan.recipeName}}，{{latestPlan.periodDays}} 天批量制作。</ui-notice>
   </view>
 </view>

@@ -36,4 +36,6 @@ page,
   --df-touch-min: 88rpx;
   --df-shadow-card: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
   --df-shadow-hero: 0 12rpx 32rpx rgba(20, 37, 28, 0.07);
+  --df-shadow-sheet: 0 -36rpx 68rpx rgba(27, 22, 16, 0.22);
+  --df-color-mask: rgba(25, 24, 21, 0.44);
 }

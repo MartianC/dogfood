@@ -3,18 +3,3 @@
   flex-direction: column;
   gap: 12rpx;
 }
-
-.risk {
-  padding: 18rpx 20rpx;
-  border-radius: 16rpx;
-  background: #edf4ee;
-  color: #34423a;
-  line-height: 1.45;
-  font-size: 25rpx;
-}
-
-.risk.danger,
-.risk.warning {
-  background: #f6e8e1;
-  color: #a84f34;
-}

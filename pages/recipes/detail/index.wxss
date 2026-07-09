@@ -1,11 +1,11 @@
 .detail-cover {
   width: 100%;
   height: 390rpx;
-  border: 1rpx solid #d8e1da;
+  border: 1rpx solid var(--df-color-line);
   border-radius: 28rpx;
-  background: #edf4ee;
+  background: var(--df-color-surface-muted);
   display: block;
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+  box-shadow: var(--df-shadow-card);
 }
 
 .detail-head {
@@ -22,7 +22,7 @@
   justify-content: space-between;
   gap: 20rpx;
   padding: 18rpx 0;
-  border-bottom: 1rpx solid #edf4ee;
+  border-bottom: 1rpx solid var(--df-color-surface-muted);
 }
 
 .ratio-row:last-child,
@@ -39,8 +39,8 @@
   flex: 0 0 44rpx;
   height: 44rpx;
   border-radius: 14rpx;
-  background: #e3f0e8;
-  color: #25684a;
+  background: var(--df-color-primary-soft);
+  color: var(--df-color-primary);
   text-align: center;
   line-height: 44rpx;
   font-weight: 800;
@@ -54,7 +54,7 @@
   align-items: flex-end;
   padding: 32rpx;
   box-sizing: border-box;
-  background: rgba(25, 24, 21, 0.44);
+  background: var(--df-color-mask);
 }
 
 .sheet {
@@ -62,13 +62,13 @@
   padding: 36rpx;
   box-sizing: border-box;
   border-radius: 44rpx;
-  background: #ffffff;
-  box-shadow: 0 -36rpx 68rpx rgba(27, 22, 16, 0.22);
+  background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-sheet);
 }
 
 .sheet-title {
   margin-top: 8rpx;
-  color: #17201b;
+  color: var(--df-color-text);
   font-size: 44rpx;
   line-height: 1.2;
   font-weight: 800;
@@ -76,11 +76,11 @@
 
 .sheet-desc {
   margin-top: 16rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 26rpx;
   line-height: 1.55;
 }
 
-.sheet .button {
+.sheet-action {
   margin-top: 32rpx;
 }

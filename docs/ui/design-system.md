@@ -25,6 +25,7 @@
 | `--df-color-primary-soft` | 主色弱背景 | `#e3f0e8` |
 | `--df-color-warning` | 风险、删除、警示文字 | `#a84f34` |
 | `--df-color-warning-soft` | 风险弱背景 | `#f6e8e1` |
+| `--df-color-mask` | 弹层遮罩 | `rgba(25, 24, 21, 0.44)` |
 
 ## 字体层级
 
@@ -32,7 +33,7 @@
 
 ## 间距、圆角和阴影
 
-间距使用 `--df-space-1` 到 `--df-space-6`。圆角使用 `--df-radius-sm` 到 `--df-radius-xl`，胶囊标签使用 `--df-radius-pill`。普通卡片阴影使用 `--df-shadow-card`，首屏强调区使用 `--df-shadow-hero`。
+间距使用 `--df-space-1` 到 `--df-space-6`。圆角使用 `--df-radius-sm` 到 `--df-radius-xl`，胶囊标签使用 `--df-radius-pill`。普通卡片阴影使用 `--df-shadow-card`，首屏强调区使用 `--df-shadow-hero`，底部弹层使用 `--df-shadow-sheet`。
 
 ## 页面布局规则
 
