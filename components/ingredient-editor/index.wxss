@@ -1,52 +1,30 @@
+@import "../../styles/tokens.wxss";
+
 .editor {
   display: flex;
   flex-direction: column;
   gap: 18rpx;
 }
 
-.ingredient {
+.ingredient-item {
   display: grid;
-  grid-template-columns: 1fr 140rpx 140rpx 72rpx;
+  grid-template-columns: minmax(0, 1fr) 156rpx 156rpx 96rpx;
   gap: 12rpx;
-  align-items: center;
-  padding: 20rpx;
-  border: 1rpx solid #d8e1da;
-  border-radius: 20rpx;
-  background: #ffffff;
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+  align-items: stretch;
 }
 
-.input,
+.editor-control,
 .picker-value {
   min-height: 58rpx;
   line-height: 58rpx;
   font-size: 26rpx;
 }
 
-.amount {
+.amount-control {
   text-align: right;
 }
 
-.remove {
-  color: #a84f34;
-  font-size: 24rpx;
-}
-
-.add {
-  width: 100%;
-  min-height: 88rpx;
-  box-sizing: border-box;
-  padding: 0 24rpx;
-  border-radius: 20rpx;
-  background: #edf4ee;
-  color: #25684a;
-  border: 1rpx dashed #b7c7bc;
-  line-height: 1.2;
+.remove-action {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.add::after {
-  border: 0;
 }

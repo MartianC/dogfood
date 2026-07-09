@@ -1,4 +1,5 @@
-.card .field {
-  padding: 0;
-  border-bottom: 0;
+.recipe-control {
+  min-height: 58rpx;
+  line-height: 58rpx;
+  font-size: 28rpx;
 }

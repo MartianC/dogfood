@@ -1,4 +1,7 @@
 {
   "component": true,
-  "styleIsolation": "isolated"
+  "styleIsolation": "isolated",
+  "usingComponents": {
+    "ui-empty": "../ui/ui-empty/index"
+  }
 }

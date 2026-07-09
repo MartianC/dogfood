@@ -1,21 +1,18 @@
+@import "../../../styles/tokens.wxss";
+
 .profile-card {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  padding: 26rpx;
-  border: 1rpx solid #d8e1da;
-  border-radius: 24rpx;
-  background: #ffffff;
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.07);
 }
 
-.avatar {
+.profile-avatar {
   width: 96rpx;
   height: 96rpx;
   flex: 0 0 96rpx;
   border-radius: 24rpx;
-  border: 1rpx solid #b7c7bc;
-  background: #edf4ee;
+  border: 1rpx solid var(--df-color-line-strong);
+  background: var(--df-color-surface-muted);
   display: block;
 }
 
@@ -25,7 +22,7 @@
 }
 
 .profile-title {
-  color: #17201b;
+  color: var(--df-color-text);
   font-size: 30rpx;
   line-height: 1.25;
   font-weight: 800;
@@ -33,54 +30,24 @@
 
 .profile-meta {
   margin-top: 8rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 22rpx;
   line-height: 1.45;
 }
 
-.status-tag {
-  flex: 0 0 auto;
-  min-height: 44rpx;
-  padding: 0 16rpx;
-  border-radius: 999rpx;
-  background: #edf4ee;
-  color: #6f7b73;
-  font-size: 22rpx;
-  font-weight: 800;
-  line-height: 44rpx;
-}
-
-.status-tag.good {
-  background: #e3f0e8;
-  color: #25684a;
-}
-
-.guest-panel,
-.dog-panel,
-.menu-item {
-  border: 1rpx solid #d8e1da;
-  border-radius: 24rpx;
-  background: #ffffff;
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
-}
-
-.guest-panel {
-  padding: 28rpx;
-}
-
-.guest-panel .button {
+.panel-action {
   margin-top: 24rpx;
 }
 
 .panel-title {
-  color: #17201b;
+  color: var(--df-color-text);
   font-size: 32rpx;
   font-weight: 800;
 }
 
 .panel-desc {
   margin-top: 12rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 25rpx;
   line-height: 1.5;
 }
@@ -92,7 +59,6 @@
 }
 
 .dog-panel {
-  padding: 22rpx;
   display: grid;
   grid-template-columns: 88rpx 1fr;
   gap: 20rpx;
@@ -102,9 +68,9 @@
 .dog-avatar {
   width: 88rpx;
   height: 88rpx;
-  border: 1rpx solid #b7c7bc;
+  border: 1rpx solid var(--df-color-line-strong);
   border-radius: 24rpx;
-  background: #edf4ee;
+  background: var(--df-color-surface-muted);
   display: block;
 }
 
@@ -117,19 +83,19 @@
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
-  color: #17201b;
+  color: var(--df-color-text);
   font-size: 28rpx;
   font-weight: 800;
 }
 
 .edit-link {
-  color: #25684a;
+  color: var(--df-color-primary);
   font-size: 26rpx;
 }
 
 .dog-meta {
   margin-top: 10rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 23rpx;
   line-height: 1.45;
 }
@@ -141,16 +107,15 @@
 .menu-item {
   min-height: 96rpx;
   box-sizing: border-box;
-  padding: 0 28rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #17201b;
+  color: var(--df-color-text);
   font-size: 28rpx;
   font-weight: 700;
 }
 
 .chevron {
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 34rpx;
 }

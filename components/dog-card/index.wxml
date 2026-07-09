@@ -1,8 +1,12 @@
 <view class="dog-card" bindtap="onEdit">
-  <image class="avatar" src="{{dog.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
-  <view class="body">
-    <view class="name">{{dog.name}}</view>
-    <view class="meta">{{ageStageLabels[dog.ageStage]}}｜{{dog.weightKg}}kg｜每日 {{dog.dailyMeals}} 餐</view>
-    <view class="goal">{{dietGoalLabels[dog.dietGoal] || '日常'}}饮食</view>
-  </view>
+  <ui-card variant="primary">
+    <view class="dog-card-content">
+      <image class="dog-avatar" src="{{dog.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+      <view class="dog-body">
+        <view class="dog-name">{{dog.name}}</view>
+        <view class="dog-meta">{{ageStageLabels[dog.ageStage]}}｜{{dog.weightKg}}kg｜每日 {{dog.dailyMeals}} 餐</view>
+        <view class="dog-goal">{{dietGoalLabels[dog.dietGoal] || '日常'}}饮食</view>
+      </view>
+    </view>
+  </ui-card>
 </view>

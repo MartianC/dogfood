@@ -1,4 +1,9 @@
 {
   "component": true,
-  "styleIsolation": "isolated"
+  "styleIsolation": "isolated",
+  "usingComponents": {
+    "ui-button": "../ui/ui-button/index",
+    "ui-card": "../ui/ui-card/index",
+    "ui-field": "../ui/ui-field/index"
+  }
 }

@@ -5,49 +5,54 @@
     <view class="subtitle">其他资料可以稍后在“我的”里补充。</view>
   </view>
 
-  <view class="section card profile-form">
-    <view class="avatar-picker" bindtap="onChooseAvatar">
-      <image class="avatar-preview" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
-      <view>
-        <view class="avatar-title">狗狗头像</view>
-        <view class="avatar-desc">点击更换照片，保存后用于档案和制作对象选择。</view>
+  <view class="section">
+    <ui-card>
+      <view class="profile-form">
+        <view class="avatar-picker" bindtap="onChooseAvatar">
+          <image class="avatar-preview" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+          <view>
+            <view class="avatar-title">狗狗头像</view>
+            <view class="avatar-desc">点击更换照片，保存后用于档案和制作对象选择。</view>
+          </view>
+        </view>
+
+        <ui-field label="狗狗名字">
+          <input class="form-control" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
+        </ui-field>
+
+        <view class="form-pair">
+          <ui-field label="年龄阶段">
+            <picker range="{{ageStageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
+              <view class="picker-value">{{ageStageOptions[ageIndex].label}}</view>
+            </picker>
+          </ui-field>
+          <ui-field label="体重 kg">
+            <input class="form-control" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
+          </ui-field>
+        </view>
+
+        <view class="form-pair">
+          <ui-field label="每日餐数">
+            <input class="form-control" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" />
+          </ui-field>
+          <ui-field label="过敏源，可跳过">
+            <input class="form-control" value="{{allergenText}}" bindinput="onAllergen" placeholder="例如 鸡肉" />
+          </ui-field>
+        </view>
+
+        <view class="target-panel">
+          <view class="panel-title">饮食目标</view>
+          <view class="option-row">
+            <view wx:for="{{dietGoalOptions}}" wx:key="value" data-index="{{index}}" bindtap="onGoalTap">
+              <ui-tag variant="{{goalIndex === index ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+            </view>
+          </view>
+        </view>
       </view>
-    </view>
-    <view class="field">
-      <label>狗狗名字</label>
-      <input class="input" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
-    </view>
-    <view class="form-pair">
-      <view class="field">
-        <label>年龄阶段</label>
-        <picker range="{{ageStageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
-          <view class="picker-value">{{ageStageOptions[ageIndex].label}}</view>
-        </picker>
-      </view>
-      <view class="field">
-        <label>体重 kg</label>
-        <input class="input" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
-      </view>
-    </view>
-    <view class="form-pair">
-      <view class="field">
-        <label>每日餐数</label>
-        <input class="input" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" />
-      </view>
-      <view class="field">
-        <label>过敏源，可跳过</label>
-        <input class="input" value="{{allergenText}}" bindinput="onAllergen" placeholder="例如 鸡肉" />
-      </view>
-    </view>
-    <view class="target-panel">
-      <view class="panel-title">饮食目标</view>
-      <view class="option-row">
-        <view wx:for="{{dietGoalOptions}}" wx:key="value" data-index="{{index}}" bindtap="onGoalTap" class="option {{goalIndex === index ? 'active' : ''}}">{{item.label}}</view>
-      </view>
-    </view>
+    </ui-card>
   </view>
 
   <view class="bottom-action">
-    <button class="button" bindtap="onSave">保存并选择周期</button>
+    <ui-button bind:tap="onSave">保存并选择周期</ui-button>
   </view>
 </view>

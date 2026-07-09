@@ -5,11 +5,12 @@
     <view class="subtitle">系统会按所选狗狗的年龄、体重、每日餐数、过敏源和忌口给出建议，不替代兽医判断。</view>
   </view>
 
-  <view class="section card">
-    <view class="field">
-      <label>食谱名称</label>
-      <input class="input" value="{{title}}" bindinput="onTitle" placeholder="例如 家里简单饭" />
-    </view>
+  <view class="section">
+    <ui-card>
+      <ui-field label="食谱名称">
+        <input class="recipe-control" value="{{title}}" bindinput="onTitle" placeholder="例如 家里简单饭" />
+      </ui-field>
+    </ui-card>
   </view>
 
   <view class="section">
@@ -21,7 +22,7 @@
   </view>
 
   <view class="bottom-action">
-    <button class="button" bindtap="onCheckAdvice">检查并生成建议</button>
-    <button class="button secondary" bindtap="onSaveDraft">保存草稿</button>
+    <ui-button bind:tap="onCheckAdvice">检查并生成建议</ui-button>
+    <ui-button variant="secondary" bind:tap="onSaveDraft">保存草稿</ui-button>
   </view>
 </view>

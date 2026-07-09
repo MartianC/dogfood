@@ -10,10 +10,12 @@
     <advice-card wx:for="{{draft.advices}}" wx:key="ingredientName" advice="{{item}}" />
   </view>
 
-  <view class="section notice warning">建议仅用于做饭前检查食材风险，不表达治疗承诺。有疾病或特殊状态时请咨询兽医。</view>
+  <view class="section">
+    <ui-notice variant="warning">建议仅用于做饭前检查食材风险，不表达治疗承诺。有疾病或特殊状态时请咨询兽医。</ui-notice>
+  </view>
 
   <view class="bottom-action">
-    <button class="button" bindtap="onChoosePeriod">按建议选择周期</button>
-    <button class="button secondary" bindtap="onBackEdit">返回调整食材</button>
+    <ui-button bind:tap="onChoosePeriod">按建议选择周期</ui-button>
+    <ui-button variant="secondary" bind:tap="onBackEdit">返回调整食材</ui-button>
   </view>
 </view>

@@ -1,8 +1,10 @@
+@import "../../../styles/tokens.wxss";
+
 .meter {
   height: 12rpx;
   margin-top: 22rpx;
   border-radius: 999rpx;
-  background: #edf4ee;
+  background: var(--df-color-surface-muted);
   overflow: hidden;
 }
 
@@ -10,5 +12,5 @@
   width: 72%;
   height: 100%;
   border-radius: 999rpx;
-  background: #25684a;
+  background: var(--df-color-primary);
 }
