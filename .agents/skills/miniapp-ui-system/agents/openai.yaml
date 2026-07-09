@@ -1,0 +1,4 @@
+interface:
+  display_name: "小程序 UI 系统"
+  short_description: "建立微信小程序 UI Kernel、设计 token、Figma 落地和组件库接入规范"
+  default_prompt: "为当前微信小程序建立或维护稳定的 UI 开发体系，包括 Figma 设计稿落地、设计 token、基础 UI 组件、组件库 wrapper、自动检查和 AI 开发规则。"

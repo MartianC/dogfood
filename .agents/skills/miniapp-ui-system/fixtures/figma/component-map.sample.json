@@ -1,0 +1,19 @@
+{
+  "Button/Primary": {
+    "source": {
+      "fileKey": "sample",
+      "nodeId": "1:2",
+      "component": "Button",
+      "variant": "Primary"
+    },
+    "targetKind": "ui",
+    "target": "components/ui/ui-button",
+    "library": "tdesign",
+    "props": {
+      "variant": "primary",
+      "size": "large"
+    },
+    "status": "mapped",
+    "reason": "基础按钮优先包装组件库能力"
+  }
+}

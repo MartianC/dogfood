@@ -1,0 +1,40 @@
+{
+  "tokens": [
+    {
+      "sourceKind": "figma-variable",
+      "collection": "Base",
+      "name": "Color/Primary",
+      "type": "color",
+      "mode": "light",
+      "value": "#2563eb",
+      "unit": "none",
+      "target": "--mp-color-primary",
+      "status": "mapped",
+      "reason": "品牌主色"
+    },
+    {
+      "sourceKind": "figma-variable",
+      "collection": "Base",
+      "name": "Radius/Medium",
+      "type": "radius",
+      "mode": "default",
+      "value": 8,
+      "unit": "px",
+      "target": "--mp-radius-md",
+      "status": "mapped",
+      "reason": "中等圆角"
+    },
+    {
+      "sourceKind": "figma-variable",
+      "collection": "Base",
+      "name": "Spacing/4",
+      "type": "spacing",
+      "mode": "default",
+      "value": 12,
+      "unit": "px",
+      "target": "--mp-space-4",
+      "status": "mapped",
+      "reason": "标准段落间距"
+    }
+  ]
+}
