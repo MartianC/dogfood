@@ -11,7 +11,6 @@
     "components/advice-card/index.wxss: 禁止新增全局泛名 .row 1 处，请使用 ui-* 或业务前缀",
     "components/advice-card/index.wxss: 避免直接写颜色 #ffffff, #d8e1da, #f6e8e1, #e6c6b8, #25684a, #a84f34, #6f7b73，共 7 处，请先加到 styles/tokens.wxss",
     "components/dog-card/index.wxss: 避免直接写颜色 #25684a, #ffffff, rgba(255, 255, 255, 0.42), #edf4ee, rgba(255, 255, 255, 0.8)，共 5 处，请先加到 styles/tokens.wxss",
-    "components/dog-target-selector/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, rgba(20, 37, 28, 0.06), #25684a, #34423a, rgba(37, 104, 74, 0.28), #e3f0e8, #edf4ee, #6f7b73，共 12 处，请先加到 styles/tokens.wxss",
     "components/empty-state/index.wxml: 页面或业务组件不应直接实现基础按钮 1 处，请使用 ui-button 或组件库 wrapper",
     "components/empty-state/index.wxss: 禁止新增全局泛名 .button 2 处，请使用 ui-* 或业务前缀",
     "components/empty-state/index.wxss: 禁止新增全局泛名 .title 1 处，请使用 ui-* 或业务前缀",
@@ -19,13 +18,6 @@
     "components/ingredient-editor/index.wxml: 页面或业务组件不应直接实现基础按钮 1 处，请使用 ui-button 或组件库 wrapper",
     "components/ingredient-editor/index.wxss: 禁止新增全局泛名 .input 1 处，请使用 ui-* 或业务前缀",
     "components/ingredient-editor/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, rgba(20, 37, 28, 0.06), #a84f34, #edf4ee, #25684a, #b7c7bc，共 7 处，请先加到 styles/tokens.wxss",
-    "components/ingredient-list/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, #edf4ee, #b7c7bc, #25684a, #17201b, #6f7b73，共 9 处，请先加到 styles/tokens.wxss",
-    "components/period-selector/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, #34423a, rgba(37, 104, 74, 0.28), #e3f0e8, #25684a，共 8 处，请先加到 styles/tokens.wxss",
-    "components/share-card/index.wxml: 页面或业务组件不应直接实现基础按钮 2 处，请使用 ui-button 或组件库 wrapper",
-    "components/share-card/index.wxss: 禁止新增全局泛名 .button 3 处，请使用 ui-* 或业务前缀",
-    "components/share-card/index.wxss: 禁止新增全局泛名 .title 1 处，请使用 ui-* 或业务前缀",
-    "components/share-card/index.wxss: 避免直接写颜色 #ffffff, #d8e1da, rgba(20, 37, 28, 0.06), #6f7b73, #25684a, #34423a, #b7c7bc，共 9 处，请先加到 styles/tokens.wxss",
-    "pages/plan/index/index.wxss: 避免直接写颜色 #25684a, #ffffff, rgba(20, 37, 28, 0.09), rgba(255, 255, 255, 0.78), #edf4ee, #e3f0e8，共 8 处，请先加到 styles/tokens.wxss",
     "pages/profile/index/index.wxml: 页面或业务组件不应直接实现基础按钮 1 处，请使用 ui-button 或组件库 wrapper",
     "pages/profile/index/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, rgba(20, 37, 28, 0.07), #b7c7bc, #edf4ee, #17201b, #6f7b73, #e3f0e8, #25684a, rgba(20, 37, 28, 0.06)，共 23 处，请先加到 styles/tokens.wxss",
     "subpackages/custom-recipe/advice/index.wxml: WXML 不应继续使用基础类 notice 1 处，请迁移到 ui-* 组件",
@@ -38,9 +30,6 @@
     "subpackages/dog-profile/dog-edit/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, #b7c7bc, #edf4ee, #17201b, #6f7b73, #34423a, rgba(37, 104, 74, 0.28), #e3f0e8, #25684a，共 17 处，请先加到 styles/tokens.wxss",
     "subpackages/dog-profile/dog-quick-create/index.wxml: WXML 不应继续使用基础类 card 1 处，请迁移到 ui-* 组件",
     "subpackages/dog-profile/dog-quick-create/index.wxml: 页面或业务组件不应直接实现基础按钮 1 处，请使用 ui-button 或组件库 wrapper",
-    "subpackages/dog-profile/dog-quick-create/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, #b7c7bc, #edf4ee, #17201b, #6f7b73, #34423a, rgba(37, 104, 74, 0.28), #e3f0e8, #25684a，共 17 处，请先加到 styles/tokens.wxss",
-    "subpackages/plan-extra/period/index.wxml: WXML 不应继续使用基础类 notice 1 处，请迁移到 ui-* 组件",
-    "subpackages/plan-extra/period/index.wxml: 页面或业务组件不应直接实现基础按钮 1 处，请使用 ui-button 或组件库 wrapper",
-    "subpackages/plan-extra/period/index.wxss: 避免直接写颜色 #edf4ee，共 1 处，请先加到 styles/tokens.wxss"
+    "subpackages/dog-profile/dog-quick-create/index.wxss: 避免直接写颜色 #d8e1da, #ffffff, #b7c7bc, #edf4ee, #17201b, #6f7b73, #34423a, rgba(37, 104, 74, 0.28), #e3f0e8, #25684a，共 17 处，请先加到 styles/tokens.wxss"
   ]
 }

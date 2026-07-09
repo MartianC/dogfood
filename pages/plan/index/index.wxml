@@ -2,13 +2,15 @@
   <empty-state wx:if="{{!plan}}" title="还没有生成清单" description="选择一道食谱后，可以生成批量制作清单。" actionText="去选食谱" bind:action="onGoRecipes" />
 
   <view wx:else>
-    <view class="plan-hero">
-      <view class="eyebrow">{{plan.periodDays}} 天｜共 {{plan.totalPortions}} 份</view>
-      <view class="plan-title">{{plan.recipeName}}批量制作清单</view>
-      <view class="plan-subtitle">
-        <text wx:for="{{plan.dogMealSummaries}}" wx:key="dogId">{{item.dogName}} {{item.totalMeals}} 份，每份约 {{item.perMealTotalGram}}g{{index < plan.dogMealSummaries.length - 1 ? '；' : ''}}</text>
+    <ui-card variant="primary">
+      <view class="plan-hero">
+        <view class="plan-eyebrow">{{plan.periodDays}} 天｜共 {{plan.totalPortions}} 份</view>
+        <view class="plan-title">{{plan.recipeName}}批量制作清单</view>
+        <view class="plan-subtitle">
+          <text wx:for="{{plan.dogMealSummaries}}" wx:key="dogId">{{item.dogName}} {{item.totalMeals}} 份，每份约 {{item.perMealTotalGram}}g{{index < plan.dogMealSummaries.length - 1 ? '；' : ''}}</text>
+        </view>
       </view>
-    </view>
+    </ui-card>
 
     <view class="section grid-2">
       <view class="metric">
@@ -21,12 +23,14 @@
       </view>
     </view>
 
-    <view class="section card">
-      <view class="section-title">分装参考</view>
-      <view wx:for="{{plan.dogMealSummaries}}" wx:key="dogId" class="summary-row">
-        <text>{{item.dogName}}：每日 {{item.dailyMeals}} 餐，共 {{item.totalMeals}} 份</text>
-        <text>每份约 {{item.perMealTotalGram}}g</text>
-      </view>
+    <view class="section">
+      <ui-card>
+        <view class="section-title">分装参考</view>
+        <view wx:for="{{plan.dogMealSummaries}}" wx:key="dogId" class="summary-row">
+          <text>{{item.dogName}}：每日 {{item.dailyMeals}} 餐，共 {{item.totalMeals}} 份</text>
+          <text>每份约 {{item.perMealTotalGram}}g</text>
+        </view>
+      </ui-card>
     </view>
 
     <view wx:if="{{perMealItems.length}}" class="section">
@@ -45,12 +49,14 @@
       <ingredient-list items="{{totalItems}}" checkedMap="{{checkedMap}}" showCheckbox bind:checkitem="onCheckItem" />
     </view>
 
-    <view class="section card">
-      <view class="section-title">制作和分装</view>
-      <view wx:for="{{plan.cookingSteps}}" wx:key="*this" class="summary-row step-row">
-        <text class="step-num">{{index + 1}}</text>
-        <text>{{item}}</text>
-      </view>
+    <view class="section">
+      <ui-card>
+        <view class="section-title">制作和分装</view>
+        <view wx:for="{{plan.cookingSteps}}" wx:key="*this" class="summary-row step-row">
+          <text class="step-num">{{index + 1}}</text>
+          <text>{{item}}</text>
+        </view>
+      </ui-card>
     </view>
 
     <view class="section">

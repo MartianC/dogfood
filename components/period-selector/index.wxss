@@ -1,3 +1,5 @@
+@import "../../styles/tokens.wxss";
+
 .period {
   display: flex;
   flex-direction: column;
@@ -12,19 +14,19 @@
 
 .option {
   height: 78rpx;
-  border: 1rpx solid #d8e1da;
+  border: 1rpx solid var(--df-color-line);
   border-radius: 18rpx;
-  background: #ffffff;
-  color: #34423a;
+  background: var(--df-color-surface);
+  color: var(--df-color-text-secondary);
   line-height: 78rpx;
   text-align: center;
   font-weight: 700;
 }
 
 .option.active {
-  border-color: rgba(37, 104, 74, 0.28);
-  background: #e3f0e8;
-  color: #25684a;
+  border-color: var(--df-color-line-strong);
+  background: var(--df-color-primary-soft);
+  color: var(--df-color-primary);
 }
 
 .custom {
@@ -33,8 +35,8 @@
   gap: 16rpx;
   padding: 18rpx 22rpx;
   border-radius: 18rpx;
-  background: #ffffff;
-  border: 1rpx solid #d8e1da;
+  background: var(--df-color-surface);
+  border: 1rpx solid var(--df-color-line);
 }
 
 .custom-input {

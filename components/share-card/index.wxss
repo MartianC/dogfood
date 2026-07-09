@@ -1,49 +1,19 @@
-.share-card {
-  padding: 24rpx;
-  border-radius: 20rpx;
-  background: #ffffff;
-  border: 1rpx solid #d8e1da;
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
-}
+@import "../../styles/tokens.wxss";
 
-.title {
+.share-title {
   font-size: 32rpx;
   font-weight: 800;
+  color: var(--df-color-text);
 }
 
-.meta {
+.share-meta {
   margin-top: 10rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
 }
 
-.actions {
+.share-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14rpx;
   margin-top: 18rpx;
-}
-
-.button {
-  width: 100%;
-  min-height: 88rpx;
-  box-sizing: border-box;
-  padding: 0 24rpx;
-  border-radius: 20rpx;
-  background: #25684a;
-  color: #ffffff;
-  line-height: 1.2;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.button::after {
-  border: 0;
-}
-
-.button.secondary {
-  background: #ffffff;
-  color: #34423a;
-  border: 1rpx solid #b7c7bc;
 }

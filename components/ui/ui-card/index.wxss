@@ -21,6 +21,7 @@
   color: var(--df-color-on-primary);
   background: var(--df-color-primary);
   border-color: var(--df-color-primary);
+  box-shadow: var(--df-shadow-primary);
 }
 
 .ui-card--none {

@@ -1,8 +1,10 @@
+@import "../../styles/tokens.wxss";
+
 .ingredient-list {
-  border: 1rpx solid #d8e1da;
+  border: 1rpx solid var(--df-color-line);
   border-radius: 18rpx;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--df-color-surface);
 }
 
 .item {
@@ -11,7 +13,7 @@
   justify-content: space-between;
   min-height: 92rpx;
   padding: 0 22rpx;
-  border-bottom: 1rpx solid #edf4ee;
+  border-bottom: 1rpx solid var(--df-color-surface-muted);
 }
 
 .item:last-child {
@@ -28,26 +30,26 @@
   width: 34rpx;
   height: 34rpx;
   border-radius: 8rpx;
-  border: 2rpx solid #b7c7bc;
+  border: 2rpx solid var(--df-color-line-strong);
 }
 
 .check.checked {
-  background: #25684a;
-  border-color: #25684a;
+  background: var(--df-color-primary);
+  border-color: var(--df-color-primary);
 }
 
 .name {
   font-weight: 700;
-  color: #17201b;
+  color: var(--df-color-text);
 }
 
 .category {
   margin-top: 4rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   font-size: 22rpx;
 }
 
 .amount {
-  color: #25684a;
+  color: var(--df-color-primary);
   font-weight: 800;
 }

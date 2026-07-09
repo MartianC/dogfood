@@ -3,6 +3,7 @@
   "usingComponents": {
     "ingredient-list": "../../../components/ingredient-list/index",
     "empty-state": "../../../components/empty-state/index",
-    "share-card": "../../../components/share-card/index"
+    "share-card": "../../../components/share-card/index",
+    "ui-card": "../../../components/ui/ui-card/index"
   }
 }

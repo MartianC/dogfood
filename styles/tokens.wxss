@@ -13,6 +13,7 @@ page,
   --df-color-primary-soft: #e3f0e8;
   --df-color-warning: #a84f34;
   --df-color-warning-soft: #f6e8e1;
+  --df-color-on-primary-muted: rgba(255, 255, 255, 0.78);
 
   --df-radius-sm: 12rpx;
   --df-radius-md: 18rpx;
@@ -36,6 +37,7 @@ page,
   --df-touch-min: 88rpx;
   --df-shadow-card: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
   --df-shadow-hero: 0 12rpx 32rpx rgba(20, 37, 28, 0.07);
+  --df-shadow-primary: 0 12rpx 32rpx rgba(20, 37, 28, 0.09);
   --df-shadow-sheet: 0 -36rpx 68rpx rgba(27, 22, 16, 0.22);
   --df-color-mask: rgba(25, 24, 21, 0.44);
 }
