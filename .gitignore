@@ -23,6 +23,7 @@ coverage/
 .design-check/
 .workbuddy/
 .superpowers/
+fooddata-cloudbase-export/
 
 # 环境变量和密钥
 .env
