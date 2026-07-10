@@ -1,6 +1,6 @@
 # 小程序 UI 系统问题清单
 
-> 盘点日期：2026-07-09  
+> 盘点日期：2026-07-09
 > 依据：`.agents/skills/miniapp-ui-system/SKILL.md`、`references/ui-system-architecture.md`、`references/ai-frontend-rules.md`、`references/scaffold.md`、现有 `app.wxss`、`pages/`、`components/`、`subpackages/`。
 
 ## 结论

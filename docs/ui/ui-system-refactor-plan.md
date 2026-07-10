@@ -1,7 +1,7 @@
 # 小程序 UI 系统重整计划
 
-> **For agentic workers:** 实施本计划时优先使用 `superpowers:subagent-driven-development` 或 `superpowers:executing-plans`，按任务逐项完成并在每项后验证。  
-> 计划日期：2026-07-09  
+> **For agentic workers:** 实施本计划时优先使用 `superpowers:subagent-driven-development` 或 `superpowers:executing-plans`，按任务逐项完成并在每项后验证。
+> 计划日期：2026-07-09
 > 配套问题清单：`docs/ui/ui-system-problem-inventory.md`
 
 ## 目标
