@@ -1,0 +1,6 @@
+<view
+  class="ui-notice ui-notice--{{variant}} {{clickable ? 'ui-notice--clickable' : ''}}"
+  bindtap="handleTap"
+>
+  <slot />
+</view>

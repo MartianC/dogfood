@@ -1,11 +1,21 @@
 <view class="editor">
-  <view wx:for="{{ingredients}}" wx:key="index" class="ingredient">
-    <input class="input" placeholder="食材名称" value="{{item.name}}" data-index="{{index}}" bindinput="onName" />
-    <picker range="{{categoryOptions}}" range-key="label" data-index="{{index}}" bindchange="onCategory">
-      <view class="picker-value">{{item.category}}</view>
-    </picker>
-    <input class="input amount" type="number" placeholder="每餐 g" value="{{item.perMealAmountGram}}" data-index="{{index}}" bindinput="onAmount" />
-    <text class="remove" data-index="{{index}}" bindtap="removeItem">删除</text>
-  </view>
-  <button class="add" bindtap="addItem">添加食材</button>
+  <ui-card wx:for="{{ingredients}}" wx:key="index" padding="small">
+    <view class="ingredient-item">
+      <ui-field label="食材">
+        <input class="editor-control" placeholder="食材名称" value="{{item.name}}" data-index="{{index}}" bindinput="onName" />
+      </ui-field>
+      <ui-field label="类别">
+        <picker range="{{categoryOptions}}" range-key="label" data-index="{{index}}" bindchange="onCategory">
+          <view class="picker-value">{{item.category}}</view>
+        </picker>
+      </ui-field>
+      <ui-field label="每餐 g">
+        <input class="editor-control amount-control" type="number" placeholder="0" value="{{item.perMealAmountGram}}" data-index="{{index}}" bindinput="onAmount" />
+      </ui-field>
+      <view class="remove-action">
+        <ui-button variant="warning" size="small" block="{{false}}" event-value="{{index}}" bind:tap="removeItem">删除</ui-button>
+      </view>
+    </view>
+  </ui-card>
+  <ui-button variant="ghost" bind:tap="addItem">添加食材</ui-button>
 </view>

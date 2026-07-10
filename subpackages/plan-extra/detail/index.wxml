@@ -1,10 +1,10 @@
 <view class="page">
   <empty-state wx:if="{{!plans.length}}" title="还没有历史清单" description="生成批量制作清单后，会在这里看到记录。" actionText="去选食谱" bind:action="onGoRecipes" />
   <view wx:else class="stack">
-    <view wx:for="{{plans}}" wx:key="id" class="card">
-      <view class="section-title">{{item.recipeName}}</view>
-      <view class="muted">{{item.periodDays}} 天｜共 {{item.totalPortions}} 份</view>
-      <view class="tiny">生成时间：{{item.createdAt}}</view>
-    </view>
+    <ui-card wx:for="{{plans}}" wx:key="id">
+      <view class="df-heading-lg">{{item.recipeName}}</view>
+      <view class="df-body">{{item.periodDays}} 天｜共 {{item.totalPortions}} 份</view>
+      <view class="df-caption">生成时间：{{item.createdAt}}</view>
+    </ui-card>
   </view>
 </view>

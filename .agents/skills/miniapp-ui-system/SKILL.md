@@ -43,11 +43,12 @@ node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project . --dr
 node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project .
 ```
 
-4. 初始化后，新 UI 必须先做组件来源判断：已有项目组件、组件库可包装能力、自研组件。
-5. 已引入组件库时，按钮、卡片、标签、输入、提示等基础视觉组件优先通过组件库包装实现；复杂、强视觉、高自定义需求再用 UI Kernel 组合或自研。
-6. 页面不直接使用第三方组件标签；组件库能力必须收敛到 `components/ui/*` 或 `components/vendor/*`。
-7. 改 UI 前说明使用哪些 token、哪些 UI 组件、是否新增变体；完成后运行 `npm run check:ui` 和项目测试。
-8. 涉及 Figma 设计稿落地时，先读 `references/figma-handoff.md`；Figma 是设计输入源，不直接替代小程序 UI 架构。
+4. 初始化脚手架必须让后续 AI 能发现生成文档：检查并更新项目已有的 AI 入口文件，例如 `AGENTS.md`、`CLAUDE.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`.cursorrules`、`.cursor/rules/*`、`.windsurfrules`、`docs/README.md`。入口里至少索引 `docs/ui/design-system.md`、`docs/ui/component-contracts.md`、`docs/ui/ai-frontend-rules.md` 和 `scripts/check-ui-system.js`。
+5. 初始化后，新 UI 必须先做组件来源判断：已有项目组件、组件库可包装能力、自研组件。
+6. 已引入组件库时，按钮、卡片、标签、输入、提示等基础视觉组件优先通过组件库包装实现；复杂、强视觉、高自定义需求再用 UI Kernel 组合或自研。
+7. 页面不直接使用第三方组件标签；组件库能力必须收敛到 `components/ui/*` 或 `components/vendor/*`。
+8. 改 UI 前说明使用哪些 token、哪些 UI 组件、是否新增变体；完成后运行 `npm run check:ui` 和项目测试。
+9. 涉及 Figma 设计稿落地时，先读 `references/figma-handoff.md`；Figma 是设计输入源，不直接替代小程序 UI 架构。
 
 ## 参考资料
 

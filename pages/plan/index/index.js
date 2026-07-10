@@ -1,6 +1,14 @@
 const mealPlanService = require('../../../services/mealPlanService')
 const calculator = require('../../../utils/calculator')
 
+const SHARE_COLORS = {
+  surface: '#ffffff',
+  text: '#17201b',
+  primary: '#25684a',
+  textSecondary: '#34423a',
+  muted: '#6f7b73',
+}
+
 function withDisplay(items) {
   return (items || []).map((item) => ({
     ...item,
@@ -42,20 +50,20 @@ Page({
   onExport() {
     if (!this.data.plan) return
     const ctx = wx.createCanvasContext('shareCanvas', this)
-    ctx.setFillStyle('#ffffff')
+    ctx.setFillStyle(SHARE_COLORS.surface)
     ctx.fillRect(0, 0, 320, 420)
-    ctx.setFillStyle('#17201b')
+    ctx.setFillStyle(SHARE_COLORS.text)
     ctx.setFontSize(20)
     ctx.fillText(this.data.plan.recipeName || '狗饭清单', 24, 42)
-    ctx.setFillStyle('#25684a')
+    ctx.setFillStyle(SHARE_COLORS.primary)
     ctx.setFontSize(14)
     ctx.fillText(`${this.data.plan.periodDays} 天｜共 ${this.data.plan.totalPortions} 份`, 24, 72)
-    ctx.setFillStyle('#34423a')
+    ctx.setFillStyle(SHARE_COLORS.textSecondary)
     ctx.setFontSize(13)
     this.data.totalItems.slice(0, 8).forEach((item, index) => {
       ctx.fillText(`${item.name} ${item.displayAmount}`, 24, 112 + index * 28)
     })
-    ctx.setFillStyle('#6f7b73')
+    ctx.setFillStyle(SHARE_COLORS.muted)
     ctx.fillText('按每餐重量分装后冷冻保存', 24, 374)
     ctx.draw(false, () => {
       wx.canvasToTempFilePath({

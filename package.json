@@ -4,7 +4,8 @@
   "private": true,
   "description": "狗饭微信小程序 MVP",
   "scripts": {
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "check:ui": "node scripts/check-ui-system.js"
   },
   "devDependencies": {}
 }

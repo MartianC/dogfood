@@ -1,0 +1,25 @@
+.df-heading-xl {
+  color: var(--df-color-text);
+  font-size: var(--df-font-xl);
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.df-heading-lg {
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.df-body {
+  color: var(--df-color-text-secondary);
+  font-size: var(--df-font-md);
+  line-height: 1.55;
+}
+
+.df-caption {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 1.45;
+}

@@ -1,38 +1,19 @@
-.advice {
-  padding: 22rpx;
-  border-radius: 18rpx;
-  background: #ffffff;
-  border: 1rpx solid #d8e1da;
-}
+@import "../../styles/tokens.wxss";
 
-.advice.adjust,
-.advice.avoid {
-  background: #f6e8e1;
-  border-color: #e6c6b8;
-}
-
-.row {
+.advice-head {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 16rpx;
 }
 
-.name {
+.advice-name {
+  color: var(--df-color-text);
   font-weight: 800;
 }
 
-.level {
-  color: #25684a;
-  font-weight: 700;
-}
-
-.avoid .level,
-.adjust .level {
-  color: #a84f34;
-}
-
-.reason {
+.advice-reason {
   margin-top: 12rpx;
-  color: #6f7b73;
+  color: var(--df-color-muted);
   line-height: 1.45;
 }

@@ -1,0 +1,74 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  display: block;
+}
+
+.ui-button {
+  min-height: var(--df-touch-min);
+  box-sizing: border-box;
+  padding: 0 28rpx;
+  border-radius: var(--df-radius-lg);
+  border: 1rpx solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--df-color-text-secondary);
+  background: var(--df-color-surface);
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.ui-button::after {
+  border: 0;
+}
+
+.ui-button--block {
+  width: 100%;
+}
+
+.ui-button--inline {
+  width: auto;
+  display: inline-flex;
+}
+
+.ui-button--medium {
+  min-height: 80rpx;
+  font-size: 28rpx;
+}
+
+.ui-button--small {
+  min-height: 64rpx;
+  padding: 0 20rpx;
+  font-size: 24rpx;
+}
+
+.ui-button--primary {
+  color: var(--df-color-on-primary);
+  background: var(--df-color-primary);
+  border-color: var(--df-color-primary);
+}
+
+.ui-button--secondary {
+  color: var(--df-color-text-secondary);
+  background: var(--df-color-surface);
+  border-color: var(--df-color-line-strong);
+}
+
+.ui-button--warning {
+  color: var(--df-color-on-primary);
+  background: var(--df-color-warning);
+  border-color: var(--df-color-warning);
+}
+
+.ui-button--ghost {
+  color: var(--df-color-primary);
+  background: var(--df-color-primary-soft);
+  border-color: transparent;
+}
+
+.ui-button[disabled] {
+  opacity: 0.56;
+}

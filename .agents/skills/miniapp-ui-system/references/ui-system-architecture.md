@@ -42,6 +42,9 @@ docs/ui/
 
 scripts/
   check-ui-system.js
+
+AGENTS.md / CLAUDE.md / GEMINI.md / .github/copilot-instructions.md / .cursor/rules/* / .windsurfrules / docs/README.md
+  # 已存在的 AI 入口文档应索引 docs/ui/* 和 scripts/check-ui-system.js
 ```
 
 ## 模块边界
@@ -82,6 +85,10 @@ UI Kernel。接口要小而稳定，封装尽量多的视觉和状态逻辑。
 ### `pages/*`
 
 页面负责数据装配、状态切换和流程编排。页面 WXSS 只允许页面布局和少量局部结构样式。
+
+### AI 入口文档
+
+不同 AI 工具有不同的默认入口，例如 Codex 常读 `AGENTS.md`，Claude Code 常读 `CLAUDE.md`，Gemini CLI 常读 `GEMINI.md`，Copilot、Cursor、Windsurf 也各有项目规则文件。初始化或迁移 UI 系统时，必须把 `docs/ui/design-system.md`、`docs/ui/component-contracts.md`、`docs/ui/ai-frontend-rules.md` 和 `scripts/check-ui-system.js` 索引到项目已存在的入口文档中。不要为未使用的工具主动创建入口文件。
 
 ## 组件来源判断
 

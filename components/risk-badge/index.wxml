@@ -1,3 +1,3 @@
 <view wx:if="{{warnings.length}}" class="risk-list">
-  <view wx:for="{{warnings}}" wx:key="msg" class="risk {{item.level || 'info'}}">{{item.msg || item}}</view>
+  <ui-notice wx:for="{{warnings}}" wx:key="msg" variant="{{item.level === 'danger' || item.level === 'warning' ? 'warning' : 'neutral'}}">{{item.msg || item}}</ui-notice>
 </view>

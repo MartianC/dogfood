@@ -1,15 +1,16 @@
-<view class="page with-bottom-action">
-  <view class="hero">
-    <view class="eyebrow">给狗狗检查一份食谱</view>
-    <view class="title">输入单餐参考量</view>
-    <view class="subtitle">系统会按所选狗狗的年龄、体重、每日餐数、过敏源和忌口给出建议，不替代兽医判断。</view>
-  </view>
+<view class="page recipe-edit-page">
+  <ui-card>
+    <view class="recipe-eyebrow df-caption">给狗狗检查一份食谱</view>
+    <view class="recipe-title df-heading-xl">输入单餐参考量</view>
+    <view class="recipe-subtitle df-body">系统会按所选狗狗的年龄、体重、每日餐数、过敏源和忌口给出建议，不替代兽医判断。</view>
+  </ui-card>
 
-  <view class="section card">
-    <view class="field">
-      <label>食谱名称</label>
-      <input class="input" value="{{title}}" bindinput="onTitle" placeholder="例如 家里简单饭" />
-    </view>
+  <view class="section">
+    <ui-card>
+      <ui-field label="食谱名称">
+        <input class="recipe-control" value="{{title}}" bindinput="onTitle" placeholder="例如 家里简单饭" />
+      </ui-field>
+    </ui-card>
   </view>
 
   <view class="section">
@@ -20,8 +21,8 @@
     <dog-target-selector dogs="{{dogs}}" selectedDogIds="{{selectedDogIds}}" bind:change="onTargetChange" />
   </view>
 
-  <view class="bottom-action">
-    <button class="button" bindtap="onCheckAdvice">检查并生成建议</button>
-    <button class="button secondary" bindtap="onSaveDraft">保存草稿</button>
+  <view class="section recipe-actions">
+    <ui-button bind:tap="onCheckAdvice">检查并生成建议</ui-button>
+    <ui-button variant="secondary" bind:tap="onSaveDraft">保存草稿</ui-button>
   </view>
 </view>

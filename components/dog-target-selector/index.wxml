@@ -1,15 +1,17 @@
-<view class="selector">
-  <view class="head">
-    <text>这批饭给谁吃</text>
-    <text wx:if="{{dogs.length > 1}}" class="all" bindtap="onAll">全部狗狗</text>
-  </view>
-  <view class="chips">
-    <view wx:for="{{displayDogs}}" wx:key="id" data-id="{{item.id}}" bindtap="onToggle" class="chip {{item.selected ? 'active' : ''}}">
-      <image class="avatar" src="{{item.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
-      <view class="dog-copy">
-        <view class="dog-name">{{item.name}}</view>
-        <view class="dog-meta">{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐</view>
+<ui-card>
+  <view class="selector">
+    <view class="selector-head">
+      <text>这批饭给谁吃</text>
+      <text wx:if="{{dogs.length > 1}}" class="selector-all" bindtap="onAll">全部狗狗</text>
+    </view>
+    <view class="selector-chips">
+      <view wx:for="{{displayDogs}}" wx:key="id" data-id="{{item.id}}" bindtap="onToggle" class="selector-chip {{item.selected ? 'selector-chip--active' : ''}}">
+        <image class="selector-avatar" src="{{item.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+        <view class="selector-dog-copy">
+          <view class="selector-dog-name">{{item.name}}</view>
+          <view class="selector-dog-meta">{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐</view>
+        </view>
       </view>
     </view>
   </view>
-</view>
+</ui-card>

@@ -1,53 +1,59 @@
 <view wx:if="{{recipe}}" class="page with-bottom-action">
-  <view class="hero">
-    <view class="eyebrow">{{recipe.title}}</view>
-    <view class="title">这次准备多少天？</view>
-    <view class="subtitle">先选择这批饭给谁吃，再计算每餐重量和采购总量。</view>
-  </view>
+  <ui-card>
+    <view class="period-eyebrow df-caption">{{recipe.title}}</view>
+    <view class="period-title df-heading-xl">这次准备多少天？</view>
+    <view class="period-subtitle df-body">先选择这批饭给谁吃，再计算每餐重量和采购总量。</view>
+  </ui-card>
 
   <view class="section">
     <dog-target-selector dogs="{{dogs}}" selectedDogIds="{{selectedDogIds}}" bind:change="onTargetChange" />
   </view>
 
-  <view class="section card">
-    <view class="section-title">制作周期</view>
-    <period-selector value="{{periodDays}}" bind:change="onPeriodChange" />
+  <view class="section">
+    <ui-card>
+      <view class="df-heading-lg">制作周期</view>
+      <period-selector value="{{periodDays}}" bind:change="onPeriodChange" />
+    </ui-card>
   </view>
 
   <view wx:if="{{preview}}" class="section summary-grid">
-    <view class="metric">
+    <view class="summary-metric">
       <strong>{{preview.totalPortions}}</strong>
       <span>分装总数</span>
     </view>
-    <view class="metric">
+    <view class="summary-metric">
       <strong>{{selectedDogIds.length}} 只</strong>
       <span>制作对象</span>
     </view>
-    <view class="metric">
+    <view class="summary-metric">
       <strong>{{periodDays}} 天</strong>
       <span>制作周期</span>
     </view>
   </view>
 
-  <view wx:if="{{preview}}" class="section card">
-    <view class="section-title">分装与采购预览</view>
-    <view wx:for="{{preview.dogMealSummaries}}" wx:key="dogId" class="preview-row">
-      <text>{{item.dogName}}：{{item.totalMeals}} 份</text>
-      <text>每份约 {{item.perMealTotalGram}}g</text>
-    </view>
-    <view class="preview-row">
-      <text>采购预估</text>
-      <text>{{purchaseSummary}}</text>
-    </view>
+  <view wx:if="{{preview}}" class="section">
+    <ui-card>
+      <view class="df-heading-lg">分装与采购预览</view>
+      <view wx:for="{{preview.dogMealSummaries}}" wx:key="dogId" class="preview-row">
+        <text>{{item.dogName}}：{{item.totalMeals}} 份</text>
+        <text>每份约 {{item.perMealTotalGram}}g</text>
+      </view>
+      <view class="preview-row">
+        <text>采购预估</text>
+        <text>{{purchaseSummary}}</text>
+      </view>
+    </ui-card>
   </view>
 
   <view wx:if="{{preview}}" class="section">
     <ingredient-list items="{{totalItems}}" />
   </view>
 
-  <view class="section notice good">建议按每餐分装冷冻，喂食前充分加热后放凉。</view>
+  <view class="section">
+    <ui-notice variant="good">建议按每餐分装冷冻，喂食前充分加热后放凉。</ui-notice>
+  </view>
 
   <view class="bottom-action">
-    <button class="button" bindtap="onGenerate">生成制作清单</button>
+    <ui-button bind:tap="onGenerate">生成制作清单</ui-button>
   </view>
 </view>

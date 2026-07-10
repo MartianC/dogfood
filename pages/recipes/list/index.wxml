@@ -1,50 +1,54 @@
 <view class="page">
   <view class="search">
-    <input placeholder="搜索食材或食谱名称" value="{{keyword}}" bindinput="onSearch" />
+    <ui-field>
+      <input class="search-input" placeholder="搜索食材或食谱名称" value="{{keyword}}" bindinput="onSearch" />
+    </ui-field>
   </view>
 
   <view class="select-block">
     <picker range="{{modeOptions}}" range-key="label" value="{{modeIndex}}" bindchange="onMode">
-      <view class="select-filter wide">
+      <ui-field helpText="{{dogs.length ? '可按全部狗狗、单只狗狗或自定义条件筛选' : '未建档可选：全部食谱 / 自定义筛选'}}">
         <text class="filter-label">筛选方式</text>
         <text class="filter-value">{{modeOptions[modeIndex].label}}</text>
-        <text class="filter-help">{{dogs.length ? '可按全部狗狗、单只狗狗或自定义条件筛选' : '未建档可选：全部食谱 / 自定义筛选'}}</text>
-      </view>
+      </ui-field>
     </picker>
 
     <picker wx:if="{{modeOptions[modeIndex].value === 'singleDog'}}" range="{{dogs}}" range-key="name" value="{{dogIndex}}" bindchange="onDog">
-      <view class="select-filter wide">
+      <ui-field helpText="只展示适合这只狗狗的食谱">
         <text class="filter-label">选择狗狗</text>
         <text class="filter-value">{{dogs[dogIndex].name}}</text>
-        <text class="filter-help">只展示适合这只狗狗的食谱</text>
-      </view>
+      </ui-field>
     </picker>
 
     <view wx:if="{{modeOptions[modeIndex].value === 'custom'}}" class="custom-filter">
       <picker range="{{ageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
-        <view class="select-filter small">
+        <ui-field>
           <text class="filter-label">年龄</text>
           <text class="filter-value">{{ageIndex >= 0 ? ageOptions[ageIndex].label : '不限'}}</text>
-        </view>
+        </ui-field>
       </picker>
       <picker range="{{goalOptions}}" range-key="label" value="{{goalIndex}}" bindchange="onGoal">
-        <view class="select-filter small">
+        <ui-field>
           <text class="filter-label">疾病/功能</text>
           <text class="filter-value">{{goalIndex >= 0 ? goalOptions[goalIndex].label : '不限'}}</text>
-        </view>
+        </ui-field>
       </picker>
       <picker range="{{allergenOptions}}" range-key="label" value="{{allergenIndex}}" bindchange="onAllergen">
-        <view class="select-filter small">
+        <ui-field>
           <text class="filter-label">过敏</text>
           <text class="filter-value">{{allergenIndex >= 0 ? '避开' + allergenOptions[allergenIndex].label : '不限'}}</text>
-        </view>
+        </ui-field>
       </picker>
     </view>
   </view>
 
-  <view wx:if="{{modeOptions[modeIndex].value === 'custom'}}" class="notice good filter-notice">正在按自定义条件筛选：{{ageIndex >= 0 ? ageOptions[ageIndex].label : '年龄不限'}}、{{goalIndex >= 0 ? goalOptions[goalIndex].label : '功能不限'}}、{{allergenIndex >= 0 ? '避开' + allergenOptions[allergenIndex].label : '过敏不限'}}。</view>
+  <view wx:if="{{modeOptions[modeIndex].value === 'custom'}}" class="filter-notice">
+    <ui-notice variant="good">正在按自定义条件筛选：{{ageIndex >= 0 ? ageOptions[ageIndex].label : '年龄不限'}}、{{goalIndex >= 0 ? goalOptions[goalIndex].label : '功能不限'}}、{{allergenIndex >= 0 ? '避开' + allergenOptions[allergenIndex].label : '过敏不限'}}。</ui-notice>
+  </view>
 
-  <view class="notice recipe-link" bindtap="onCustomRecipe">有现成食材？创建自定义食谱，按狗狗档案检查是否合适。</view>
+  <view class="recipe-link">
+    <ui-notice clickable="{{true}}" bind:tap="onCustomRecipe">有现成食材？创建自定义食谱，按狗狗档案检查是否合适。</ui-notice>
+  </view>
 
   <view class="section stack">
     <recipe-card wx:for="{{filteredRecipes}}" wx:key="id" recipe="{{item}}" showFit="{{authState === 'has-profile'}}" bind:taprecipe="onRecipeTap" />

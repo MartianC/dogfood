@@ -1,3 +1,26 @@
-.button-row .button {
-  width: 100%;
+@import "../../styles/tokens.wxss";
+
+.home-eyebrow {
+  color: var(--df-color-primary);
+  font-weight: 700;
+}
+
+.home-title {
+  margin-top: 12rpx;
+}
+
+.home-subtitle {
+  margin-top: 16rpx;
+  color: var(--df-color-muted);
+}
+
+.home-actions {
+  display: grid;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.section-action {
+  color: var(--df-color-primary);
+  font-size: 26rpx;
 }

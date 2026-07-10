@@ -1,3 +1,8 @@
 {
-  "component": true
+  "component": true,
+  "styleIsolation": "isolated",
+  "usingComponents": {
+    "ui-card": "../ui/ui-card/index",
+    "ui-tag": "../ui/ui-tag/index"
+  }
 }

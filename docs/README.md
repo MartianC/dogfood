@@ -7,6 +7,15 @@
 - 设计稿依赖图片放在 `docs/design-assets/`，只服务设计稿预览，不进入小程序运行包。
 - `AGENTS.md` 保留在仓库根目录，作为工具和协作规则入口。
 
+<!-- miniapp-ui-system:docs:start -->
+### UI 系统文档入口
+
+- `docs/ui/design-system.md`：设计 token、颜色语义、排版、间距、圆角、阴影和页面布局规则。
+- `docs/ui/component-contracts.md`：`components/ui/*` 的 props、events、slots、状态和样式隔离契约。
+- `docs/ui/ai-frontend-rules.md`：AI 或开发者修改 UI 前后的规则、禁止项和验证命令。
+- `scripts/check-ui-system.js`：UI 静态检查入口；全项目必须通过，不再使用迁移期 baseline。
+<!-- miniapp-ui-system:docs:end -->
+
 ## 工作日志格式建议
 
 工作日志放在 `docs/work-logs/YYYY-MM-DD.md`，按日期追加。单次记录使用下面格式：

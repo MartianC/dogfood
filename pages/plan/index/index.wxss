@@ -1,13 +1,11 @@
 .plan-hero {
-  padding: 28rpx;
-  border-radius: 20rpx;
-  background: #25684a;
-  color: #ffffff;
-  box-shadow: 0 12rpx 32rpx rgba(20, 37, 28, 0.09);
+  color: var(--df-color-on-primary);
 }
 
-.plan-hero .eyebrow {
-  color: rgba(255, 255, 255, 0.78);
+.plan-eyebrow {
+  color: var(--df-color-on-primary-muted);
+  font-size: 24rpx;
+  font-weight: 700;
 }
 
 .plan-title {
@@ -19,9 +17,28 @@
 
 .plan-subtitle {
   margin-top: 12rpx;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--df-color-on-primary-muted);
   font-size: 24rpx;
   line-height: 1.45;
+}
+
+.plan-metric {
+  padding: 20rpx;
+  border-radius: 18rpx;
+  background: var(--df-color-surface-muted);
+}
+
+.plan-metric strong {
+  display: block;
+  color: var(--df-color-text);
+  font-size: 34rpx;
+}
+
+.plan-metric span {
+  display: block;
+  margin-top: 6rpx;
+  color: var(--df-color-muted);
+  font-size: 24rpx;
 }
 
 .summary-row {
@@ -30,7 +47,7 @@
   justify-content: space-between;
   gap: 20rpx;
   padding: 18rpx 0;
-  border-bottom: 1rpx solid #edf4ee;
+  border-bottom: 1rpx solid var(--df-color-surface-muted);
   line-height: 1.45;
 }
 
@@ -47,8 +64,8 @@
   height: 44rpx;
   flex: 0 0 44rpx;
   border-radius: 14rpx;
-  background: #e3f0e8;
-  color: #25684a;
+  background: var(--df-color-primary-soft);
+  color: var(--df-color-primary);
   text-align: center;
   line-height: 44rpx;
   font-weight: 800;

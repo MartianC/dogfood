@@ -1,0 +1,43 @@
+page,
+:host {
+  --df-color-bg: #f4f8f3;
+  --df-color-surface: #ffffff;
+  --df-color-surface-muted: #edf4ee;
+  --df-color-text: #17201b;
+  --df-color-text-secondary: #34423a;
+  --df-color-muted: #6f7b73;
+  --df-color-line: #d8e1da;
+  --df-color-line-strong: #b7c7bc;
+  --df-color-primary: #25684a;
+  --df-color-on-primary: #ffffff;
+  --df-color-primary-soft: #e3f0e8;
+  --df-color-warning: #a84f34;
+  --df-color-warning-soft: #f6e8e1;
+  --df-color-on-primary-muted: rgba(255, 255, 255, 0.78);
+
+  --df-radius-sm: 12rpx;
+  --df-radius-md: 18rpx;
+  --df-radius-lg: 20rpx;
+  --df-radius-xl: 24rpx;
+  --df-radius-pill: 999rpx;
+
+  --df-space-1: 8rpx;
+  --df-space-2: 12rpx;
+  --df-space-3: 16rpx;
+  --df-space-4: 20rpx;
+  --df-space-5: 24rpx;
+  --df-space-6: 32rpx;
+
+  --df-font-xs: 22rpx;
+  --df-font-sm: 24rpx;
+  --df-font-md: 28rpx;
+  --df-font-lg: 32rpx;
+  --df-font-xl: 44rpx;
+
+  --df-touch-min: 88rpx;
+  --df-shadow-card: 0 12rpx 32rpx rgba(20, 37, 28, 0.06);
+  --df-shadow-hero: 0 12rpx 32rpx rgba(20, 37, 28, 0.07);
+  --df-shadow-primary: 0 12rpx 32rpx rgba(20, 37, 28, 0.09);
+  --df-shadow-sheet: 0 -36rpx 68rpx rgba(27, 22, 16, 0.22);
+  --df-color-mask: rgba(25, 24, 21, 0.44);
+}

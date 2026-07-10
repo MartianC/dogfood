@@ -1,8 +1,24 @@
+@import "../../../styles/tokens.wxss";
+
+.advice-eyebrow {
+  color: var(--df-color-primary);
+  font-weight: 700;
+}
+
+.advice-title {
+  margin-top: 12rpx;
+}
+
+.advice-subtitle {
+  margin-top: 16rpx;
+  color: var(--df-color-muted);
+}
+
 .meter {
   height: 12rpx;
   margin-top: 22rpx;
   border-radius: 999rpx;
-  background: #edf4ee;
+  background: var(--df-color-surface-muted);
   overflow: hidden;
 }
 
@@ -10,5 +26,5 @@
   width: 72%;
   height: 100%;
   border-radius: 999rpx;
-  background: #25684a;
+  background: var(--df-color-primary);
 }

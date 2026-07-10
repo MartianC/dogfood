@@ -1,0 +1,36 @@
+@import "../../../styles/tokens.wxss";
+
+.ui-field {
+  box-sizing: border-box;
+  min-height: 108rpx;
+  padding: 16rpx 20rpx;
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface);
+}
+
+.ui-field__label {
+  margin-bottom: 10rpx;
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.ui-field__body {
+  min-height: 58rpx;
+  color: var(--df-color-text);
+  font-size: 30rpx;
+}
+
+.ui-field__help {
+  margin-top: 8rpx;
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  line-height: 1.4;
+}
+
+.ui-field__error {
+  margin-top: 8rpx;
+  color: var(--df-color-warning);
+  font-size: var(--df-font-xs);
+  line-height: 1.4;
+}

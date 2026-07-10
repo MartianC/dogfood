@@ -1,6 +1,9 @@
 {
   "navigationBarTitleText": "我的",
   "usingComponents": {
-    "empty-state": "../../../components/empty-state/index"
+    "empty-state": "../../../components/empty-state/index",
+    "ui-button": "../../../components/ui/ui-button/index",
+    "ui-card": "../../../components/ui/ui-card/index",
+    "ui-tag": "../../../components/ui/ui-tag/index"
   }
 }

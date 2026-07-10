@@ -1,7 +1,9 @@
-<view class="advice {{advice.level}}">
-  <view class="row">
-    <view class="name">{{advice.ingredientName}}</view>
-    <view class="level">{{advice.suggestion}}</view>
+<ui-card variant="{{advice.level === 'adjust' || advice.level === 'avoid' ? 'soft' : 'plain'}}">
+  <view class="advice-card">
+    <view class="advice-head">
+      <view class="advice-name">{{advice.ingredientName}}</view>
+      <ui-tag variant="{{advice.level === 'adjust' || advice.level === 'avoid' ? 'warning' : 'good'}}" size="small">{{advice.suggestion}}</ui-tag>
+    </view>
+    <view class="advice-reason">{{advice.reason}}</view>
   </view>
-  <view class="reason">{{advice.reason}}</view>
-</view>
+</ui-card>

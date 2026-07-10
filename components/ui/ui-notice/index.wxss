@@ -1,0 +1,28 @@
+@import "../../../styles/tokens.wxss";
+
+.ui-notice {
+  box-sizing: border-box;
+  padding: 20rpx 22rpx;
+  border-radius: var(--df-radius-md);
+  color: var(--df-color-text-secondary);
+  background: var(--df-color-surface-muted);
+  line-height: 1.5;
+}
+
+.ui-notice--good {
+  color: var(--df-color-primary);
+  background: var(--df-color-primary-soft);
+}
+
+.ui-notice--warning {
+  color: var(--df-color-warning);
+  background: var(--df-color-warning-soft);
+}
+
+.ui-notice--clickable {
+  transition: opacity 0.2s ease;
+}
+
+.ui-notice--clickable:active {
+  opacity: 0.72;
+}

@@ -1,0 +1,8 @@
+<view class="ui-empty">
+  <image wx:if="{{imageUrl}}" class="ui-empty__image" src="{{imageUrl}}" mode="aspectFill" />
+  <view class="ui-empty__title">{{title}}</view>
+  <view wx:if="{{description}}" class="ui-empty__description">{{description}}</view>
+  <view wx:if="{{actionText}}" class="ui-empty__action">
+    <ui-button bind:tap="handleAction">{{actionText}}</ui-button>
+  </view>
+</view>

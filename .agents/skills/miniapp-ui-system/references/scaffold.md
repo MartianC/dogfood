@@ -49,6 +49,7 @@ node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project . --wi
 - `docs/ui/ai-frontend-rules.md`
 - `scripts/check-ui-system.js`
 - `package.json` 中的 `check:ui` 脚本
+- 已存在 AI 入口文档中的 UI 文档索引，例如 `AGENTS.md`、`CLAUDE.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`.cursorrules`、`.cursor/rules/*`、`.windsurfrules`
 
 使用 `--with-figma` 时额外生成：
 
@@ -70,6 +71,8 @@ node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project . --wi
 - `--with-figma` 显式生成 Figma handoff 模板；默认不生成，避免普通项目负担。
 - 脚本只追加或更新 `package.json` 的 `scripts.check:ui`。
 - 生成的 `check:ui` 会阻止页面层直接使用常见组件库标签，例如 `<t-*>`、`<van-*>`。
+- 脚本只更新已存在的 AI 入口文档，不主动创建 `CLAUDE.md`、`GEMINI.md`、Cursor/Windsurf/Copilot 配置等新入口，避免给未使用的 AI 工具制造噪音。
+- AI 入口文档的 UI 索引用 `miniapp-ui-system:docs` marker 维护，重复执行脚本会替换旧块，不会反复追加。
 
 ## 初始化后下一步
 
@@ -83,8 +86,9 @@ node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project . --wi
 
 2. 逐步迁移页面按钮到 `ui-button`。
 3. 如果项目已引入组件库，先把 `ui-button`、`ui-card`、`ui-tag`、`ui-field` 等基础视觉组件改成组件库 wrapper。
-4. 如果使用 Figma，先填写 `docs/ui/figma-source-manifest.json`、`figma-token-map.json` 和 `figma-component-map.json`。
-5. 运行：
+4. 检查项目实际使用的 AI 入口文档，确认它们能指向 `docs/ui/*`。
+5. 如果使用 Figma，先填写 `docs/ui/figma-source-manifest.json`、`figma-token-map.json` 和 `figma-component-map.json`。
+6. 运行：
 
 ```bash
 npm run check:ui
