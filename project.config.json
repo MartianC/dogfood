@@ -34,66 +34,66 @@
   "packOptions": {
     "ignore": [
       {
-        "type": "folder",
-        "value": "docs"
+        "value": "docs",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".design-check"
+        "value": ".design-check",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".agents"
+        "value": ".agents",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".codex"
+        "value": ".codex",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".workbuddy"
+        "value": ".workbuddy",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": "tests"
+        "value": "tests",
+        "type": "folder"
       },
       {
-        "type": "file",
-        "value": "package.json"
+        "value": "package.json",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "package-lock.json"
+        "value": "package-lock.json",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "AGENTS.md"
+        "value": "AGENTS.md",
+        "type": "file"
       }
     ],
     "include": [
       {
-        "type": "file",
-        "value": "subpackages/custom-recipe/services/customRecipeService.js"
+        "value": "subpackages/custom-recipe/services/customRecipeService.js",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "subpackages/custom-recipe/services/ingredientAdvice.js"
+        "value": "subpackages/custom-recipe/services/ingredientAdvice.js",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "subpackages/custom-recipe/services/recipeAdviceService.js"
+        "value": "subpackages/custom-recipe/services/recipeAdviceService.js",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "subpackages/dog-profile/services/fileService.js"
+        "value": "subpackages/dog-profile/services/fileService.js",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "subpackages/plan-extra/services/customRecipeService.js"
+        "value": "subpackages/plan-extra/services/customRecipeService.js",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "subpackages/plan-extra/services/planCalculatorService.js"
+        "value": "subpackages/plan-extra/services/planCalculatorService.js",
+        "type": "file"
       }
     ]
   },
