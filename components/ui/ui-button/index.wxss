@@ -2,7 +2,6 @@
 
 :host {
   display: block;
-  width: 100%;
 }
 
 .ui-button {
@@ -28,6 +27,11 @@
 
 .ui-button--block {
   width: 100%;
+}
+
+.ui-button--inline {
+  width: auto;
+  display: inline-flex;
 }
 
 .ui-button--medium {

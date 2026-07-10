@@ -21,13 +21,13 @@
 | prop | `size` | `small | medium | large`，默认 `large` |
 | prop | `disabled` | 禁用态，默认 `false` |
 | prop | `loading` | 加载态，默认 `false` |
-| prop | `block` | 是否撑满容器，默认 `true` |
+| prop | `block` | 是否撑满容器，默认 `true`；`false` 时按内容渲染为小操作按钮 |
 | prop | `openType` | 透传小程序 button `open-type` |
 | prop | `eventValue` | 可选事件值，会随 `tap` 事件放入 `detail.eventValue` |
 | event | `tap` | 非禁用、非加载时触发 |
 | slot | 默认 | 按钮文案或少量内联内容 |
 
-`ui-button` 的组件 host 为块级并默认撑满父容器。需要窄按钮时，由外层业务容器控制宽度，不在页面直接重写按钮内部样式。
+`ui-button` 的组件 host 为块级；默认 `block=true` 时内部按钮撑满父容器。需要“删除”“修改”这类窄操作时使用 `block=false`，不要用外层固定宽度强行覆盖按钮宽度。
 
 ## ui-card
 

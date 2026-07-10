@@ -30,7 +30,3 @@
   align-items: center;
   justify-content: flex-end;
 }
-
-.remove-button-shell {
-  width: 144rpx;
-}
