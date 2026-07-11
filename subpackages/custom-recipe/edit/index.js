@@ -1,81 +1,69 @@
-const authService = require('../../../services/authService')
 const dogService = require('../../../services/dogService')
 const customRecipeService = require('../services/customRecipeService')
 const recipeAdviceService = require('../services/recipeAdviceService')
 
-function currentPageRoute() {
-  if (typeof getCurrentPages !== 'function') return ''
-  const pages = getCurrentPages()
-  const page = pages[pages.length - 1]
-  if (!page) return ''
-  const query = page.options ? Object.keys(page.options).map((key) => `${key}=${page.options[key]}`).join('&') : ''
-  return `/${page.route}${query ? `?${query}` : ''}`
-}
-
-async function requireProfileAuth(options = {}) {
-  const state = authService.getAuthState()
-  if (state === 'guest') {
-    const ok = await authService.login()
-    if (!ok) return false
-  }
-  const nextState = authService.getAuthState()
-  if (options.requireProfile && nextState !== 'has-profile') {
-    const redirect = encodeURIComponent(options.redirect || currentPageRoute())
-    wx.navigateTo({ url: `/subpackages/dog-profile/dog-quick-create/index?redirect=${redirect}` })
-    return false
-  }
-  return true
-}
-
 Page({
   data: {
+    recipeId: '',
     title: '',
     dogs: [],
     selectedDogIds: [],
-    ingredients: [
-      { name: '鳕鱼', category: 'meat', perMealAmountGram: 160, allergenKey: 'fish' },
-      { name: '南瓜', category: 'vegetable', perMealAmountGram: 80 },
-      { name: '熟米饭', category: 'carb', perMealAmountGram: 70, allergenKey: 'grain' }
-    ]
+    ingredients: []
   },
 
-  async onLoad() {
-    const passed = await requireProfileAuth({ requireProfile: true, redirect: '/subpackages/custom-recipe/edit/index' })
-    if (!passed) return
-    const draft = customRecipeService.getDraft()
+  async onLoad(options = {}) {
+    const recipes = customRecipeService.listRecipes()
+    const requested = options.id ? recipes.find((recipe) => recipe.id === options.id) : null
+    const existing = requested || customRecipeService.getDraft()
+    const draft = existing || customRecipeService.createDraft({ title: '未命名食谱' })
     const dogs = await dogService.listDogs()
     this.setData({
+      recipeId: draft.id || '',
       dogs,
-      selectedDogIds: draft && draft.targetDogIds ? draft.targetDogIds : dogs.map((dog) => dog.id),
-      title: draft && draft.title ? draft.title : '家里简单饭',
-      ingredients: draft && draft.ingredients ? draft.ingredients : this.data.ingredients
+      selectedDogIds: Array.isArray(draft.targetDogIds) ? draft.targetDogIds : [],
+      title: draft.title || '未命名食谱',
+      ingredients: Array.isArray(draft.ingredients) ? draft.ingredients : []
     })
   },
 
-  onTitle(e) {
-    this.setData({ title: e.detail.value })
+  persistDraft() {
+    return customRecipeService.saveDraft({
+      ...customRecipeService.getDraft(),
+      id: this.data.recipeId,
+      title: this.data.title,
+      ingredients: this.data.ingredients,
+      targetDogIds: this.data.selectedDogIds,
+      status: customRecipeService.getDraft() && customRecipeService.getDraft().status || 'draft'
+    })
   },
 
-  onTargetChange(e) {
-    this.setData({ selectedDogIds: e.detail.selectedDogIds })
+  onTitle(event) {
+    this.setData({ title: event.detail.value }, () => this.persistDraft())
   },
 
-  onIngredients(e) {
-    this.setData({ ingredients: e.detail.ingredients })
+  onTargetChange(event) {
+    this.setData({ selectedDogIds: event.detail.selectedDogIds }, () => this.persistDraft())
+  },
+
+  onIngredients(event) {
+    this.setData({ ingredients: event.detail.ingredients }, () => this.persistDraft())
+  },
+
+  onAddIngredient() {
+    this.setData({
+      ingredients: [{ name: '', category: 'meat', perMealAmountGram: 0 }]
+    }, () => this.persistDraft())
   },
 
   onSaveDraft() {
-    customRecipeService.saveDraft({
-      title: this.data.title,
-      ingredients: this.data.ingredients,
-      targetDogIds: this.data.selectedDogIds
-    })
+    this.persistDraft()
     wx.showToast({ title: '草稿已保存', icon: 'success' })
   },
 
   async onCheckAdvice() {
     const targetDogs = this.data.dogs.filter((dog) => this.data.selectedDogIds.includes(dog.id))
     const customRecipe = {
+      id: this.data.recipeId,
       title: this.data.title,
       ingredients: this.data.ingredients
     }

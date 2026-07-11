@@ -1,0 +1,10 @@
+<t-empty>
+  <view slot="image" class="recipe-empty__symbol">{{icon === 'search' ? '⌕' : '+'}}</view>
+  <view slot="description" class="recipe-empty__content">
+    <view class="recipe-empty__heading">{{title}}</view>
+    <view wx:if="{{description}}" class="recipe-empty__description">{{description}}</view>
+  </view>
+  <view wx:if="{{actionText}}" slot="action" class="recipe-empty__action">
+    <t-button theme="primary" size="medium" bind:tap="onAction">{{actionText}}</t-button>
+  </view>
+</t-empty>

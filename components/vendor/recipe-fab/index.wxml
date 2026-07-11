@@ -1,0 +1,9 @@
+<view class="recipe-fab">
+  <t-fab
+    text="+"
+    button-props="{{buttonProps}}"
+    style="right: 32rpx; bottom: calc(172rpx + env(safe-area-inset-bottom)); z-index: 30;"
+    aria-label="新建食谱"
+    bind:click="onClick"
+  />
+</view>

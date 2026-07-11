@@ -66,6 +66,67 @@ test('TabBar 使用本地图标资源', () => {
   })
 })
 
+test('TabBar 通过 TDesign 自定义组件保留四个主路由', () => {
+  const appJsonPath = path.join(__dirname, '..', 'app.json')
+  const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'))
+  const tabBarRoot = path.join(__dirname, '..', 'custom-tab-bar')
+  const tabBarJson = JSON.parse(fs.readFileSync(path.join(tabBarRoot, 'index.json'), 'utf8'))
+  const tabBarWxml = fs.readFileSync(path.join(tabBarRoot, 'index.wxml'), 'utf8')
+  const tabBarJs = fs.readFileSync(path.join(tabBarRoot, 'index.js'), 'utf8')
+  const tabBarWxss = fs.readFileSync(path.join(tabBarRoot, 'index.wxss'), 'utf8')
+
+  assert.equal(appJson.tabBar.custom, true)
+  assert.equal(Object.hasOwn(appJson, 'style'), false)
+  assert.equal(tabBarJson.usingComponents['t-tab-bar'], 'tdesign-miniprogram/tab-bar/tab-bar')
+  assert.equal(tabBarJson.usingComponents['t-tab-bar-item'], 'tdesign-miniprogram/tab-bar-item/tab-bar-item')
+  assert.match(tabBarWxml, /theme="tag"/)
+  assert.match(tabBarWxml, /shape="round"/)
+  assert.match(tabBarJs, /--td-tab-bar-height: 80rpx/)
+  assert.match(tabBarJs, /--td-font-body-large: 28rpx \/ 40rpx/)
+  assert.match(tabBarWxss, /width:\s*100%/)
+  assert.match(tabBarWxss, /width:\s*32rpx/)
+  assert.match(tabBarWxss, /margin-bottom:\s*4rpx/)
+  assert.match(tabBarWxss, /margin:\s*0 auto 56rpx/)
+  assert.match(tabBarJs, /wx\.switchTab/)
+
+  const routes = Array.from(tabBarJs.matchAll(/path:\s*'([^']+)'/g), (match) => match[1])
+  assert.deepEqual(routes, appJson.tabBar.list.map((item) => `/${item.pagePath}`))
+})
+
+test('四个 Tab 页面在显示时同步 TDesign 选中态', () => {
+  const expected = {
+    'pages/home/index.js': 'home',
+    'pages/recipes/list/index.js': 'recipes',
+    'pages/plan/index/index.js': 'plan',
+    'pages/profile/index/index.js': 'profile'
+  }
+
+  Object.entries(expected).forEach(([file, selected]) => {
+    const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8')
+    const wxml = fs.readFileSync(path.join(__dirname, '..', file.replace(/\.js$/, '.wxml')), 'utf8')
+    assert.match(source, new RegExp(`getTabBar\\(\\).*selected: '${selected}'`, 's'), `${file} 未同步 ${selected}`)
+    assert.match(wxml, /class="[^"]*page[^"]*with-tab-bar[^"]*"/, `${file} 未预留自定义 TabBar 空间`)
+  })
+})
+
+test('按钮按下态统一使用项目主题色', () => {
+  const root = path.join(__dirname, '..')
+  const buttonWxml = fs.readFileSync(path.join(root, 'components/ui/ui-button/index.wxml'), 'utf8')
+  const buttonWxss = fs.readFileSync(path.join(root, 'components/ui/ui-button/index.wxss'), 'utf8')
+  const vendorStyles = [
+    'components/vendor/recipe-create-popup/index.wxss',
+    'components/vendor/recipe-fab/index.wxss',
+    'components/vendor/recipe-empty/index.wxss'
+  ].map((file) => fs.readFileSync(path.join(root, file), 'utf8')).join('\n')
+
+  assert.match(buttonWxml, /hover-class="ui-button--pressed"/)
+  assert.match(buttonWxss, /ui-button--pressed\.ui-button--primary/)
+  assert.match(buttonWxss, /ui-button--pressed\.ui-button--ghost/)
+  assert.match(vendorStyles, /--td-brand-color-active:\s*var\(--df-color-primary-pressed\)/)
+  assert.match(vendorStyles, /--td-button-primary-active-bg-color:\s*var\(--df-color-primary-pressed\)/)
+  assert.match(vendorStyles, /--td-button-light-active-bg-color:\s*var\(--df-color-primary-soft-pressed\)/)
+})
+
 test('食谱详情页只保留选择制作周期按钮', () => {
   const wxml = fs.readFileSync(path.join(__dirname, '..', 'pages/recipes/detail/index.wxml'), 'utf8')
   const js = fs.readFileSync(path.join(__dirname, '..', 'pages/recipes/detail/index.js'), 'utf8')

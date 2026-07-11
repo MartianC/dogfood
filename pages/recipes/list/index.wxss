@@ -1,48 +1,33 @@
-.search {
-  display: block;
+page {
+  background: var(--df-color-surface);
 }
 
-.search-input {
-  width: 100%;
-  min-height: 58rpx;
+.recipe-library-page {
+  min-height: 100vh;
+  padding-top: var(--df-space-4);
+  padding-bottom: calc(188rpx + env(safe-area-inset-bottom));
+  background: var(--df-color-surface);
 }
 
-.select-block {
-  margin-top: 20rpx;
-  display: grid;
-  gap: 16rpx;
-}
-
-.filter-label {
-  display: block;
+.recipe-library-intro {
   color: var(--df-color-muted);
-  font-size: 22rpx;
-  font-weight: 700;
+  font-size: var(--df-font-sm);
+  line-height: 1.5;
 }
 
-.filter-value {
-  display: block;
-  margin-top: 4rpx;
-  color: var(--df-color-text);
-  font-size: 26rpx;
-  font-weight: 800;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.custom-filter {
+.recipe-library-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12rpx;
-  margin-top: 18rpx;
+  gap: var(--df-space-4);
+  margin-top: var(--df-space-2);
 }
 
-.filter-notice,
-.recipe-link {
-  margin-top: 20rpx;
+.recipe-library-empty {
+  display: flex;
+  min-height: 720rpx;
+  align-items: center;
+  justify-content: center;
 }
 
-.filter-notice {
-  font-weight: 700;
+.recipe-library-fab {
+  display: block;
 }

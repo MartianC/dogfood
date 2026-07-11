@@ -12,6 +12,8 @@ Page({
   },
 
   async onShow() {
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
+    if (tabBar) tabBar.setData({ selected: 'home' })
     const app = getApp()
     if (app.globalData.authReady) await app.globalData.authReady
     const dogs = await dogService.listDogs()

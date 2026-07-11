@@ -1,0 +1,29 @@
+<view class="app-tab-bar">
+  <t-tab-bar
+    value="{{selected}}"
+    theme="tag"
+    shape="round"
+    fixed="{{false}}"
+    split="{{false}}"
+    bordered="{{false}}"
+    safe-area-inset-bottom="{{false}}"
+    custom-style="{{tabBarStyle}}"
+    bind:change="onChange"
+  >
+    <t-tab-bar-item
+      wx:for="{{items}}"
+      wx:key="value"
+      value="{{item.value}}"
+      custom-style="{{tabBarStyle}}"
+      aria-label="{{item.label}}"
+    >
+      <image
+        slot="icon"
+        class="app-tab-bar__icon"
+        src="{{selected === item.value ? item.selectedIconPath : item.iconPath}}"
+        mode="aspectFit"
+      />
+      {{item.label}}
+    </t-tab-bar-item>
+  </t-tab-bar>
+</view>

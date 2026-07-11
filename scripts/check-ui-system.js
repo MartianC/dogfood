@@ -44,7 +44,8 @@ function uniqueMatches(text, pattern) {
 
 function canUseThirdPartyTags(normalizedPath) {
   return normalizedPath.startsWith(path.normalize('components/ui/')) ||
-    normalizedPath.startsWith(path.normalize('components/vendor/'))
+    normalizedPath.startsWith(path.normalize('components/vendor/')) ||
+    normalizedPath.startsWith(path.normalize('custom-tab-bar/'))
 }
 
 function walk(dir, files = []) {

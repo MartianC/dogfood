@@ -1,0 +1,49 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-text-color-primary: var(--df-color-text);
+  --td-text-color-placeholder: var(--df-color-muted);
+  --td-button-primary-bg-color: var(--df-color-primary);
+  --td-button-primary-border-color: var(--df-color-primary);
+  --td-button-primary-active-bg-color: var(--df-color-primary-pressed);
+  --td-button-primary-active-border-color: var(--df-color-primary-pressed);
+  --td-button-primary-color: var(--df-color-on-primary);
+  --td-button-border-radius: var(--df-radius-sm);
+}
+
+.recipe-empty__symbol {
+  display: flex;
+  width: 112rpx;
+  height: 112rpx;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--df-radius-pill);
+  background: var(--df-color-primary-soft);
+  color: var(--df-color-primary);
+  font-size: 52rpx;
+  line-height: 1;
+}
+
+.recipe-empty__content {
+  max-width: 620rpx;
+  text-align: center;
+}
+
+.recipe-empty__heading {
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 700;
+}
+
+.recipe-empty__description {
+  margin-top: var(--df-space-2);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 1.6;
+}
+
+.recipe-empty__action {
+  margin-top: var(--df-space-4);
+}

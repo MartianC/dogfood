@@ -3,6 +3,7 @@
   disabled="{{disabled || loading}}"
   loading="{{loading}}"
   open-type="{{openType}}"
+  hover-class="ui-button--pressed"
   bindtap="handleTap"
 >
   <slot />

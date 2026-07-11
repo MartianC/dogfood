@@ -1,0 +1,25 @@
+@import "../styles/tokens.wxss";
+
+:host {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.app-tab-bar {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 auto 56rpx;
+  pointer-events: auto;
+  --td-tab-bar-round-shadow: var(--df-shadow-card);
+}
+
+.app-tab-bar__icon {
+  display: block;
+  width: 46rpx;
+  height: 46rpx;
+  margin-bottom: 0rpx;
+}

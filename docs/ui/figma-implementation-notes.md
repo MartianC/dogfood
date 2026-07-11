@@ -164,3 +164,28 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
 - 底部按钮横排复用 TDesign Button：取消为 `26544:3895`（浅绿 `#E3F0E8` 背景、主绿 `#25684A` 文字），确认为 `26523:4378`（主绿 `#25684A` 背景、白色文字）。两项均为 `164×40`，位置分别为 `16,744` 与 `195,744`。
 - F02 圆形 Fab 仍打开 F04；Popup“取消”返回 F02，“确认”进入 F05。所有直接复用组件均已映射项目主题 token，未保留 TDesign 默认蓝色。
 - 已核验 Popup、Cell、Input、Button 的父级、主组件、尺寸、字段文案、主题色、层级与原型目标，并生成 F04 375 × 812 截图。
+
+## 2026-07-11 F01-F05 小程序实现
+
+- 实现分支：`codex/tdesign-recipe-01-05`；依赖固定为 `tdesign-miniprogram@1.15.3`。
+- F01：`app.json` 启用微信自定义 TabBar，根目录 `custom-tab-bar` 包装 TDesign `TabBar/TabBarItem`，使用 `theme=tag`、`shape=round`、四项图标加文字布局；图标通过公开 slot 复用本地资源，避免 TDesign 在线 icon font 在离线调试时加载失败。
+- F02/F03：`pages/recipes/list` 替换为“我的食谱”，按 `services/customRecipeService.listRecipes()` 在食谱卡片列表和 TDesign Empty 适配空态之间切换；数据态使用 TDesign Fab 适配组件打开创建弹层。
+- F04：`components/vendor/recipe-create-popup` 包装 TDesign `Popup/Cell/Input/Button`，支持可选狗狗、食谱名称、取消、遮罩关闭、加载状态和空名称内联错误。
+- F05：`subpackages/custom-recipe/edit` 默认使用空食材状态；点击“新增食材”后接回既有 `ingredient-editor`、保存草稿和建议流程。本轮未实现 F06-F10 的搜索、克重弹层和营养抽屉，因此新增食材后的交互仍是既有行内编辑器。
+- 数据边界：主包和分包共享 `services/customRecipeService.js`；分包原服务路径保留兼容转发，避免主包跨分包同步 `require`。
+- 验证：`npm run check:ui` 通过；`npm test` 共 36 项通过；微信开发者工具 `build-npm` 无 warning；CLI 预览成功，包体总计约 `537.9 KB`。iPhone 12/13 模拟器已检查 F03 空态、F04 Popup 与空名称错误，未发现 TabBar 或弹层遮挡。
+
+### 独立审核与修复
+
+- 已由独立 subagent 按需求覆盖、Figma 还原、TDesign 适配边界、数据丢失风险、测试缺口和回归风险完成审核。
+- 草稿持久化：本地新建记录改用 `draft_*` 临时 ID；首次云端保存时剥离临时 ID，成功后以持久化 ID 回写草稿和本地列表，避免把首次创建误判为更新。新增完整保存序列测试覆盖该路径。
+- F05 营养摘要：空食材状态补充固定底部的收起态“营养汇总”，显示 `0 g` 和添加食材后的状态提示，与设计稿的页面信息层级一致。
+- TabBar 尺寸：内容高度调整为 `80rpx`，配合 TDesign 自带上下间距得到总高 `112rpx`（56 px）；外层宽度为 `100%`，配合左右 `32rpx` 间距得到 `686rpx`（343 px），底部位置固定为 `56rpx`（28 px）。
+- Popup 安全区：移除业务内层重复的 `env(safe-area-inset-bottom)`，由 TDesign Popup 统一处理底部安全区，避免真机出现双倍留白。
+- 审核修复后验证：`npm run check:ui` 通过；`npm test` 共 37 项通过；微信开发者工具预览成功，总包约 `539.0 KB`。当前改动未提交、未暂存。
+
+### 2026-07-11 TabBar 比例与按下态校正
+
+- TabBar 外框、四项结构、选中态和安全区保持不变；图标 slot 固定为 `32rpx`（16 px），文字固定为 `28rpx / 40rpx`（14 px），图标下方间距为 `4rpx`，用于匹配 Figma 中图文比例。
+- 新增 `primary-pressed`、`primary-soft-pressed`、`surface-pressed` 和 `warning-pressed` 项目 token。自研 `ui-button` 通过 `hover-class="ui-button--pressed"` 使用这些 token；TDesign Popup、Fab、Empty 适配层覆盖 `brand-color-active`、`button-*-active-*`，Popup Cell 也使用 `surface-pressed`，不再回退蓝色。
+- 验证：微信开发者工具 `build-npm` 返回 `warnings: []`，`preview` 成功，包体约 `540.5 KB`；`npm run check:ui` 通过；`npm test` 38 项通过。

@@ -1,4 +1,4 @@
-<view class="page">
+<view class="page with-tab-bar">
   <ui-card wx:if="{{authState !== 'has-profile'}}">
     <view class="home-eyebrow df-caption">狗饭清单工具</view>
     <view class="home-title df-heading-xl">先看食谱，需要清单时再建档</view>

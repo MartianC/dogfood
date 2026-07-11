@@ -69,6 +69,25 @@
   border-color: transparent;
 }
 
+.ui-button--pressed.ui-button--primary {
+  background: var(--df-color-primary-pressed);
+  border-color: var(--df-color-primary-pressed);
+}
+
+.ui-button--pressed.ui-button--secondary {
+  background: var(--df-color-surface-pressed);
+  border-color: var(--df-color-line-strong);
+}
+
+.ui-button--pressed.ui-button--warning {
+  background: var(--df-color-warning-pressed);
+  border-color: var(--df-color-warning-pressed);
+}
+
+.ui-button--pressed.ui-button--ghost {
+  background: var(--df-color-primary-soft-pressed);
+}
+
 .ui-button[disabled] {
   opacity: 0.56;
 }

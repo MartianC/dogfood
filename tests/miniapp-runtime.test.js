@@ -32,6 +32,18 @@ test('app.json 启用组件按需注入', () => {
   assert.equal(appConfig.lazyCodeLoading, 'requiredComponents')
 })
 
+test('开发者工具按根目录配置构建 TDesign npm 包', () => {
+  const projectConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'project.config.json'), 'utf8'))
+
+  assert.equal(projectConfig.setting.packNpmManually, true)
+  assert.deepEqual(projectConfig.setting.packNpmRelationList, [
+    {
+      packageJsonPath: './package.json',
+      miniprogramNpmDistDir: './'
+    }
+  ])
+})
+
 test('小程序图片兜底资源存在', () => {
   const expected = [
     'assets/recipes/chicken-pumpkin.jpg',
@@ -105,4 +117,45 @@ test('狗狗档案卡片整卡可点击且不显示修改按钮', () => {
   assert.match(wxml, /<view class="dog-card" bindtap="onEdit">/)
   assert.doesNotMatch(wxml, /<button/)
   assert.doesNotMatch(wxml, />修改</)
+})
+
+test('食谱 Tab 呈现我的食谱数据态、空态和新建弹层入口', () => {
+  const pageRoot = path.join(__dirname, '..', 'pages', 'recipes', 'list')
+  const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const js = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
+  const popupWxss = fs.readFileSync(path.join(__dirname, '..', 'components', 'vendor', 'recipe-create-popup', 'index.wxss'), 'utf8')
+
+  assert.equal(config.navigationBarTitleText, '我的食谱')
+  assert.match(wxml, /记录常做的搭配，随时调整食材和份量/)
+  assert.match(wxml, /wx:if="{{recipes\.length}}"/)
+  assert.match(wxml, /recipe-library-card/)
+  assert.match(wxml, /recipe-empty/)
+  assert.match(wxml, /recipe-fab/)
+  assert.match(wxml, /recipe-create-popup/)
+  assert.match(js, /onCreateConfirm/)
+  assert.match(js, /customRecipeService\.createDraft/)
+  assert.doesNotMatch(js, /require\(['"].*subpackages\//)
+  assert.doesNotMatch(wxml, /筛选方式|自定义筛选|搜索食材或食谱名称/)
+  assert.equal(config.usingComponents['recipe-create-popup'], '../../../components/vendor/recipe-create-popup/index')
+  assert.doesNotMatch(popupWxss, /env\(safe-area-inset-bottom\)/)
+})
+
+test('食谱设计页为空食材提供明确的新增入口', () => {
+  const pageRoot = path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'edit')
+  const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const js = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
+
+  assert.equal(config.navigationBarTitleText, '食谱设计')
+  assert.match(wxml, /wx:if="{{!ingredients\.length}}"/)
+  assert.match(wxml, /还没有添加食材/)
+  assert.match(wxml, /搜索食材并填写克重后，营养汇总会自动更新/)
+  assert.match(wxml, /新增食材/)
+  assert.match(wxml, /营养汇总/)
+  assert.match(wxml, /添加食材后显示营养汇总/)
+  assert.match(js, /onAddIngredient/)
+  assert.match(wxml, /wx:else/)
+  assert.match(wxml, /ingredient-editor/)
+  assert.equal(config.usingComponents['recipe-empty'], '../../../components/vendor/recipe-empty/index')
 })
