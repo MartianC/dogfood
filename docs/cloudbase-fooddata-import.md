@@ -15,12 +15,28 @@ python3 scripts/fooddata/export_fooddata_cloudbase.py \
   --data-version 2026-07-09
 ```
 
+如需把 FEDIAF 2025 犬粮标准一并导入，先基于源库生成带标准种子的 SQLite 副本，再导出 CloudBase JSONL：
+
+```bash
+python3 scripts/fooddata/seed_pet_nutrition_standards.py \
+  --sqlite /Users/cyr/Documents/Codex/2026-07-07/ge/outputs/fooddata_foundation.sqlite \
+  --seed data/pet-nutrition-standards/fediaf-2025-dog.json \
+  --out-sqlite fooddata-cloudbase-export/2026-07-11-fediaf-2025/fooddata_foundation_fediaf2025.sqlite
+
+python3 scripts/fooddata/export_fooddata_cloudbase.py \
+  --sqlite fooddata-cloudbase-export/2026-07-11-fediaf-2025/fooddata_foundation_fediaf2025.sqlite \
+  --out-dir fooddata-cloudbase-export/2026-07-11-fediaf-2025/cloudbase-jsonl \
+  --data-version 2026-07-11-fediaf-2025
+```
+
+FEDIAF 2025 种子数据来自 FEDIAF 官方 2025 年 9 月版 Nutritional Guidelines，当前只整理犬完整食品 Table VII-17a-d 的 `Per 100 g DM` 推荐营养水平：早期生长与繁殖、晚期生长、成年犬 MER 110、成年犬 MER 95。猫、补充粮、脚注全文和其他章节暂未结构化。
+
 ## 集合
 
 - `foods`：食物主信息，一条 SQLite `food` 记录一个文档。
 - `food_nutrients`：完整 USDA 营养成分明细，一条 SQLite `food_nutrient` 记录一个文档，并补充 `name`、`unit_name` 便于展示。
 - `food_localized_name`：本地化名称，一条 SQLite `food_localized_name` 记录一个文档。
-- `pet_nutrition_standards`：犬粮营养标准，一条标准一个聚合文档。
+- `pet_nutrition_standards`：犬粮营养标准，一条标准一个聚合文档；当前可包含 `GB/T 31216-2014` 和 `FEDIAF Nutritional Guidelines 2025`。
 
 ## 导入方式
 
@@ -76,7 +92,8 @@ JSON 文件是 JSON Lines 格式，每行一条文档：
 - `foods`: 469
 - `food_nutrients`: 21426
 - `food_localized_name`: 534
-- `pet_nutrition_standards`: 1
+- 仅 GB/T 导入包：`pet_nutrition_standards = 1`
+- 含 FEDIAF 2025 导入包：`pet_nutrition_standards = 2`
 
 导入后抽查查询：
 
@@ -84,6 +101,7 @@ JSON 文件是 JSON Lines 格式，每行一条文档：
 - `food_nutrients` 按 `food_id = food_746782` 能读到完整营养明细。
 - `food_localized_name` 按 `locale = zh-CN` 且 `name = 全脂牛奶` 能读到 `food_id = food_746782`。
 - `pet_nutrition_standards` 按 `standard_code = GB/T 31216-2014` 能读到 `profiles`。
+- 含 FEDIAF 2025 导入包还应能按 `standard_code = FEDIAF Nutritional Guidelines 2025` 读到 4 个犬粮 `profiles`，其中 `fediaf_2025_dog_adult_mer_95` 的蛋白质最小值为 `21 g/100 g DM`。
 
 ## 修订流程
 

@@ -8,9 +8,18 @@ const test = require('node:test')
 
 const root = path.resolve(__dirname, '..')
 const script = path.join(root, 'scripts/fooddata/export_fooddata_cloudbase.py')
+const seedScript = path.join(root, 'scripts/fooddata/seed_pet_nutrition_standards.py')
+const fediafSeed = path.join(root, 'data/pet-nutrition-standards/fediaf-2025-dog.json')
 
 function runExporter(args) {
   return spawnSync('python3', [script, ...args], {
+    cwd: root,
+    encoding: 'utf8'
+  })
+}
+
+function runSeed(args) {
+  return spawnSync('python3', [seedScript, ...args], {
     cwd: root,
     encoding: 'utf8'
   })
@@ -248,6 +257,60 @@ test('同一 SQLite 和 data_version 重复导出 foods checksum 保持一致', 
     sha256File(path.join(outA, 'foods.jsonl')),
     sha256File(path.join(outB, 'foods.jsonl'))
   )
+})
+
+test('FEDIAF 2025 犬粮标准种子可写入 SQLite 并导出 CloudBase 文档', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'fooddata-fediaf-'))
+  const sqlite = path.join(tmp, 'fixture.sqlite')
+  const seededSqlite = path.join(tmp, 'fixture-fediaf.sqlite')
+  const out = path.join(tmp, 'out')
+  createFixtureDatabase(sqlite)
+
+  const seedResult = runSeed([
+    '--sqlite', sqlite,
+    '--seed', fediafSeed,
+    '--out-sqlite', seededSqlite
+  ])
+  assert.equal(seedResult.status, 0, seedResult.stderr)
+
+  const exportResult = runExporter([
+    '--sqlite', seededSqlite,
+    '--out-dir', out,
+    '--data-version', 'fediaf-test-version'
+  ])
+  assert.equal(exportResult.status, 0, exportResult.stderr)
+
+  const standards = readJsonl(path.join(out, 'pet_nutrition_standards.jsonl'))
+  const manifest = JSON.parse(fs.readFileSync(path.join(out, 'cloudbase-import-manifest.json'), 'utf8'))
+  const fediaf = standards.find((standard) => standard.standard_code === 'FEDIAF Nutritional Guidelines 2025')
+
+  assert.equal(standards.length, 2)
+  assert.equal(manifest.collections.pet_nutrition_standards.rows, 2)
+  assert.equal(fediaf._id, 'pet_standard_2025001')
+  assert.equal(fediaf.region_code, 'EU')
+  assert.equal(fediaf.authority, 'FEDIAF')
+  assert.equal(fediaf.profiles.length, 4)
+
+  const earlyGrowth = fediaf.profiles.find((profile) => (
+    profile.profile_code === 'fediaf_2025_dog_early_growth_reproduction'
+  ))
+  const adultMer95 = fediaf.profiles.find((profile) => profile.profile_code === 'fediaf_2025_dog_adult_mer_95')
+  assert.ok(earlyGrowth)
+  assert.ok(adultMer95)
+
+  const earlyProtein = earlyGrowth.requirements.find((requirement) => (
+    requirement.pet_nutrient_code === 'protein' && requirement.requirement_type === 'min'
+  ))
+  const adultVitaminDMax = adultMer95.requirements.find((requirement) => (
+    requirement.pet_nutrient_code === 'vitamin_d' && requirement.requirement_type === 'max'
+  ))
+
+  assert.equal(earlyProtein.value, 25)
+  assert.equal(earlyProtein.unit, 'g')
+  assert.equal(earlyProtein.basis, 'dry_matter')
+  assert.equal(adultVitaminDMax.value, 227)
+  assert.match(adultVitaminDMax.value_text, /320\.00 \(N\)/)
+  assert.match(adultVitaminDMax.condition_json, /source_page/)
 })
 
 test('导出脚本在必要表缺失时失败', () => {
