@@ -2,7 +2,7 @@ Component({
   properties: {
     items: { type: Array, value: [] },
     mode: { type: String, value: 'edit' },
-    actionIcon: { type: String, value: 'delete-1-filled' }
+    actionIcon: { type: String, value: '/assets/icons/recipe-delete-1-filled.svg' }
   },
 
   methods: {

@@ -29,11 +29,7 @@
       catchtap="onActionTap"
       aria-label="{{mode === 'edit' ? '删除食材' : '添加食材'}}"
     >
-      <t-icon
-        name="{{actionIcon}}"
-        color="{{mode === 'edit' ? 'var(--df-color-on-primary)' : 'var(--df-color-primary)'}}"
-        size="28rpx"
-      />
+      <image class="recipe-ingredient-list__action-icon" src="{{actionIcon}}" mode="aspectFit" />
     </view>
   </t-cell>
 </t-cell-group>

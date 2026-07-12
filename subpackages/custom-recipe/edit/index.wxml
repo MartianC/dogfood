@@ -15,7 +15,7 @@
       <recipe-ingredient-list
         items="{{recentIngredients}}"
         mode="search"
-        action-icon="cart-filled"
+        action-icon="/assets/icons/recipe-cart-filled.svg"
         bind:select="onSelectIngredient"
       />
       <view wx:if="{{!recentIngredients.length}}" class="recipe-design-search-empty">暂无最近添加的食材</view>
@@ -24,7 +24,7 @@
       <recipe-ingredient-list
         items="{{searchResults}}"
         mode="search"
-        action-icon="cart-filled"
+        action-icon="/assets/icons/recipe-cart-filled.svg"
         bind:select="onSelectIngredient"
       />
     </block>
@@ -66,7 +66,7 @@
           <recipe-ingredient-list
             items="{{ingredientRows}}"
             mode="edit"
-            action-icon="delete-1-filled"
+            action-icon="/assets/icons/recipe-delete-1-filled.svg"
             bind:amountchange="onIngredientAmountChange"
             bind:remove="onRemoveIngredient"
           />

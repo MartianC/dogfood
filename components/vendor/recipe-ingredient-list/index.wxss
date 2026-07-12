@@ -67,10 +67,21 @@
   border-radius: var(--df-radius-pill);
 }
 
+.recipe-ingredient-list__action-icon {
+  display: block;
+  width: 28rpx;
+  height: 28rpx;
+}
+
 .recipe-ingredient-list__action--edit {
   background: var(--df-color-warning);
 }
 
 .recipe-ingredient-list__action--search {
-  background: var(--df-color-primary-soft);
+  background: var(--df-color-primary);
+}
+
+.recipe-ingredient-list__action--search .recipe-ingredient-list__action-icon {
+  width: 28rpx;
+  height: 28rpx;
 }

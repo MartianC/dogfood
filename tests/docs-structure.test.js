@@ -7,7 +7,7 @@ const rootDir = path.join(__dirname, '..')
 
 test('产品文档和设计稿集中存放在 docs 目录', () => {
   const rootDocFiles = fs.readdirSync(rootDir).filter((file) => /\.(md|html)$/i.test(file))
-  assert.deepEqual(rootDocFiles, ['AGENTS.md'])
+  assert.deepEqual(rootDocFiles, ['AGENTS.md', 'CLAUDE.md'])
 
   const expectedDocs = [
     'README.md',
