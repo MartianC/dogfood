@@ -171,7 +171,7 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
 - F01：`app.json` 启用微信自定义 TabBar，根目录 `custom-tab-bar` 包装 TDesign `TabBar/TabBarItem`，使用 `theme=tag`、`shape=round`、四项图标加文字布局；图标通过公开 slot 复用本地资源，避免 TDesign 在线 icon font 在离线调试时加载失败。
 - F02/F03：`pages/recipes/list` 替换为“我的食谱”，按 `services/customRecipeService.listRecipes()` 在食谱卡片列表和 TDesign Empty 适配空态之间切换；数据态使用 TDesign Fab 适配组件打开创建弹层。
 - F04：`components/vendor/recipe-create-popup` 包装 TDesign `Popup/Cell/Input/Button`，支持可选狗狗、食谱名称、取消、遮罩关闭、加载状态和空名称内联错误。
-- F05：`subpackages/custom-recipe/edit` 默认使用空食材状态；点击“新增食材”后接回既有 `ingredient-editor`、保存草稿和建议流程。本轮未实现 F06-F10 的搜索、克重弹层和营养抽屉，因此新增食材后的交互仍是既有行内编辑器。
+- F05：`subpackages/custom-recipe/edit` 默认使用空食材状态；点击“新增食材”后接回既有 `ingredient-editor`、保存草稿和建议流程。本节记录 2026-07-11 时的实现状态；F06-F08 已于 2026-07-12 完成，见下节。
 - 数据边界：主包和分包共享 `services/customRecipeService.js`；分包原服务路径保留兼容转发，避免主包跨分包同步 `require`。
 - 验证：`npm run check:ui` 通过；`npm test` 共 36 项通过；微信开发者工具 `build-npm` 无 warning；CLI 预览成功，包体总计约 `537.9 KB`。iPhone 12/13 模拟器已检查 F03 空态、F04 Popup 与空名称错误，未发现 TabBar 或弹层遮挡。
 
@@ -189,3 +189,38 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
 - TabBar 外框、四项结构、选中态和安全区保持不变；图标 slot 固定为 `32rpx`（16 px），文字固定为 `28rpx / 40rpx`（14 px），图标下方间距为 `4rpx`，用于匹配 Figma 中图文比例。
 - 新增 `primary-pressed`、`primary-soft-pressed`、`surface-pressed` 和 `warning-pressed` 项目 token。自研 `ui-button` 通过 `hover-class="ui-button--pressed"` 使用这些 token；TDesign Popup、Fab、Empty 适配层覆盖 `brand-color-active`、`button-*-active-*`，Popup Cell 也使用 `surface-pressed`，不再回退蓝色。
 - 验证：微信开发者工具 `build-npm` 返回 `warnings: []`，`preview` 成功，包体约 `540.5 KB`；`npm run check:ui` 通过；`npm test` 38 项通过。
+
+### 2026-07-12 F06-F08 小程序实现
+
+- F06 编辑态由 `subpackages/custom-recipe/edit` 管理食材数组，食材列表通过 `components/vendor/recipe-ingredient-list` 统一包装 TDesign `Cell Group(theme=card)`、`Cell`、`Input` 和 `Icon`；克重输入每次 `change` 都重新计算比例，比例作为灰色只读文本展示在输入框左侧。
+- F07 搜索态使用 `components/vendor/recipe-ingredient-search` 包装 TDesign `Search`。空关键词显示“常用与最近”，非空关键词调用 `services/ingredientService.searchIngredients`，有结果显示 Card Style 食材行，无结果显示 TDesign Empty 适配态。
+- F07 的搜索结果整行和右侧 `cart-filled` 圆形操作均触发同一选择事件，进入 `components/vendor/recipe-ingredient-popup` 包装的底部 Popup；弹层使用 TDesign `Popup/Input/Button`，克重必须是大于 0 的数值。
+- 食材数据边界：CloudBase 环境查询 `food_localized_name` 的 `zh-CN` 名称；mock 环境使用公共食谱中的稳定 fixture，并将最近添加食材存入本地存储。重复食材按 `ingredientId` 或名称合并克重。
+- 营养汇总暂保留占位，只显示当前食材总克重，不接入营养计算规则。
+- 组件约束：页面不直接使用 `<t-*>`，TDesign 标签仅存在于 `components/vendor/recipe-ingredient-*`；主题变量全部映射到 `--df-*`，图标使用 TDesign `delete-1-filled` 和 `cart-filled`。
+- 验证：`npm run check:ui` 通过；`npm test` 42 项通过；`git diff --check` 通过；未提交、未暂存。
+
+### 2026-07-12 F06 滚动与固定操作校正
+
+- 食材列表的 `Cell Group(theme=card)` 通过 vendor 外部样式类补充项目 `line` token 边框，保持 TDesign 的圆角和连续 Cell 分割线。
+- 编辑态改为独立 `scroll-view`：只有食材列表和“添加食材”跟随滚动；汇总卡固定在底部保存操作上方，列表内容增加底部留白，因此最后一行能够完整滚到汇总卡上方。
+- 食谱名称和对应狗狗已由顶部双层标题表达，移除列表下方重复的名称编辑、对象选择和“检查并生成建议”区；固定底部只保留“保存食谱”主操作。
+- 验证：`npm run check:ui`、`npm test`（42 项）、微信开发者工具 `build-npm`（无 warning）和 CLI `preview` 均通过，预览包体约 `566.8 KB`。
+
+### 2026-07-12 F06 实际渲染修正
+
+- 修复编辑态 `scroll-view` 高度被 flex 布局压为 0 导致食材列表不可见的问题，改为由编辑内容区提供明确高度，滚动容器填满剩余空间。
+- 顶部狗狗与食谱名称改为无外框身份区；营养汇总改为带把手的悬浮占位卡，底部保存区增加白色背景、分割线和安全区留白，以对齐 F06 目标截图。
+- 页面自动化依赖未安装，本次未新增依赖；已通过开发者工具 `build-npm`（无 warning）和 CLI `preview` 编译验证。
+
+### 2026-07-12 F06 克重输入框视觉校正
+
+- 食材克重输入通过 TDesign `Input` 的 `borderless`、`align="right"`、`t-class` 和主题 CSS 变量匹配设计稿：浅绿色背景、浅色边框、圆角容器、加粗克重和灰色 `g` 后缀。
+- 保留 TDesign Input 的逐次输入事件和现有比例实时计算逻辑，不改变数据行为。
+- 验证：`npm run check:ui`、`npm test`（42 项）、`git diff --check` 和开发者工具 `build-npm`（无 warning）均通过。
+
+### 2026-07-12 F06 Cell 尺寸校正
+
+- 覆盖 TDesign Card Group 默认 `margin: 0 32rpx`，避免页面水平内边距与组件卡片边距叠加，使食材列表与页面其他内容同宽。
+- 将 Cell 上下内边距调整为 `16rpx`，同步收紧标题和描述行高；保留输入框、比例和删除按钮的横向布局。
+- 验证：`npm run check:ui`、`npm test`（42 项）和开发者工具 `build-npm`（无 warning）均通过。

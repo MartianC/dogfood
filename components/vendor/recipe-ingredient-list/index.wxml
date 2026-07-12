@@ -1,0 +1,39 @@
+<t-cell-group theme="card" bordered t-class="recipe-ingredient-list__group">
+  <t-cell
+    wx:for="{{items}}"
+    wx:key="id"
+    title="{{item.name}}"
+    description="{{item.categoryLabel}}"
+    hover="{{mode === 'search'}}"
+    data-index="{{index}}"
+    bind:click="onCellClick"
+  >
+    <view wx:if="{{mode === 'edit'}}" slot="note" class="recipe-ingredient-list__amount">
+      <text class="recipe-ingredient-list__ratio">{{item.ratioPercent}}%</text>
+      <t-input
+        t-class="recipe-ingredient-list__input"
+        type="number"
+        align="right"
+        borderless
+        value="{{item.perMealAmountGram}}"
+        suffix="g"
+        aria-label="{{item.name}}克重"
+        data-index="{{index}}"
+        bind:change="onAmountInput"
+      />
+    </view>
+    <view
+      slot="right-icon"
+      class="recipe-ingredient-list__action recipe-ingredient-list__action--{{mode}}"
+      data-index="{{index}}"
+      catchtap="onActionTap"
+      aria-label="{{mode === 'edit' ? '删除食材' : '添加食材'}}"
+    >
+      <t-icon
+        name="{{actionIcon}}"
+        color="{{mode === 'edit' ? 'var(--df-color-on-primary)' : 'var(--df-color-primary)'}}"
+        size="28rpx"
+      />
+    </view>
+  </t-cell>
+</t-cell-group>

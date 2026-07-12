@@ -1,0 +1,21 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-text-color-primary: var(--df-color-text);
+  --td-text-color-placeholder: var(--df-color-muted);
+  --td-bg-color-container: var(--df-color-surface);
+  --td-search-bg-color: var(--df-color-surface);
+  --td-search-input-bg: var(--df-color-surface);
+  --td-search-text-color: var(--df-color-text);
+  --td-search-placeholder-color: var(--df-color-muted);
+  --td-search-border-color: var(--df-color-line);
+}
+
+.recipe-ingredient-search__loading {
+  padding: var(--df-space-2) var(--df-space-6) 0;
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  text-align: right;
+}

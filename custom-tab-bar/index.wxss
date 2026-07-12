@@ -19,7 +19,7 @@
 
 .app-tab-bar__icon {
   display: block;
-  width: 46rpx;
-  height: 46rpx;
-  margin-bottom: 0rpx;
+  width: 32rpx;
+  height: 32rpx;
+  margin-bottom: 4rpx;
 }

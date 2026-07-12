@@ -1,5 +1,6 @@
 const authService = require('./services/authService')
 const mealPlanService = require('./services/mealPlanService')
+const env = require('./config/env')
 const recipes = require('./data/recipes')
 
 App({
@@ -15,6 +16,9 @@ App({
   },
 
   onLaunch() {
+    if (env.useCloudBase && typeof wx !== 'undefined' && wx.cloud && typeof wx.cloud.init === 'function') {
+      wx.cloud.init({ env: env.cloudEnvId })
+    }
     this.globalData.authReady = this.initApp()
   },
 

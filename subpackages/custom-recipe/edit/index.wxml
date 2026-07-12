@@ -1,5 +1,53 @@
-<view class="page recipe-design-page">
-  <block wx:if="{{!ingredients.length}}">
+<view class="page recipe-design-page {{mode === 'edit' && ingredients.length ? 'recipe-design-page--editing' : ''}}">
+  <view class="recipe-design-header">
+    <view class="recipe-design-dog">{{targetDogName || '未选择狗狗'}}</view>
+    <view class="recipe-design-heading df-heading-xl">{{title}}</view>
+  </view>
+
+  <block wx:if="{{mode === 'search'}}">
+    <view class="section recipe-design-search">
+      <recipe-ingredient-search value="{{searchValue}}" loading="{{searchLoading}}" bind:change="onSearchChange" />
+    </view>
+    <view class="recipe-design-section-heading">
+      {{hasSearchQuery ? '搜索结果' : '常用与最近'}}
+    </view>
+    <block wx:if="{{!hasSearchQuery}}">
+      <recipe-ingredient-list
+        items="{{recentIngredients}}"
+        mode="search"
+        action-icon="cart-filled"
+        bind:select="onSelectIngredient"
+      />
+      <view wx:if="{{!recentIngredients.length}}" class="recipe-design-search-empty">暂无最近添加的食材</view>
+    </block>
+    <block wx:elif="{{searchResults.length}}">
+      <recipe-ingredient-list
+        items="{{searchResults}}"
+        mode="search"
+        action-icon="cart-filled"
+        bind:select="onSelectIngredient"
+      />
+    </block>
+    <recipe-empty
+      wx:elif="{{searchError}}"
+      icon="search"
+      title="搜索失败"
+      description="请稍后重试"
+      action-text="重试"
+      bind:action="onRetrySearch"
+    />
+    <recipe-empty
+      wx:elif="{{!searchLoading}}"
+      icon="search"
+      title="无结果"
+      description="换个食材名称试试"
+    />
+    <view class="recipe-design-search-back">
+      <ui-button variant="ghost" bind:tap="onCancelSearch">返回食谱</ui-button>
+    </view>
+  </block>
+
+  <block wx:elif="{{!ingredients.length}}">
     <view class="recipe-design-empty">
       <recipe-empty
         icon="search"
@@ -9,45 +57,49 @@
         bind:action="onAddIngredient"
       />
     </view>
-    <view class="recipe-design-summary">
-      <ui-card variant="soft" padding="small">
-        <view class="recipe-design-summary__content">
-          <view>
-            <view class="recipe-design-summary__heading">营养汇总</view>
-            <view class="recipe-design-summary__description">添加食材后显示营养汇总</view>
-          </view>
-          <view class="recipe-design-summary__weight">0 g</view>
-        </view>
-      </ui-card>
-    </view>
   </block>
 
   <block wx:else>
-    <ui-card>
-      <view class="recipe-design-eyebrow df-caption">正在编辑</view>
-      <view class="recipe-design-heading df-heading-xl">{{title}}</view>
-      <view class="recipe-design-description df-body">填写每餐参考量，保存后可继续检查适配建议。</view>
-    </ui-card>
+    <view class="recipe-design-editing-content">
+      <scroll-view class="recipe-design-ingredient-scroll" scroll-y enable-flex>
+        <view class="recipe-design-ingredient-scroll__content">
+          <recipe-ingredient-list
+            items="{{ingredientRows}}"
+            mode="edit"
+            action-icon="delete-1-filled"
+            bind:amountchange="onIngredientAmountChange"
+            bind:remove="onRemoveIngredient"
+          />
+          <view class="recipe-design-add-action">
+            <ui-button variant="ghost" bind:tap="onAddIngredient">添加食材</ui-button>
+          </view>
+        </view>
+      </scroll-view>
 
-    <view class="section">
-      <ui-card>
-        <ui-field label="食谱名称">
-          <input class="recipe-design-control" value="{{title}}" bindinput="onTitle" placeholder="例如 家里简单饭" />
-        </ui-field>
-      </ui-card>
+      <view class="recipe-design-summary-floating">
+        <ui-card class="recipe-design-summary-card" variant="soft" padding="small">
+          <view class="recipe-design-summary__handle"></view>
+          <view class="recipe-design-summary__content">
+            <view>
+              <view class="recipe-design-summary__heading">营养汇总（占位）</view>
+              <view class="recipe-design-summary__description">营养计算规则确定后接入</view>
+            </view>
+            <view class="recipe-design-summary__weight">{{totalIngredientGram}} g</view>
+          </view>
+        </ui-card>
+      </view>
     </view>
 
-    <view class="section">
-      <ingredient-editor ingredients="{{ingredients}}" bind:change="onIngredients" />
-    </view>
-
-    <view class="section">
-      <dog-target-selector dogs="{{dogs}}" selectedDogIds="{{selectedDogIds}}" bind:change="onTargetChange" />
-    </view>
-
-    <view class="section recipe-design-actions">
-      <ui-button bind:tap="onCheckAdvice">检查并生成建议</ui-button>
-      <ui-button variant="secondary" bind:tap="onSaveDraft">保存草稿</ui-button>
+    <view class="bottom-action recipe-design-save-action">
+      <ui-button bind:tap="onSaveRecipe">保存食谱</ui-button>
     </view>
   </block>
+
+  <recipe-ingredient-popup
+    visible="{{popupVisible}}"
+    ingredient="{{selectedIngredient}}"
+    bind:visiblechange="onPopupVisibleChange"
+    bind:cancel="onPopupCancel"
+    bind:confirm="onPopupConfirm"
+  />
 </view>

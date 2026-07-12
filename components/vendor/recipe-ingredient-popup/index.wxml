@@ -1,0 +1,27 @@
+<t-popup
+  visible="{{visible}}"
+  placement="bottom"
+  close-on-overlay-click
+  prevent-scroll-through
+  t-class-content="recipe-ingredient-popup__content"
+  bind:visible-change="onVisibleChange"
+>
+  <view class="recipe-ingredient-popup">
+    <view class="recipe-ingredient-popup__heading">添加食材</view>
+    <view class="recipe-ingredient-popup__ingredient">{{ingredient.name}}</view>
+    <t-input
+      label="克重"
+      type="number"
+      suffix="g"
+      placeholder="请输入每餐克重"
+      value="{{amount}}"
+      status="{{errorText ? 'error' : 'default'}}"
+      tips="{{errorText}}"
+      bind:change="onAmountChange"
+    />
+    <view class="recipe-ingredient-popup__actions">
+      <t-button theme="light" size="medium" block bind:tap="onCancel">取消</t-button>
+      <t-button theme="primary" size="medium" block bind:tap="onConfirm">确认添加</t-button>
+    </view>
+  </view>
+</t-popup>

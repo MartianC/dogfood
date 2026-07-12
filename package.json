@@ -9,5 +9,8 @@
   },
   "dependencies": {
     "tdesign-miniprogram": "1.15.3"
+  },
+  "devDependencies": {
+    "miniprogram-automator": "^0.12.1"
   }
 }

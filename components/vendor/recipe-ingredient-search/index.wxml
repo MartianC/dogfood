@@ -1,0 +1,8 @@
+<t-search
+  value="{{value}}"
+  placeholder="搜索食材名称"
+  clearable
+  shape="round"
+  bind:change="onChange"
+/>
+<view wx:if="{{loading}}" class="recipe-ingredient-search__loading">正在搜索</view>

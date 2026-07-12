@@ -12,7 +12,7 @@ const tabBarStyle = [
   '--td-tab-bar-active-color: #25684a',
   '--td-tab-bar-color: #6f7b73',
   '--td-tab-bar-hover-bg-color: #eef3ef',
-  '--td-font-body-large: 18rpx / 18rpx PingFang SC, Microsoft YaHei, Arial Regular',
+  '--td-font-body-large: 28rpx / 40rpx PingFang SC, Microsoft YaHei, Arial Regular',
   '--td-tab-bar-height: 80rpx'
 ].join(';')
 
