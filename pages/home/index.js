@@ -16,11 +16,19 @@ Page({
     if (tabBar) tabBar.setData({ selected: 'home' })
     const app = getApp()
     if (app.globalData.authReady) await app.globalData.authReady
-    const dogs = await dogService.listDogs()
+    const authStateBeforeLoad = authService.getAuthState()
+    const dogs = authStateBeforeLoad === 'guest' ? [] : await dogService.listDogs()
     const authState = authService.getAuthState()
     const mode = dogs.length ? 'allDogs' : 'all'
     const recommendations = recipeUtils.filterRecipes(app.globalData.recipes, { mode, dogs }).slice(0, 3)
-    const history = await mealPlanService.listHistory()
+    let history = []
+    if (authState !== 'guest') {
+      try {
+        history = await mealPlanService.listHistory()
+      } catch (error) {
+        history = []
+      }
+    }
     this.setData({
       authState,
       dogs,
