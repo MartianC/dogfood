@@ -8,7 +8,7 @@
     <view class="nutrition-assessment__handle"></view>
     <view class="nutrition-assessment__summary-head">
       <view class="nutrition-assessment__summary-heading">营养评估</view>
-      <view class="nutrition-assessment__summary-link">查看详情 &gt;</view>
+      <view class="nutrition-assessment__summary-link">查看详情 ›</view>
     </view>
     <block wx:if="{{loading}}">
       <view class="nutrition-assessment__summary-status">正在评估</view>
@@ -30,7 +30,11 @@
             <view class="nutrition-assessment__expanded-title">营养评估</view>
             <view wx:if="{{viewAssessment}}" class="nutrition-assessment__expanded-context">{{viewAssessment.contextText}}</view>
           </view>
-          <ui-button variant="secondary" size="small" block="{{false}}" bind:tap="onToggle">收起</ui-button>
+          <view
+            class="nutrition-assessment__collapse"
+            hover-class="nutrition-assessment__collapse--pressed"
+            bindtap="onToggle"
+          >收起</view>
         </view>
 
         <view wx:if="{{loading}}" class="nutrition-assessment__loading">正在读取营养数据和参考标准</view>
@@ -57,7 +61,7 @@
                   class="nutrition-assessment__profile-link"
                   data-key="{{item.key}}"
                   bindtap="onOpenProfileSelector"
-                >{{item.shortProfileName}} · 更改 &gt;</view>
+                >{{item.shortProfileName}} · 更改 ›</view>
               </view>
               <view class="nutrition-assessment__standard-source">{{item.code}} · {{item.profileSelection === 'manual' ? '已手动选择' : '根据狗狗档案自动选择'}}</view>
 
@@ -71,7 +75,7 @@
                   data-standard="{{item.key}}"
                   data-code="{{nutrient.code}}"
                   bind:tap="onLowAction"
-                >{{nutrient.actionText}} &gt;</ui-button>
+                >{{nutrient.actionText}} ›</ui-button>
               </view>
 
               <view wx:for="{{item.highItems}}" wx:for-item="nutrient" wx:key="code" class="nutrition-assessment__item nutrition-assessment__item--high">
@@ -84,7 +88,7 @@
                   data-standard="{{item.key}}"
                   data-code="{{nutrient.code}}"
                   bind:tap="onHighAction"
-                >{{nutrient.actionText}} &gt;</ui-button>
+                >{{nutrient.actionText}} ›</ui-button>
               </view>
 
               <view class="nutrition-assessment__met">✓ 处于参考范围 · {{item.metCount}} 项</view>
@@ -96,7 +100,7 @@
                 <view class="nutrition-assessment__elements-heading">全部元素对照</view>
                 <view class="nutrition-assessment__elements-description">查看所有元素的含量、标准要求和满足情况</view>
               </view>
-              <view class="nutrition-assessment__elements-arrow">{{elementsVisible ? '收起' : '展开'}} &gt;</view>
+              <view class="nutrition-assessment__elements-arrow">{{elementsVisible ? '收起' : '展开'}} ›</view>
             </view>
 
             <view wx:if="{{elementsVisible}}" class="nutrition-assessment__elements">

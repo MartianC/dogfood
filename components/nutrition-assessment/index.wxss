@@ -116,6 +116,25 @@
   margin-top: var(--df-space-2);
 }
 
+.nutrition-assessment__collapse {
+  min-width: var(--df-touch-min);
+  min-height: var(--df-touch-min);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--df-space-3);
+  border: 1rpx solid var(--df-color-line-strong);
+  border-radius: var(--df-radius-lg);
+  color: var(--df-color-primary);
+  font-size: var(--df-font-sm);
+  font-weight: 700;
+}
+
+.nutrition-assessment__collapse--pressed {
+  background: var(--df-color-surface-pressed);
+}
+
 .nutrition-assessment__loading {
   margin-top: var(--df-space-6);
   padding: var(--df-space-6);
