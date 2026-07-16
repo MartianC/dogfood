@@ -78,11 +78,6 @@ page {
   z-index: 10;
 }
 
-.recipe-design-summary-card {
-  min-height: 232rpx;
-  box-sizing: border-box;
-}
-
 .recipe-design-save-action {
   z-index: 20;
 }
@@ -102,39 +97,6 @@ page {
 
 .recipe-design-search-back {
   margin: var(--df-space-5) var(--df-space-6) 0;
-}
-
-.recipe-design-summary__content {
-  display: flex;
-  min-height: var(--df-touch-min);
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--df-space-4);
-}
-
-.recipe-design-summary__handle {
-  width: 124rpx;
-  height: 8rpx;
-  margin: 0 auto var(--df-space-5);
-  border-radius: var(--df-radius-pill);
-  background: var(--df-color-line);
-}
-
-.recipe-design-summary__heading {
-  color: var(--df-color-text);
-  font-weight: 700;
-}
-
-.recipe-design-summary__description {
-  margin-top: var(--df-space-1);
-  color: var(--df-color-muted);
-  font-size: var(--df-font-xs);
-}
-
-.recipe-design-summary__weight {
-  flex: 0 0 auto;
-  color: var(--df-color-primary);
-  font-weight: 700;
 }
 
 .recipe-design-save-action {

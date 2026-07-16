@@ -17,6 +17,8 @@ page,
   --df-color-warning: #a84f34;
   --df-color-warning-pressed: #873e29;
   --df-color-warning-soft: #f6e8e1;
+  --df-color-status-low: #a77514;
+  --df-color-status-low-soft: #fff7e0;
   --df-color-on-primary-muted: rgba(255, 255, 255, 0.78);
 
   --df-radius-sm: 12rpx;

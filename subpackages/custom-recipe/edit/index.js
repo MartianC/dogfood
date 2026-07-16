@@ -2,6 +2,8 @@ const dogService = require('../../../services/dogService')
 const ingredientService = require('../../../services/ingredientService')
 const customRecipeService = require('../services/customRecipeService')
 const ingredientWorkbench = require('../services/ingredientWorkbench')
+const nutritionAssessmentService = require('../services/nutritionAssessmentService')
+const nutritionDataService = require('../services/nutritionDataService')
 
 function withIngredientIndexes(ingredients) {
   return ingredientWorkbench.calculateIngredientRatios(ingredients).map((item, index) => ({
@@ -28,7 +30,12 @@ Page({
     searchError: false,
     hasSearchQuery: false,
     selectedIngredient: null,
-    popupVisible: false
+    popupVisible: false,
+    targetDog: null,
+    nutritionAssessment: null,
+    nutritionLoading: false,
+    nutritionExpanded: false,
+    nutritionStandardProfiles: {}
   },
 
   async onLoad(options = {}) {
@@ -45,11 +52,13 @@ Page({
       dogs,
       selectedDogIds,
       targetDogName: draft.targetDogName || (targetDog && targetDog.name) || '',
+      targetDog: targetDog || null,
       title: draft.title || '未命名食谱',
       ingredients,
       ingredientRows: withIngredientIndexes(ingredients),
-      totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
-    })
+      totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients),
+      nutritionStandardProfiles: draft.nutritionStandardProfiles || {}
+    }, () => this.refreshNutritionAssessment())
   },
 
   persistDraft() {
@@ -60,6 +69,7 @@ Page({
       ingredients: this.data.ingredients,
       targetDogIds: this.data.selectedDogIds,
       targetDogName: this.data.targetDogName,
+      nutritionStandardProfiles: this.data.nutritionStandardProfiles,
       status: customRecipeService.getDraft() && customRecipeService.getDraft().status || 'draft'
     })
   },
@@ -149,7 +159,10 @@ Page({
       searchResults: [],
       searchError: false,
       hasSearchQuery: false
-    }, () => this.persistDraft())
+    }, () => {
+      this.persistDraft()
+      this.refreshNutritionAssessment()
+    })
     if (existingIngredient) wx.showToast({ title: '已合并食材克重', icon: 'none' })
   },
 
@@ -163,7 +176,10 @@ Page({
       ingredients,
       ingredientRows: withIngredientIndexes(ingredients),
       totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
-    }, () => this.persistDraft())
+    }, () => {
+      this.persistDraft()
+      this.refreshNutritionAssessment()
+    })
   },
 
   onRemoveIngredient(event) {
@@ -180,9 +196,95 @@ Page({
           ingredients,
           ingredientRows: withIngredientIndexes(ingredients),
           totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
-        }, () => this.persistDraft())
+        }, () => {
+          this.persistDraft()
+          this.refreshNutritionAssessment()
+        })
       }
     })
+  },
+
+  async refreshNutritionAssessment() {
+    const ingredients = this.data.ingredients
+    const dog = this.data.targetDog
+    if (!ingredients.length || !dog) {
+      this.setData({ nutritionAssessment: null, nutritionLoading: false })
+      return
+    }
+    const requestId = (this.nutritionRequestId || 0) + 1
+    this.nutritionRequestId = requestId
+    this.setData({ nutritionLoading: true })
+    try {
+      const foodSignature = ingredients.map((item) => item.ingredientId || item.id || '').sort().join('|')
+      if (!this.nutritionDataCache || this.nutritionDataSignature !== foodSignature) {
+        this.nutritionDataCache = await nutritionDataService.loadNutritionData(ingredients)
+        this.nutritionDataSignature = foodSignature
+      }
+      if (requestId !== this.nutritionRequestId) return
+      const nutritionAssessment = nutritionAssessmentService.buildAssessment({
+        ingredients,
+        dog,
+        profileOverrides: this.data.nutritionStandardProfiles,
+        ...this.nutritionDataCache
+      })
+      this.setData({ nutritionAssessment, nutritionLoading: false })
+    } catch (error) {
+      if (requestId !== this.nutritionRequestId) return
+      this.setData({
+        nutritionLoading: false,
+        nutritionAssessment: {
+          available: false,
+          status: 'unavailable',
+          statusLabel: '暂无法评估',
+          primaryAdvice: '营养数据暂时无法加载，请稍后重试',
+          contextText: `${dog.name} · 每日 ${dog.dailyMeals} 餐`,
+          basisText: '恢复数据连接后按食谱干物质密度评估',
+          counts: { adjust: 0, met: 0, unavailable: ingredients.length },
+          coverageText: '当前未能读取食材营养数据',
+          missingIngredients: ingredients.map((item) => ({
+            id: item.ingredientId || item.id || item.name,
+            name: item.name,
+            reason: '营养数据加载失败'
+          })),
+          standards: [],
+          elements: []
+        }
+      })
+    }
+  },
+
+  onNutritionToggle(event) {
+    this.setData({ nutritionExpanded: event.detail.expanded })
+  },
+
+  onNutritionProfileChange(event) {
+    const nutritionStandardProfiles = {
+      ...this.data.nutritionStandardProfiles,
+      [event.detail.key]: event.detail.profileCode
+    }
+    this.setData({ nutritionStandardProfiles }, () => {
+      this.persistDraft()
+      this.refreshNutritionAssessment()
+    })
+  },
+
+  onNutritionNutrientSelect(event) {
+    const item = event.detail.item
+    wx.showToast({
+      title: item ? `后续可筛选富含${item.name}的食物` : '食物筛选后续提供',
+      icon: 'none'
+    })
+  },
+
+  onNutritionAdjustIngredients() {
+    this.setData({ nutritionExpanded: false })
+    wx.showToast({ title: '请调整主要来源食材的克重', icon: 'none' })
+  },
+
+  onNutritionRetry() {
+    this.nutritionDataCache = null
+    this.nutritionDataSignature = ''
+    this.refreshNutritionAssessment()
   },
 
   onSaveRecipe() {

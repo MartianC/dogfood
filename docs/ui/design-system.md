@@ -29,6 +29,8 @@
 | `--df-color-warning` | 风险、删除、警示文字 | `#a84f34` |
 | `--df-color-warning-pressed` | 风险操作按下态 | `#873e29` |
 | `--df-color-warning-soft` | 风险弱背景 | `#f6e8e1` |
+| `--df-color-status-low` | 营养偏低、低于参考要求 | `#a77514` |
+| `--df-color-status-low-soft` | 营养偏低弱背景 | `#fff7e0` |
 | `--df-color-on-primary-muted` | 主色背景上的弱文字 | `rgba(255, 255, 255, 0.78)` |
 | `--df-color-mask` | 弹层遮罩 | `rgba(25, 24, 21, 0.44)` |
 

@@ -92,6 +92,8 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
     'subpackages/custom-recipe/services/customRecipeService.js',
     'subpackages/custom-recipe/services/ingredientAdvice.js',
     'subpackages/custom-recipe/services/recipeAdviceService.js',
+    'subpackages/custom-recipe/services/nutritionAssessmentService.js',
+    'subpackages/custom-recipe/services/nutritionDataService.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
     'subpackages/plan-extra/services/planCalculatorService.js'
@@ -141,7 +143,7 @@ test('食谱 Tab 呈现我的食谱数据态、空态和新建弹层入口', () 
   assert.doesNotMatch(popupWxss, /env\(safe-area-inset-bottom\)/)
 })
 
-test('食谱设计页提供搜索入口、卡片食材列表和营养占位', () => {
+test('食谱设计页提供搜索入口、卡片食材列表和营养评估', () => {
   const pageRoot = path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'edit')
   const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
   const ingredientListWxml = fs.readFileSync(path.join(__dirname, '..', 'components/vendor/recipe-ingredient-list/index.wxml'), 'utf8')
@@ -152,14 +154,17 @@ test('食谱设计页提供搜索入口、卡片食材列表和营养占位', ()
   assert.equal(config.navigationBarTitleText, '食谱设计')
   assert.match(wxml, /wx:elif="{{!ingredients\.length}}"/)
   assert.match(wxml, /还没有添加食材/)
-  assert.match(wxml, /搜索食材并填写克重后，营养汇总会自动更新/)
+  assert.match(wxml, /搜索食材并填写克重后，营养评估会自动更新/)
   assert.match(wxml, /新增食材/)
-  assert.match(wxml, /营养汇总/)
-  assert.match(wxml, /营养汇总（占位）/)
+  assert.match(wxml, /nutrition-assessment/)
+  assert.doesNotMatch(wxml, /营养汇总（占位）/)
   assert.match(js, /onAddIngredient/)
   assert.match(js, /ingredientService\.searchIngredients/)
   assert.match(js, /ingredientWorkbench\.updateIngredientAmount/)
   assert.match(js, /ingredientWorkbench\.addIngredient/)
+  assert.match(js, /nutritionDataService\.loadNutritionData/)
+  assert.match(js, /nutritionAssessmentService\.buildAssessment/)
+  assert.match(js, /onNutritionProfileChange/)
   assert.match(wxml, /recipe-ingredient-search/)
   assert.match(wxml, /recipe-ingredient-list/)
   assert.match(wxml, /recipe-ingredient-popup/)
@@ -190,4 +195,25 @@ test('食谱设计页提供搜索入口、卡片食材列表和营养占位', ()
   assert.match(ingredientListWxss, /--td-cell-vertical-padding: 16rpx/)
   assert.match(ingredientListWxss, /margin: 0;/)
   assert.equal(config.usingComponents['recipe-empty'], '../../../components/vendor/recipe-empty/index')
+  assert.equal(config.usingComponents['nutrition-assessment'], '../../../components/nutrition-assessment/index')
+})
+
+test('营养评估组件提供双标准、档案切换、建议入口和进阶表格', () => {
+  const root = path.join(__dirname, '..', 'components', 'nutrition-assessment')
+  const wxml = fs.readFileSync(path.join(root, 'index.wxml'), 'utf8')
+  const wxss = fs.readFileSync(path.join(root, 'index.wxss'), 'utf8')
+  const service = fs.readFileSync(path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'services', 'nutritionAssessmentService.js'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(root, 'index.json'), 'utf8'))
+
+  assert.match(wxml, /国标评估/)
+  assert.match(wxml, /FEDIAF 评估/)
+  assert.match(wxml, /需要补充/)
+  assert.match(wxml, /bind:tap="onLowAction"/)
+  assert.match(service, /挑选富含\$\{item\.name\}的食物/)
+  assert.match(wxml, /主要来源/)
+  assert.match(wxml, /全部元素对照/)
+  assert.match(wxml, /profileSelectorVisible/)
+  assert.match(wxss, /border-left: 6rpx solid var\(--df-color-status-low\)/)
+  assert.equal(config.usingComponents['ui-button'], '../ui/ui-button/index')
+  assert.ok(Object.values(config.usingComponents).every((value) => !value.includes('tdesign-miniprogram')))
 })

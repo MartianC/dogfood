@@ -52,7 +52,7 @@
       <recipe-empty
         icon="search"
         title="还没有添加食材"
-        description="搜索食材并填写克重后，营养汇总会自动更新。"
+        description="搜索食材并填写克重后，营养评估会自动更新。"
         action-text="新增食材"
         bind:action="onAddIngredient"
       />
@@ -77,16 +77,16 @@
       </scroll-view>
 
       <view class="recipe-design-summary-floating">
-        <ui-card class="recipe-design-summary-card" variant="soft" padding="small">
-          <view class="recipe-design-summary__handle"></view>
-          <view class="recipe-design-summary__content">
-            <view>
-              <view class="recipe-design-summary__heading">营养汇总（占位）</view>
-              <view class="recipe-design-summary__description">营养计算规则确定后接入</view>
-            </view>
-            <view class="recipe-design-summary__weight">{{totalIngredientGram}} g</view>
-          </view>
-        </ui-card>
+        <nutrition-assessment
+          assessment="{{nutritionAssessment}}"
+          loading="{{nutritionLoading}}"
+          expanded="{{nutritionExpanded}}"
+          bind:toggle="onNutritionToggle"
+          bind:profilechange="onNutritionProfileChange"
+          bind:nutrientselect="onNutritionNutrientSelect"
+          bind:adjustingredients="onNutritionAdjustIngredients"
+          bind:retry="onNutritionRetry"
+        />
       </view>
     </view>
 
