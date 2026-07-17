@@ -2,6 +2,7 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 
 const nutritionAssessmentService = require('../subpackages/custom-recipe/services/nutritionAssessmentService')
+const nutritionDataService = require('../subpackages/custom-recipe/services/nutritionDataService')
 
 const standards = [
   {
@@ -52,6 +53,31 @@ const nutrientRecords = [
   { food_id: 'food_b', nutrient_code: 'calcium', unit_name: 'MG', amount: 100 },
   { food_id: 'food_b', nutrient_code: 'phosphorus', unit_name: 'MG', amount: 100 }
 ]
+
+test('营养数据分页遵守小程序云数据库每页 20 条上限并读取全部记录', async () => {
+  const records = Array.from({ length: 45 }, (_, index) => ({ id: index + 1 }))
+  const query = {
+    offset: 0,
+    requestedLimit: 0,
+    skip(offset) {
+      this.offset = offset
+      return this
+    },
+    limit(limit) {
+      this.requestedLimit = limit
+      return this
+    },
+    async get() {
+      const actualLimit = Math.min(this.requestedLimit, 20)
+      return { data: records.slice(this.offset, this.offset + actualLimit) }
+    }
+  }
+
+  const result = await nutritionDataService.readAll(query)
+
+  assert.equal(result.length, 45)
+  assert.deepEqual(result, records)
+})
 
 test('按食谱干物质密度独立评估国标与 FEDIAF', () => {
   const assessment = nutritionAssessmentService.buildAssessment({

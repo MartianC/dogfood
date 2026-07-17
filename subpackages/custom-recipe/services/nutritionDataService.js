@@ -1,6 +1,7 @@
 const nutritionAssessmentService = require('./nutritionAssessmentService')
 
-const PAGE_SIZE = 100
+// 小程序端云数据库单次查询最多返回 20 条。
+const PAGE_SIZE = 20
 let standardsCache = null
 
 function canUseCloudDatabase() {
