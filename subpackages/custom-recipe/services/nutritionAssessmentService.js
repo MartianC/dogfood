@@ -137,7 +137,11 @@ function groupRecordsByFood(nutrientRecords) {
     if (!result[foodId]) result[foodId] = {}
     const unit = normalizeUnit(record.unit_name)
     if (!result[foodId][code]) result[foodId][code] = {}
-    result[foodId][code][unit] = Number(record.amount)
+    const rawAmount = record.amount
+    const amount = rawAmount === null || rawAmount === undefined || String(rawAmount).trim() === ''
+      ? null
+      : Number(rawAmount)
+    result[foodId][code][unit] = Number.isFinite(amount) ? amount : null
     return result
   }, {})
 }
@@ -149,6 +153,15 @@ function requiredRecordUnit(requirement) {
   if (unit === 'UG') return 'UG'
   if (unit === 'IU') return 'IU'
   return unit
+}
+
+function canTreatMissingRequirementAsZero(requirement) {
+  const code = normalizeCode(requirement.pet_nutrient_code)
+  const kind = String(requirement.nutrient_kind || '').trim().toLowerCase()
+  if (kind && kind !== 'atomic') return false
+  if (String(requirement.expression_json || '').trim()) return false
+  if (code.includes('_plus_') || /(^|_)ratio($|_)/.test(code) || code.includes('_to_')) return false
+  return !/_(wet|dry)_diets$/.test(code)
 }
 
 function valuePer100GramDryMatter(total, dryMatterGram) {
@@ -173,22 +186,28 @@ function valueInUnit(values, targetUnit) {
   return null
 }
 
-function aggregateNutrient(code, recordUnit, ingredients, recordsByFood) {
+function aggregateNutrient(code, recordUnit, ingredients, recordsByFood, missingAsZero) {
   let total = 0
   const contributions = []
-  const missingIngredients = []
+  let unavailable = false
   ingredients.forEach((ingredient) => {
     const foodId = ingredientIdOf(ingredient)
-    const amount = valueInUnit(recordsByFood[foodId] && recordsByFood[foodId][code], recordUnit)
+    const values = recordsByFood[foodId] && recordsByFood[foodId][code]
+    if (!values) {
+      // 普通营养元素没有记录时，按该食材不含此元素处理。
+      if (!missingAsZero) unavailable = true
+      return
+    }
+    const amount = valueInUnit(values, recordUnit)
     if (!Number.isFinite(amount)) {
-      missingIngredients.push({ id: foodId, name: ingredient.name })
+      unavailable = true
       return
     }
     const contribution = amount * amountGramOf(ingredient) / 100
     total += contribution
     contributions.push({ ingredientName: ingredient.name, value: contribution })
   })
-  return { total, contributions, missingIngredients }
+  return { total, contributions, unavailable }
 }
 
 function evaluateRequirements(requirements, currentValue) {
@@ -251,8 +270,14 @@ function buildElementData(selectedStandards, ingredients, recordsByFood, dryMatt
         return
       }
       const recordUnit = requiredRecordUnit(requirements[0])
-      const aggregate = aggregateNutrient(group.code, recordUnit, ingredients, recordsByFood)
-      const currentValue = aggregate.missingIngredients.length
+      const aggregate = aggregateNutrient(
+        group.code,
+        recordUnit,
+        ingredients,
+        recordsByFood,
+        canTreatMissingRequirementAsZero(requirements[0])
+      )
+      const currentValue = aggregate.unavailable
         ? null
         : valuePer100GramDryMatter(aggregate.total, dryMatterGram)
       const status = evaluateRequirements(requirements, currentValue)
@@ -260,8 +285,7 @@ function buildElementData(selectedStandards, ingredients, recordsByFood, dryMatt
         status,
         currentValue: Number.isFinite(currentValue) ? round(currentValue) : null,
         unit: requirements[0].unit,
-        requirementText: formatRequirement(requirements),
-        missingIngredients: aggregate.missingIngredients
+        requirementText: formatRequirement(requirements)
       }
       if (displayValue === null && Number.isFinite(currentValue)) {
         displayValue = round(currentValue)
