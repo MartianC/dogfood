@@ -94,6 +94,7 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
     'subpackages/custom-recipe/services/recipeAdviceService.js',
     'subpackages/custom-recipe/services/nutritionAssessmentService.js',
     'subpackages/custom-recipe/services/nutritionDataService.js',
+    'subpackages/custom-recipe/services/nutrientIngredientService.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
     'subpackages/plan-extra/services/planCalculatorService.js'
@@ -232,6 +233,30 @@ test('搜索食材是独立页面，默认、结果和无结果状态互斥', ()
   assert.equal(config.usingComponents['recipe-ingredient-search'], '../../../components/vendor/recipe-ingredient-search/index')
   assert.equal(config.usingComponents['recipe-ingredient-list'], '../../../components/vendor/recipe-ingredient-list/index')
   assert.equal(config.usingComponents['recipe-ingredient-popup'], '../../../components/vendor/recipe-ingredient-popup/index')
+})
+
+test('营养食材模式复用搜索页且不改变普通搜索默认态', () => {
+  const pageRoot = path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'ingredient-search')
+  const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const wxss = fs.readFileSync(path.join(pageRoot, 'index.wxss'), 'utf8')
+  const js = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const editJs = fs.readFileSync(
+    path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'edit', 'index.js'),
+    'utf8'
+  )
+
+  assert.match(js, /options\.mode === 'nutrient'/)
+  assert.match(js, /decodeURIComponent/)
+  assert.match(js, /nutrientIngredientService/)
+  assert.match(wxml, /wx:if="{{isNutrientMode}}"/)
+  assert.match(wxml, /{{nutrientGapText}}/)
+  assert.match(wxml, /按{{nutrientName}}含量排序/)
+  assert.match(wxml, /wx:if="{{!isNutrientMode}}"/)
+  assert.match(wxml, /常用与最近/)
+  assert.doesNotMatch(wxml, /食材分类/)
+  assert.match(wxss, /\.ingredient-search-gap-summary/)
+  assert.match(editJs, /mode=nutrient/)
+  assert.match(editJs, /gapDisplayValue/)
 })
 
 test('营养评估组件提供双标准、档案切换、建议入口和进阶表格', () => {

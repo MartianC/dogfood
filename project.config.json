@@ -101,6 +101,10 @@
         "type": "file"
       },
       {
+        "value": "subpackages/custom-recipe/services/nutrientIngredientService.js",
+        "type": "file"
+      },
+      {
         "value": "subpackages/dog-profile/services/fileService.js",
         "type": "file"
       },

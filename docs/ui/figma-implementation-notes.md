@@ -296,3 +296,78 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
 
 - `large` 常用食材胶囊固定为单行，快捷项不参与 flex 收缩；长名称超过可视宽度时由原有横向 `scroll-view` 承接，不再通过增高胶囊强行换行。
 - 使用“全谷物小米、冷冻野生剑鱼、生带皮猪五花肉、牛肉”进行开发者工具实际渲染检查，胶囊高度一致，前三项完整单行显示，第四项自然延伸到横向滚动区域。
+
+## 2026-07-18 富含营养食物挑选方案探索
+
+本轮在 Figma 文件 `dogfood`（`fileKey=CHUlIiWUhuXHA0IUwQe6Qe`）的页面 `狗饭 · 营养评估改版`（Page ID `19726:38`）右侧新增 Section `方案探索 · 富含营养食物挑选`（Node ID `19771:94`），保留 A01–A06 原稿不变。
+
+| 编号 | Frame | Node ID | 主要内容 |
+| --- | --- | --- | --- |
+| B01 | 缺口优先型 | `19771:95` | 显示钙缺口、参考要求和补充效率排序，支持多选后加入当前食谱 |
+| B02 | 分类探索型 | `19771:96` | 通过搜索、五类入口和食物卡片自主浏览，展示可添加与已在食谱状态 |
+| B03 | 搭配决策型 | `19771:97` | 展示三组候选搭配、预计补充量和加入后变化，单选后采用搭配 |
+
+### 方案取舍
+
+- B01 完成调整任务最快，适合作为默认方向；代价是探索范围较窄。
+- B02 最易扩展到其他营养元素和更多食物，但用户需要自行比较并组合食材。
+- B03 决策成本最低、解释性最强，但依赖可靠的份量建议和加入后重算能力。
+- 三个方案统一使用“钙 / 国标成年犬粮”作为示例上下文。食物含量、建议份量和预计变化只用于界面方案评审，不作为可直接上线的营养数据。
+- 在方案定稿前，不修改 A02 的既有“挑选富含钙的食物”入口连线；选定方向后再配置目标 Frame 和返回食谱的原型路径。
+
+### 设计系统映射
+
+- 三个方案均为 `375 × 812`，复用 A02 的系统状态栏与 TDesign NavBar，标题统一为“挑选富含钙的食物”。
+- 颜色、间距和圆角绑定现有“狗饭 · 食谱”Figma variables；未新增全局 token、图片资产或正式设计系统组件。
+- 订阅团队库未检索到可直接复用的 Search、Cell、Button、Tag；本轮页面列表作为方案级业务组合绘制，待方向选定后再映射到工程 `ui-button`、`ui-card`、`ui-tag` 和食材列表组件。
+- Figma `color/action/primary` 与工程 `--df-color-primary` 当前存在历史值差异。本轮为保持现有稿连续性不修改 Figma 全局变量；实现前需要单独确认并对齐主色来源。
+
+### 验证结果
+
+- B01、B02、B03 均生成独立截图和三方案并排总览，未发现文字裁切、图层重叠、零尺寸文字或不可读对比度。
+- 三个 Frame 均为 `375 × 812`；滚动内容高度分别为 `526`、`706`、`612`，未超过对应 `630`、`718`、`630` 视口。
+- 三个方案均无 placeholder shimmer 或 `Title / Heading / Button` 默认文案；中文导航标题使用 `Noto Sans SC Medium`，正文沿用现有 `Inter Regular / Medium / Semi Bold`。
+- B03 首轮截图发现搭配 A 的推荐依据未进入 Auto Layout，已局部修复并重新截图验证。
+- 本轮未修改小程序代码，也未为尚未定稿的方案配置正式原型连线。
+
+## 2026-07-18 B02 主方案工程复用迭代
+
+在原 B02 `19771:96` 右侧保留历史方案并新增 `B02 v2 · 同页模式复用`（Frame `19788:136`，375 × 812）。Section `19771:94` 扩展为 1920 × 940；Frame 下方增加工程复用说明 `19793:154`，不属于运行时界面。
+
+### 页面复用结论
+
+- 复用现有分包页面 `subpackages/custom-recipe/ingredient-search/index`，不再创建第二个“富含营养食物”页面。两种入口都以“选择一种食材、填写克重、写回同一食谱草稿并返回编辑页”为终点，搜索状态机、Popup、草稿保存和 `eventChannel` 回传完全一致，复用同一路由更合理。
+- 普通入口保持当前 `id=<recipeId>`；营养入口建议增加 `mode=nutrient&nutrientCode=<code>&nutrientName=<name>&standardKey=<key>`。页面只根据 `mode` 切换空关键词时的默认内容和标题；输入关键词后仍进入现有加载、结果、无结果和错误互斥状态。
+- `mode=search` 的默认态继续显示“常用与最近”；`mode=nutrient` 的默认态显示“营养缺口比例提示 → 按目标营养素排序的食材列表”，不提供食材分类。点击任一食材后继续打开现有克重 Popup，确认后复用保存、合并和返回逻辑。
+- 营养排序和数据完整性判断不进入页面或 vendor 包装层。实现时建议新增独立营养食材查询服务，负责按 `nutrientCode` 查询 `food_nutrients`、关联中文名称、过滤无可靠数值记录并排序；页面只消费展示模型。
+
+### 组件映射
+
+| Figma 区域 | 工程来源 | 复用方式 |
+| --- | --- | --- |
+| 顶部导航 | 小程序原生页面导航；Figma 使用现有 TDesign NavBar 实例 | 动态 `navigationBarTitleText` 或等价页面配置，不新增导航组件 |
+| 搜索框 | `components/vendor/recipe-ingredient-search` → TDesign `Search` | 直接复用现有 placeholder、change/action 事件，不新增 Search 变体 |
+| 营养缺口提示 | `components/ui/ui-notice` | 使用现有 `variant="warning"`、`clickable=true`；主文案突出缺口比例，辅助文案展示达标率和计算口径，不新增 Notice 组件或变体 |
+| 食材列表 | `components/vendor/recipe-ingredient-list` → TDesign `CellGroup/Cell` | 继续使用 `mode="search"`；目标营养素含量通过 `displayDescription` 提供，不新增 `nutrient` 模式 |
+| 克重确认 | `components/vendor/recipe-ingredient-popup` → TDesign `Popup/Input/Button` | 直接复用当前校验、确认和取消事件；该状态不在 B02 v2 首屏重复绘制 |
+
+本轮没有新增基础组件、vendor wrapper 或列表变体。Figma 团队库仍未检索到可直接导入的 TDesign Search、Cell、Button，因此 B02 v2 从已落地的 F07 复制视觉骨架，并通过图层命名和 shared plugin data 标注真实工程路径；不能把这些页面层 Frame 当作新的工程组件实现。
+
+### 设计调整与验证
+
+- 原 B02 的独立食物卡片改为一个连续的 CellGroup，每行 56 px，整行是选择目标，右侧继续使用现有 `cart-filled` 组件实例；“已在食谱”改为描述信息，确认添加时沿用现有合并克重逻辑。
+- 按反馈移除食材分类，默认态直接进入按钙含量排序的结果列表；搜索框、列表和克重 Popup 的工程复用关系保持不变。
+- 顶部缺口提示恢复原 B02 的强数值层级，但把绝对克数改为相对目标的比例：主文案为“钙缺口 48%”，辅助文案为“当前达标率 52% · 按本餐目标计算”。示例比例由原上下文 `0.42 / 0.80` 推导并四舍五入，仅用于界面评审。
+- 仅展示有可靠目标营养素数值的食材；数据不足项进入空态或数据服务过滤结果，不在正常排序列表中与可靠数据混排。
+- 当前 Figma 狗饭变量集合没有与工程 `--df-color-warning`、`--df-color-warning-soft` 完全一致的项目变量；B02 v2 按 `ui-notice--warning` 的工程值 `#a84f34`、`#f6e8e1` 绘制，没有修改全局 Figma variables。既有 `color/action/primary` 与工程 `--df-color-primary` 的历史差异仍需在正式实现前统一处理。
+- 最终截图和结构审计确认：Frame 为 375 × 812；分类相关节点为 0；缺口提示不含克数；结果区从 `y=364` 上移到 `y=264`；所有可见顶层区域均在画板内；无 placeholder、默认占位文案或溢出节点；四个 Cell 均为 343 × 56；字体只使用 `Noto Sans SC` 和现有 `Inter` 体系。
+
+### 2026-07-18 B02 定稿与小程序实现
+
+- 用户在 B02 v2 Frame `19788:136` 原位完成定稿：移除详情入口和食材分类，顶部改为紧凑缺口卡片，主文案使用“钙缺口 38 mg / 100g”，辅助文案为“国标 · 成年犬粮”。本节定稿覆盖上一节的比例缺口交接说明。
+- 工程继续复用 `subpackages/custom-recipe/ingredient-search`。普通入口不带 `mode`，营养入口使用 `mode=nutrient` 并传入营养素、缺口显示值、标准和 profile；页面只在营养模式切换原生导航标题、顶部摘要、默认列表和数据源。
+- Search、CellGroup/Cell 和克重 Popup 分别继续来自 `recipe-ingredient-search`、`recipe-ingredient-list`、`recipe-ingredient-popup`，没有在页面直接使用 TDesign 标签，也没有新增基础组件或 vendor wrapper。
+- 缺口摘要是页面级业务组合，使用现有颜色、边框、圆角、排版 token 实现。定稿不再包含点击详情语义，因此不复用可点击 `ui-notice`，避免为了单页展示改动全局组件契约。
+- 新增独立 `nutrientIngredientService`：按目标营养素读取 `food_nutrients`、关联 `food_localized_name` 中文名、过滤无可靠数值记录、按每 100g 含量降序，并输出现有列表可直接消费的 `displayDescription`。
+- 营养评估服务只新增缺口展示值及营养素 ID 映射；原搜索模式仍调用 `ingredientService.searchIngredients`，空关键词仍显示“常用与最近”，标题配置仍为“搜索食材”。
+- 微信开发者工具只读验证确认：营养模式显示“钙缺口 38 mg / 100g”“国标 · 成年犬粮”和 20 条降序结果；普通模式仍显示原快捷食材默认态。两种模式均截图检查，无分类、详情入口、状态混显、截断或横向溢出；临时截图不纳入仓库。

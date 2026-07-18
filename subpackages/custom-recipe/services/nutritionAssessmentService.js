@@ -85,6 +85,14 @@ function nutrientCodeOf(record) {
   return normalizeCode(record.nutrient_code || NUTRIENT_CODE_BY_ID[Number(record.nutrient_id)])
 }
 
+function nutrientIdsForCode(value) {
+  const code = normalizeCode(value)
+  return Object.entries(NUTRIENT_CODE_BY_ID)
+    .filter(([, mappedCode]) => mappedCode === code)
+    .map(([nutrientId]) => Number(nutrientId))
+    .sort((left, right) => left - right)
+}
+
 function ingredientIdOf(ingredient) {
   return String(ingredient.ingredientId || ingredient.id || '')
 }
@@ -210,27 +218,44 @@ function aggregateNutrient(code, recordUnit, ingredients, recordsByFood, missing
   return { total, contributions, unavailable }
 }
 
-function evaluateRequirements(requirements, currentValue) {
-  if (!Number.isFinite(currentValue)) return 'unavailable'
+function requirementLimits(requirements) {
   const minimums = requirements.filter((item) => item.requirement_type === 'min').map((item) => Number(item.value))
   const maximums = requirements.filter((item) => item.requirement_type === 'max').map((item) => Number(item.value))
-  const minimum = minimums.length ? Math.max(...minimums) : null
-  const maximum = maximums.length ? Math.min(...maximums) : null
+  return {
+    minimum: minimums.length ? Math.max(...minimums) : null,
+    maximum: maximums.length ? Math.min(...maximums) : null
+  }
+}
+
+function evaluateRequirements(requirements, currentValue) {
+  if (!Number.isFinite(currentValue)) return 'unavailable'
+  const { minimum, maximum } = requirementLimits(requirements)
   if (minimum !== null && currentValue < minimum) return 'low'
   if (maximum !== null && currentValue > maximum) return 'high'
   return 'met'
 }
 
 function formatRequirement(requirements) {
-  const minimums = requirements.filter((item) => item.requirement_type === 'min').map((item) => Number(item.value))
-  const maximums = requirements.filter((item) => item.requirement_type === 'max').map((item) => Number(item.value))
-  const minimum = minimums.length ? Math.max(...minimums) : null
-  const maximum = maximums.length ? Math.min(...maximums) : null
+  const { minimum, maximum } = requirementLimits(requirements)
   const unit = requirements[0] && requirements[0].unit || ''
   if (minimum !== null && maximum !== null) return `${minimum}–${maximum} ${unit}`.trim()
   if (minimum !== null) return `≥ ${minimum} ${unit}`.trim()
   if (maximum !== null) return `≤ ${maximum} ${unit}`.trim()
   return '未规定'
+}
+
+function formatGap(currentValue, minimumValue, unit) {
+  if (!Number.isFinite(currentValue) || !Number.isFinite(minimumValue) || currentValue >= minimumValue) return null
+  const gap = minimumValue - currentValue
+  const normalizedUnit = normalizeUnit(unit)
+  if (normalizedUnit === '%' || normalizedUnit === 'G') {
+    if (gap < 1) return { value: Math.round(gap * 1000), unit: 'mg' }
+    return { value: round(gap), unit: 'g' }
+  }
+  if (normalizedUnit === 'MG') return { value: round(gap), unit: 'mg' }
+  if (normalizedUnit === 'UG') return { value: round(gap), unit: 'µg' }
+  if (normalizedUnit === 'IU') return { value: round(gap), unit: 'IU' }
+  return { value: round(gap), unit: String(unit || '').trim() }
 }
 
 function buildContributors(contributions, total) {
@@ -281,11 +306,17 @@ function buildElementData(selectedStandards, ingredients, recordsByFood, dryMatt
         ? null
         : valuePer100GramDryMatter(aggregate.total, dryMatterGram)
       const status = evaluateRequirements(requirements, currentValue)
+      const { minimum, maximum } = requirementLimits(requirements)
+      const gap = status === 'low' ? formatGap(currentValue, minimum, requirements[0].unit) : null
       evaluation[key] = {
         status,
         currentValue: Number.isFinite(currentValue) ? round(currentValue) : null,
         unit: requirements[0].unit,
-        requirementText: formatRequirement(requirements)
+        requirementText: formatRequirement(requirements),
+        minimumValue: minimum,
+        maximumValue: maximum,
+        gapDisplayValue: gap && gap.value,
+        gapDisplayUnit: gap && gap.unit
       }
       if (displayValue === null && Number.isFinite(currentValue)) {
         displayValue = round(currentValue)
@@ -317,6 +348,8 @@ function buildStandardResult(selected, elements) {
     currentValue: item[key].currentValue,
     unit: item[key].unit,
     requirementText: item[key].requirementText,
+    gapDisplayValue: item[key].gapDisplayValue,
+    gapDisplayUnit: item[key].gapDisplayUnit,
     actionText: `挑选富含${item.name}的食物`
   }))
   const highItems = relevant.filter((item) => item[key].status === 'high').map((item) => ({
@@ -468,5 +501,6 @@ module.exports = {
   buildAssessment,
   selectProfile,
   normalizeCode,
-  nutrientCodeOf
+  nutrientCodeOf,
+  nutrientIdsForCode
 }

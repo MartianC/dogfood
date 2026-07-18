@@ -79,6 +79,35 @@ test('营养数据分页遵守小程序云数据库每页 20 条上限并读取�
   assert.deepEqual(result, records)
 })
 
+test('大批量营养数据按受控并发分页读取', async () => {
+  const records = Array.from({ length: 45 }, (_, index) => ({ id: index + 1 }))
+  const calls = []
+  const query = {
+    count: async () => ({ total: records.length }),
+    skip(offset) {
+      return {
+        limit(limit) {
+          return {
+            async get() {
+              calls.push({ offset, limit })
+              return { data: records.slice(offset, offset + limit) }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const result = await nutritionDataService.readAllInParallel(query, 2)
+
+  assert.deepEqual(result, records)
+  assert.deepEqual(calls, [
+    { offset: 0, limit: 20 },
+    { offset: 20, limit: 20 },
+    { offset: 40, limit: 20 }
+  ])
+})
+
 test('按食谱干物质密度独立评估国标与 FEDIAF', () => {
   const assessment = nutritionAssessmentService.buildAssessment({
     ingredients,
@@ -100,6 +129,9 @@ test('按食谱干物质密度独立评估国标与 FEDIAF', () => {
   const phosphorus = assessment.elements.find((item) => item.code === 'phosphorus')
   assert.equal(phosphorus.gb.status, 'low')
   assert.equal(phosphorus.fediaf.status, 'low')
+  const phosphorusAdvice = assessment.standards[0].lowItems.find((item) => item.code === 'phosphorus')
+  assert.equal(phosphorusAdvice.gapDisplayValue, 214)
+  assert.equal(phosphorusAdvice.gapDisplayUnit, 'mg')
   assert.deepEqual(assessment.counts, { adjust: 2, met: 1, unavailable: 0 })
 })
 
@@ -161,4 +193,5 @@ test('真实 USDA nutrient id 映射到标准营养元素代码', () => {
   assert.equal(nutritionAssessmentService.nutrientCodeOf({ nutrient_id: 1214 }), 'lysine')
   assert.equal(nutritionAssessmentService.nutrientCodeOf({ nutrient_id: 1110, unit_name: 'IU' }), 'vitamin_d')
   assert.equal(nutritionAssessmentService.nutrientCodeOf({ nutrient_id: 1114, unit_name: 'UG' }), 'vitamin_d')
+  assert.deepEqual(nutritionAssessmentService.nutrientIdsForCode('calcium'), [1087])
 })

@@ -20,6 +20,23 @@ async function readAll(query) {
   }
 }
 
+async function readAllInParallel(query, concurrency = 6) {
+  if (!query || typeof query.count !== 'function') return readAll(query)
+  const countResult = await query.count()
+  const total = Math.max(0, Number(countResult && countResult.total) || 0)
+  const offsets = []
+  for (let offset = 0; offset < total; offset += PAGE_SIZE) offsets.push(offset)
+  const batchSize = Number.isInteger(concurrency) && concurrency > 0 ? concurrency : 6
+  const result = []
+  for (let index = 0; index < offsets.length; index += batchSize) {
+    const pages = await Promise.all(offsets.slice(index, index + batchSize).map((offset) => (
+      query.skip(offset).limit(PAGE_SIZE).get()
+    )))
+    pages.forEach((page) => result.push(...(Array.isArray(page.data) ? page.data : [])))
+  }
+  return result
+}
+
 async function loadStandards(database) {
   if (standardsCache) return standardsCache
   const standards = await readAll(database.collection('pet_nutrition_standards'))
@@ -68,5 +85,6 @@ module.exports = {
   loadNutritionData,
   loadAssessment,
   clearCache,
-  readAll
+  readAll,
+  readAllInParallel
 }

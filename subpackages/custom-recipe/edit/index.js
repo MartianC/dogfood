@@ -195,9 +195,31 @@ Page({
 
   onNutritionNutrientSelect(event) {
     const item = event.detail.item
-    wx.showToast({
-      title: item ? `后续可筛选富含${item.name}的食物` : '食物筛选后续提供',
-      icon: 'none'
+    if (!item) {
+      wx.showToast({ title: '暂时无法读取营养缺口', icon: 'none' })
+      return
+    }
+    const standardKey = event.detail.standardKey
+    const standard = this.data.nutritionAssessment
+      && this.data.nutritionAssessment.standards
+      && this.data.nutritionAssessment.standards.find((entry) => entry.key === standardKey)
+    const standardLabel = standardKey === 'gb' ? '国标' : 'FEDIAF'
+    const params = [
+      `id=${encodeURIComponent(this.data.recipeId)}`,
+      'mode=nutrient',
+      `nutrientCode=${encodeURIComponent(item.code)}`,
+      `nutrientName=${encodeURIComponent(item.name)}`,
+      `gapValue=${encodeURIComponent(item.gapDisplayValue)}`,
+      `gapUnit=${encodeURIComponent(item.gapDisplayUnit)}`,
+      `standardLabel=${encodeURIComponent(standardLabel)}`,
+      `profileName=${encodeURIComponent(standard && standard.profileName || '')}`
+    ]
+    this.persistDraft()
+    wx.navigateTo({
+      url: `/subpackages/custom-recipe/ingredient-search/index?${params.join('&')}`,
+      events: {
+        ingredientsUpdated: ({ ingredients, merged }) => this.applyIngredients(ingredients, merged)
+      }
     })
   },
 
