@@ -1,0 +1,61 @@
+<view class="page ingredient-search-page">
+  <recipe-ingredient-search
+    value="{{searchValue}}"
+    loading="{{searchLoading}}"
+    action-text="取消"
+    bind:change="onSearchChange"
+    bind:action="onSearchAction"
+  />
+
+  <view class="ingredient-search-state">
+    <block wx:if="{{!hasSearchQuery}}">
+      <view class="ingredient-search-heading">常用与最近</view>
+      <scroll-view class="ingredient-search-quick-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="ingredient-search-quick-list">
+          <view
+            wx:for="{{quickIngredients}}"
+            wx:key="id"
+            class="ingredient-search-quick-option"
+            data-index="{{index}}"
+            bindtap="onQuickIngredientTap"
+            aria-role="button"
+            aria-label="添加{{item.name}}"
+          >
+            <ui-tag variant="good" size="large">{{item.name}}</ui-tag>
+          </view>
+        </view>
+      </scroll-view>
+      <view wx:if="{{!quickIngredients.length}}" class="ingredient-search-quick-empty">暂无常用食材</view>
+    </block>
+
+    <view wx:elif="{{searchLoading}}" class="ingredient-search-loading">正在搜索</view>
+
+    <view wx:elif="{{searchError}}" class="ingredient-search-no-result" bindtap="onRetrySearch">
+      <view class="ingredient-search-no-result__heading">搜索失败</view>
+      <view class="ingredient-search-no-result__description">请稍后重试，点此重新搜索</view>
+    </view>
+
+    <block wx:elif="{{searchResults.length}}">
+      <view class="ingredient-search-heading ingredient-search-heading--results">搜索结果</view>
+      <recipe-ingredient-list
+        items="{{searchResults}}"
+        mode="search"
+        action-icon="/assets/icons/recipe-cart-filled.svg"
+        bind:select="onSelectIngredient"
+      />
+    </block>
+
+    <view wx:else class="ingredient-search-no-result">
+      <view class="ingredient-search-no-result__heading">没有找到“{{searchValue}}”</view>
+      <view class="ingredient-search-no-result__description">试试更短的关键词，或检查名称是否正确</view>
+    </view>
+  </view>
+
+  <recipe-ingredient-popup
+    visible="{{popupVisible}}"
+    ingredient="{{selectedIngredient}}"
+    bind:visiblechange="onPopupVisibleChange"
+    bind:cancel="onPopupCancel"
+    bind:confirm="onPopupConfirm"
+  />
+</view>

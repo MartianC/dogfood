@@ -24,6 +24,20 @@ test('搜索不到食材时返回空数组', async () => {
   assert.deepEqual(await ingredientService.searchIngredients('不存在的食材'), [])
 })
 
+test('默认常用食材顺序和搜索结果摘要保持稳定', () => {
+  const commonNames = ingredientService.getRecentIngredients().slice(0, 4).map((item) => item.name)
+  const withEnergy = ingredientService.normalizeIngredient({
+    id: 'chicken',
+    name: '鸡胸肉',
+    category: 'meat',
+    energyKcalPer100g: 133
+  })
+
+  assert.deepEqual(commonNames, ['牛肉', '鸡蛋', '南瓜', '西兰花'])
+  assert.equal(withEnergy.displayDescription, '每 100 g 约 133 kcal')
+  assert.equal(ingredientService.normalizeIngredient({ name: '南瓜', category: 'vegetable' }).displayDescription, '蔬菜')
+})
+
 test('修改克重会实时更新每个食材比例', () => {
   const ingredients = [
     { name: '鸡胸肉', perMealAmountGram: 100 },

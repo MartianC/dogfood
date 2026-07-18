@@ -25,6 +25,7 @@
       "root": "subpackages/custom-recipe",
       "pages": [
         "edit/index",
+        "ingredient-search/index",
         "advice/index"
       ]
     }

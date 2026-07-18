@@ -1,0 +1,73 @@
+@import "../../../styles/tokens.wxss";
+
+page {
+  background: var(--df-color-surface);
+}
+
+.ingredient-search-page {
+  min-height: 100vh;
+  padding: 36rpx 32rpx 48rpx;
+  background: var(--df-color-surface);
+}
+
+.ingredient-search-state {
+  margin-top: 48rpx;
+}
+
+.ingredient-search-heading {
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  font-weight: 700;
+  line-height: 38rpx;
+}
+
+.ingredient-search-heading--results {
+  margin-bottom: 14rpx;
+}
+
+.ingredient-search-quick-scroll {
+  width: 100%;
+  margin-top: 20rpx;
+  white-space: nowrap;
+}
+
+.ingredient-search-quick-list {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--df-space-3);
+}
+
+.ingredient-search-quick-option {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.ingredient-search-quick-empty,
+.ingredient-search-loading {
+  padding: 40rpx 0;
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  text-align: center;
+}
+
+.ingredient-search-no-result {
+  box-sizing: border-box;
+  min-height: 136rpx;
+  padding: 24rpx;
+  border-radius: var(--df-radius-xl);
+  background: var(--df-color-status-low-soft);
+}
+
+.ingredient-search-no-result__heading {
+  color: var(--df-color-text);
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 34rpx;
+}
+
+.ingredient-search-no-result__description {
+  margin-top: 14rpx;
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 32rpx;
+}

@@ -10,13 +10,31 @@ const categoryLabels = ingredientCategoryOptions.reduce((result, item) => {
   return result
 }, {})
 
+const COMMON_INGREDIENTS = [
+  { id: 'common_beef', name: '牛肉', category: 'meat' },
+  { id: 'common_egg', name: '鸡蛋', category: 'other' },
+  { id: 'common_pumpkin', name: '南瓜', category: 'vegetable' },
+  { id: 'common_broccoli', name: '西兰花', category: 'vegetable' }
+]
+
 function normalizeIngredient(item = {}) {
   const category = item.category || 'other'
+  const categoryLabel = item.categoryLabel || categoryLabels[category] || '其他'
+  const rawEnergyKcal = item.energyKcalPer100g
+  const energyKcalPer100g = rawEnergyKcal === null || rawEnergyKcal === undefined || rawEnergyKcal === ''
+    ? NaN
+    : Number(rawEnergyKcal)
   return {
     id: String(item.id || item.ingredientId || item.foodId || item.name || ''),
     name: String(item.name || '').trim(),
     category,
-    categoryLabel: item.categoryLabel || categoryLabels[category] || '其他'
+    categoryLabel,
+    energyKcalPer100g: Number.isFinite(energyKcalPer100g) ? energyKcalPer100g : null,
+    displayDescription: item.displayDescription || (
+      Number.isFinite(energyKcalPer100g)
+        ? `每 100 g 约 ${Math.round(energyKcalPer100g)} kcal`
+        : categoryLabel
+    )
   }
 }
 
@@ -38,7 +56,11 @@ function getRecentIngredients(currentIngredients = []) {
     .reverse()
     .map(normalizeIngredient)
     .filter((item) => item.name)
-  const candidates = current.concat(Array.isArray(stored) ? stored.map(normalizeIngredient) : [], buildMockIngredients())
+  const candidates = current.concat(
+    Array.isArray(stored) ? stored.map(normalizeIngredient) : [],
+    COMMON_INGREDIENTS.map(normalizeIngredient),
+    buildMockIngredients()
+  )
   const seen = new Set()
   return candidates.filter((item) => {
     if (seen.has(item.name)) return false
@@ -74,7 +96,8 @@ async function searchCloudIngredients(keyword) {
     id: item.food_id || item.fdc_id,
     foodId: item.food_id || item.fdc_id,
     name: item.name,
-    category: 'other'
+    category: 'other',
+    energyKcalPer100g: item.energy_kcal_per_100g
   })).filter((item) => {
     if (seen.has(item.name)) return false
     seen.add(item.name)

@@ -2,8 +2,6 @@
   "navigationBarTitleText": "食谱设计",
   "usingComponents": {
     "recipe-ingredient-list": "../../../components/vendor/recipe-ingredient-list/index",
-    "recipe-ingredient-popup": "../../../components/vendor/recipe-ingredient-popup/index",
-    "recipe-ingredient-search": "../../../components/vendor/recipe-ingredient-search/index",
     "recipe-empty": "../../../components/vendor/recipe-empty/index",
     "nutrition-assessment": "../../../components/nutrition-assessment/index",
     "ui-button": "../../../components/ui/ui-button/index"

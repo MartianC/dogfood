@@ -3,8 +3,9 @@
     wx:for="{{items}}"
     wx:key="id"
     title="{{item.name}}"
-    description="{{item.categoryLabel}}"
+    description="{{item.displayDescription || item.categoryLabel}}"
     hover="{{mode === 'search'}}"
+    t-class="recipe-ingredient-list__cell recipe-ingredient-list__cell--{{mode}}"
     data-index="{{index}}"
     bind:click="onCellClick"
   >

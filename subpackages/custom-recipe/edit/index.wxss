@@ -36,17 +36,6 @@ page {
   overflow-wrap: anywhere;
 }
 
-.recipe-design-search {
-  padding-top: var(--df-space-2);
-}
-
-.recipe-design-section-heading {
-  margin: var(--df-space-5) var(--df-space-6) var(--df-space-3);
-  color: var(--df-color-text);
-  font-size: var(--df-font-md);
-  font-weight: 700;
-}
-
 .recipe-design-editing-content {
   position: relative;
   display: flex;
@@ -87,16 +76,6 @@ page {
   min-height: 520rpx;
   align-items: center;
   justify-content: center;
-}
-
-.recipe-design-search-empty {
-  padding: var(--df-space-6);
-  color: var(--df-color-muted);
-  text-align: center;
-}
-
-.recipe-design-search-back {
-  margin: var(--df-space-5) var(--df-space-6) 0;
 }
 
 .recipe-design-save-action {

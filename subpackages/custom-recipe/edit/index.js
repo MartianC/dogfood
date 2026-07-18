@@ -1,5 +1,4 @@
 const dogService = require('../../../services/dogService')
-const ingredientService = require('../../../services/ingredientService')
 const customRecipeService = require('../services/customRecipeService')
 const ingredientWorkbench = require('../services/ingredientWorkbench')
 const nutritionAssessmentService = require('../services/nutritionAssessmentService')
@@ -22,15 +21,6 @@ Page({
     ingredients: [],
     ingredientRows: [],
     totalIngredientGram: 0,
-    mode: 'edit',
-    searchValue: '',
-    recentIngredients: [],
-    searchResults: [],
-    searchLoading: false,
-    searchError: false,
-    hasSearchQuery: false,
-    selectedIngredient: null,
-    popupVisible: false,
     targetDog: null,
     nutritionAssessment: null,
     nutritionLoading: false,
@@ -61,6 +51,14 @@ Page({
     }, () => this.refreshNutritionAssessment())
   },
 
+  onShow() {
+    const draft = customRecipeService.getDraft()
+    if (!draft || draft.id !== this.data.recipeId) return
+    const ingredients = Array.isArray(draft.ingredients) ? draft.ingredients : []
+    if (JSON.stringify(ingredients) === JSON.stringify(this.data.ingredients)) return
+    this.applyIngredients(ingredients)
+  },
+
   persistDraft() {
     return customRecipeService.saveDraft({
       ...customRecipeService.getDraft(),
@@ -74,96 +72,23 @@ Page({
     })
   },
 
-  async onAddIngredient() {
-    this.setData({
-      mode: 'search',
-      searchValue: '',
-      searchResults: [],
-      searchError: false,
-      hasSearchQuery: false,
-      recentIngredients: ingredientService.getRecentIngredients(this.data.ingredients)
-    })
-  },
-
-  onCancelSearch() {
-    this.setData({ mode: 'edit', searchValue: '', searchResults: [], searchError: false, hasSearchQuery: false })
-  },
-
-  async onSearchChange(event) {
-    const value = String(event.detail.value || '')
-    const requestId = (this.searchRequestId || 0) + 1
-    this.searchRequestId = requestId
-    if (!value.trim()) {
-      this.setData({
-        searchValue: value,
-        searchResults: [],
-        searchError: false,
-        hasSearchQuery: false,
-        recentIngredients: ingredientService.getRecentIngredients(this.data.ingredients),
-        searchLoading: false
-      })
-      return
-    }
-    this.setData({ searchValue: value, searchResults: [], searchError: false, hasSearchQuery: true, searchLoading: true })
-    try {
-      const searchResults = await ingredientService.searchIngredients(value)
-      if (requestId !== this.searchRequestId) return
-      this.setData({ searchResults, searchLoading: false, searchError: false })
-    } catch (error) {
-      if (requestId !== this.searchRequestId) return
-      this.setData({ searchResults: [], searchLoading: false, searchError: true })
-    }
-  },
-
-  onRetrySearch() {
-    this.onSearchChange({ detail: { value: this.data.searchValue } })
-  },
-
-  onSelectIngredient(event) {
-    this.setData({
-      selectedIngredient: event.detail.ingredient,
-      popupVisible: true
-    })
-  },
-
-  onPopupVisibleChange(event) {
-    this.setData({
-      popupVisible: event.detail.visible,
-      selectedIngredient: event.detail.visible ? this.data.selectedIngredient : null
-    })
-  },
-
-  onPopupCancel() {
-    this.setData({ popupVisible: false, selectedIngredient: null })
-  },
-
-  onPopupConfirm(event) {
-    const ingredient = event.detail.ingredient
-    const existingIngredient = this.data.ingredients.find((item) => (
-      (item.ingredientId && item.ingredientId === ingredient.id) || item.name === ingredient.name
-    ))
-    const ingredients = ingredientWorkbench.addIngredient(
-      this.data.ingredients,
-      ingredient,
-      event.detail.amount
-    )
-    ingredientService.recordRecentIngredient(ingredient)
+  applyIngredients(ingredients, merged = false) {
     this.setData({
       ingredients,
       ingredientRows: withIngredientIndexes(ingredients),
-      totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients),
-      mode: 'edit',
-      popupVisible: false,
-      selectedIngredient: null,
-      searchValue: '',
-      searchResults: [],
-      searchError: false,
-      hasSearchQuery: false
-    }, () => {
-      this.persistDraft()
-      this.refreshNutritionAssessment()
+      totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
+    }, () => this.refreshNutritionAssessment())
+    if (merged) wx.showToast({ title: '已合并食材克重', icon: 'none' })
+  },
+
+  onAddIngredient() {
+    this.persistDraft()
+    wx.navigateTo({
+      url: `/subpackages/custom-recipe/ingredient-search/index?id=${encodeURIComponent(this.data.recipeId)}`,
+      events: {
+        ingredientsUpdated: ({ ingredients, merged }) => this.applyIngredients(ingredients, merged)
+      }
     })
-    if (existingIngredient) wx.showToast({ title: '已合并食材克重', icon: 'none' })
   },
 
   onIngredientAmountChange(event) {

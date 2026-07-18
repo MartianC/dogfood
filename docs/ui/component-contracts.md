@@ -19,6 +19,9 @@
 | `components/vendor/recipe-create-popup` | `Popup`、`Cell`、`Input`、`Button` | props `visible/dogs/loading`；events `visiblechange/cancel/confirm`；公开方法 `reset()` |
 | `components/vendor/recipe-fab` | `Fab` | event `tap` |
 | `components/vendor/recipe-empty` | `Empty`、`Button` | props `icon/title/description/actionText`；event `action` |
+| `components/vendor/recipe-ingredient-search` | `Search` | props `value/loading/actionText`；events `change/action`；页面负责决定默认、结果和无结果状态 |
+| `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input`、`Icon` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
+| `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
 
 vendor 适配层只负责第三方 API、主题和基础状态转换，不读取业务服务，不执行页面跳转，不保存食谱数据。
 
@@ -59,10 +62,10 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
 | prop | `variant` | `neutral | good | warning`，默认 `neutral` |
-| prop | `size` | `small | medium`，默认 `medium` |
+| prop | `size` | `small | medium | large`，默认 `medium`；`large` 用于搜索页的常用食材胶囊 |
 | slot | 默认 | 标签文案 |
 
-长文案允许换行，避免在窄屏中撑破父容器。
+`small` 和 `medium` 的长文案允许换行，避免在窄屏中撑破父容器；搜索页专用的 `large` 保持单行，父级必须通过横向滚动或换行布局承接超宽内容。
 
 ## ui-notice
 
