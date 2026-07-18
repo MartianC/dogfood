@@ -65,19 +65,6 @@
               </view>
               <view class="nutrition-assessment__standard-source">{{item.code}} · {{item.profileSelection === 'manual' ? '已手动选择' : '根据狗狗档案自动选择'}}</view>
 
-              <view wx:for="{{item.lowItems}}" wx:for-item="nutrient" wx:key="code" class="nutrition-assessment__item nutrition-assessment__item--low">
-                <view class="nutrition-assessment__item-title">需要补充 · {{nutrient.name}}</view>
-                <view class="nutrition-assessment__item-value">当前 {{nutrient.currentText}} · 参考要求 {{nutrient.requirementText}}</view>
-                <ui-button
-                  variant="secondary"
-                  size="small"
-                  event-value="{{nutrient.code}}"
-                  data-standard="{{item.key}}"
-                  data-code="{{nutrient.code}}"
-                  bind:tap="onLowAction"
-                >{{nutrient.actionText}} ›</ui-button>
-              </view>
-
               <view wx:for="{{item.highItems}}" wx:for-item="nutrient" wx:key="code" class="nutrition-assessment__item nutrition-assessment__item--high">
                 <view class="nutrition-assessment__item-title">需要控制 · {{nutrient.name}}</view>
                 <view class="nutrition-assessment__item-value">当前 {{nutrient.currentText}} · 参考要求 {{nutrient.requirementText}}</view>
@@ -88,6 +75,19 @@
                   data-standard="{{item.key}}"
                   data-code="{{nutrient.code}}"
                   bind:tap="onHighAction"
+                >{{nutrient.actionText}} ›</ui-button>
+              </view>
+
+              <view wx:for="{{item.lowItems}}" wx:for-item="nutrient" wx:key="code" class="nutrition-assessment__item nutrition-assessment__item--low">
+                <view class="nutrition-assessment__item-title">需要补充 · {{nutrient.name}}</view>
+                <view class="nutrition-assessment__item-value">当前 {{nutrient.currentText}} · 参考要求 {{nutrient.requirementText}}</view>
+                <ui-button
+                  variant="secondary"
+                  size="small"
+                  event-value="{{nutrient.code}}"
+                  data-standard="{{item.key}}"
+                  data-code="{{nutrient.code}}"
+                  bind:tap="onLowAction"
                 >{{nutrient.actionText}} ›</ui-button>
               </view>
 

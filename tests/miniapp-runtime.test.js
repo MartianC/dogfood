@@ -269,6 +269,10 @@ test('营养评估组件提供双标准、档案切换、建议入口和进阶�
   assert.match(wxml, /国标评估/)
   assert.match(wxml, /FEDIAF 评估/)
   assert.match(wxml, /需要补充/)
+  assert.ok(
+    wxml.indexOf('wx:for="{{item.highItems}}"') < wxml.indexOf('wx:for="{{item.lowItems}}"'),
+    '需要控制的红色元素应排在需要补充的黄色元素之前'
+  )
   assert.match(wxml, /bind:tap="onLowAction"/)
   assert.match(service, /挑选富含\$\{item\.name\}的食物/)
   assert.match(wxml, /主要来源/)
