@@ -33,7 +33,7 @@
         </view>
       </scroll-view>
 
-      <view class="recipe-design-summary-floating">
+      <view class="recipe-design-summary-floating {{nutritionExpanded ? 'recipe-design-summary-floating--expanded' : ''}}">
         <nutrition-assessment
           assessment="{{mealAssessment}}"
           loading="{{nutritionLoading}}"

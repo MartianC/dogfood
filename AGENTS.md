@@ -11,16 +11,6 @@
 - 优先使用 `rg` / `rg --files` 搜索文本和文件。
 - 手工改文件优先使用 `apply_patch`。
 
-## Superpowers
-
-- 如果本机存在 `~/.codex/superpowers/.codex/superpowers-codex`，任务开始时先运行：
-
-```bash
-~/.codex/superpowers/.codex/superpowers-codex bootstrap
-```
-
-- 如果该路径不存在，简短说明环境不可用，并继续按本项目文档和本文件规则工作。
-
 ## 项目级 Agents 和 Skills
 
 本项目包含本地 agent 与 skill 资料：

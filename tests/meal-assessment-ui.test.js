@@ -132,3 +132,15 @@ test('食谱编辑页使用组合评估、缓存和档案恢复路径', () => {
   assert.match(wxml, /bind:completeprofile="onCompleteDogProfile"/)
   assert.doesNotMatch(js, /nutritionAssessmentService\.buildAssessment/)
 })
+
+test('本餐评估展开时的父级堆叠层覆盖保存操作', () => {
+  const wxml = read('subpackages/custom-recipe/edit/index.wxml')
+  const wxss = read('subpackages/custom-recipe/edit/index.wxss')
+
+  assert.match(
+    wxml,
+    /nutritionExpanded \? 'recipe-design-summary-floating--expanded' : ''/
+  )
+  assert.match(wxss, /\.recipe-design-summary-floating--expanded\s*{[^}]*z-index:\s*30;/s)
+  assert.match(wxss, /\.recipe-design-save-action\s*{[^}]*z-index:\s*20;/s)
+})

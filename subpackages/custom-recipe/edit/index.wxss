@@ -67,6 +67,10 @@ page {
   z-index: 10;
 }
 
+.recipe-design-summary-floating--expanded {
+  z-index: 30;
+}
+
 .recipe-design-save-action {
   z-index: 20;
 }
