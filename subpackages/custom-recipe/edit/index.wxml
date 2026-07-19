@@ -9,7 +9,7 @@
       <recipe-empty
         icon="search"
         title="还没有添加食材"
-        description="搜索食材并填写克重后，营养评估会自动更新。"
+        description="搜索食材并填写克重后，本餐评估会自动更新。"
         action-text="新增食材"
         bind:action="onAddIngredient"
       />
@@ -35,13 +35,15 @@
 
       <view class="recipe-design-summary-floating">
         <nutrition-assessment
-          assessment="{{nutritionAssessment}}"
+          assessment="{{mealAssessment}}"
           loading="{{nutritionLoading}}"
           expanded="{{nutritionExpanded}}"
           bind:toggle="onNutritionToggle"
           bind:profilechange="onNutritionProfileChange"
           bind:nutrientselect="onNutritionNutrientSelect"
           bind:adjustingredients="onNutritionAdjustIngredients"
+          bind:scaleconfirm="onMealScaleConfirm"
+          bind:completeprofile="onCompleteDogProfile"
           bind:retry="onNutritionRetry"
         />
       </view>

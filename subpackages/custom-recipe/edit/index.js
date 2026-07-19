@@ -1,7 +1,7 @@
 const dogService = require('../../../services/dogService')
 const customRecipeService = require('../services/customRecipeService')
 const ingredientWorkbench = require('../services/ingredientWorkbench')
-const nutritionAssessmentService = require('../services/nutritionAssessmentService')
+const mealAssessmentService = require('../services/mealAssessmentService')
 const nutritionDataService = require('../services/nutritionDataService')
 
 function withIngredientIndexes(ingredients) {
@@ -22,7 +22,7 @@ Page({
     ingredientRows: [],
     totalIngredientGram: 0,
     targetDog: null,
-    nutritionAssessment: null,
+    mealAssessment: null,
     nutritionLoading: false,
     nutritionExpanded: false,
     nutritionStandardProfiles: {}
@@ -48,15 +48,24 @@ Page({
       ingredientRows: withIngredientIndexes(ingredients),
       totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients),
       nutritionStandardProfiles: draft.nutritionStandardProfiles || {}
-    }, () => this.refreshNutritionAssessment())
+    }, () => this.refreshMealAssessment())
   },
 
-  onShow() {
+  async onShow() {
+    if (!this.data.recipeId) return
     const draft = customRecipeService.getDraft()
     if (!draft || draft.id !== this.data.recipeId) return
+    const dogs = await dogService.listDogs()
     const ingredients = Array.isArray(draft.ingredients) ? draft.ingredients : []
-    if (JSON.stringify(ingredients) === JSON.stringify(this.data.ingredients)) return
-    this.applyIngredients(ingredients)
+    const targetDog = dogs.find((dog) => this.data.selectedDogIds.includes(dog.id)) || null
+    this.setData({
+      dogs,
+      targetDog,
+      targetDogName: (targetDog && targetDog.name) || this.data.targetDogName,
+      ingredients,
+      ingredientRows: withIngredientIndexes(ingredients),
+      totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
+    }, () => this.refreshMealAssessment())
   },
 
   persistDraft() {
@@ -77,7 +86,7 @@ Page({
       ingredients,
       ingredientRows: withIngredientIndexes(ingredients),
       totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
-    }, () => this.refreshNutritionAssessment())
+    }, () => this.refreshMealAssessment())
     if (merged) wx.showToast({ title: '已合并食材克重', icon: 'none' })
   },
 
@@ -103,7 +112,7 @@ Page({
       totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
     }, () => {
       this.persistDraft()
-      this.refreshNutritionAssessment()
+      this.refreshMealAssessment()
     })
   },
 
@@ -123,58 +132,52 @@ Page({
           totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
         }, () => {
           this.persistDraft()
-          this.refreshNutritionAssessment()
+          this.refreshMealAssessment()
         })
       }
     })
   },
 
-  async refreshNutritionAssessment() {
+  async refreshMealAssessment() {
     const ingredients = this.data.ingredients
     const dog = this.data.targetDog
     if (!ingredients.length || !dog) {
-      this.setData({ nutritionAssessment: null, nutritionLoading: false })
+      this.setData({ mealAssessment: null, nutritionLoading: false })
       return
     }
-    const requestId = (this.nutritionRequestId || 0) + 1
-    this.nutritionRequestId = requestId
+    const requestId = (this.mealAssessmentRequestId || 0) + 1
+    this.mealAssessmentRequestId = requestId
     this.setData({ nutritionLoading: true })
     try {
       const foodSignature = ingredients.map((item) => item.ingredientId || item.id || '').sort().join('|')
-      if (!this.nutritionDataCache || this.nutritionDataSignature !== foodSignature) {
-        this.nutritionDataCache = await nutritionDataService.loadNutritionData(ingredients)
-        this.nutritionDataSignature = foodSignature
+      let assessmentData = this.mealAssessmentDataCache
+      if (!assessmentData || this.mealAssessmentDataSignature !== foodSignature) {
+        assessmentData = await nutritionDataService.loadMealAssessmentData(ingredients)
+        if (requestId !== this.mealAssessmentRequestId) return
+        this.mealAssessmentDataCache = assessmentData
+        this.mealAssessmentDataSignature = foodSignature
       }
-      if (requestId !== this.nutritionRequestId) return
-      const nutritionAssessment = nutritionAssessmentService.buildAssessment({
+      if (requestId !== this.mealAssessmentRequestId) return
+      const mealAssessment = mealAssessmentService.buildMealAssessment({
         ingredients,
         dog,
         profileOverrides: this.data.nutritionStandardProfiles,
-        ...this.nutritionDataCache
+        ...assessmentData
       })
-      this.setData({ nutritionAssessment, nutritionLoading: false })
+      this.setData({ mealAssessment })
     } catch (error) {
-      if (requestId !== this.nutritionRequestId) return
-      this.setData({
-        nutritionLoading: false,
-        nutritionAssessment: {
-          available: false,
-          status: 'unavailable',
-          statusLabel: '暂无法评估',
-          primaryAdvice: '营养数据暂时无法加载，请稍后重试',
-          contextText: `${dog.name} · 每日 ${dog.dailyMeals} 餐`,
-          basisText: '恢复数据连接后按食谱干物质密度评估',
-          counts: { adjust: 0, met: 0, unavailable: ingredients.length },
-          coverageText: '当前未能读取食材营养数据',
-          missingIngredients: ingredients.map((item) => ({
-            id: item.ingredientId || item.id || item.name,
-            name: item.name,
-            reason: '营养数据加载失败'
-          })),
-          standards: [],
-          elements: []
-        }
+      if (requestId !== this.mealAssessmentRequestId) return
+      const mealAssessment = mealAssessmentService.buildMealAssessment({
+        ingredients,
+        dog,
+        standards: [],
+        nutrientRecords: [],
+        profileOverrides: this.data.nutritionStandardProfiles,
+        dataErrors: { standards: error, nutrients: error }
       })
+      this.setData({ mealAssessment })
+    } finally {
+      if (requestId === this.mealAssessmentRequestId) this.setData({ nutritionLoading: false })
     }
   },
 
@@ -189,7 +192,7 @@ Page({
     }
     this.setData({ nutritionStandardProfiles }, () => {
       this.persistDraft()
-      this.refreshNutritionAssessment()
+      this.refreshMealAssessment()
     })
   },
 
@@ -200,9 +203,10 @@ Page({
       return
     }
     const standardKey = event.detail.standardKey
-    const standard = this.data.nutritionAssessment
-      && this.data.nutritionAssessment.standards
-      && this.data.nutritionAssessment.standards.find((entry) => entry.key === standardKey)
+    const density = this.data.mealAssessment && this.data.mealAssessment.nutritionDensity
+    const standard = density
+      && density.standards
+      && density.standards.find((entry) => entry.key === standardKey)
     const standardLabel = standardKey === 'gb' ? '国标' : 'FEDIAF'
     const params = [
       `id=${encodeURIComponent(this.data.recipeId)}`,
@@ -229,9 +233,31 @@ Page({
   },
 
   onNutritionRetry() {
-    this.nutritionDataCache = null
-    this.nutritionDataSignature = ''
-    this.refreshNutritionAssessment()
+    this.mealAssessmentDataCache = null
+    this.mealAssessmentDataSignature = ''
+    this.refreshMealAssessment()
+  },
+
+  onCompleteDogProfile() {
+    const dog = this.data.targetDog
+    if (!dog || !dog.id) return
+    this.persistDraft()
+    wx.navigateTo({
+      url: `/subpackages/dog-profile/dog-edit/index?id=${encodeURIComponent(dog.id)}`
+    })
+  },
+
+  onMealScaleConfirm(event) {
+    const ingredients = event.detail && event.detail.ingredients
+    if (!Array.isArray(ingredients) || !ingredients.length) return
+    this.setData({
+      ingredients,
+      ingredientRows: withIngredientIndexes(ingredients),
+      totalIngredientGram: ingredientWorkbench.totalIngredientGram(ingredients)
+    }, () => {
+      this.persistDraft()
+      this.refreshMealAssessment()
+    })
   },
 
   onSaveRecipe() {

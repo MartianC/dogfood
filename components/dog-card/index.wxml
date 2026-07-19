@@ -4,7 +4,7 @@
       <image class="dog-avatar" src="{{dog.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
       <view class="dog-body">
         <view class="dog-name">{{dog.name}}</view>
-        <view class="dog-meta">{{ageStageLabels[dog.ageStage]}}｜{{dog.weightKg}}kg｜每日 {{dog.dailyMeals}} 餐</view>
+        <view class="dog-meta">{{dog.lifeStageLabel || '档案待完善'}}｜{{dog.weightKg}}kg｜每日 {{dog.dailyMeals}} 餐</view>
         <view class="dog-goal">{{dietGoalLabels[dog.dietGoal] || '日常'}}饮食</view>
       </view>
     </view>

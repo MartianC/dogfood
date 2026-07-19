@@ -93,6 +93,10 @@
         "type": "file"
       },
       {
+        "value": "subpackages/custom-recipe/services/ingredientService.js",
+        "type": "file"
+      },
+      {
         "value": "subpackages/custom-recipe/services/nutritionAssessmentService.js",
         "type": "file"
       },
@@ -102,6 +106,18 @@
       },
       {
         "value": "subpackages/custom-recipe/services/nutrientIngredientService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/custom-recipe/services/energyRequirementService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/custom-recipe/services/mealEnergyService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/custom-recipe/services/mealAssessmentService.js",
         "type": "file"
       },
       {

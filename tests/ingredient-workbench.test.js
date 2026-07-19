@@ -2,7 +2,7 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 
 const storage = require('../utils/storage')
-const ingredientService = require('../services/ingredientService')
+const ingredientService = require('../subpackages/custom-recipe/services/ingredientService')
 const ingredientWorkbench = require('../subpackages/custom-recipe/services/ingredientWorkbench')
 
 test.beforeEach(() => {

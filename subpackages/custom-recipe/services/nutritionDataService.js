@@ -55,14 +55,31 @@ async function loadFoodNutrients(database, foodIds) {
   }))
 }
 
-async function loadNutritionData(ingredients = []) {
+async function loadMealAssessmentData(ingredients = []) {
   if (!canUseCloudDatabase()) throw new Error('当前无法读取营养数据库')
-  const foodIds = [...new Set(ingredients.map((item) => String(item.ingredientId || item.id || '')).filter(Boolean))]
+  const foodIds = [...new Set(ingredients
+    .map((item) => String(item.ingredientId || item.id || ''))
+    .filter(Boolean))]
   const database = wx.cloud.database()
-  const [standards, nutrientRecords] = await Promise.all([
+  const [standardsResult, nutrientsResult] = await Promise.allSettled([
     loadStandards(database),
     loadFoodNutrients(database, foodIds)
   ])
+
+  return {
+    standards: standardsResult.status === 'fulfilled' ? standardsResult.value : [],
+    nutrientRecords: nutrientsResult.status === 'fulfilled' ? nutrientsResult.value : [],
+    dataErrors: {
+      standards: standardsResult.status === 'rejected' ? standardsResult.reason : null,
+      nutrients: nutrientsResult.status === 'rejected' ? nutrientsResult.reason : null
+    }
+  }
+}
+
+async function loadNutritionData(ingredients = []) {
+  const { standards, nutrientRecords, dataErrors } = await loadMealAssessmentData(ingredients)
+  if (dataErrors.standards) throw dataErrors.standards
+  if (dataErrors.nutrients) throw dataErrors.nutrients
   if (standards.length < 2) throw new Error('营养标准数据不完整')
   return { standards, nutrientRecords }
 }
@@ -82,6 +99,7 @@ function clearCache() {
 }
 
 module.exports = {
+  loadMealAssessmentData,
   loadNutritionData,
   loadAssessment,
   clearCache,

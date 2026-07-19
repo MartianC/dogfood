@@ -59,12 +59,6 @@ const CATEGORY_LABELS = {
   other: '其他'
 }
 
-const AGE_STAGE_LABELS = {
-  puppy: '幼犬',
-  adult: '成年犬',
-  senior: '老年犬'
-}
-
 function round(value, digits = 2) {
   const factor = 10 ** digits
   return Math.round((Number(value) + Number.EPSILON) * factor) / factor
@@ -106,34 +100,39 @@ function standardKey(standard) {
   return standard.authority === 'GB/T' || /^GB\/T/.test(String(standard.standard_code || '')) ? 'gb' : 'fediaf'
 }
 
-function autoProfileCode(key, dog, profiles) {
-  if (key === 'gb') {
-    return dog.ageStage === 'puppy' && profiles.some((item) => item.profile_code === 'growth_gestation_lactation')
-      ? 'growth_gestation_lactation'
-      : 'adult'
-  }
-  if (dog.ageStage === 'puppy') {
-    const lateGrowth = profiles.find((item) => /late_growth/.test(item.profile_code))
-    return lateGrowth ? lateGrowth.profile_code : profiles[0] && profiles[0].profile_code
-  }
-  const suffix = dog.activityLevel === 'high' ? 'adult_mer_110' : 'adult_mer_95'
-  const adult = profiles.find((item) => item.profile_code.includes(suffix))
-  return adult ? adult.profile_code : profiles[0] && profiles[0].profile_code
+function firstProfileCode(profiles, pattern) {
+  const profile = profiles.find((item) => pattern.test(String(item.profile_code || '')))
+  return profile && profile.profile_code
 }
 
-function selectProfile(standard, dog, profileOverrides) {
+function autoProfileCode(key, dog, lifeStage, profiles) {
+  const nutritionStage = lifeStage && lifeStage.nutritionStage
+  if (key === 'gb') {
+    if (nutritionStage === 'early_growth' || nutritionStage === 'late_growth') {
+      return firstProfileCode(profiles, /growth_gestation_lactation/)
+    }
+    return firstProfileCode(profiles, /(^|_)adult$/)
+  }
+  if (nutritionStage === 'early_growth') return firstProfileCode(profiles, /early_growth/)
+  if (nutritionStage === 'late_growth') return firstProfileCode(profiles, /late_growth/)
+  const useLowEnergyProfile = dog.activityLevel === 'low'
+    || (!dog.activityLevel && lifeStage && lifeStage.energyStage === 'senior')
+  return firstProfileCode(profiles, useLowEnergyProfile ? /adult_mer_95/ : /adult_mer_110/)
+}
+
+function selectProfile(standard, dog, lifeStage, profileOverrides) {
   const key = standardKey(standard)
   const profiles = Array.isArray(standard.profiles) ? standard.profiles : []
   const override = profileOverrides && profileOverrides[key]
-  const recommendedCode = autoProfileCode(key, dog, profiles)
-  const profile = profiles.find((item) => item.profile_code === override)
-    || profiles.find((item) => item.profile_code === recommendedCode)
-    || profiles[0]
+  const recommendedCode = autoProfileCode(key, dog, lifeStage, profiles)
+  const overrideProfile = profiles.find((item) => item.profile_code === override)
+  const recommendedProfile = profiles.find((item) => item.profile_code === recommendedCode)
+  const profile = overrideProfile || recommendedProfile
   return {
     key,
     profile,
     recommendedCode,
-    profileSelection: override && profile && profile.profile_code === override ? 'manual' : 'automatic'
+    profileSelection: overrideProfile ? 'manual' : 'automatic'
   }
 }
 
@@ -376,13 +375,17 @@ function buildStandardResult(selected, elements) {
   }
 }
 
-function unavailableAssessment({ dog, ingredients, missingIngredients, message, selectedStandards = [] }) {
+function contextTextOf(dog, lifeStage) {
+  return `${dog.name || '未选择狗狗'} · ${lifeStage && lifeStage.label || '阶段未设置'} · 每日 ${Number(dog.dailyMeals || 0)} 餐`
+}
+
+function unavailableAssessment({ dog, lifeStage, ingredients, missingIngredients, message, selectedStandards = [] }) {
   return {
     available: false,
     status: 'unavailable',
     statusLabel: '暂无法评估',
     primaryAdvice: message,
-    contextText: `${dog.name || '未选择狗狗'} · ${AGE_STAGE_LABELS[dog.ageStage] || '阶段未设置'} · 每日 ${Number(dog.dailyMeals || 0)} 餐`,
+    contextText: contextTextOf(dog, lifeStage),
     basisText: '补齐数据后按食谱干物质密度评估',
     coverageText: `${ingredients.length} 种食材中 ${ingredients.length - missingIngredients.length} 种数据完整`,
     missingIngredients,
@@ -392,10 +395,34 @@ function unavailableAssessment({ dog, ingredients, missingIngredients, message, 
   }
 }
 
-function buildAssessment({ ingredients = [], dog = {}, standards = [], nutrientRecords = [], profileOverrides = {} }) {
+function buildAssessment({ ingredients = [], dog = {}, lifeStage, standards = [], nutrientRecords = [], profileOverrides = {} }) {
   const validIngredients = ingredients.filter((item) => amountGramOf(item) > 0)
+  if (!validIngredients.length || !dog.id) {
+    return unavailableAssessment({
+      dog,
+      lifeStage,
+      ingredients: validIngredients,
+      missingIngredients: [],
+      message: !dog.id ? '请选择狗狗后开始营养评估' : '添加食材后开始营养评估',
+      selectedStandards: []
+    })
+  }
+
+  if (!lifeStage || !lifeStage.available) {
+    return unavailableAssessment({
+      dog,
+      lifeStage,
+      ingredients: validIngredients,
+      missingIngredients: [],
+      message: lifeStage && lifeStage.reason === 'under_minimum_age'
+        ? '小于 8 周暂不自动进行营养密度评估'
+        : '请完善出生日期后开始营养密度评估',
+      selectedStandards: []
+    })
+  }
+
   const selectedStandards = standards
-    .map((standard) => ({ ...selectProfile(standard, dog, profileOverrides), standard }))
+    .map((standard) => ({ ...selectProfile(standard, dog, lifeStage, profileOverrides), standard }))
     .filter((item) => item.profile)
     .sort((left, right) => left.key === 'gb' ? -1 : 1)
     .map((item) => ({
@@ -407,13 +434,14 @@ function buildAssessment({ ingredients = [], dog = {}, standards = [], nutrientR
       }))
     }))
 
-  if (!validIngredients.length || !dog.id) {
+  if (standards.length < 2 || selectedStandards.length < 2) {
     return unavailableAssessment({
       dog,
+      lifeStage,
       ingredients: validIngredients,
       missingIngredients: [],
-      message: !dog.id ? '请选择狗狗后开始营养评估' : '添加食材后开始营养评估',
-      selectedStandards: []
+      message: '营养标准数据不完整',
+      selectedStandards
     })
   }
 
@@ -425,6 +453,7 @@ function buildAssessment({ ingredients = [], dog = {}, standards = [], nutrientR
   if (missingWater.length) {
     return unavailableAssessment({
       dog,
+      lifeStage,
       ingredients: validIngredients,
       missingIngredients: missingWater,
       message: '部分食材缺少水分数据，暂时无法按干物质完成评估',
@@ -453,6 +482,7 @@ function buildAssessment({ ingredients = [], dog = {}, standards = [], nutrientR
   if (!(dryMatterGram > 0)) {
     return unavailableAssessment({
       dog,
+      lifeStage,
       ingredients: validIngredients,
       missingIngredients: validIngredients.map((item) => ({ id: ingredientIdOf(item), name: item.name, reason: '干物质数据异常' })),
       message: '食谱干物质数据异常，暂时无法完成评估',
@@ -487,7 +517,7 @@ function buildAssessment({ ingredients = [], dog = {}, standards = [], nutrientR
     status,
     statusLabel: status === 'needs_adjustment' ? '需要调整' : status === 'suggest_adjustment' ? '建议调整' : '基本合适',
     primaryAdvice,
-    contextText: `${dog.name} · ${AGE_STAGE_LABELS[dog.ageStage] || '阶段未设置'} · 每日 ${Number(dog.dailyMeals || 0)} 餐`,
+    contextText: contextTextOf(dog, lifeStage),
     basisText: `本餐按每日 ${Number(dog.dailyMeals || 0)} 餐等额评估；标准按干物质密度换算`,
     coverageText: `${validIngredients.length} 种食材均已读取水分数据`,
     missingIngredients: [],

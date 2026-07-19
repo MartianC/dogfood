@@ -15,10 +15,19 @@ function normalizeList(value) {
   return Array.isArray(value) ? value : []
 }
 
+function derivedAgeStage(dog) {
+  return dog && dog.lifeStage && dog.lifeStage.legacyAgeStage || dog && dog.ageStage || ''
+}
+
+function derivedAgeStageLabel(dog) {
+  return dog && dog.lifeStageLabel || ageStageLabels[derivedAgeStage(dog)] || '阶段待完善'
+}
+
 function checkRisk(recipe, dog) {
   const warnings = []
   const allergens = normalizeList(dog.allergens)
   const avoidIngredients = normalizeList(dog.avoidIngredients)
+  const ageStage = derivedAgeStage(dog)
 
   normalizeList(recipe.ingredients).forEach((ingredient) => {
     if (ingredient.allergenKey && allergens.includes(ingredient.allergenKey)) {
@@ -38,11 +47,11 @@ function checkRisk(recipe, dog) {
     }
   })
 
-  if (recipe.suitableAgeStages && !recipe.suitableAgeStages.includes(dog.ageStage)) {
+  if (recipe.suitableAgeStages && !recipe.suitableAgeStages.includes(ageStage)) {
     const labels = recipe.suitableAgeStages.map((item) => ageStageLabels[item] || item).join('、')
     warnings.push({
       level: 'info',
-      msg: `这道食谱主要适合${labels}，${dog.name}是${ageStageLabels[dog.ageStage] || dog.ageStage}，建议少量尝试。`
+      msg: `这道食谱主要适合${labels}，${dog.name}是${derivedAgeStageLabel(dog)}，建议少量尝试。`
     })
   }
 
@@ -75,5 +84,7 @@ module.exports = {
   dietGoalLabels,
   checkRisk,
   checkRisksForDogs,
-  worstLevel
+  worstLevel,
+  derivedAgeStage,
+  derivedAgeStageLabel
 }

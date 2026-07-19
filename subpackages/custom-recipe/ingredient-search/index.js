@@ -1,4 +1,4 @@
-const ingredientService = require('../../../services/ingredientService')
+const ingredientService = require('../services/ingredientService')
 const customRecipeService = require('../services/customRecipeService')
 const ingredientWorkbench = require('../services/ingredientWorkbench')
 const nutrientIngredientService = require('../services/nutrientIngredientService')

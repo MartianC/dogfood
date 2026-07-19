@@ -34,7 +34,7 @@
               <text>{{item.name}}</text>
               <text class="edit-link" data-id="{{item.id}}" bindtap="onEditDogPanel">修改</text>
             </view>
-            <view class="dog-meta">{{ageStageLabels[item.ageStage]}}｜{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
+            <view class="dog-meta">{{item.lifeStageLabel || '档案待完善'}}｜{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
           </view>
         </view>
       </ui-card>

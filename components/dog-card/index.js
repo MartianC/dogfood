@@ -1,4 +1,4 @@
-const { ageStageLabels, dietGoalLabels } = require('../../utils/risk')
+const { dietGoalLabels } = require('../../utils/risk')
 const assets = require('../../utils/assets')
 
 Component({
@@ -13,7 +13,6 @@ Component({
     }
   },
   data: {
-    ageStageLabels,
     dietGoalLabels,
     defaultDogAvatar: assets.defaultDogAvatar
   },

@@ -5,6 +5,7 @@
   "description": "狗饭微信小程序 MVP",
   "scripts": {
     "test": "node --test tests/*.test.js",
+    "check:main-package": "node scripts/check-main-package-unused-js.js",
     "check:ui": "node scripts/check-ui-system.js"
   },
   "dependencies": {

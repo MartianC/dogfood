@@ -1,6 +1,6 @@
 const authService = require('../../../services/authService')
 const dogService = require('../../../services/dogService')
-const { ageStageLabels, dietGoalLabels } = require('../../../utils/risk')
+const { dietGoalLabels } = require('../../../utils/risk')
 const assets = require('../../../utils/assets')
 
 Page({
@@ -8,7 +8,6 @@ Page({
     authState: 'guest',
     user: null,
     dogs: [],
-    ageStageLabels,
     dietGoalLabels,
     defaultDogAvatar: assets.defaultDogAvatar
   },

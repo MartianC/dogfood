@@ -5,11 +5,12 @@
 }
 
 .nutrition-assessment {
+  position: relative;
   color: var(--df-color-text);
 }
 
 .nutrition-assessment__summary {
-  min-height: 232rpx;
+  min-height: 328rpx;
   box-sizing: border-box;
   padding: var(--df-space-3) var(--df-space-4) var(--df-space-5);
   border: 1rpx solid var(--df-color-line);
@@ -82,6 +83,44 @@
   line-height: 1.5;
 }
 
+.nutrition-assessment__axis {
+  margin-top: var(--df-space-3);
+  padding-top: var(--df-space-3);
+  border-top: 1rpx solid var(--df-color-line);
+}
+
+.nutrition-assessment__axis:first-of-type {
+  border-top: 0;
+}
+
+.nutrition-assessment__axis-status {
+  color: var(--df-color-status-low);
+  font-size: var(--df-font-md);
+  font-weight: 800;
+}
+
+.nutrition-assessment__axis-status--near_target,
+.nutrition-assessment__axis-status--suitable {
+  color: var(--df-color-primary);
+}
+
+.nutrition-assessment__axis-status--above_target,
+.nutrition-assessment__axis-status--needs_adjustment,
+.nutrition-assessment__axis-status--suggest_adjustment {
+  color: var(--df-color-warning);
+}
+
+.nutrition-assessment__axis-status--unavailable {
+  color: var(--df-color-muted);
+}
+
+.nutrition-assessment__axis-description {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-text-secondary);
+  font-size: var(--df-font-sm);
+  line-height: 1.5;
+}
+
 .nutrition-assessment__expanded {
   position: fixed;
   inset: 0;
@@ -140,6 +179,74 @@
   padding: var(--df-space-6);
   color: var(--df-color-muted);
   text-align: center;
+}
+
+.nutrition-assessment__energy-section,
+.nutrition-assessment__density-section {
+  margin-top: var(--df-space-5);
+  padding: var(--df-space-5);
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface);
+}
+
+.nutrition-assessment__section-label,
+.nutrition-assessment__energy-metric-label {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  font-weight: 700;
+}
+
+.nutrition-assessment__energy-status {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-status-low);
+  font-size: var(--df-font-xl);
+  font-weight: 800;
+}
+
+.nutrition-assessment__energy-status--near_target {
+  color: var(--df-color-primary);
+}
+
+.nutrition-assessment__energy-status--above_target {
+  color: var(--df-color-warning);
+}
+
+.nutrition-assessment__energy-status--unavailable {
+  color: var(--df-color-muted);
+}
+
+.nutrition-assessment__energy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--df-space-3);
+  margin-top: var(--df-space-4);
+}
+
+.nutrition-assessment__energy-metric {
+  padding: var(--df-space-3);
+  border-radius: var(--df-radius-md);
+  background: var(--df-color-surface-muted);
+}
+
+.nutrition-assessment__energy-metric-value {
+  margin-top: var(--df-space-1);
+  font-size: var(--df-font-lg);
+  font-weight: 800;
+}
+
+.nutrition-assessment__energy-note,
+.nutrition-assessment__energy-disclaimer,
+.nutrition-assessment__scale-note {
+  margin-top: var(--df-space-3);
+  color: var(--df-color-text-secondary);
+  font-size: var(--df-font-sm);
+  line-height: 1.5;
+}
+
+.nutrition-assessment__scale-action,
+.nutrition-assessment__profile-completion {
+  margin-top: var(--df-space-4);
 }
 
 .nutrition-assessment__conclusion {
@@ -345,7 +452,8 @@
   padding-bottom: var(--df-space-6);
 }
 
-.nutrition-assessment__profile-mask {
+.nutrition-assessment__profile-mask,
+.nutrition-assessment__scale-mask {
   position: absolute;
   inset: 0;
   z-index: 60;
@@ -354,7 +462,8 @@
   background: var(--df-color-mask);
 }
 
-.nutrition-assessment__profile-sheet {
+.nutrition-assessment__profile-sheet,
+.nutrition-assessment__scale-sheet {
   width: 100%;
   max-height: 78vh;
   box-sizing: border-box;
@@ -362,6 +471,46 @@
   border-radius: var(--df-radius-xl) var(--df-radius-xl) 0 0;
   background: var(--df-color-surface);
   overflow-y: auto;
+}
+
+.nutrition-assessment__scale-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--df-space-3);
+  margin-top: var(--df-space-4);
+}
+
+.nutrition-assessment__scale-summary-item {
+  padding: var(--df-space-3);
+  border-radius: var(--df-radius-md);
+  background: var(--df-color-surface-muted);
+}
+
+.nutrition-assessment__scale-summary-label {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.nutrition-assessment__scale-summary-value {
+  margin-top: var(--df-space-1);
+  font-size: var(--df-font-md);
+  font-weight: 800;
+}
+
+.nutrition-assessment__scale-list {
+  margin-top: var(--df-space-4);
+  border-top: 1rpx solid var(--df-color-line);
+}
+
+.nutrition-assessment__scale-row {
+  min-height: var(--df-touch-min);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-4);
+  border-bottom: 1rpx solid var(--df-color-line);
+  color: var(--df-color-text-secondary);
+  font-size: var(--df-font-sm);
 }
 
 .nutrition-assessment__profile-title {

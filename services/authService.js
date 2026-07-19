@@ -1,6 +1,7 @@
 const env = require('../config/env')
 const storage = require('../utils/storage')
 const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./adapters/mock')
+const DOGS_CACHE_SCHEMA_VERSION = 2
 
 let authState = 'guest'
 let currentUser = null
@@ -23,7 +24,9 @@ async function initAuth() {
   }
   currentUser = storage.getSync('currentUser', env.mockUser)
   const dogsCache = storage.getCache('dogsCache')
-  const dogs = dogsCache ? dogsCache.items : []
+  const dogs = dogsCache && dogsCache.profileSchemaVersion === DOGS_CACHE_SCHEMA_VERSION
+    ? dogsCache.items
+    : []
   setAuth(currentUser, dogs)
   return { authState, user: currentUser, dogs }
 }

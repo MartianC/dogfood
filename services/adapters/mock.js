@@ -9,6 +9,16 @@ function uid(prefix) {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`
 }
 
+function validateHiddenArrays(payload = {}) {
+  if (Object.prototype.hasOwnProperty.call(payload, 'allergens') && !Array.isArray(payload.allergens)) {
+    throw new Error('过敏源数据格式不正确')
+  }
+  if (
+    Object.prototype.hasOwnProperty.call(payload, 'avoidIngredients')
+    && !Array.isArray(payload.avoidIngredients)
+  ) throw new Error('忌口数据格式不正确')
+}
+
 async function login() {
   const user = storage.getSync('mockUser', env.mockUser)
   storage.setSync('mockUser', user)
@@ -23,6 +33,7 @@ async function listDogs() {
 }
 
 async function createDog(payload) {
+  validateHiddenArrays(payload)
   const dogs = await listDogs()
   const dog = {
     id: uid('dog'),
@@ -31,7 +42,6 @@ async function createDog(payload) {
     avoidIngredients: [],
     avatarUrl: '',
     dietGoal: 'daily',
-    activityLevel: 'normal',
     createdAt: now(),
     updatedAt: now(),
     ...payload
@@ -41,6 +51,7 @@ async function createDog(payload) {
 }
 
 async function updateDog(id, payload) {
+  validateHiddenArrays(payload)
   const dogs = await listDogs()
   const next = dogs.map((dog) => dog.id === id ? { ...dog, ...payload, updatedAt: now() } : dog)
   storage.setSync('mockDogs', next)

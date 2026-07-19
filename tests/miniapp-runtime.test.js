@@ -90,11 +90,15 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
   const includes = new Set((projectConfig.packOptions && projectConfig.packOptions.include || []).map((item) => item.value))
   const requiredServiceFiles = [
     'subpackages/custom-recipe/services/customRecipeService.js',
+    'subpackages/custom-recipe/services/ingredientService.js',
     'subpackages/custom-recipe/services/ingredientAdvice.js',
     'subpackages/custom-recipe/services/recipeAdviceService.js',
     'subpackages/custom-recipe/services/nutritionAssessmentService.js',
     'subpackages/custom-recipe/services/nutritionDataService.js',
     'subpackages/custom-recipe/services/nutrientIngredientService.js',
+    'subpackages/custom-recipe/services/energyRequirementService.js',
+    'subpackages/custom-recipe/services/mealEnergyService.js',
+    'subpackages/custom-recipe/services/mealAssessmentService.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
     'subpackages/plan-extra/services/planCalculatorService.js'
@@ -144,7 +148,7 @@ test('食谱 Tab 呈现我的食谱数据态、空态和新建弹层入口', () 
   assert.doesNotMatch(popupWxss, /env\(safe-area-inset-bottom\)/)
 })
 
-test('食谱设计页通过独立页面添加食材，并保留卡片食材列表和营养评估', () => {
+test('食谱设计页通过独立页面添加食材，并保留卡片食材列表和本餐评估', () => {
   const pageRoot = path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'edit')
   const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
   const ingredientListWxml = fs.readFileSync(path.join(__dirname, '..', 'components/vendor/recipe-ingredient-list/index.wxml'), 'utf8')
@@ -155,7 +159,7 @@ test('食谱设计页通过独立页面添加食材，并保留卡片食材列�
   assert.equal(config.navigationBarTitleText, '食谱设计')
   assert.match(wxml, /wx:if="{{!ingredients\.length}}"/)
   assert.match(wxml, /还没有添加食材/)
-  assert.match(wxml, /搜索食材并填写克重后，营养评估会自动更新/)
+  assert.match(wxml, /搜索食材并填写克重后，本餐评估会自动更新/)
   assert.match(wxml, /新增食材/)
   assert.match(wxml, /nutrition-assessment/)
   assert.doesNotMatch(wxml, /营养汇总（占位）/)
@@ -163,8 +167,8 @@ test('食谱设计页通过独立页面添加食材，并保留卡片食材列�
   assert.match(js, /wx\.navigateTo/)
   assert.match(js, /\/subpackages\/custom-recipe\/ingredient-search\/index/)
   assert.match(js, /ingredientWorkbench\.updateIngredientAmount/)
-  assert.match(js, /nutritionDataService\.loadNutritionData/)
-  assert.match(js, /nutritionAssessmentService\.buildAssessment/)
+  assert.match(js, /nutritionDataService\.loadMealAssessmentData/)
+  assert.match(js, /mealAssessmentService\.buildMealAssessment/)
   assert.match(js, /onNutritionProfileChange/)
   assert.match(wxml, /recipe-ingredient-list/)
   assert.doesNotMatch(wxml, /recipe-ingredient-search/)
@@ -233,6 +237,26 @@ test('搜索食材是独立页面，默认、结果和无结果状态互斥', ()
   assert.equal(config.usingComponents['recipe-ingredient-search'], '../../../components/vendor/recipe-ingredient-search/index')
   assert.equal(config.usingComponents['recipe-ingredient-list'], '../../../components/vendor/recipe-ingredient-list/index')
   assert.equal(config.usingComponents['recipe-ingredient-popup'], '../../../components/vendor/recipe-ingredient-popup/index')
+})
+
+test('只被自定义食谱使用的食材搜索服务不进入主包', () => {
+  const root = path.join(__dirname, '..')
+  const mainPackageService = path.join(root, 'services', 'ingredientService.js')
+  const subpackageService = path.join(
+    root,
+    'subpackages',
+    'custom-recipe',
+    'services',
+    'ingredientService.js'
+  )
+  const searchPage = fs.readFileSync(
+    path.join(root, 'subpackages', 'custom-recipe', 'ingredient-search', 'index.js'),
+    'utf8'
+  )
+
+  assert.equal(fs.existsSync(mainPackageService), false)
+  assert.equal(fs.existsSync(subpackageService), true)
+  assert.match(searchPage, /require\(['"]\.\.\/services\/ingredientService['"]\)/)
 })
 
 test('营养食材模式复用搜索页且不改变普通搜索默认态', () => {

@@ -1,66 +1,101 @@
-<view class="page with-bottom-action">
-  <ui-card>
-    <view class="form-eyebrow df-caption">狗狗档案</view>
-    <view class="form-title df-heading-xl">{{id ? '修改档案' : '添加狗狗'}}</view>
-    <view class="form-subtitle df-body">生成清单需要名字、年龄阶段、体重和每日餐数，其他资料可以稍后补充。</view>
-  </ui-card>
-
-  <view class="section">
+<view class="page with-bottom-action dog-profile-page">
+  <view class="section dog-profile-section">
     <ui-card>
-      <view class="profile-form">
-        <view class="avatar-picker" bindtap="onChooseAvatar">
-          <image class="avatar-preview" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
-          <view class="avatar-copy">
-            <view class="avatar-title">狗狗头像</view>
-            <view class="avatar-desc">点击更换照片，保存后用于档案和制作对象选择。</view>
-          </view>
+      <view class="dog-profile-form">
+        <view class="dog-profile-avatar" aria-role="button" aria-label="选择狗狗头像" bindtap="onChooseAvatar">
+          <image class="dog-profile-avatar__image" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
         </view>
 
-        <ui-field label="狗狗名字">
-          <input class="form-control" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
-        </ui-field>
-
-        <view class="form-pair">
-          <ui-field label="年龄阶段">
-            <picker range="{{ageStageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
-              <view class="picker-value">{{ageStageOptions[ageIndex].label}}</view>
+        <view class="dog-profile-pair">
+          <ui-field label="狗狗名字">
+            <input class="dog-profile-control" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
+          </ui-field>
+          <ui-field label="出生日期" errorText="{{birthDateError}}">
+            <picker mode="date" end="{{today}}" value="{{form.birthDate}}" bindchange="onBirthDate">
+              <view class="dog-profile-picker-value {{form.birthDate ? '' : 'dog-profile-picker-value--empty'}}">
+                {{form.birthDate || '请选择'}}
+              </view>
             </picker>
           </ui-field>
-          <ui-field label="体重 kg">
-            <input class="form-control" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
-          </ui-field>
         </view>
 
-        <view class="form-pair">
+        <ui-field label="狗狗品种" errorText="{{breedError}}">
+          <picker range="{{breedOptions}}" range-key="label" value="{{breedIndex}}" bindchange="onBreed">
+            <view class="dog-profile-picker-value {{form.breed ? '' : 'dog-profile-picker-value--empty'}}">
+              {{form.breed ? breedOptions[breedIndex].label : '请选择'}}
+            </view>
+          </picker>
+        </ui-field>
+
+        <ui-field label="系统估算阶段">
+          <view class="dog-profile-readonly">{{lifeStageLabel}}</view>
+        </ui-field>
+
+        <view class="dog-profile-pair">
+          <ui-field label="当前体重 kg">
+            <input class="dog-profile-control" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
+          </ui-field>
           <ui-field label="每日餐数">
-            <input class="form-control" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如 2" />
-          </ui-field>
-          <ui-field label="过敏源，可跳过">
-            <input class="form-control" value="{{allergenText}}" bindinput="onAllergenText" placeholder="例如 鸡肉" />
+            <input class="dog-profile-control" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如 2" />
           </ui-field>
         </view>
 
-        <view class="target-panel">
-          <view class="panel-title">饮食目标</view>
-          <view class="option-row">
-            <view wx:for="{{dietGoalOptions}}" wx:key="value" data-index="{{index}}" bindtap="onGoalTap">
+        <ui-field wx:if="{{isPuppy}}" label="预计成年体重">
+          <view wx:if="{{expectedAdultWeightKg}}" class="dog-profile-readonly">系统估算 {{expectedAdultWeightKg}} kg</view>
+          <view wx:else class="dog-profile-readonly dog-profile-readonly--muted">当前品种暂无可靠估算</view>
+        </ui-field>
+
+        <ui-field label="日均活动时长" errorText="{{dailyActivityHoursError}}">
+          <view class="dog-profile-activity-feedback">
+            {{form.dailyActivityHours === null ? '请选择日均活动时长' : ('日均 ' + form.dailyActivityHours + ' 小时 · ' + activityLevelLabel)}}
+          </view>
+          <view class="dog-profile-activity-slider">
+            <view class="dog-profile-activity-slider__bands" aria-hidden="true">
+              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--low"></view>
+              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--general"></view>
+              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--active"></view>
+              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--high"></view>
+            </view>
+            <view class="dog-profile-activity-slider__thumb" style="left: {{activityThumbLeft}}%;" aria-hidden="true"></view>
+            <slider class="dog-profile-activity-slider__input" aria-role="slider" aria-label="日均活动时长，{{form.dailyActivityHours === null ? '待选择' : (form.dailyActivityHours + ' 小时，' + activityLevelLabel)}}" aria-valuenow="{{form.dailyActivityHours === null ? '' : form.dailyActivityHours}}" aria-valuetext="{{form.dailyActivityHours === null ? '待选择' : (form.dailyActivityHours + ' 小时，' + activityLevelLabel)}}" min="0" max="6" step="0.5" value="{{form.dailyActivityHours}}" show-value="{{false}}" bindchanging="onActivityHours" bindchange="onActivityHours" />
+          </view>
+        </ui-field>
+
+        <ui-field label="体况">
+          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="体况">
+            <view wx:for="{{bodyConditionOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.bodyCondition === item.value}}" data-value="{{item.value}}" bindtap="onBodyCondition">
+              <ui-tag variant="{{form.bodyCondition === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+            </view>
+          </view>
+        </ui-field>
+
+        <ui-field label="绝育状态">
+          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="绝育状态">
+            <view class="dog-profile-choice" aria-role="radio" aria-label="已绝育" aria-checked="{{form.neutered}}" data-value="true" bindtap="onNeutered">
+              <ui-tag variant="{{form.neutered ? 'good' : 'neutral'}}">已绝育</ui-tag>
+            </view>
+            <view class="dog-profile-choice" aria-role="radio" aria-label="未绝育" aria-checked="{{!form.neutered}}" data-value="false" bindtap="onNeutered">
+              <ui-tag variant="{{!form.neutered ? 'good' : 'neutral'}}">未绝育</ui-tag>
+            </view>
+          </view>
+        </ui-field>
+
+        <ui-field label="饮食目标">
+          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="饮食目标">
+            <view wx:for="{{dietGoalOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{goalIndex === index}}" data-index="{{index}}" bindtap="onGoalTap">
               <ui-tag variant="{{goalIndex === index ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
             </view>
           </view>
-        </view>
-
-        <ui-field label="忌口食材，可跳过">
-          <input class="form-control" value="{{avoidText}}" bindinput="onAvoidText" placeholder="例如 南瓜、熟米饭" />
         </ui-field>
       </view>
     </ui-card>
   </view>
 
-  <view wx:if="{{id}}" class="delete-action">
-    <ui-button variant="warning" bind:tap="onDelete">删除档案</ui-button>
+  <view wx:if="{{id}}" class="dog-profile-delete-action">
+    <ui-button variant="warning" loading="{{saving}}" bind:tap="onDelete">删除档案</ui-button>
   </view>
 
   <view class="bottom-action">
-    <ui-button bind:tap="onSave">保存</ui-button>
+    <ui-button loading="{{saving}}" disabled="{{saving}}" bind:tap="onSave">保存档案</ui-button>
   </view>
 </view>

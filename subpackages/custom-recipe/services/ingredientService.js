@@ -1,14 +1,15 @@
-const env = require('../config/env')
-const storage = require('../utils/storage')
-const recipes = require('../data/recipes')
-const { ingredientCategoryOptions } = require('../data/options')
+const env = require('../../../config/env')
+const storage = require('../../../utils/storage')
+const recipes = require('../../../data/recipes')
 
 const RECENT_KEY = 'recentIngredients'
 const MAX_RECENT = 8
-const categoryLabels = ingredientCategoryOptions.reduce((result, item) => {
-  result[item.value] = item.label
-  return result
-}, {})
+const categoryLabels = {
+  meat: '肉类',
+  vegetable: '蔬菜',
+  carb: '主食',
+  other: '其他'
+}
 
 const COMMON_INGREDIENTS = [
   { id: 'common_beef', name: '牛肉', category: 'meat' },
