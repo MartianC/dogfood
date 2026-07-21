@@ -13,6 +13,8 @@ miniprogram_npm/
 dist/
 build/
 coverage/
+__pycache__/
+*.pyc
 
 # 日志和临时文件
 *.log

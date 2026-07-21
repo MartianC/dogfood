@@ -7,6 +7,11 @@
 - 设计稿依赖图片放在 `docs/design-assets/`，只服务设计稿预览，不进入小程序运行包。
 - `AGENTS.md` 保留在仓库根目录，作为工具和协作规则入口。
 
+## 数据管线入口
+
+- `docs/cloudbase-fooddata-import.md`：现有 Foundation Foods 与犬粮标准的 CloudBase 导入说明。
+- `docs/ingredient-data-pipeline.md`：Foundation、SR Legacy、人饭菜谱和食材知识审核层的离线主库构建说明。
+
 <!-- miniapp-ui-system:docs:start -->
 ### UI 系统文档入口
 
