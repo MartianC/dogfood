@@ -1,0 +1,172 @@
+# 数据库结构总览
+
+更新时间：2026-07-23
+
+这份文档以当前代码、导出脚本和项目设计文档为准，区分三类数据：用户业务数据、公共营养运行时投影、离线审核主库。CloudBase 是文档数据库，下面的“表”统一指集合；离线部分明确写作 SQLite 表。
+
+## 1. 总体边界
+
+```text
+微信用户
+  └─ users
+       └─ dogs
+            ├─ customRecipes
+            └─ mealPlans
+
+离线 SQLite 主库
+  ├─ USDA / SR Legacy 原始数据
+  ├─ 食材概念、别名、形态
+  ├─ 犬食安全策略
+  ├─ 营养素排行
+  └─ 人饭菜谱与人工映射
+          │ 受控导出（版本化、staging）
+          ▼
+CloudBase 公共只读投影
+  ├─ foods / food_nutrients / food_localized_name / pet_nutrition_standards
+  └─ data_releases / food_nutrition_profiles / ingredient_catalog /
+     canine_ingredient_policies / nutrient_rankings
+```
+
+业务集合由云函数写入；公共集合由离线导出和受限导入脚本写入。页面层应使用 `id`、`userId` 等业务字段，不把 `_id`、`_openid` 泄漏成业务契约。
+
+## 2. CloudBase 用户业务集合
+
+### `users`
+
+用途：微信登录后的用户索引。写入方：`login` 云函数。
+
+| 字段 | 类型/约束 | 说明 |
+|---|---|---|
+| `_id` | string | CloudBase 主键 |
+| `openId` | string，业务上唯一 | 微信 openid；当前代码用它查询用户 |
+| `nickname` | string | 默认“狗饭用户” |
+| `avatarUrl` | string | 默认空字符串 |
+| `createdAt` | Date | 首次创建 |
+| `updatedAt` | Date | 当前实现登录时不会更新，建议后续统一 |
+
+### `dogs`
+
+用途：用户的狗狗档案。所有读写均由 `dogProfile` 云函数按 `_openid` 隔离。
+
+| 字段 | 类型/约束 | 说明 |
+|---|---|---|
+| `_id` | string | 主键 |
+| `_openid` | string | CloudBase 用户归属，不可由客户端决定 |
+| `name` | string，必填 | 狗狗名称 |
+| `birthDate` | `YYYY-MM-DD`，必填 | 当前实际写入字段；由此派生年龄阶段 |
+| `ageStage` | string | 当前读取/展示字段，写入时由其他服务补齐或历史遗留 |
+| `breed` | `shiba-inu` / `labrador-retriever` / `mixed-or-unknown` | 受控品种 |
+| `weightKg` | number > 0 | 体重 |
+| `dailyMeals` | number > 0 | 每日餐数 |
+| `dailyActivityHours` | number，0–6，0.5 步长 | 当前主输入 |
+| `activityLevel` | string | 根据活动时长派生，可能为空/历史值 |
+| `bodyCondition` | `thin` / `ideal` / `overweight` | 体况 |
+| `avatarUrl` | string | 头像 |
+| `neutered` | boolean | 是否绝育 |
+| `dietGoal` | `daily` / `lowFat` / `gainWeight` / `stomachFriendly` | 饮食目标 |
+| `allergens` | string[] | 过敏源，创建时初始化为空数组 |
+| `avoidIngredients` | string[] | 忌口，创建时初始化为空数组 |
+| `healthNotes` | string | 健康备注 |
+| `createdAt` / `updatedAt` | Date | 审计时间 |
+
+### `customRecipes`
+
+用途：用户自定义食谱及建议结果。写入方：`saveCustomRecipe`。当前保存函数对 payload 使用展开写入，字段约束主要在前端，属于高风险集合。
+
+| 字段 | 类型/约束 | 说明 |
+|---|---|---|
+| `_id` / `_openid` | string | 主键 / 用户归属 |
+| `targetDogIds` | string[] | 目标狗狗 ID |
+| `targetDogSnapshots` | object[] | 保存时的狗狗快照，避免历史被档案更新影响 |
+| `title` | string，必填 | 食谱名称 |
+| `ingredients` | object[]，至少一项 | `name`、`category`、`perMealAmountGram`、`allergenKey` |
+| `adviceSummary` | string | 建议摘要 |
+| `advices` | object[] | `ingredientName`、`level`、`suggestion`、`reason` |
+| `adviceAlgorithmVersion` / `adviceAlgorithmSource` | string | 算法可追溯信息 |
+| `status` | `draft` / `checked` / `archived` | 默认 `draft` |
+| `createdAt` / `updatedAt` | Date | 审计时间 |
+
+### `mealPlans`
+
+用途：批量制作清单历史。写入/列表读取方：`saveMealPlan`。
+
+| 字段 | 类型/约束 | 说明 |
+|---|---|---|
+| `_id` / `_openid` | string | 主键 / 用户归属 |
+| `targetDogIds` | string[] | 目标狗狗 |
+| `targetMode` | `singleDog` / `multipleDogs` | 目标模式 |
+| `targetDogSnapshots` | object[]，至少一项 | 生成时的狗狗快照 |
+| `sourceType` | `builtInRecipe` / `customRecipe` | 食谱来源 |
+| `recipeId` / `customRecipeId` | string | 按来源二选一；当前未由云函数强校验 |
+| `recipeName` | string，必填 | 冗余名称 |
+| `recipeSnapshot` | object | 生成时食谱快照 |
+| `periodDays` | number | 制作周期 |
+| `calculationParams` | object | 周期、目标狗、舍入规则 |
+| `algorithmVersion` / `algorithmSource` | string，必填 | 算法追溯 |
+| `totalPortions` | number | 总份数 |
+| `dogMealSummaries` | object[] | 每只狗的餐数、克重、食材明细 |
+| `totalItems` | object[] | 汇总采购项，含 `name`、`category`、`amountGram` |
+| `cookingSteps` / `warnings` | string[] | 烹饪步骤 / 风险提示 |
+| `shareImageFileId` | string | 云存储文件 ID |
+| `createdAt` / `updatedAt` | Date | 审计时间；当前只新增不更新 |
+
+## 3. CloudBase 公共营养集合
+
+这些集合禁止小程序端写入，数据源是 SQLite 或受控种子文件。
+
+### FoodData 基础集合
+
+- `foods`：`_id=food_<fdc_id>`；字段：`fdc_id`、`data_type`、`description`、`food_category_id`、`publication_date`、`data_version`、`source`。
+- `food_nutrients`：`_id=food_nutrient_<id>`；字段：`id`、`food_id`、`fdc_id`、`nutrient_id`、`name`、`unit_name`、`amount`、`data_points`、`derivation_id`、`min`、`max`、`median`、`footnote`、`min_year_acquired`、`data_version`。
+- `food_localized_name`：`_id=food_localized_name_<id>`；字段：`id`、`fdc_id`、`food_id`、`locale`、`name`、`name_type`、`confidence`、`created_at`、`updated_at`、`data_version`。
+- `pet_nutrition_standards`：`_id=pet_standard_<id>`；顶层字段为标准元数据（`region_code`、`authority`、`standard_code`、`title`、`version`、日期、`status`、`source_url`、`notes`、`data_version`），`profiles[]` 内含犬种/生命阶段/食品范围、能量密度和 `requirements[]`；需求项含 `pet_nutrient_code`、名称、`requirement_type`、数值/文本、单位、basis、条件。
+
+### 食材知识运行时投影
+
+- `data_releases`：发布指针和计数。字段：`release_id`、`schema_version`、`status`（当前固定 `staging`）、`catalog_version`、`policy_version`、`ranking_version`、`generated_at`、`sources[]`、`collections` 计数。
+- `food_nutrition_profiles`：一条 `source_release_id + fdc_id` 一份聚合快照。字段：`release_id`、`food_id`、`fdc_id`、食物描述/来源版本、`nutrient_count`、`known_nutrient_count`、`nutrients` 对象。`nutrients[nutrient_id]` 含 `name`、`unit`、`amount`、`value_status`。
+- `ingredient_catalog`：搜索和选择目录项。字段：`release_id`、`catalog_version`、`policy_version`、`concept_id`、`variant_id`、中文名/别名、分类、制备/部位/皮骨状态、`food_id`/`fdc_id`、来源版本、`policy_status`、`is_searchable`、`is_selectable`。
+- `canine_ingredient_policies`：安全策略快照。字段：`policy_id`、`policy_version`、兼容目录版本、`subject_key`、`concept_id`、可选 `variant_id`、`decision`、`hazard_type`、`conditions`、`evidence`、`rationale`、审核人/时间和下次复核时间。
+- `nutrient_rankings`：版本化营养素排行。字段：`ranking_version`、兼容目录/策略版本、`nutrient_code`、中文名、单位、basis、`formula`、候选/入榜数量、生成时间、`items[]`。排行项含 rank、概念/形态/food ID、每 100g 数值和组成值。
+- `human_recipes`：已发布到 staging 的授权菜谱运行时投影。当前 `recipe_version=2026-07-23-v1` 共6,082条；每条内嵌来源原料、映射组件、策略状态和可选择状态，人饭分量只作参考。
+
+## 4. 离线 SQLite 主库表
+
+### 原始来源层
+
+`data_build(release_id, schema_version)`；`source_release(release_id, source_kind, source_version, source_path, source_sha256, license_status)`；`source_import_stat(source_release_id, entity_name, row_count)`。
+
+`source_food(source_release_id, fdc_id, data_type, description, food_category_id, publication_date)`；`source_nutrient(source_release_id, nutrient_id, name, unit_name, nutrient_nbr, rank)`；`source_food_nutrient(source_release_id, source_record_id, fdc_id, nutrient_id, amount, data_points, derivation_id, min, max, median, footnote, min_year_acquired)`；`source_localized_name(source_release_id, source_record_id, fdc_id, locale, name, name_type, confidence, created_at, updated_at)`；`source_food_category(source_release_id, category_id, code, description)`；`source_sr_legacy_food(source_release_id, fdc_id, ndb_number)`。
+
+### 人饭菜谱层
+
+`human_recipe` 保存来源、标题、分类、原料/分量原文及数量对齐状态；`human_recipe_ingredient_mention` 保存按位置拆分的原料和分量；`recipe_ingredient_term` 保存规范化原料写法和出现次数。
+
+### 审核与知识层
+
+`ingredient_concept`（标准概念）；`ingredient_alias`（别名到概念，含审核状态和版本）；`ingredient_variant`（生熟/部位/皮骨状态到来源食物）；`canine_ingredient_policy`（概念或形态安全策略）；`nutrient_ranking` 与 `nutrient_ranking_item`（版本化排行及排行项）；`recipe_mapping_release`（映射版本、兼容版本、来源和授权）；`ingredient_mapping_decision` 与 `ingredient_mapping_component`（人饭原料映射及复合拆分）；`review_task`（歧义、安全关键、无形态等人工任务）。完整字段和约束以 `scripts/fooddata/build_ingredient_data_sqlite.py` 的 `SCHEMA_SQL` 为最终机器契约。
+
+## 5. 关系、版本和权限
+
+1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱和清单以 ID 引用，同时保存 snapshots。
+2. 营养关系：`foods` → `food_nutrients` / `food_localized_name`；`food_nutrition_profiles` 将同一食物的营养明细聚合成一次读取；`ingredient_catalog.variant_id` → `food_id`。
+3. 审核关系：`ingredient_concept` → `ingredient_alias` / `ingredient_variant`；策略优先匹配 variant，缺失时回退 concept；排行必须同时兼容 catalog 和 policy 版本。
+4. 发布关系：一个 `release_id` 绑定一组 `catalog_version`、`policy_version`、`ranking_version` 和各集合计数。旧快照不可修改，生产切换应通过活动版本指针完成。
+5. 权限：`users`、`dogs`、`customRecipes`、`mealPlans` 仅云函数访问；公共营养集合客户端可读不可写；策略集合按当前设计由云函数读取，不能直接暴露原始审核字段。
+
+## 6. 当前需要优先收口的地方
+
+- **档案契约漂移**：旧设计文档用 `ageStage`、`activityLevel` 等作为输入，但当前实际校验使用 `birthDate`、`dailyActivityHours`、`bodyCondition`；应明确哪些是源字段、哪些是派生字段，并补一次迁移/兼容策略。
+- **用户主键命名不一致**：`users` 使用 `openId`，其他集合使用 `_openid`。这是 CloudBase 约定与业务字段混用，建议保留 `_openid` 做权限，统一业务层只暴露 `userId`。
+- **写入白名单不足**：`saveCustomRecipe` 和 `saveMealPlan` 直接展开 payload，可能写入未定义字段或覆盖审计字段；应改为显式字段白名单和服务端枚举校验。
+- **关系没有服务端校验**：保存食谱/清单时尚未确认 `targetDogIds` 属于当前用户，也没有验证 `recipeId`、`customRecipeId` 与 `sourceType` 的一致性。
+- **历史字段兼容未显式化**：`updatedAt`、`ageStage`、`activityLevel` 等存在历史数据可能缺失的情况；应在读取归一化之外增加版本号或一次性迁移统计。
+- **离线与线上边界容易混淆**：`human_recipe` 等来源/审核表只在 SQLite；CloudBase 只查询经过版本化映射和安全过滤的复数集合 `human_recipes`。
+
+## 7. 建议的收口顺序
+
+1. 先冻结本文件中的集合契约，并用脚本扫描线上/测试 fixture 的实际字段。
+2. 给四个业务集合增加服务端 DTO 白名单、枚举和归属校验。
+3. 为 `dogs` 建立 `profileSchemaVersion`，把源字段与派生字段分开，兼容旧数据后再清理旧字段。
+4. 为公共投影统一要求 `release_id` + 兼容版本，所有查询显式带活动版本。
+5. 最后再考虑删除冗余字段或拆集合；历史清单和食谱必须继续依赖快照，不做破坏性回填。

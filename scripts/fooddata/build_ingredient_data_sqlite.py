@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator, Sequence
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 4
 BATCH_SIZE = 10_000
 SR_REQUIRED_FILES = {
     "food.csv",
@@ -245,17 +245,70 @@ CREATE TABLE ingredient_variant (
 
 CREATE TABLE canine_ingredient_policy (
   policy_id TEXT PRIMARY KEY,
+  policy_version TEXT NOT NULL,
+  compatible_catalog_version TEXT NOT NULL,
+  subject_key TEXT NOT NULL,
   concept_id TEXT NOT NULL,
   variant_id TEXT,
   decision TEXT NOT NULL CHECK (decision IN ('allowed', 'conditional', 'blocked', 'unknown')),
   hazard_type TEXT,
-  conditions_json TEXT,
-  evidence_source TEXT,
-  policy_version TEXT NOT NULL,
-  reviewed_by TEXT,
-  reviewed_at TEXT,
+  conditions_json TEXT NOT NULL,
+  evidence_json TEXT NOT NULL,
+  rationale TEXT NOT NULL,
+  review_status TEXT NOT NULL CHECK (review_status IN ('pending', 'approved', 'rejected')),
+  reviewed_by TEXT NOT NULL,
+  reviewed_at TEXT NOT NULL,
+  next_review_at TEXT NOT NULL,
+  UNIQUE (policy_version, subject_key),
   FOREIGN KEY (concept_id) REFERENCES ingredient_concept(concept_id),
   FOREIGN KEY (variant_id) REFERENCES ingredient_variant(variant_id)
+);
+
+CREATE TABLE nutrient_ranking (
+  ranking_version TEXT NOT NULL,
+  compatible_catalog_version TEXT NOT NULL,
+  compatible_policy_version TEXT NOT NULL,
+  nutrient_code TEXT NOT NULL,
+  nutrient_name_zh TEXT NOT NULL,
+  unit_name TEXT NOT NULL,
+  formula_json TEXT NOT NULL,
+  max_items INTEGER NOT NULL CHECK (max_items > 0),
+  candidate_count INTEGER NOT NULL CHECK (candidate_count >= 0),
+  ranked_count INTEGER NOT NULL CHECK (ranked_count >= 0),
+  generated_at TEXT NOT NULL,
+  PRIMARY KEY (ranking_version, nutrient_code)
+);
+
+CREATE TABLE nutrient_ranking_item (
+  ranking_version TEXT NOT NULL,
+  nutrient_code TEXT NOT NULL,
+  rank_position INTEGER NOT NULL CHECK (rank_position > 0),
+  concept_id TEXT NOT NULL,
+  variant_id TEXT NOT NULL,
+  source_release_id TEXT NOT NULL,
+  source_food_id INTEGER NOT NULL,
+  amount_per_100g REAL NOT NULL CHECK (amount_per_100g > 0),
+  component_values_json TEXT NOT NULL,
+  PRIMARY KEY (ranking_version, nutrient_code, rank_position),
+  UNIQUE (ranking_version, nutrient_code, variant_id),
+  FOREIGN KEY (ranking_version, nutrient_code)
+    REFERENCES nutrient_ranking(ranking_version, nutrient_code),
+  FOREIGN KEY (concept_id) REFERENCES ingredient_concept(concept_id),
+  FOREIGN KEY (variant_id) REFERENCES ingredient_variant(variant_id),
+  FOREIGN KEY (source_release_id, source_food_id)
+    REFERENCES source_food(source_release_id, fdc_id)
+);
+
+CREATE TABLE recipe_mapping_release (
+  mapping_version TEXT PRIMARY KEY,
+  compatible_catalog_version TEXT NOT NULL,
+  compatible_policy_version TEXT NOT NULL,
+  source_release_id TEXT NOT NULL,
+  source_sha256 TEXT NOT NULL,
+  license_status TEXT NOT NULL CHECK (license_status = 'verified'),
+  generated_at TEXT NOT NULL,
+  rule_config_json TEXT NOT NULL,
+  FOREIGN KEY (source_release_id) REFERENCES source_release(release_id)
 );
 
 CREATE TABLE ingredient_mapping_decision (
@@ -268,7 +321,8 @@ CREATE TABLE ingredient_mapping_decision (
   reviewed_by TEXT,
   reviewed_at TEXT,
   notes TEXT,
-  FOREIGN KEY (normalized_name) REFERENCES recipe_ingredient_term(normalized_name)
+  FOREIGN KEY (normalized_name) REFERENCES recipe_ingredient_term(normalized_name),
+  FOREIGN KEY (decision_version) REFERENCES recipe_mapping_release(mapping_version)
 );
 
 CREATE TABLE ingredient_mapping_component (
@@ -311,7 +365,9 @@ CREATE INDEX idx_ingredient_alias_name
 CREATE INDEX idx_ingredient_variant_concept
   ON ingredient_variant(concept_id, status, is_default);
 CREATE INDEX idx_canine_policy_subject
-  ON canine_ingredient_policy(concept_id, variant_id, policy_version);
+  ON canine_ingredient_policy(policy_version, concept_id, variant_id, review_status);
+CREATE INDEX idx_nutrient_ranking_variant
+  ON nutrient_ranking_item(ranking_version, variant_id, nutrient_code);
 CREATE INDEX idx_review_task_queue
   ON review_task(status, priority DESC, normalized_name);
 """

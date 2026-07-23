@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict')
+const crypto = require('node:crypto')
 const fs = require('node:fs')
 const os = require('node:os')
 const path = require('node:path')
@@ -8,6 +9,10 @@ const test = require('node:test')
 const root = path.resolve(__dirname, '..')
 const script = path.join(root, 'scripts/fooddata/build_ingredient_data_sqlite.py')
 const exporter = path.join(root, 'scripts/fooddata/export_ingredient_cloudbase.py')
+const catalogSeeder = path.join(root, 'scripts/fooddata/seed_ingredient_catalog.py')
+const policySeeder = path.join(root, 'scripts/fooddata/seed_canine_ingredient_policies.py')
+const rankingSeeder = path.join(root, 'scripts/fooddata/seed_nutrient_rankings.py')
+const recipeMappingSeeder = path.join(root, 'scripts/fooddata/seed_recipe_ingredient_mappings.py')
 
 function runBuilder(args) {
   return spawnSync('python3', [script, ...args], {
@@ -18,6 +23,34 @@ function runBuilder(args) {
 
 function runExporter(args) {
   return spawnSync('python3', [exporter, ...args], {
+    cwd: root,
+    encoding: 'utf8'
+  })
+}
+
+function runCatalogSeeder(args) {
+  return spawnSync('python3', [catalogSeeder, ...args], {
+    cwd: root,
+    encoding: 'utf8'
+  })
+}
+
+function runPolicySeeder(args) {
+  return spawnSync('python3', [policySeeder, ...args], {
+    cwd: root,
+    encoding: 'utf8'
+  })
+}
+
+function runRankingSeeder(args) {
+  return spawnSync('python3', [rankingSeeder, ...args], {
+    cwd: root,
+    encoding: 'utf8'
+  })
+}
+
+function runRecipeMappingSeeder(args) {
+  return spawnSync('python3', [recipeMappingSeeder, ...args], {
     cwd: root,
     encoding: 'utf8'
   })
@@ -164,6 +197,8 @@ result = {
         'aliases': conn.execute('SELECT COUNT(*) FROM ingredient_alias').fetchone()[0],
         'variants': conn.execute('SELECT COUNT(*) FROM ingredient_variant').fetchone()[0],
         'policies': conn.execute('SELECT COUNT(*) FROM canine_ingredient_policy').fetchone()[0],
+        'rankings': conn.execute('SELECT COUNT(*) FROM nutrient_ranking').fetchone()[0],
+        'recipe_mapping_releases': conn.execute('SELECT COUNT(*) FROM recipe_mapping_release').fetchone()[0],
     },
     'foreign_key_errors': rows('PRAGMA foreign_key_check'),
 }
@@ -188,7 +223,7 @@ test('构建器保留来源隔离的 USDA 数据并解析菜谱原料', () => {
   assert.equal(result.status, 0, result.stderr)
   const summary = JSON.parse(result.stdout)
   assert.equal(summary.release_id, 'test-release')
-  assert.equal(summary.schema_version, 1)
+  assert.equal(summary.schema_version, 4)
   assert.equal(summary.counts.source_food, 2)
   assert.equal(summary.counts.source_food_nutrient, 4)
   assert.equal(summary.counts.human_recipe, 2)
@@ -198,6 +233,9 @@ test('构建器保留来源隔离的 USDA 数据并解析菜谱原料', () => {
   assert.ok(database.tables.includes('ingredient_concept'))
   assert.ok(database.tables.includes('ingredient_mapping_decision'))
   assert.ok(database.tables.includes('canine_ingredient_policy'))
+  assert.ok(database.tables.includes('nutrient_ranking'))
+  assert.ok(database.tables.includes('nutrient_ranking_item'))
+  assert.ok(database.tables.includes('recipe_mapping_release'))
   assert.equal(database.releases.length, 3)
   assert.equal(database.releases.find((item) => item.source_kind === 'human_recipe').license_status, 'needs_review')
 
@@ -219,7 +257,9 @@ test('构建器保留来源隔离的 USDA 数据并解析菜谱原料', () => {
     concepts: 0,
     aliases: 0,
     variants: 0,
-    policies: 0
+    policies: 0,
+    rankings: 0,
+    recipe_mapping_releases: 0
   })
   assert.deepEqual(database.foreign_key_errors, [])
 })
@@ -289,6 +329,8 @@ test('CloudBase 导出器区分已知零值和未知营养值', () => {
   assert.equal(profiles.length, 2)
   assert.equal(manifest.collections.food_nutrition_profiles.rows, 2)
   assert.equal(manifest.pending_collections.length, 4)
+  assert.equal(manifest.collections.ingredient_catalog.rows, 0)
+  assert.equal(fs.readFileSync(path.join(outDir, 'ingredient_catalog.jsonl'), 'utf8'), '')
   assert.equal(release.status, 'staging')
   assert.equal(release.collections.human_recipes, 0)
 
@@ -298,6 +340,89 @@ test('CloudBase 导出器区分已知零值和未知营养值', () => {
   assert.equal(tomato.nutrients['1004'].value_status, 'known')
   assert.equal(tomato.nutrients['1008'].amount, null)
   assert.equal(tomato.nutrients['1008'].value_status, 'unknown')
+})
+
+test('食材目录种子写入概念、别名和形态并导出不可选择的目录投影', () => {
+  const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
+  const seedPath = path.join(tmp, 'catalog.json')
+  const outDir = path.join(tmp, 'cloudbase')
+  const buildResult = runBuilder([
+    '--foundation-sqlite', foundation,
+    '--sr-legacy-dir', srDir,
+    '--recipes-csv', recipes,
+    '--out-sqlite', output,
+    '--release-id', '2026-07-22-test'
+  ])
+  assert.equal(buildResult.status, 0, buildResult.stderr)
+
+  fs.writeFileSync(seedPath, JSON.stringify({
+    catalog_version: 'test-catalog-v1',
+    items: [
+      {
+        concept_id: 'ingredient_tomato',
+        canonical_name_zh: '番茄',
+        category_code: 'vegetable',
+        subcategory_code: 'fruit_vegetable',
+        aliases: ['西红柿'],
+        variants: [{
+          variant_id: 'variant_tomato_raw',
+          display_name_zh: '番茄（生）',
+          preparation_state: 'raw',
+          source_version: 'foundation',
+          fdc_id: 10,
+          description_contains: 'Tomato, raw',
+          is_default: true
+        }]
+      },
+      {
+        concept_id: 'ingredient_pork_heart',
+        canonical_name_zh: '猪心',
+        category_code: 'organ',
+        subcategory_code: 'heart',
+        aliases: [],
+        variants: [{
+          variant_id: 'variant_pork_heart_raw',
+          display_name_zh: '猪心（生）',
+          preparation_state: 'raw',
+          source_version: 'sr_legacy_2018_04',
+          fdc_id: 20,
+          description_contains: 'Pork heart, raw',
+          is_default: true
+        }]
+      }
+    ]
+  }))
+
+  const seedResult = runCatalogSeeder(['--sqlite', output, '--seed', seedPath])
+  assert.equal(seedResult.status, 0, seedResult.stderr)
+  assert.deepEqual(JSON.parse(seedResult.stdout).counts, {
+    ingredient_concept: 2,
+    ingredient_alias: 3,
+    ingredient_variant: 2
+  })
+
+  const exportResult = runExporter(['--sqlite', output, '--out-dir', outDir])
+  assert.equal(exportResult.status, 0, exportResult.stderr)
+  const manifest = JSON.parse(fs.readFileSync(
+    path.join(outDir, 'cloudbase-ingredient-import-manifest.json'),
+    'utf8'
+  ))
+  const catalog = fs.readFileSync(path.join(outDir, 'ingredient_catalog.jsonl'), 'utf8')
+    .trim()
+    .split('\n')
+    .map((line) => JSON.parse(line))
+  const release = JSON.parse(fs.readFileSync(
+    path.join(outDir, 'data_releases.jsonl'),
+    'utf8'
+  ).trim())
+
+  assert.equal(catalog.length, 2)
+  assert.equal(manifest.collections.ingredient_catalog.rows, 2)
+  assert.equal(manifest.pending_collections.includes('ingredient_catalog'), false)
+  assert.equal(release.collections.ingredient_catalog, 2)
+  assert.deepEqual(catalog.find((item) => item.concept_id === 'ingredient_tomato').aliases, ['西红柿'])
+  assert.equal(catalog.every((item) => item.policy_status === 'unknown'), true)
+  assert.equal(catalog.every((item) => item.is_selectable === false), true)
 })
 
 test('CloudBase 导出器拒绝覆盖已经存在的导出文件', () => {
@@ -318,4 +443,286 @@ test('CloudBase 导出器拒绝覆盖已经存在的导出文件', () => {
   assert.notEqual(exportResult.status, 0)
   assert.match(exportResult.stderr, /拒绝覆盖/)
   assert.equal(fs.readFileSync(path.join(outDir, 'data_releases.jsonl'), 'utf8'), 'keep')
+})
+
+test('犬食安全策略完整覆盖目录并反向生成可选择状态', () => {
+  const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
+  const catalogSeed = path.join(tmp, 'catalog.json')
+  const policySeed = path.join(tmp, 'policies.json')
+  const rankingRules = path.join(tmp, 'rankings.json')
+  const sourceDeclaration = path.join(tmp, 'recipe-source.json')
+  const recipeMapping = path.join(tmp, 'recipe-mapping.json')
+  const outDir = path.join(tmp, 'cloudbase')
+  const buildResult = runBuilder([
+    '--foundation-sqlite', foundation,
+    '--sr-legacy-dir', srDir,
+    '--recipes-csv', recipes,
+    '--out-sqlite', output,
+    '--release-id', '2026-07-22-test'
+  ])
+  assert.equal(buildResult.status, 0, buildResult.stderr)
+
+  fs.writeFileSync(catalogSeed, JSON.stringify({
+    catalog_version: 'test-catalog-v1',
+    items: [
+      {
+        concept_id: 'ingredient_tomato',
+        canonical_name_zh: '番茄',
+        category_code: 'vegetable',
+        subcategory_code: 'fruit_vegetable',
+        aliases: [],
+        variants: [{
+          variant_id: 'variant_tomato_raw',
+          display_name_zh: '番茄（生）',
+          preparation_state: 'raw',
+          source_version: 'foundation',
+          fdc_id: 10,
+          description_contains: 'Tomato, raw',
+          is_default: true
+        }]
+      },
+      {
+        concept_id: 'ingredient_pork_heart',
+        canonical_name_zh: '猪心',
+        category_code: 'organ',
+        subcategory_code: 'heart',
+        aliases: [],
+        variants: [{
+          variant_id: 'variant_pork_heart_raw',
+          display_name_zh: '猪心（生）',
+          preparation_state: 'raw',
+          source_version: 'sr_legacy_2018_04',
+          fdc_id: 20,
+          description_contains: 'Pork heart, raw',
+          is_default: true
+        }]
+      }
+    ]
+  }))
+  assert.equal(runCatalogSeeder(['--sqlite', output, '--seed', catalogSeed]).status, 0)
+
+  fs.writeFileSync(policySeed, JSON.stringify({
+    policy_version: 'test-policy-v1',
+    compatible_catalog_version: 'test-catalog-v1',
+    evidence_reviewed_at: '2026-07-22',
+    review: {
+      reviewed_by: 'test-reviewer',
+      reviewed_at: '2026-07-22',
+      next_review_at: '2026-10-22'
+    },
+    evidence_library: {
+      test_source: {
+        title: 'Test evidence',
+        publisher: 'Test veterinary source',
+        url: 'https://example.test/evidence',
+        accessed_at: '2026-07-22',
+        species: 'dog'
+      }
+    },
+    concept_policies: [{
+      concept_id: 'ingredient_tomato',
+      decision: 'allowed',
+      evidence_ids: ['test_source'],
+      rationale: '测试允许策略。'
+    }],
+    variant_policies: []
+  }))
+  const policyResult = runPolicySeeder(['--sqlite', output, '--seed', policySeed])
+  assert.equal(policyResult.status, 0, policyResult.stderr)
+  assert.deepEqual(JSON.parse(policyResult.stdout).decisions, {
+    allowed: 1,
+    blocked: 0,
+    conditional: 0,
+    unknown: 1
+  })
+
+  fs.writeFileSync(rankingRules, JSON.stringify({
+    ranking_version: 'test-ranking-v1',
+    compatible_catalog_version: 'test-catalog-v1',
+    compatible_policy_version: 'test-policy-v1',
+    generated_at: '2026-07-22T00:00:00Z',
+    max_items: 20,
+    nutrients: [
+      {
+        nutrient_code: 'protein',
+        nutrient_name_zh: '蛋白质',
+        unit_name: 'G',
+        formulas: [[{ nutrient_id: 1003 }]]
+      },
+      {
+        nutrient_code: 'vitamin_d',
+        nutrient_name_zh: '维生素 D',
+        unit_name: 'UG',
+        formulas: [[{ nutrient_id: 1114 }], [{ nutrient_id: 1110, factor: 0.025 }]]
+      }
+    ]
+  }))
+  const rankingResult = runRankingSeeder(['--sqlite', output, '--rules', rankingRules])
+  assert.equal(rankingResult.status, 0, rankingResult.stderr)
+  assert.deepEqual(JSON.parse(rankingResult.stdout), {
+    ranking_version: 'test-ranking-v1',
+    compatible_catalog_version: 'test-catalog-v1',
+    compatible_policy_version: 'test-policy-v1',
+    selectable_variants: 1,
+    nutrient_rankings: 2,
+    ranking_items: 1,
+    empty_rankings: 1
+  })
+
+  const recipeSha256 = crypto.createHash('sha256').update(fs.readFileSync(recipes)).digest('hex')
+  fs.writeFileSync(sourceDeclaration, JSON.stringify({
+    source_id: 'test-recipes',
+    source_version: 'capu_5w_source',
+    source_sha256: recipeSha256,
+    license_status: 'verified',
+    authorization_basis: '测试授权。',
+    authorization_confirmed_by: 'test-owner',
+    authorization_confirmed_at: '2026-07-23'
+  }))
+  fs.writeFileSync(recipeMapping, JSON.stringify({
+    mapping_version: 'test-recipe-mapping-v1',
+    compatible_catalog_version: 'test-catalog-v1',
+    compatible_policy_version: 'test-policy-v1',
+    source_declaration: sourceDeclaration,
+    generated_at: '2026-07-23T00:00:00Z',
+    automatic_rules: ['approved_alias_exact'],
+    review_task_min_occurrences: 1,
+    manual_decisions: []
+  }))
+  const mappingResult = runRecipeMappingSeeder([
+    '--sqlite', output,
+    '--mapping', recipeMapping
+  ])
+  assert.equal(mappingResult.status, 0, mappingResult.stderr)
+  assert.deepEqual(JSON.parse(mappingResult.stdout), {
+    mapping_version: 'test-recipe-mapping-v1',
+    compatible_catalog_version: 'test-catalog-v1',
+    compatible_policy_version: 'test-policy-v1',
+    source_release_id: JSON.parse(buildResult.stdout).source_releases.human_recipes,
+    source_license_status: 'verified',
+    terms: 4,
+    occurrences: 4,
+    matched_occurrences: 1,
+    occurrence_coverage: 0.25,
+    decisions: {
+      alternative: 0,
+      ambiguous: 0,
+      composite: 0,
+      matched: 1,
+      unmatched: 3
+    },
+    components: 1,
+    review_tasks: 3
+  })
+
+  const exportResult = runExporter(['--sqlite', output, '--out-dir', outDir])
+  assert.equal(exportResult.status, 0, exportResult.stderr)
+  const manifest = JSON.parse(fs.readFileSync(
+    path.join(outDir, 'cloudbase-ingredient-import-manifest.json'),
+    'utf8'
+  ))
+  const policies = fs.readFileSync(
+    path.join(outDir, 'canine_ingredient_policies.jsonl'),
+    'utf8'
+  ).trim().split('\n').map((line) => JSON.parse(line))
+  const catalog = fs.readFileSync(path.join(outDir, 'ingredient_catalog.jsonl'), 'utf8')
+    .trim().split('\n').map((line) => JSON.parse(line))
+  const rankings = fs.readFileSync(path.join(outDir, 'nutrient_rankings.jsonl'), 'utf8')
+    .trim().split('\n').map((line) => JSON.parse(line))
+  const humanRecipes = fs.readFileSync(path.join(outDir, 'human_recipes.jsonl'), 'utf8')
+    .trim().split('\n').map((line) => JSON.parse(line))
+  const release = JSON.parse(fs.readFileSync(
+    path.join(outDir, 'data_releases.jsonl'),
+    'utf8'
+  ).trim())
+
+  assert.equal(manifest.collections.canine_ingredient_policies.rows, 2)
+  assert.equal(manifest.pending_collections.includes('canine_ingredient_policies'), false)
+  assert.equal(policies.length, 2)
+  assert.equal(catalog.find((item) => item.concept_id === 'ingredient_tomato').is_selectable, true)
+  assert.equal(catalog.find((item) => item.concept_id === 'ingredient_pork_heart').policy_status, 'unknown')
+  assert.equal(manifest.collections.nutrient_rankings.rows, 2)
+  assert.equal(manifest.pending_collections.includes('nutrient_rankings'), false)
+  assert.equal(release.ranking_version, 'test-ranking-v1')
+  assert.equal(release.collections.nutrient_rankings, 2)
+  assert.equal(rankings.find((item) => item.nutrient_code === 'vitamin_d').ranked_count, 0)
+  const protein = rankings.find((item) => item.nutrient_code === 'protein')
+  assert.equal(protein.items.length, 1)
+  assert.equal(protein.items[0].variant_id, 'variant_tomato_raw')
+  assert.equal(protein.items[0].amount_per_100g, 0.88)
+  assert.equal(manifest.collections.human_recipes.rows, 1)
+  assert.equal(manifest.pending_collections.includes('human_recipes'), false)
+  assert.equal(release.recipe_version, 'test-recipe-mapping-v1')
+  assert.equal(release.recipe_source_count, 2)
+  assert.equal(release.collections.human_recipes, 1)
+  const tomatoRecipe = humanRecipes.find((item) => item.source_recipe_id === '1')
+  assert.equal(tomatoRecipe.has_selectable_ingredients, true)
+  assert.equal(tomatoRecipe.amounts_are_reference_only, true)
+  assert.equal(tomatoRecipe.ingredients[0].components[0].concept_id, 'ingredient_tomato')
+  assert.equal(tomatoRecipe.ingredients[0].components[0].is_selectable, true)
+  assert.equal(tomatoRecipe.ingredients[1].mapping_status, 'unmatched')
+})
+
+test('食材目录种子拒绝未受控分类和跨概念别名冲突', () => {
+  const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
+  const seedPath = path.join(tmp, 'invalid-catalog.json')
+  const buildResult = runBuilder([
+    '--foundation-sqlite', foundation,
+    '--sr-legacy-dir', srDir,
+    '--recipes-csv', recipes,
+    '--out-sqlite', output,
+    '--release-id', 'test-release'
+  ])
+  assert.equal(buildResult.status, 0, buildResult.stderr)
+
+  const baseItem = {
+    category_code: 'vegetable',
+    subcategory_code: 'fruit_vegetable',
+    aliases: [],
+    variants: [{
+      display_name_zh: '番茄（生）',
+      preparation_state: 'raw',
+      source_version: 'foundation',
+      fdc_id: 10,
+      description_contains: 'Tomato, raw',
+      is_default: true
+    }]
+  }
+
+  fs.writeFileSync(seedPath, JSON.stringify({
+    catalog_version: 'test-invalid-category',
+    items: [{
+      ...baseItem,
+      concept_id: 'ingredient_tomato',
+      canonical_name_zh: '番茄',
+      category_code: 'temporary_category',
+      variants: [{ ...baseItem.variants[0], variant_id: 'variant_tomato_raw' }]
+    }]
+  }))
+  const categoryResult = runCatalogSeeder(['--sqlite', output, '--seed', seedPath])
+  assert.notEqual(categoryResult.status, 0)
+  assert.match(categoryResult.stderr, /未受控的一级分类/)
+
+  fs.writeFileSync(seedPath, JSON.stringify({
+    catalog_version: 'test-alias-conflict',
+    items: [
+      {
+        ...baseItem,
+        concept_id: 'ingredient_tomato',
+        canonical_name_zh: '番茄',
+        aliases: ['西红柿'],
+        variants: [{ ...baseItem.variants[0], variant_id: 'variant_tomato_raw' }]
+      },
+      {
+        ...baseItem,
+        concept_id: 'ingredient_other_tomato',
+        canonical_name_zh: '其他番茄',
+        aliases: ['西红柿'],
+        variants: [{ ...baseItem.variants[0], variant_id: 'variant_other_tomato_raw' }]
+      }
+    ]
+  }))
+  const aliasResult = runCatalogSeeder(['--sqlite', output, '--seed', seedPath])
+  assert.notEqual(aliasResult.status, 0)
+  assert.match(aliasResult.stderr, /规范化别名跨概念冲突/)
 })

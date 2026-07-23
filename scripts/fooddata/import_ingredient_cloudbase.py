@@ -12,7 +12,14 @@ from pathlib import Path
 from typing import Any, Iterator
 
 
-ALLOWED_COLLECTIONS = ("data_releases", "food_nutrition_profiles")
+ALLOWED_COLLECTIONS = (
+    "data_releases",
+    "food_nutrition_profiles",
+    "ingredient_catalog",
+    "canine_ingredient_policies",
+    "nutrient_rankings",
+    "human_recipes",
+)
 DEFAULT_MAX_COMMAND_BYTES = 700_000
 
 
@@ -143,9 +150,14 @@ def run_tcb(tcb_bin: Path, env_id: str, command: str) -> dict[str, Any]:
     return payload
 
 
-def count_collection(tcb_bin: Path, env_id: str, collection: str) -> int:
+def count_collection(
+    tcb_bin: Path,
+    env_id: str,
+    collection: str,
+    query: dict[str, Any] | None = None,
+) -> int:
     mongo_command = json.dumps(
-        {"count": collection, "query": {}}, separators=(",", ":")
+        {"count": collection, "query": query or {}}, separators=(",", ":")
     )
     command = json.dumps(
         [
@@ -173,6 +185,7 @@ def import_collection(
     max_command_bytes: int,
 ) -> None:
     imported = 0
+    version_query: dict[str, Any] | None = None
     for batch_number, (documents, command) in enumerate(
         iter_batches(collection, path, max_command_bytes), start=1
     ):
@@ -183,7 +196,21 @@ def import_collection(
             flush=True,
         )
 
-    actual_rows = count_collection(tcb_bin, env_id, collection)
+        version_field = {
+            "data_releases": "release_id",
+            "food_nutrition_profiles": "release_id",
+            "ingredient_catalog": "release_id",
+            "canine_ingredient_policies": "policy_version",
+            "nutrient_rankings": "ranking_version",
+            "human_recipes": "recipe_version",
+        }.get(collection)
+        if version_field and version_query is None:
+            versions = {str(document.get(version_field, "")) for document in documents}
+            if len(versions) != 1 or not next(iter(versions)):
+                raise ValueError(f"{collection} 批次必须且只能包含一个 {version_field}")
+            version_query = {version_field: next(iter(versions))}
+
+    actual_rows = count_collection(tcb_bin, env_id, collection, version_query)
     if actual_rows != expected_rows:
         raise RuntimeError(
             f"集合计数校验失败：{collection}，预期 {expected_rows}，实际 {actual_rows}"
@@ -201,7 +228,7 @@ def parse_args() -> argparse.Namespace:
         action="append",
         choices=ALLOWED_COLLECTIONS,
         dest="collections",
-        help="可重复指定；默认导入白名单中的两个集合",
+        help="可重复指定；默认导入白名单中的全部集合",
     )
     parser.add_argument(
         "--max-command-bytes", type=int, default=DEFAULT_MAX_COMMAND_BYTES
