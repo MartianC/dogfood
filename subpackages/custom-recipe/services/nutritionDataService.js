@@ -1,4 +1,5 @@
 const nutritionAssessmentService = require('./nutritionAssessmentService')
+const runtimeDataReleaseService = require('./runtimeDataReleaseService')
 
 // 小程序端云数据库单次查询最多返回 20 条。
 const PAGE_SIZE = 20
@@ -47,12 +48,31 @@ async function loadStandards(database) {
   return standardsCache
 }
 
-async function loadFoodNutrients(database, foodIds) {
+function profileToNutrientRecords(profile = {}) {
+  return Object.entries(profile.nutrients || {}).map(([nutrientId, nutrient]) => ({
+    food_id: profile.food_id,
+    fdc_id: profile.fdc_id,
+    nutrient_id: Number(nutrientId),
+    name: nutrient.name,
+    unit_name: nutrient.unit,
+    amount: nutrient.value_status === 'known' ? nutrient.amount : null
+  }))
+}
+
+async function loadFoodNutritionProfiles(database, foodIds, releaseId) {
   if (!foodIds.length) return []
   const command = database.command
-  return readAll(database.collection('food_nutrients').where({
-    food_id: command.in(foodIds)
-  }))
+  const chunks = []
+  for (let index = 0; index < foodIds.length; index += PAGE_SIZE) {
+    chunks.push(foodIds.slice(index, index + PAGE_SIZE))
+  }
+  const profiles = (await Promise.all(chunks.map((chunk) => readAll(
+    database.collection('food_nutrition_profiles').where({
+      release_id: releaseId,
+      food_id: command.in(chunk)
+    })
+  )))).flat()
+  return profiles.flatMap(profileToNutrientRecords)
 }
 
 async function loadMealAssessmentData(ingredients = []) {
@@ -63,7 +83,9 @@ async function loadMealAssessmentData(ingredients = []) {
   const database = wx.cloud.database()
   const [standardsResult, nutrientsResult] = await Promise.allSettled([
     loadStandards(database),
-    loadFoodNutrients(database, foodIds)
+    runtimeDataReleaseService
+      .loadRuntimeRelease(database)
+      .then((release) => loadFoodNutritionProfiles(database, foodIds, release.release_id))
   ])
 
   return {
@@ -96,6 +118,7 @@ async function loadAssessment({ ingredients, dog, profileOverrides }) {
 
 function clearCache() {
   standardsCache = null
+  runtimeDataReleaseService.clearCache()
 }
 
 module.exports = {
@@ -103,6 +126,7 @@ module.exports = {
   loadNutritionData,
   loadAssessment,
   clearCache,
+  profileToNutrientRecords,
   readAll,
   readAllInParallel
 }

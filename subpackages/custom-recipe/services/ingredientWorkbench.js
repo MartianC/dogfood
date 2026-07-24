@@ -32,6 +32,12 @@ function addIngredient(ingredients = [], ingredient, amount) {
       : item)
     : ingredients.concat({
       ingredientId,
+      foodId: ingredient.foodId || ingredientId,
+      conceptId: ingredient.conceptId || '',
+      variantId: ingredient.variantId || '',
+      catalogVersion: ingredient.catalogVersion || '',
+      policyVersion: ingredient.policyVersion || '',
+      sourceReleaseId: ingredient.sourceReleaseId || '',
       name: ingredient.name,
       category: ingredient.category || 'other',
       categoryLabel: ingredient.categoryLabel || '其他',

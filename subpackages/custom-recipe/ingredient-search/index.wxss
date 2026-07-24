@@ -5,7 +5,10 @@ page {
 }
 
 .ingredient-search-page {
+  box-sizing: border-box;
+  display: flex;
   min-height: 100vh;
+  flex-direction: column;
   padding: 36rpx 32rpx 48rpx;
   background: var(--df-color-surface);
 }
@@ -38,6 +41,7 @@ page {
 }
 
 .ingredient-search-state {
+  flex: 1;
   margin-top: 48rpx;
 }
 
@@ -74,6 +78,11 @@ page {
 .ingredient-search-quick-option {
   display: inline-flex;
   flex: 0 0 auto;
+}
+
+.ingredient-search-catalog {
+  min-height: calc(100vh - 430rpx);
+  margin-top: 48rpx;
 }
 
 .ingredient-search-quick-empty,

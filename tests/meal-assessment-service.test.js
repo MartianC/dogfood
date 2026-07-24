@@ -3,6 +3,26 @@ const assert = require('node:assert/strict')
 const mealAssessmentService = require('../subpackages/custom-recipe/services/mealAssessmentService')
 const nutritionDataService = require('../subpackages/custom-recipe/services/nutritionDataService')
 
+function runtimeReleaseQuery(condition) {
+  return {
+    skip() { return this },
+    limit() { return this },
+    async get() {
+      return {
+        data: condition.status === 'active'
+          ? [{
+            status: 'active',
+            release_id: 'release-v1',
+            catalog_version: 'catalog-v1',
+            policy_version: 'policy-v1',
+            ranking_version: 'ranking-v1'
+          }]
+          : []
+      }
+    }
+  }
+}
+
 function buildStandards() {
   const gbRequirement = {
     pet_nutrient_code: 'protein',
@@ -308,7 +328,21 @@ test('偏瘦体况只生成校正提示而不修改能量目标', () => {
 test('标准查询失败时仍返回已成功读取的食材营养记录', async () => {
   const originalWx = global.wx
   const standardsError = new Error('标准查询失败')
-  const nutrientRecords = [{ food_id: 'food_a', nutrient_id: 1008, unit_name: 'KCAL', amount: 310 }]
+  const nutritionProfiles = [{
+    food_id: 'food_a',
+    fdc_id: 1,
+    nutrients: {
+      1008: { name: 'Energy', unit: 'KCAL', amount: 310, value_status: 'known' }
+    }
+  }]
+  const nutrientRecords = [{
+    food_id: 'food_a',
+    fdc_id: 1,
+    nutrient_id: 1008,
+    name: 'Energy',
+    unit_name: 'KCAL',
+    amount: 310
+  }]
   nutritionDataService.clearCache()
   global.wx = {
     cloud: {
@@ -316,6 +350,9 @@ test('标准查询失败时仍返回已成功读取的食材营养记录', async
         return {
           command: { in: (values) => values },
           collection(name) {
+            if (name === 'data_releases') {
+              return { where: (condition) => runtimeReleaseQuery(condition) }
+            }
             if (name === 'pet_nutrition_standards') {
               return {
                 skip() { return this },
@@ -328,7 +365,7 @@ test('标准查询失败时仍返回已成功读取的食材营养记录', async
                 return {
                   skip() { return this },
                   limit() { return this },
-                  async get() { return { data: nutrientRecords } }
+                  async get() { return { data: nutritionProfiles } }
                 }
               }
             }
@@ -363,6 +400,9 @@ test('食材营养查询失败时仍返回已成功读取的标准', async () =>
         return {
           command: { in: (values) => values },
           collection(name) {
+            if (name === 'data_releases') {
+              return { where: (condition) => runtimeReleaseQuery(condition) }
+            }
             if (name === 'pet_nutrition_standards') {
               return {
                 skip() { return this },
@@ -404,6 +444,7 @@ test('标准使用缓存且每次食材查询只发送去重后的 ID', async ()
   const standards = buildStandards()
   let standardsReads = 0
   const foodIdBatches = []
+  const collectionNames = []
   nutritionDataService.clearCache()
   global.wx = {
     cloud: {
@@ -416,6 +457,10 @@ test('标准使用缓存且每次食材查询只发送去重后的 ID', async ()
             }
           },
           collection(name) {
+            collectionNames.push(name)
+            if (name === 'data_releases') {
+              return { where: (condition) => runtimeReleaseQuery(condition) }
+            }
             if (name === 'pet_nutrition_standards') {
               return {
                 skip() { return this },
@@ -450,6 +495,8 @@ test('标准使用缓存且每次食材查询只发送去重后的 ID', async ()
 
     assert.equal(standardsReads, 1)
     assert.deepEqual(foodIdBatches, [['food_a'], ['food_b']])
+    assert.equal(collectionNames.includes('food_nutrition_profiles'), true)
+    assert.equal(collectionNames.includes('food_nutrients'), false)
   } finally {
     global.wx = originalWx
     nutritionDataService.clearCache()

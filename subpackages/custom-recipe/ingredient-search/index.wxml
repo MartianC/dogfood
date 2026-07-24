@@ -64,7 +64,29 @@
             </view>
           </view>
         </scroll-view>
-        <view wx:if="{{!quickIngredients.length}}" class="ingredient-search-quick-empty">暂无常用食材</view>
+        <view
+          wx:if="{{!catalogLoading && !quickIngredients.length}}"
+          class="ingredient-search-quick-empty"
+        >暂无常用食材</view>
+
+        <view class="ingredient-search-catalog">
+          <view class="ingredient-search-heading ingredient-search-heading--results">
+            食材列表{{catalogIngredients.length ? ' · ' + catalogIngredients.length + ' 种' : ''}}
+          </view>
+          <view wx:if="{{catalogLoading}}" class="ingredient-search-loading">正在读取食材列表</view>
+          <view wx:elif="{{catalogError}}" class="ingredient-search-no-result" bindtap="onRetryCatalog">
+            <view class="ingredient-search-no-result__heading">食材列表加载失败</view>
+            <view class="ingredient-search-no-result__description">请稍后重试，点此重新加载</view>
+          </view>
+          <recipe-ingredient-list
+            wx:elif="{{catalogIngredients.length}}"
+            items="{{catalogIngredients}}"
+            mode="search"
+            action-icon="/assets/icons/recipe-cart-filled.svg"
+            bind:select="onSelectIngredient"
+          />
+          <view wx:else class="ingredient-search-quick-empty">暂无可添加的食材</view>
+        </view>
       </block>
 
       <view wx:elif="{{searchLoading}}" class="ingredient-search-loading">正在搜索</view>

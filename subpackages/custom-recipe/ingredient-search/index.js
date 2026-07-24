@@ -53,6 +53,9 @@ Page({
     nutrientDefaultResults: [],
     nutrientDefaultLoaded: false,
     quickIngredients: [],
+    catalogIngredients: [],
+    catalogLoading: false,
+    catalogError: false,
     searchValue: '',
     searchResults: [],
     searchLoading: false,
@@ -88,12 +91,31 @@ Page({
       nutrientPreferredUnit: String(options.gapUnit || '').trim(),
       nutrientGapText: nutrientGapText(options, nutrientName),
       nutrientBasisText: nutrientBasisText(options),
-      quickIngredients: ingredientService.getRecentIngredients(ingredients).slice(0, 4)
+      quickIngredients: []
     }, () => {
-      if (!isNutrientMode) return
+      if (!isNutrientMode) {
+        this.loadCatalogIngredients()
+        return
+      }
       wx.setNavigationBarTitle({ title: `挑选富含${nutrientName}的食物` })
       this.loadNutrientResults()
     })
+  },
+
+  async loadCatalogIngredients() {
+    this.setData({ catalogLoading: true, catalogError: false })
+    try {
+      const catalogIngredients = await ingredientService.loadIngredientCatalog()
+      this.setData({
+        catalogIngredients,
+        catalogLoading: false,
+        quickIngredients: ingredientService
+          .getRecentIngredients(this.data.ingredients, catalogIngredients)
+          .slice(0, 4)
+      })
+    } catch (error) {
+      this.setData({ catalogIngredients: [], catalogLoading: false, catalogError: true })
+    }
   },
 
   async loadNutrientResults(keyword = '', searchValue = '', requestId) {
@@ -153,7 +175,11 @@ Page({
         searchLoading: false,
         searchError: false,
         hasSearchQuery: false,
-        quickIngredients: ingredientService.getRecentIngredients(this.data.ingredients).slice(0, 4)
+        quickIngredients: this.data.catalogIngredients.length
+          ? ingredientService
+            .getRecentIngredients(this.data.ingredients, this.data.catalogIngredients)
+            .slice(0, 4)
+          : []
       })
       return
     }
@@ -204,12 +230,21 @@ Page({
       searchLoading: false,
       searchError: false,
       hasSearchQuery: false,
-      quickIngredients: ingredientService.getRecentIngredients(this.data.ingredients).slice(0, 4)
+      quickIngredients: this.data.catalogIngredients.length
+        ? ingredientService
+          .getRecentIngredients(this.data.ingredients, this.data.catalogIngredients)
+          .slice(0, 4)
+        : []
     })
   },
 
   onRetrySearch() {
     this.onSearchChange({ detail: { value: this.data.searchValue } })
+  },
+
+  onRetryCatalog() {
+    ingredientService.clearCache()
+    this.loadCatalogIngredients()
   },
 
   onQuickIngredientTap(event) {
