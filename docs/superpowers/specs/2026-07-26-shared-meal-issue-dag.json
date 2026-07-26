@@ -1,0 +1,521 @@
+[
+  {
+    "id": "SHARED-MEAL-001",
+    "title": "交付非 blocked 投影与受控人饭查询",
+    "objective": "建立统一食材操作规则和可回滚的人饭运行时投影，并通过受控云函数让用户稳定查询已发布菜谱、查看全部来源原料及可共用状态。",
+    "acceptanceCriteria": [
+      "唯一食材操作规则公开 canSearchIngredient、canAddIngredient、canAutoIncludeIngredient，三者当前均令 allowed、conditional、unknown 通过并拒绝 blocked；现有目录搜索、人饭投影和营养排行构建均使用该规则，不再依赖 is_searchable/is_selectable 权限布尔值。",
+      "is_searchable/is_selectable 及其他权限布尔字段从 SQLite/CloudBase 生成物、ingredient_catalog 与 human_recipes 查询过滤、营养排行输入、自动化 fixture 和当前权威数据/架构文档中共同退出；历史版本资料可保留原字段，但必须显式标记为历史快照而非当前契约。",
+      "离线构建明确把 recipe_ingredient_mappings 作为 SQLite/种子输入，把 CloudBase human_recipes 作为唯一人饭运行时投影；每条投影内嵌来源有序原料、映射状态、目录/策略版本、policy_status 和经过整理的 blockedReason，未映射项只有来源文字。",
+      "searchHumanRecipes 与 getHumanRecipe 云函数只解析 status=active 的 data_releases.recipe_version 后查询 human_recipes；不回退 staging，搜索采用稳定排序与游标分页，列表或详情一次请求批量返回所需原料且不产生逐原料查询。",
+      "services/adapters/cloudbase.js、services/adapters/mock.js 和 humanRecipeService 完整实现搜索/详情契约；从 menu-search 页面反向追踪可见搜索与详情最终均调用 wx.cloud.callFunction，客户端没有直接读取 human_recipes 或 canine_ingredient_policies。",
+      "菜单页只提供已发布菜谱搜索和选择，不提供自定义菜名、原料录入或按狗狗需求推荐；按来源顺序展示全部原料，非 blocked 映射项可选择，blocked 显示原因且不可选择，未映射项不制造目录身份或安全判断。",
+      "staging 构建报告机器可读地给出数量、样本、allowed/conditional/unknown/blocked 分布、blocked 原因和回滚版本；仅可通过现有已授权的非秘密 staging 通道验证，工具默认拒绝切换 production active。",
+      "测试覆盖 active/staging 多版本、稳定游标、批量原料、四态资格、未映射项、blocked 原因与客户端禁止直读；npm test、npm run check:ui、npm run check:main-package 通过。"
+    ],
+    "nonGoals": [
+      "不采集狗狗档案，不创建或保存本餐草稿。",
+      "不根据狗狗需求规划、排序或推荐人饭菜单。",
+      "不访问秘密，不部署云函数，不切换生产活动版本。",
+      "不执行生产数据迁移，不删除旧投影、旧菜谱或历史数据。",
+      "不自动合并或发布任何改动。"
+    ],
+    "dependencies": [],
+    "writeScope": [
+      "app.json",
+      "utils/ingredientOperationRules.js",
+      "scripts/fooddata/build_ingredient_data_sqlite.py",
+      "scripts/fooddata/export_ingredient_cloudbase.py",
+      "scripts/fooddata/import_ingredient_cloudbase.py",
+      "scripts/fooddata/seed_nutrient_rankings.py",
+      "scripts/fooddata/seed_recipe_ingredient_mappings.py",
+      "data/human-recipes/**",
+      "data/ingredient-catalog/**",
+      "data/nutrient-rankings/**",
+      "cloudfunctions/searchHumanRecipes/**",
+      "cloudfunctions/getHumanRecipe/**",
+      "services/adapters/cloudbase.js",
+      "services/adapters/mock.js",
+      "subpackages/custom-recipe/services/ingredientService.js",
+      "subpackages/shared-meal/menu-search/**",
+      "subpackages/shared-meal/services/humanRecipeService.js",
+      "tests/ingredient-operation-rules.test.js",
+      "tests/human-recipe-projection.test.js",
+      "tests/human-recipe-cloud-functions.test.js",
+      "tests/shared-meal-menu-search.test.js",
+      "docs/data/**",
+      "docs/domain/**",
+      "docs/work-logs/*.md",
+      "tests/ingredient-data-sqlite-build.test.js",
+      "tests/ingredient-workbench.test.js",
+      "docs/ingredient-data-pipeline.md",
+      "docs/database-structure-overview.md",
+      "docs/小程序架构设计.md"
+    ],
+    "contracts": {
+      "changes": [
+        "ingredientOperationRules/v1：canSearchIngredient、canAddIngredient、canAutoIncludeIngredient；policy_status !== blocked 是唯一当前规则",
+        "humanRecipeRuntimeProjection/v2：CloudBase human_recipes 文档内嵌来源有序原料、映射状态、policy_status、sanitized blockedReason 与 recipe/mapping/catalog/policy 版本",
+        "searchHumanRecipes/v1：query、limit、cursor 输入；仅 active recipe_version；稳定 sortKey+_id 游标；批量摘要输出",
+        "getHumanRecipe/v1：recipeId 输入；仅 active recipe_version；一次返回完整来源有序原料与版本快照",
+        "humanRecipeProjectionStagingReport/v1：数量、样本、四态分布、阻断原因、版本校验和回滚候选",
+        "legacyIngredientPermissionFieldExit/v1：生成物、运行时查询、测试 fixture 与当前权威文档同步移除 is_searchable/is_selectable，历史资料显式标记 historical"
+      ],
+      "consumes": [
+        "离线 ingredient_data.sqlite 与 data/human-recipes/mappings/** 原料写法映射输入",
+        "ingredient_catalog、canine_ingredient_policies 与 nutrient_rankings 的离线投影构建输入",
+        "CloudBase data_releases 的 active recipe_version 指针",
+        "CloudBase human_recipes 运行时集合；客户端不直接读取该集合或策略审核集合",
+        "项目 UI token、ui-* 组件与独立分包约束"
+      ]
+    },
+    "resources": {
+      "exclusive": [
+        "ingredientOperationRules/v1 公共规则模块",
+        "human_recipes staging 投影版本与 manifest",
+        "cloudfunctions/searchHumanRecipes",
+        "cloudfunctions/getHumanRecipe",
+        "app.json:subpackages/shared-meal/menu-search 页面注册"
+      ],
+      "verificationExclusive": [
+        "CloudBase staging 人饭投影验收窗口（不得切换 production active）",
+        "微信开发者工具 shared-meal/menu-search 预览实例"
+      ]
+    },
+    "slice": {
+      "prdCriteria": [
+        "SC2（G1）：产品只接收用户已经决定的人饭菜单；首版没有自定义人饭菜名或原料录入，也不根据狗狗需求规划、排序或推荐用户当天吃什么。",
+        "SC4（G1、G4）：每道人饭菜谱按来源顺序展示全部原料；可映射且非 blocked 的原料可加入狗饭，blocked 原料显示当前策略原因且不可加入，未映射原料只保留来源文字且不制造目录身份或安全判断。",
+        "SC9（G4）：allowed、conditional、unknown 在目录搜索、人饭自动带入、额外添加和云端保存中均按非 blocked 规则得到一致结果；blocked 在客户端和云端均不可加入或保存，伪造请求无法绕过。"
+      ],
+      "independentValue": "用户可在独立菜单页通过受控后端查询已发布人饭菜谱，并准确看到每个来源原料能否共用；同时后续 Worker 获得经过 staging 验证的唯一投影与资格契约。",
+      "shapeRationale": "这是最早可验证的端到端 tracer bullet，隔离离线投影、active 版本解析和只读云查询风险。与档案草稿合并会让数据发布和跨页状态机共同设计，失去独立验证与回滚收益。",
+      "workerFit": "一个 Worker 围绕‘投影产物 → search/get 云函数 → adapters/service → menu-search 页面’单一查询拓扑完成；受影响的真实生成测试、查询测试和五份当前权威文档写面均已授权。",
+      "reviewPlan": "先用 rg 检查生成器、当前查询、fixture 和当前契约文档不再依赖 is_searchable/is_selectable，再以 active/staging 多版本 fixture 追踪页面到 wx.cloud.callFunction，检查四态、稳定游标、无逐原料查询及客户端无集合直读；最后运行全量检查并审阅 staging 报告。回滚删除新查询链和新 staging 快照即可，旧 active 版本保持不变。"
+    },
+    "permissions": {
+      "commit": true,
+      "push": true,
+      "openDraftPr": true,
+      "merge": false
+    },
+    "priority": 10,
+    "risk": "medium",
+    "state": "afk-ready"
+  },
+  {
+    "id": "SHARED-MEAL-002",
+    "title": "建立结构化档案门禁与可恢复无克重草稿",
+    "objective": "完整采集并安全保存结构化特殊营养需求，为单狗适用范围门禁提供可信输入，并让适用用户从既定人饭菜单建立可恢复、无自动克重的本餐草稿。",
+    "acceptanceCriteria": [
+      "dogProfile/v3 新增 specialNutritionNeeds 结构：hasDisease=true|false|null、reproductiveStatus=none|pregnant|lactating|null、therapeuticWeightManagement=none|loss|gain|null，并带 schemaVersion；null 表示未确认而不是 false。",
+      "dog-edit 与 dog-quick-create 均显式采集上述字段；dogService create/update/list/cache、mock adapter、dogProfile 云函数 DTO 白名单与 normalizeProfileDocument 全程保留并验证该结构，云端 create/update 继续按 _openid 隔离归属。",
+      "dogService 与 authService 只从 services/dogProfileContract.js 读取同一个 DOGS_CACHE_SCHEMA_VERSION=3；initAuth 接受 v3 缓存、显式拒绝旧版缓存，listDogs 回写 v3，档案完善往返后 specialNutritionNeeds 与草稿选择均不丢失，仓库不存在第二个可漂移的缓存版本常量。",
+      "历史档案缺字段归一为 null 并判定 incomplete；不得从 healthNotes、bodyCondition 或普通 dietGoal 推断疾病、生殖状态或治疗性体重管理，普通体况管理不会被误判为治疗需求。",
+      "门禁测试证明疾病、妊娠、哺乳、治疗性减重和治疗性增重均 blocked；8 周以下 blocked；任一计算必需或特殊状态字段未确认均 incomplete；只有完整、8 周以上且所有特殊状态为 none/false 的档案 eligible。",
+      "完整档案的单狗用户自动选中，多狗用户必须显式单选；不存在静默默认犬只。incomplete 时保存当前草稿并往返档案完善页，blocked 时不生成创建结果并显示适用范围和专业咨询提示。",
+      "用户可连续完成选狗、调用 Issue 1 搜索并选择至少一道既有人饭菜谱、查看来源原料、进入 compose；非 blocked 映射项按来源合并进入 ingredients，blocked 与未映射项不能通过路由参数或缓存篡改进入可编辑列表。",
+      "唯一 sharedMealIngredient/v1 由 contracts/shared-meal/shared-meal-ingredient-v1.schema.json 和同名 fixture 定义：ingredientId:string 是既有评估链兼容键，已发布食材必须 ingredientId===foodId；foodId:string 是 food_nutrition_profiles.food_id 营养查询键；conceptId/variantId 是目录身份；另含 name、category、policyStatus、perMealAmountGram:number|null、sourceRefs[]；dataVersions 必须且只能嵌套 runtimeReleaseId:string、recipeVersion:string|null、mappingVersion:string|null、catalogVersion:string、policyVersion:string、nutritionSourceReleaseId:string，不允许扁平 catalogVersion/policyVersion/sourceReleaseId。",
+      "草稿持久化 dog、humanMenus、sourceIngredientSelections、ingredients、latestAssessment、saveIntent 和版本；中途退出、登录建档往返、页面返回均恢复，只有明确重新开始才清除；旧/损坏草稿有显式版本失效结果。",
+      "新增与既有 dog profile、draft、route、UI、主包边界测试全部通过。",
+      "共享 contract 测试以同一 fixture 验证草稿序列化/恢复；任何 ingredientId/foodId 不相等、版本字段缺失/重命名、扁平版本字段或伪造 schemaVersion 都失败。initAuth → listDogs → 档案完善往返 → sharedMealDraft 恢复测试同时通过。"
+    ],
+    "nonGoals": [
+      "不从 healthNotes 自由文本推断任何医学或营养状态。",
+      "不提供疾病、妊娠、哺乳或治疗性体重管理方案。",
+      "不实现等比例缩放、双轴评估或云端记录保存。",
+      "不自动生成食材克重、比例或菜单外补充食材。",
+      "不迁移生产 dogs 数据；不访问秘密、不部署、不发布、不删除历史档案。"
+    ],
+    "dependencies": [
+      "SHARED-MEAL-001"
+    ],
+    "writeScope": [
+      "app.json",
+      "services/dogService.js",
+      "services/adapters/mock.js",
+      "services/sharedMealDogEligibility.js",
+      "services/sharedMealDraftService.js",
+      "cloudfunctions/dogProfile/**",
+      "subpackages/dog-profile/data/options.js",
+      "subpackages/dog-profile/dog-edit/**",
+      "subpackages/dog-profile/dog-quick-create/**",
+      "subpackages/shared-meal/dog-select/**",
+      "subpackages/shared-meal/compose/**",
+      "tests/dog-profile-service.test.js",
+      "tests/dog-profile-ui.test.js",
+      "tests/dog-profile-special-needs.test.js",
+      "tests/shared-meal-eligibility.test.js",
+      "tests/shared-meal-draft.test.js",
+      "tests/shared-meal-compose-entry.test.js",
+      "tests/storage-structure.test.js",
+      "docs/domain/**",
+      "docs/work-logs/*.md",
+      "services/authService.js",
+      "services/dogProfileContract.js",
+      "contracts/shared-meal/shared-meal-ingredient-v1.schema.json",
+      "tests/fixtures/shared-meal-ingredient-v1.json",
+      "tests/shared-meal-ingredient-contract.test.js",
+      "tests/auth-dog-cache-roundtrip.test.js"
+    ],
+    "contracts": {
+      "changes": [
+        "dogProfile/v3：版本化 specialNutritionNeeds 三字段结构，未知为 null，create/update/list/cache/mock/cloud DTO 对称",
+        "sharedMealDogEligibility/v1：eligible|incomplete|blocked，返回结构化 reasonCodes；禁止从 healthNotes/bodyCondition/dietGoal 推断医学状态",
+        "sharedMealIngredient/v1：schemaVersion=1；ingredientId===foodId（food_nutrition_profiles.food_id）；conceptId+variantId 为目录身份；perMealAmountGram、policyStatus、sourceRefs；唯一嵌套 dataVersions={runtimeReleaseId,recipeVersion|null,mappingVersion|null,catalogVersion,policyVersion,nutritionSourceReleaseId}",
+        "sharedMealIngredientContractAssets/v1：contracts/shared-meal/shared-meal-ingredient-v1.schema.json 与 tests/fixtures/shared-meal-ingredient-v1.json 是 Issue 2/3/4 唯一机器契约和正向 fixture",
+        "dogsCache/v3：DOGS_CACHE_SCHEMA_VERSION 由 services/dogProfileContract.js 唯一导出，dogService/authService 共同消费",
+        "sharedMealDraft/v1：dog、humanMenus、sourceIngredientSelections、ingredients、latestAssessment、saveIntent、dataVersions 与 schemaVersion",
+        "sharedMealDraftLifecycle/v1：restore、preserve-across-auth/profile、invalidate-explicitly、reset-explicitly",
+        "sharedMealCreateRoute/v1：dog-select → menu-search → compose 的 dogId/draftId 传递与草稿恢复优先级"
+      ],
+      "consumes": [
+        "Issue 1 的 humanRecipeQuery、humanRecipeRuntimeProjection 与 ingredientOperationRules/v1",
+        "现有 dogService、dogProfile 云函数、mockDogs 和 dogsCache",
+        "lifeStageEstimator、energyRequirementService 的现有档案必需字段",
+        "utils/storage 本地存储契约"
+      ]
+    },
+    "resources": {
+      "exclusive": [
+        "dogProfile/v3 公共 DTO 与 dogsCache schemaVersion",
+        "sharedMealDraft 本地存储键与 schemaVersion",
+        "app.json:shared-meal/dog-select、compose 页面注册",
+        "sharedMealIngredient/v1 schema 与共享正向 fixture",
+        "services/dogProfileContract.js: DOGS_CACHE_SCHEMA_VERSION=3"
+      ],
+      "verificationExclusive": [
+        "隔离的 dogProfile 云函数测试数据库/模拟器",
+        "微信开发者工具档案完善与草稿恢复预览实例"
+      ]
+    },
+    "slice": {
+      "prdCriteria": [
+        "SC1（G1）：符合适用条件的用户可以完成“选择单只狗狗 → 搜索并选择至少一道既有人饭菜谱 → 查看来源原料 → 进入狗饭创建”的连续路径；单狗自动选中，多狗必须单选。",
+        "SC3（G1）：档案缺少计算必需字段时保留草稿并引导完善；小于 8 周或存在疾病、妊娠、哺乳、治疗性减重或增重需求时，不生成狗饭创建结果，并展示适用范围及专业咨询提示。",
+        "SC5（G2）：进入狗饭创建页时，系统自动带入非 blocked 食材并显示目标狗狗的本餐能量目标，但所有单项克重保持待用户填写；系统不使用人饭分量、等质量、等能量、类别启发式或营养优化算法自动生成食材比例。",
+        "SC10（G5）：中途退出、登录建档往返或页面返回后，目标狗狗、人饭菜单、来源食材选择、用户已填克重和最近一次可用评估均可恢复；用户主动重新开始时才清除当前草稿。"
+      ],
+      "independentValue": "用户能建立可信的犬只适用状态，并完成从选狗选菜到无伪精确克重、可恢复草稿的连续路径；不需要云端记录即可独立验收。",
+      "shapeRationale": "结构化档案是草稿门禁的必要输入，二者共同形成“允许谁进入创建”的纵向结果并需一起回滚。与查询分离保留数据发布隔离，与评估分离可先证明档案和恢复状态机。",
+      "workerFit": "一个 Worker 围绕 dogProfile/v3、唯一 dogsCache/v3 和 sharedMealDraft/v1 三个直接相连的状态聚合工作；create/update/list/cache/auth/mock/UI 与机器 schema/fixture 写面完整，不需处理营养算法搬迁或记录事务。",
+      "reviewPlan": "逐条测试五类 blocked、普通管理、不完整与历史档案，静态确认只有一个缓存版本常量；运行 initAuth→listDogs→档案完善→草稿恢复链。再以 canonical ingredient fixture 检查序列化和篡改拒绝。回滚新字段时保留未知数据，撤销门禁/草稿页面即可，不删除 dogs 或草稿历史。"
+    },
+    "permissions": {
+      "commit": true,
+      "push": true,
+      "openDraftPr": true,
+      "merge": false
+    },
+    "priority": 20,
+    "risk": "medium",
+    "state": "afk-ready"
+  },
+  {
+    "id": "SHARED-MEAL-003",
+    "title": "交付草稿调整、双轴评估与富含营养素往返",
+    "objective": "让用户在可恢复草稿中填写和确定性缩放克重，复用唯一双轴评估核心实时查看缺口，并从同一富含营养素入口安全增添食材后回到原草稿。",
+    "acceptanceCriteria": [
+      "将 energyRequirementService、mealEnergyService、nutritionAssessmentService、mealAssessmentService、nutritionDataService 和 runtimeDataReleaseService 的稳定实现提升到 services/meal-assessment/**；custom-recipe 原路径只保留兼容 re-export，shared-meal 与 custom-recipe 使用同一实现，仓库不存在复制公式或第二套评估核心。",
+      "scripts/check-main-package-unused-js.js 从 app.json.pages、custom-tab-bar 以及所有 app.json.subpackages[].pages/usingComponents 入口遍历真实 require 图；仅由 custom-recipe 或 shared-meal 分包引用的根 services 计为可达，完全无入口的根 JS 仍报 unused，禁止在主包页面添加伪造 require 绕过检查。",
+      "ingredient-search 支持显式 draftKind=customRecipe|sharedMeal 和 draftId，并只通过 draftAdapters/v1 get/save 操作目标草稿；既有 nutrientIngredientService、ingredientService 和排行查询保持唯一实现。",
+      "sharedMealIngredient/v1 与 customRecipe 食材通过适配器明确映射 ingredientId、perMealAmountGram、sourceRefs 和 dataVersions；sharedMeal latestAssessment 是可 JSON 序列化、版本化的双轴快照，恢复后可判断是否需重算。",
+      "draftAdapters、sharedMealAssessmentSnapshot 和 sharedMealSaveIntent 逐字段读取 Issue 2 的 canonical sharedMealIngredient/v1 schema/fixture：保持 ingredientId===foodId、conceptId、variantId、policyStatus、perMealAmountGram、sourceRefs 及 dataVersions 六字段；snapshot 标记 ingredientContractVersion=1，requestFingerprint 对这些规范化字段和顺序进行确定性哈希，字段丢失、改名或增加扁平版本字段均失败。",
+      "用户填写全部可计算食材克重后可预览 buildScaleSuggestion 结果；取消不写草稿，确认保持原比例并重算到现有目标范围，同输入与版本结果相同。",
+      "食材加入、移除或 perMealAmountGram 变化后立即调用共享 mealAssessmentService 重算能量与营养密度；普通缺口和数据覆盖常驻展示。",
+      "营养偏低项进入同一 ingredient-search 富含营养素模式；分别从 customRecipe 与 sharedMeal 草稿进入时只更新对应 draftKind/draftId，返回 compose 后食材、克重、来源、版本和 latestAssessment 恢复并立即显示新结果。",
+      "保存前状态机生成稳定 saveIntent/idempotencyKey/requestFingerprint；普通缺口不弹窗，最高优先级偏高项或关键数据缺失每次 saveIntent 只确认一次且仍可继续，文案明确保存仅记录本餐、不代表完整均衡或适合长期重复。",
+      "营养不足、品类单一或部分普通数据缺失仍形成可保存意图，界面持续展示实际缺口、数据覆盖和专业责任边界，不出现完整均衡或长期保证。",
+      "sharedMeal 和既有 custom-recipe 的评估、营养搜索、草稿隔离、恢复、UI、主包体积回归测试全部通过。"
+    ],
+    "nonGoals": [
+      "不实现云端保存、记录列表或详情读取。",
+      "不复制现有公式、营养标准加载或营养排行查询。",
+      "不自动生成初始比例，不自动补充食材、补充剂或长期配方。",
+      "不输出跨餐、每日或长期完整性结论。",
+      "不访问秘密、不部署、不发布、不修改生产数据。"
+    ],
+    "dependencies": [
+      "SHARED-MEAL-002"
+    ],
+    "writeScope": [
+      "services/meal-assessment/**",
+      "services/draftAdapters/**",
+      "services/sharedMealDraftService.js",
+      "subpackages/custom-recipe/services/energyRequirementService.js",
+      "subpackages/custom-recipe/services/mealEnergyService.js",
+      "subpackages/custom-recipe/services/nutritionAssessmentService.js",
+      "subpackages/custom-recipe/services/mealAssessmentService.js",
+      "subpackages/custom-recipe/services/nutritionDataService.js",
+      "subpackages/custom-recipe/services/runtimeDataReleaseService.js",
+      "subpackages/custom-recipe/services/nutrientIngredientService.js",
+      "subpackages/custom-recipe/ingredient-search/**",
+      "subpackages/shared-meal/compose/**",
+      "components/nutrition-assessment/**",
+      "tests/energy-requirement-service.test.js",
+      "tests/meal-energy-service.test.js",
+      "tests/nutrition-assessment-service.test.js",
+      "tests/nutrition-assessment-missing-nutrient.test.js",
+      "tests/meal-assessment-service.test.js",
+      "tests/meal-assessment-ui.test.js",
+      "tests/nutrient-ingredient-service.test.js",
+      "tests/custom-recipe-service.test.js",
+      "tests/shared-draft-adapters.test.js",
+      "tests/shared-meal-assessment-flow.test.js",
+      "tests/miniapp-runtime.test.js",
+      "tests/main-package-boundary.test.js",
+      "docs/domain/**",
+      "docs/work-logs/*.md",
+      "scripts/check-main-package-unused-js.js",
+      "tests/fixtures/main-package-boundary/**",
+      "tests/shared-meal-ingredient-contract.test.js"
+    ],
+    "contracts": {
+      "changes": [
+        "mealAssessmentCore/v1：services/meal-assessment 唯一实现；custom-recipe 原路径兼容 re-export",
+        "draftAdapters/v1：draftKind、draftId、getDraft、saveIngredients、saveAssessment；不同草稿严格隔离",
+        "sharedMealIngredientAdapter/v1：逐字段消费 canonical schema/fixture，保持 ingredientId===foodId、目录 ID、克重、策略、来源与 dataVersions 六字段，不接受 grams 或扁平版本别名",
+        "mainPackageReachability/v2：从全部主包和分包入口遍历到根共享 JS；分包真实引用可达，孤儿根 JS 仍失败",
+        "sharedMealSaveIntentFingerprint/v1：对 canonical sharedMealIngredient/v1 全字段、稳定 sourceRefs 顺序和嵌套 dataVersions 逐字段确定性哈希",
+        "sharedMealAssessmentSnapshot/v1：energy、nutritionDensity、dataCoverage、warningLevel、inputFingerprint、algorithm/data versions",
+        "sharedMealSaveIntent/v1：idempotencyKey、requestFingerprint、warningConfirmation、draftVersion 与不可变候选快照"
+      ],
+      "consumes": [
+        "Issue 1 的 ingredientOperationRules/v1 和 active 数据版本",
+        "Issue 2 的 sharedMealDraft/v1、sharedMealIngredient/v1 与 sharedMealDogEligibility/v1",
+        "现有 customRecipeDraft ingredients[].perMealAmountGram 契约",
+        "现有 nutrientIngredientService 与 ingredient-search 富含营养素交互",
+        "lifeStageEstimator 与 dogProfile/v3",
+        "Issue 2 的 contracts/shared-meal/shared-meal-ingredient-v1.schema.json 与 tests/fixtures/shared-meal-ingredient-v1.json 唯一机器契约"
+      ]
+    },
+    "resources": {
+      "exclusive": [
+        "services/meal-assessment 公共核心命名空间",
+        "draftAdapters/v1 公共适配接口",
+        "subpackages/custom-recipe/ingredient-search 跨草稿路由契约",
+        "sharedMealDraft latestAssessment/saveIntent 字段",
+        "scripts/check-main-package-unused-js.js 分包可达性语义",
+        "tests/fixtures/main-package-boundary/** 检查器正反 fixture"
+      ],
+      "verificationExclusive": [
+        "微信开发者工具 customRecipe/sharedMeal 双草稿往返预览实例",
+        "主包体积与分包依赖检查窗口"
+      ]
+    },
+    "slice": {
+      "prdCriteria": [
+        "SC6（G2）：用户填写全部可计算食材的初始克重后，可以预览并确认“按目标调整整餐份量”；确认后各食材按原有比例缩放，重算能量处于现有本餐目标判定范围内，取消预览不会修改草稿。",
+        "SC7（G3）：任一食材加入、移除或克重变化后，能量和营养密度双轴结果都会基于当前草稿重新计算；营养偏低项继续提供“挑选富含对应营养素的食材”入口，返回后保留当前草稿并展示新结果。",
+        "SC8（G3、G5）：普通营养缺口持续展示但不弹窗；出现最高优先级偏高项或关键数据缺失时，保存前只确认一次且用户仍可继续；确认文案明确“保存是记录本餐，不代表本餐完整均衡或适合长期重复喂养”。",
+        "SC10（G5）：中途退出、登录建档往返或页面返回后，目标狗狗、人饭菜单、来源食材选择、用户已填克重和最近一次可用评估均可恢复；用户主动重新开始时才清除当前草稿。",
+        "SC15（G1、G3、G5）：用户可以在营养不足、品类单一或部分普通营养数据缺失时保存本餐，但界面持续展示实际缺口、数据覆盖和专业责任边界，不出现“营养完整”“完全均衡”或保证长期适用的表述。"
+      ],
+      "independentValue": "用户无需写入云端即可完成克重调整、确定性缩放、实时双轴评估、富含营养素补充和责任边界确认，得到稳定的可保存本餐意图。",
+      "shapeRationale": "调整、评估、营养搜索往返和保存前提示共同围绕一个草稿状态机，需一起验证；与记录事务分开后，算法/分包复用风险可独立审查和回滚，不再与鉴权、索引和并发幂等混杂。",
+      "workerFit": "一个 Worker 只处理客户端草稿、共享评估核心迁移、canonical ingredient adapter 和真实包依赖检查；方案固定为‘核心上移+旧路径 re-export+ingredient-search draft adapter’，无需设计数据库事务。",
+      "reviewPlan": "比较搬迁前后固定评估输出，静态确认只有一套公式；用 canonical ingredient fixture 从两种 draftKind 往返并核对 snapshot/fingerprint 全字段。运行主包检查正反 fixture，确认分包引用的根服务可达、孤儿仍失败且无主包伪造 require，再在开发者工具验证双流程。回滚共享核心、adapter 和检查器更新后恢复旧 custom-recipe 路径。"
+    },
+    "permissions": {
+      "commit": true,
+      "push": true,
+      "openDraftPr": true,
+      "merge": false
+    },
+    "priority": 30,
+    "risk": "medium",
+    "state": "afk-ready"
+  },
+  {
+    "id": "SHARED-MEAL-004",
+    "title": "交付鉴权幂等记录与不可变快照回看",
+    "objective": "通过单一多 action 记录云函数安全、幂等地保存本餐快照，并让用户按狗狗和用餐时间查看只属于自己的记录列表与不可变详情。",
+    "acceptanceCriteria": [
+      "cloudfunctions/sharedMealRecord 只暴露 action=save|list|get；services/adapters/cloudbase.js、mock.js 和 sharedMealRecordService 完整实现三种调用，compose 保存、records 列表和 record-detail 均通过 adapter 调用云函数而不直读业务集合。",
+      "save 从 wxContext.OPENID 取得身份并验证 dogs._id+_openid 归属、payload schema、active recipe/catalog/policy/standard 版本和每个食材当前 policy_status；复用 ingredientOperationRules/v1 语义，blocked、伪造 dogId、catalogId 或版本均拒绝。",
+      "save payload、record schema、requestFingerprint 和服务端校验都通过 $ref/等价机器引用逐字段消费 canonical sharedMealIngredient/v1：强制 ingredientId===foodId，以 foodId 查询 food_nutrition_profiles，以 conceptId+variantId 匹配目录，并校验 policyStatus、sourceRefs 与 dataVersions.runtimeReleaseId/recipeVersion/mappingVersion/catalogVersion/policyVersion/nutritionSourceReleaseId；不得另定义别名或扁平版本字段。",
+      "sharedMealRecord/schema/record.schema.json 可机器校验 dog、人饭及来源原料、最终食材克重、assessment、备注/照片引用、recipe/mapping/catalog/policy/standard/algorithm 版本快照；保存后业务快照字段不可更新。",
+      "sharedMealRecord/schema/indexes.json 声明并由检查脚本验证唯一索引 (_openid ASC,idempotencyKey ASC) 和列表索引 (_openid ASC,targetDogId ASC,mealTime DESC,_id DESC)；缺失或顺序错误检查失败。",
+      "并发原子策略为“唯一索引抢占 + requestFingerprint”：同一用户同一 idempotencyKey 的并发写只有一个成功创建，重复请求读取并返回同一记录；同 key 不同 fingerprint 明确冲突，不产生第二条记录。",
+      "requestFingerprint 使用与 Issue 3 相同的 canonicalization fixture；服务端对字段缺失、重命名、ingredientId/foodId 分裂、版本伪造、sourceRefs 与 recipe/mapping 不一致全部拒绝，同一 canonical payload 在草稿、saveIntent 和云函数得到相同 fingerprint。",
+      "list 强制 _openid 并可选 targetDogId，按 mealTime DESC,_id DESC 使用稳定游标；get 按 recordId 读取后再次校验 _openid，其他用户的 dogId、recordId 和 idempotencyKey 均不可读写。",
+      "保存失败保留 draft/saveIntent 可重试；保存成功只生成一条记录、清除对应 draft/saveIntent 并进入详情。最高优先级/关键缺失确认沿用 Issue 3 的一次确认状态，普通缺口不阻断。",
+      "详情只渲染保存快照中的狗狗、人饭、来源原料、狗饭克重、单餐评估、备注/照片和全部版本；修改 active 数据 fixture 后历史详情不重算、不重写。",
+      "记录列表与详情仅表达单餐；可按 dogId+mealTime 检索并保留未来聚合字段，但不展示每日、连续多日或长期完整性结论。营养不足、品类单一或普通数据缺失记录仍可保存并持续展示缺口、覆盖和专业边界。",
+      "隔离数据库测试覆盖同 key 并发、重复重试、同 key 异 payload、越权 dogId/recordId、blocked/版本伪造、稳定分页和快照不可变；schema/index 检查、UI、主包与相关回归测试通过。",
+      "只提交云函数、机器契约、客户端与测试；不部署、不创建/修改生产集合或索引、不迁移生产数据、不访问秘密。"
+    ],
+    "nonGoals": [
+      "不直接修改历史记录，不区分计划吃和已经吃。",
+      "不做每日/多日聚合、趋势、提醒或长期完整性结论。",
+      "不重新实现评估算法或营养排行。",
+      "不部署云函数，不创建、修改或迁移生产集合/索引。",
+      "不访问秘密、不删除旧记录、不发布、不自动合并。"
+    ],
+    "dependencies": [
+      "SHARED-MEAL-003"
+    ],
+    "writeScope": [
+      "app.json",
+      "cloudfunctions/sharedMealRecord/**",
+      "services/adapters/cloudbase.js",
+      "services/adapters/mock.js",
+      "services/sharedMealRecordService.js",
+      "services/sharedMealDraftService.js",
+      "subpackages/shared-meal/compose/**",
+      "subpackages/shared-meal/record-detail/**",
+      "pages/records/**",
+      "scripts/check-shared-meal-record-contract.js",
+      "tests/shared-meal-record-contract.test.js",
+      "tests/shared-meal-record-cloud-function.test.js",
+      "tests/shared-meal-record-service.test.js",
+      "tests/shared-meal-record-ui.test.js",
+      "tests/shared-meal-assessment-flow.test.js",
+      "tests/storage-structure.test.js",
+      "tests/main-package-boundary.test.js",
+      "docs/data/**",
+      "docs/domain/**",
+      "docs/work-logs/*.md"
+    ],
+    "contracts": {
+      "changes": [
+        "sharedMealRecordGateway/v1：action=save|list|get 的鉴权输入输出与稳定错误码",
+        "sharedMealRecord/v1：dogMealItems 机器引用 canonical sharedMealIngredient/v1；_openid、targetDogId、mealTime、idempotencyKey、requestFingerprint 和不可变 dog/humanMenu/sourceIngredients/assessment/versions 快照",
+        "sharedMealRecordIndexes/v1：unique(_openid,idempotencyKey)；list(_openid,targetDogId,mealTime DESC,_id DESC)",
+        "sharedMealRecordIdempotency/v1：唯一索引原子抢占、重复 fingerprint 返回既有记录、不同 fingerprint 冲突",
+        "sharedMealRecordQuery/v1：按 owner+dog+mealTime+_id 稳定分页与 owner-scoped recordId 详情",
+        "sharedMealRecordSchemaCheck/v1：schema/index JSON 的可重复机器校验命令",
+        "sharedMealIngredientServerValidation/v1：逐字段校验 canonical ingredient schema、ingredientId===foodId、目录身份、来源引用和嵌套 dataVersions",
+        "sharedMealFingerprintParity/v1：客户端 saveIntent 与云端对同一 canonical fixture 产生相同 requestFingerprint"
+      ],
+      "consumes": [
+        "Issue 1 的 ingredientOperationRules/v1 和 active recipe/catalog/policy 版本契约",
+        "Issue 2 的 dogProfile/v3、sharedMealDraft/v1 与狗狗归属数据",
+        "Issue 3 的 sharedMealAssessmentSnapshot/v1 与 sharedMealSaveIntent/v1",
+        "CloudBase dogs、data_releases、ingredient_catalog 受控服务端读取",
+        "authService 当前登录态与 wxContext.OPENID",
+        "Issue 2 的 contracts/shared-meal/shared-meal-ingredient-v1.schema.json 与 tests/fixtures/shared-meal-ingredient-v1.json",
+        "Issue 3 的 sharedMealSaveIntentFingerprint/v1 canonicalization 规则"
+      ]
+    },
+    "resources": {
+      "exclusive": [
+        "cloudfunctions/sharedMealRecord",
+        "shared_meal_records 集合机器 schema",
+        "shared_meal_records 唯一与列表索引定义",
+        "sharedMealRecordService 公共客户端接口",
+        "app.json:pages/records 与 shared-meal/record-detail 页面注册",
+        "sharedMealRecord schema 对 canonical sharedMealIngredient/v1 的机器引用"
+      ],
+      "verificationExclusive": [
+        "隔离的 sharedMealRecord 并发/越权测试数据库或等价原子模拟器",
+        "微信开发者工具保存—列表—详情预览实例"
+      ]
+    },
+    "slice": {
+      "prdCriteria": [
+        "SC8（G3、G5）：普通营养缺口持续展示但不弹窗；出现最高优先级偏高项或关键数据缺失时，保存前只确认一次且用户仍可继续；确认文案明确“保存是记录本餐，不代表本餐完整均衡或适合长期重复喂养”。",
+        "SC9（G4）：allowed、conditional、unknown 在目录搜索、人饭自动带入、额外添加和云端保存中均按非 blocked 规则得到一致结果；blocked 在客户端和云端均不可加入或保存，伪造请求无法绕过。",
+        "SC11（G5）：保存成功只生成一条记录，清除对应草稿并进入详情；保存失败可重试且不会因重复请求创建两条记录。",
+        "SC12（G5）：记录详情按保存时快照展示狗狗、人饭菜单及原料、最终狗饭食材与克重、本餐评估、备注或照片，以及菜谱映射、目录、策略、营养标准和算法版本；后续版本升级不会重写历史结论。",
+        "SC13（G5）：首版所有页面只表达单餐结果，不展示每日、连续多日或长期完整性结论；记录结构能够按狗狗和用餐时间检索，并保留未来跨餐聚合所需的稳定快照。",
+        "SC15（G1、G3、G5）：用户可以在营养不足、品类单一或部分普通营养数据缺失时保存本餐，但界面持续展示实际缺口、数据覆盖和专业责任边界，不出现“营养完整”“完全均衡”或保证长期适用的表述。"
+      ],
+      "independentValue": "用户能安全重试并只生成一条本餐记录，随后从稳定列表查看不可变快照详情；越权与 blocked 伪造在服务端被拒绝。",
+      "shapeRationale": "保存、列表和详情共享 owner-scoped sharedMealRecord 聚合、schema 与索引，合并为一个纵向记录节点可避免 API/schema 分层切片；与 Issue 3 分开隔离数据库鉴权、并发和不可变性风险。",
+      "workerFit": "一个 Worker 围绕一个多 action 云函数、一个客户端 service、canonical ingredient schema 引用、一个记录 schema 和两个读页面工作；共享 fixture、机器索引契约与隔离数据库测试使事务模型可在单一上下文审查。",
+      "reviewPlan": "先运行 canonical ingredient、record schema/index 与 fingerprint parity 检查，再以隔离数据库验证字段篡改、并发、重试、越权和分页，最后走通失败恢复与快照详情。回滚该节点删除未部署记录代码/页面即可；Issue 3 本地可保存草稿继续存在，生产数据未变更。"
+    },
+    "permissions": {
+      "commit": true,
+      "push": true,
+      "openDraftPr": true,
+      "merge": false
+    },
+    "priority": 40,
+    "risk": "medium",
+    "state": "afk-ready"
+  },
+  {
+    "id": "SHARED-MEAL-005",
+    "title": "迁移首页、记录、我的主导航并保留旧兼容读取",
+    "objective": "在草稿恢复和记录闭环验收后，将主信息架构切换为首页、记录、我的，收口旧公共食谱与批量清单主入口，同时保留一个迁移周期的旧页面和历史读取。",
+    "acceptanceCriteria": [
+      "app.json 与 custom-tab-bar 仅包含首页、记录、我的三个一致 tab，value、pagePath、图标、选中态、固定底部安全区和可访问点击目标符合现有 UI 系统。",
+      "首页主行动进入 Issue 2 的选狗/人饭菜单流程，记录 tab 进入 Issue 4 的记录列表；所有主 tab、首页卡片和常用入口均不再进入旧公共狗饭食谱或批量清单主线。",
+      "navigationMigrationGate 以机器可读证据要求 Issue 2 草稿恢复、Issue 3 评估往返及 Issue 4 保存/列表/详情核心测试通过；门禁未满足时导航配置检查失败。",
+      "pages/recipes、pages/plan、旧页面代码和历史数据均未删除；既有兼容深链或历史详情在迁移周期内仍可读取，不执行最终迁移、归档或数据清理。",
+      "测试覆盖 app.json/custom-tab-bar 一致性、新主路径可达、旧主入口不可达、旧兼容深链可读、返回栈、登录态、UI 安全区和主包边界。",
+      "只提交导航与门禁代码；不发布小程序、不启用生产配置、不迁移或删除数据。"
+    ],
+    "nonGoals": [
+      "不删除、迁移或归档旧食谱、批量清单代码与历史数据。",
+      "不重做菜单、档案、草稿、评估或记录业务。",
+      "不新增统计、分享、排行榜、连续奖励或跨餐聚合。",
+      "不发布、不激活生产配置、不访问秘密。",
+      "不自动合并任何分支。"
+    ],
+    "dependencies": [
+      "SHARED-MEAL-004"
+    ],
+    "writeScope": [
+      "app.json",
+      "custom-tab-bar/**",
+      "assets/tabbar/**",
+      "pages/home/**",
+      "pages/recipes/**",
+      "pages/plan/**",
+      "services/navigationMigrationService.js",
+      "scripts/check-shared-meal-navigation-gate.js",
+      "tests/shared-meal-navigation.test.js",
+      "tests/home-page.test.js",
+      "tests/storage-structure.test.js",
+      "tests/main-package-boundary.test.js",
+      "docs/work-logs/*.md"
+    ],
+    "contracts": {
+      "changes": [
+        "mainTabNavigation/v2：首页|记录|我的及其稳定 value/pagePath 映射",
+        "sharedMealPrimaryEntry/v1：首页到 dog-select/menu-search/compose 的主行动",
+        "legacyMealFlowGate/v1：主入口隐藏、兼容深链保留、旧数据只读可达",
+        "navigationMigrationGate/v1：草稿恢复、评估往返、保存/列表/详情证据全部通过后才允许导航配置"
+      ],
+      "consumes": [
+        "Issue 2 的 sharedMealCreateRoute/v1 与草稿恢复测试证据",
+        "Issue 3 的评估/富含营养素往返测试证据",
+        "Issue 4 的 records 列表、record-detail 路由和记录闭环测试证据",
+        "现有 custom-tab-bar、UI token 与底部安全区契约",
+        "旧 pages/recipes、pages/plan 兼容路由"
+      ]
+    },
+    "resources": {
+      "exclusive": [
+        "app.json:tabBar/pages 全局路由",
+        "custom-tab-bar 公共导航契约",
+        "assets/tabbar 图标命名空间",
+        "navigationMigrationGate 发布前检查"
+      ],
+      "verificationExclusive": [
+        "微信开发者工具完整三 tab 与旧兼容深链预览实例"
+      ]
+    },
+    "slice": {
+      "prdCriteria": [
+        "SC14（G6）：底部导航只有首页、记录、我的；用户从主导航不会进入旧公共狗饭食谱或批量清单主线，旧页面和历史数据在迁移周期内仍可按既定兼容方式读取。"
+      ],
+      "independentValue": "用户从全局导航明确进入每日创建与记录回看主线，不再被旧主线分流，同时历史数据和兼容入口仍可恢复。",
+      "shapeRationale": "全局导航是高冲突、低业务复杂度且受核心路径门禁约束的独立回滚面；与记录节点合并会使数据库事务回滚牵动全局入口，并可能过早隐藏旧路径。",
+      "workerFit": "一个 Worker 只处理 tab、首页入口、旧入口门禁和静态/预览验证，不需重新理解营养算法或云端记录事务。",
+      "reviewPlan": "运行导航门禁与 app.json/custom-tab-bar 一致性检查，再手动走通三 tab、新核心路径和旧兼容深链。回滚只恢复旧导航/首页入口；旧页面与数据从未删除，可立即恢复。"
+    },
+    "permissions": {
+      "commit": true,
+      "push": true,
+      "openDraftPr": true,
+      "merge": false
+    },
+    "priority": 50,
+    "risk": "low",
+    "state": "afk-ready"
+  }
+]

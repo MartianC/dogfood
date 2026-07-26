@@ -9,10 +9,16 @@ page,
   --df-color-line: #d8e1da;
   --df-color-line-strong: #b7c7bc;
   --df-color-primary: #25684a;
+  --df-color-primary-pressed: #1d523a;
   --df-color-on-primary: #ffffff;
   --df-color-primary-soft: #e3f0e8;
+  --df-color-primary-soft-pressed: #cfe4d6;
+  --df-color-surface-pressed: #eef3ef;
   --df-color-warning: #a84f34;
+  --df-color-warning-pressed: #873e29;
   --df-color-warning-soft: #f6e8e1;
+  --df-color-status-low: #a77514;
+  --df-color-status-low-soft: #fff7e0;
   --df-color-on-primary-muted: rgba(255, 255, 255, 0.78);
 
   --df-radius-sm: 12rpx;

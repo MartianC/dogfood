@@ -1,77 +1,173 @@
 const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
 const fileService = require('../services/fileService')
-const { ageStageOptions, dietGoalOptions, allergenOptions } = require('../../../data/options')
+const {
+  dietGoalOptions,
+  breedOptions,
+  activityDurationBands,
+  bodyConditionOptions
+} = require('../data/options')
+const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
+const {
+  deriveActivityLevel,
+  estimateExpectedAdultWeight
+} = require('../../../services/dogProfileDerivations')
 const assets = require('../../../utils/assets')
 
-function toText(list) {
-  return (list || []).join('、')
+function localDateText(date = new Date()) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
-function splitText(text) {
-  return String(text || '').split(/[、,，\s]+/).map((item) => item.trim()).filter(Boolean)
+function activityLabel(level) {
+  const band = activityDurationBands.find((item) => item.value === level)
+  return band ? band.label : '待选择'
 }
+
+function optionIndex(options, value, fallback = 0) {
+  const index = options.findIndex((item) => item.value === value)
+  return index >= 0 ? index : fallback
+}
+
+function profileErrors(message) {
+  return {
+    birthDateError: /出生日期/.test(message) ? message : '',
+    breedError: /品种/.test(message) ? message : '',
+    dailyActivityHoursError: /活动时长/.test(message) ? message : ''
+  }
+}
+
+function activityHoursValue(value, fallback = null) {
+  if (value === '' || value === null || value === undefined) return fallback
+  const hours = Number(value)
+  return Number.isFinite(hours) ? hours : fallback
+}
+
+function formFromDog(dog, { defaultActivityHours = null } = {}) {
+  return {
+    name: dog.name || '',
+    birthDate: dog.birthDate || '',
+    breed: dog.breed || '',
+    weightKg: dog.weightKg || '',
+    dailyMeals: dog.dailyMeals || 2,
+    dailyActivityHours: activityHoursValue(dog.dailyActivityHours, defaultActivityHours),
+    bodyCondition: dog.bodyCondition || 'ideal',
+    neutered: Boolean(dog.neutered),
+    avatarUrl: dog.avatarUrl || '',
+    dietGoal: dog.dietGoal || 'daily',
+    allergens: Array.isArray(dog.allergens) ? dog.allergens : [],
+    avoidIngredients: Array.isArray(dog.avoidIngredients) ? dog.avoidIngredients : []
+  }
+}
+
+function profileState(form) {
+  const stage = estimateLifeStage({ birthDate: form.birthDate })
+  const estimate = estimateExpectedAdultWeight(form.breed)
+  const activityLevel = deriveActivityLevel(form.dailyActivityHours)
+  return {
+    lifeStageLabel: stage.label,
+    isPuppy: stage.available && stage.energyStage === 'puppy',
+    expectedAdultWeightKg: estimate.expectedAdultWeightKg,
+    adultWeightEstimateReason: estimate.adultWeightEstimateReason,
+    activityLevel,
+    activityLevelLabel: activityLabel(activityLevel),
+    activityThumbLeft: form.dailyActivityHours === null ? 0 : Number(form.dailyActivityHours) / 6 * 100
+  }
+}
+
+const initialForm = formFromDog({}, { defaultActivityHours: 1.5 })
 
 Page({
   data: {
     id: '',
-    form: {
-      name: '',
-      ageStage: 'adult',
-      weightKg: '',
-      dailyMeals: 2,
-      avatarUrl: '',
-      dietGoal: 'daily',
-      allergens: [],
-      avoidIngredients: []
-    },
-    allergenText: '',
-    avoidText: '',
-    ageStageOptions,
+    form: initialForm,
+    ...profileState(initialForm),
+    breedOptions,
     dietGoalOptions,
-    allergenOptions,
-    ageIndex: 1,
+    bodyConditionOptions,
+    breedIndex: 0,
     goalIndex: 0,
+    birthDateError: '',
+    breedError: '',
+    dailyActivityHoursError: '',
+    today: localDateText(),
+    saving: false,
     defaultDogAvatar: assets.defaultDogAvatar
   },
 
   async onLoad(options) {
     if (authService.getAuthState() === 'guest') await authService.login()
-    if (options.id) {
-      const dogs = await dogService.listDogs()
-      const dog = dogs.find((item) => item.id === options.id)
-      if (dog) {
-        this.setData({
-          id: options.id,
-          form: dog,
-          allergenText: toText(dog.allergens),
-          avoidText: toText(dog.avoidIngredients),
-          ageIndex: ageStageOptions.findIndex((item) => item.value === dog.ageStage),
-          goalIndex: dietGoalOptions.findIndex((item) => item.value === dog.dietGoal)
-        })
-      }
-    }
+    if (!options.id) return
+
+    const dogs = await dogService.listDogs()
+    const dog = dogs.find((item) => item.id === options.id)
+    if (!dog) return
+
+    const form = formFromDog(dog)
+    this.setData({
+      id: options.id,
+      form,
+      ...profileState(form),
+      breedIndex: optionIndex(breedOptions, form.breed),
+      goalIndex: optionIndex(dietGoalOptions, form.dietGoal)
+    })
   },
 
-  setField(e) {
-    const key = e.currentTarget.dataset.key
-    this.setData({ [`form.${key}`]: e.detail.value })
+  setField(event) {
+    const key = event.currentTarget.dataset.key
+    this.setData({ [`form.${key}`]: event.detail.value })
   },
 
-  onAge(e) {
-    const option = this.data.ageStageOptions[Number(e.detail.value)]
-    this.setData({ ageIndex: Number(e.detail.value), 'form.ageStage': option.value })
+  onBirthDate(event) {
+    const birthDate = event.detail.value
+    const stage = estimateLifeStage({ birthDate })
+    this.setData({
+      'form.birthDate': birthDate,
+      lifeStageLabel: stage.label,
+      isPuppy: stage.available && stage.energyStage === 'puppy',
+      birthDateError: stage.reason === 'future_birth_date' ? '出生日期不能晚于今天' : ''
+    })
   },
 
-  onGoal(e) {
-    const option = this.data.dietGoalOptions[Number(e.detail.value)]
-    this.setData({ goalIndex: Number(e.detail.value), 'form.dietGoal': option.value })
+  onBreed(event) {
+    const breedIndex = Number(event.detail.value)
+    const option = this.data.breedOptions[breedIndex]
+    const estimate = estimateExpectedAdultWeight(option.value)
+    this.setData({
+      breedIndex,
+      'form.breed': option.value,
+      expectedAdultWeightKg: estimate.expectedAdultWeightKg,
+      adultWeightEstimateReason: estimate.adultWeightEstimateReason,
+      breedError: ''
+    })
   },
 
-  onGoalTap(e) {
-    const index = Number(e.currentTarget.dataset.index)
-    const option = this.data.dietGoalOptions[index]
-    this.setData({ goalIndex: index, 'form.dietGoal': option.value })
+  onActivityHours(event) {
+    const dailyActivityHours = Number(event.detail.value)
+    const activityLevel = deriveActivityLevel(dailyActivityHours)
+    this.setData({
+      'form.dailyActivityHours': dailyActivityHours,
+      activityLevel,
+      activityLevelLabel: activityLabel(activityLevel),
+      activityThumbLeft: dailyActivityHours / 6 * 100,
+      dailyActivityHoursError: ''
+    })
+  },
+
+  onBodyCondition(event) {
+    this.setData({ 'form.bodyCondition': event.currentTarget.dataset.value })
+  },
+
+  onNeutered(event) {
+    this.setData({ 'form.neutered': event.currentTarget.dataset.value === 'true' })
+  },
+
+  onGoalTap(event) {
+    const goalIndex = Number(event.currentTarget.dataset.index)
+    const option = this.data.dietGoalOptions[goalIndex]
+    this.setData({ goalIndex, 'form.dietGoal': option.value })
   },
 
   async onChooseAvatar() {
@@ -85,32 +181,37 @@ Page({
     }
   },
 
-  onAllergenText(e) {
-    this.setData({ allergenText: e.detail.value })
-  },
-
-  onAvoidText(e) {
-    this.setData({ avoidText: e.detail.value })
-  },
-
   async onSave() {
+    if (this.data.saving) return
+
+    const payload = {
+      ...this.data.form,
+      weightKg: Number(this.data.form.weightKg),
+      dailyMeals: Number(this.data.form.dailyMeals),
+      dailyActivityHours: activityHoursValue(this.data.form.dailyActivityHours)
+    }
+
+    this.setData({
+      saving: true,
+      birthDateError: '',
+      breedError: '',
+      dailyActivityHoursError: ''
+    })
+
     try {
-      const payload = {
-        ...this.data.form,
-        weightKg: Number(this.data.form.weightKg),
-        dailyMeals: Number(this.data.form.dailyMeals),
-        allergens: splitText(this.data.allergenText),
-        avoidIngredients: splitText(this.data.avoidText)
-      }
-      if (this.data.id) {
-        await dogService.updateDog(this.data.id, payload)
-      } else {
-        await dogService.createDog(payload)
-      }
+      dogService.validateDog(dogService.normalizeDog(payload))
+      if (this.data.id) await dogService.updateDog(this.data.id, payload)
+      else await dogService.createDog(payload)
       wx.showToast({ title: '已保存', icon: 'success' })
       setTimeout(() => wx.navigateBack(), 400)
     } catch (error) {
-      wx.showToast({ title: error.message, icon: 'none' })
+      const fieldErrors = profileErrors(error.message)
+      this.setData(fieldErrors)
+      if (!fieldErrors.birthDateError && !fieldErrors.breedError && !fieldErrors.dailyActivityHoursError) {
+        wx.showToast({ title: error.message, icon: 'none' })
+      }
+    } finally {
+      this.setData({ saving: false })
     }
   },
 
@@ -119,8 +220,8 @@ Page({
     wx.showModal({
       title: '删除档案',
       content: '历史清单不会被删除，但后续不会再用该档案生成新清单。',
-      success: async (res) => {
-        if (!res.confirm) return
+      success: async (result) => {
+        if (!result.confirm) return
         await dogService.deleteDog(this.data.id)
         wx.navigateBack()
       }

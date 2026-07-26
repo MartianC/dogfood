@@ -1,0 +1,10 @@
+<view class="recipe-library-card" hover-class="recipe-library-card--pressed" bindtap="onTap">
+  <ui-card padding="medium">
+    <view class="recipe-library-card__head">
+      <view class="recipe-library-card__name">{{recipe.title}}</view>
+      <ui-tag variant="{{display.statusVariant}}" size="small">{{display.statusText}}</ui-tag>
+    </view>
+    <view class="recipe-library-card__detail">{{display.dogLine}}</view>
+    <view class="recipe-library-card__metrics">{{display.metrics}}</view>
+  </ui-card>
+</view>

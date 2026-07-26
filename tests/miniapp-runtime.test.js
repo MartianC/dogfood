@@ -32,6 +32,18 @@ test('app.json 启用组件按需注入', () => {
   assert.equal(appConfig.lazyCodeLoading, 'requiredComponents')
 })
 
+test('开发者工具按根目录配置构建 TDesign npm 包', () => {
+  const projectConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'project.config.json'), 'utf8'))
+
+  assert.equal(projectConfig.setting.packNpmManually, true)
+  assert.deepEqual(projectConfig.setting.packNpmRelationList, [
+    {
+      packageJsonPath: './package.json',
+      miniprogramNpmDistDir: './'
+    }
+  ])
+})
+
 test('小程序图片兜底资源存在', () => {
   const expected = [
     'assets/recipes/chicken-pumpkin.jpg',
@@ -78,8 +90,15 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
   const includes = new Set((projectConfig.packOptions && projectConfig.packOptions.include || []).map((item) => item.value))
   const requiredServiceFiles = [
     'subpackages/custom-recipe/services/customRecipeService.js',
+    'subpackages/custom-recipe/services/ingredientService.js',
     'subpackages/custom-recipe/services/ingredientAdvice.js',
     'subpackages/custom-recipe/services/recipeAdviceService.js',
+    'subpackages/custom-recipe/services/nutritionAssessmentService.js',
+    'subpackages/custom-recipe/services/nutritionDataService.js',
+    'subpackages/custom-recipe/services/nutrientIngredientService.js',
+    'subpackages/custom-recipe/services/energyRequirementService.js',
+    'subpackages/custom-recipe/services/mealEnergyService.js',
+    'subpackages/custom-recipe/services/mealAssessmentService.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
     'subpackages/plan-extra/services/planCalculatorService.js'
@@ -105,4 +124,199 @@ test('狗狗档案卡片整卡可点击且不显示修改按钮', () => {
   assert.match(wxml, /<view class="dog-card" bindtap="onEdit">/)
   assert.doesNotMatch(wxml, /<button/)
   assert.doesNotMatch(wxml, />修改</)
+})
+
+test('食谱 Tab 呈现我的食谱数据态、空态和新建弹层入口', () => {
+  const pageRoot = path.join(__dirname, '..', 'pages', 'recipes', 'list')
+  const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const js = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
+  const popupWxss = fs.readFileSync(path.join(__dirname, '..', 'components', 'vendor', 'recipe-create-popup', 'index.wxss'), 'utf8')
+
+  assert.equal(config.navigationBarTitleText, '我的食谱')
+  assert.match(wxml, /记录常做的搭配，随时调整食材和份量/)
+  assert.match(wxml, /wx:if="{{recipes\.length}}"/)
+  assert.match(wxml, /recipe-library-card/)
+  assert.match(wxml, /recipe-empty/)
+  assert.match(wxml, /recipe-fab/)
+  assert.match(wxml, /recipe-create-popup/)
+  assert.match(js, /onCreateConfirm/)
+  assert.match(js, /customRecipeService\.createDraft/)
+  assert.doesNotMatch(js, /require\(['"].*subpackages\//)
+  assert.doesNotMatch(wxml, /筛选方式|自定义筛选|搜索食材或食谱名称/)
+  assert.equal(config.usingComponents['recipe-create-popup'], '../../../components/vendor/recipe-create-popup/index')
+  assert.doesNotMatch(popupWxss, /env\(safe-area-inset-bottom\)/)
+})
+
+test('食谱设计页通过独立页面添加食材，并保留卡片食材列表和本餐评估', () => {
+  const pageRoot = path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'edit')
+  const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const ingredientListWxml = fs.readFileSync(path.join(__dirname, '..', 'components/vendor/recipe-ingredient-list/index.wxml'), 'utf8')
+  const ingredientListWxss = fs.readFileSync(path.join(__dirname, '..', 'components/vendor/recipe-ingredient-list/index.wxss'), 'utf8')
+  const js = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
+
+  assert.equal(config.navigationBarTitleText, '食谱设计')
+  assert.match(wxml, /wx:if="{{!ingredients\.length}}"/)
+  assert.match(wxml, /还没有添加食材/)
+  assert.match(wxml, /搜索食材并填写克重后，本餐评估会自动更新/)
+  assert.match(wxml, /新增食材/)
+  assert.match(wxml, /nutrition-assessment/)
+  assert.doesNotMatch(wxml, /营养汇总（占位）/)
+  assert.match(js, /onAddIngredient/)
+  assert.match(js, /wx\.navigateTo/)
+  assert.match(js, /\/subpackages\/custom-recipe\/ingredient-search\/index/)
+  assert.match(js, /ingredientWorkbench\.updateIngredientAmount/)
+  assert.match(js, /nutritionDataService\.loadMealAssessmentData/)
+  assert.match(js, /mealAssessmentService\.buildMealAssessment/)
+  assert.match(js, /onNutritionProfileChange/)
+  assert.match(wxml, /recipe-ingredient-list/)
+  assert.doesNotMatch(wxml, /recipe-ingredient-search/)
+  assert.doesNotMatch(wxml, /recipe-ingredient-popup/)
+  assert.match(wxml, /action-icon="\/assets\/icons\/recipe-delete-1-filled\.svg"/)
+  assert.doesNotMatch(wxml, /搜索结果|常用与最近|没有找到/)
+  assert.match(wxml, /wx:else/)
+  assert.match(wxml, /<scroll-view class="recipe-design-ingredient-scroll" scroll-y enable-flex>/)
+  assert.match(wxml, /recipe-design-summary-floating/)
+  assert.match(wxml, /bottom-action recipe-design-save-action/)
+  assert.match(wxml, /保存食谱/)
+  assert.doesNotMatch(wxml, /食谱名称|dog-target-selector|检查并生成建议|保存草稿/)
+  assert.match(ingredientListWxml, /item\.ratioPercent/)
+  assert.match(ingredientListWxml, /t-class="recipe-ingredient-list__group"/)
+  assert.match(ingredientListWxml, /t-class="recipe-ingredient-list__input"/)
+  assert.match(ingredientListWxml, /recipe-ingredient-list__action-icon/)
+  assert.match(ingredientListWxml, /<image class="recipe-ingredient-list__action-icon"/)
+  assert.doesNotMatch(ingredientListWxml, /<t-icon/)
+  assert.match(wxml, /action-icon="\/assets\/icons\/recipe-delete-1-filled\.svg"/)
+  for (const assetPath of ['assets/icons/recipe-cart-filled.svg', 'assets/icons/recipe-delete-1-filled.svg']) {
+    assert.ok(fs.existsSync(path.join(__dirname, '..', assetPath)), `${assetPath} 不存在`)
+  }
+  assert.match(ingredientListWxml, /align="right"/)
+  assert.match(ingredientListWxml, /borderless/)
+  assert.match(ingredientListWxss, /--td-cell-vertical-padding: 16rpx/)
+  assert.match(ingredientListWxss, /margin: 0;/)
+  assert.equal(config.usingComponents['recipe-empty'], '../../../components/vendor/recipe-empty/index')
+  assert.equal(config.usingComponents['nutrition-assessment'], '../../../components/nutrition-assessment/index')
+})
+
+test('搜索食材是独立页面，默认、结果和无结果状态互斥', () => {
+  const appConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.json'), 'utf8'))
+  const customRecipePackage = appConfig.subpackages.find((item) => item.root === 'subpackages/custom-recipe')
+  const pageRoot = path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'ingredient-search')
+  const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const wxss = fs.readFileSync(path.join(pageRoot, 'index.wxss'), 'utf8')
+  const js = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
+  const searchWxml = fs.readFileSync(path.join(__dirname, '..', 'components/vendor/recipe-ingredient-search/index.wxml'), 'utf8')
+  const tagWxss = fs.readFileSync(path.join(__dirname, '..', 'components/ui/ui-tag/index.wxss'), 'utf8')
+
+  assert.ok(customRecipePackage.pages.includes('ingredient-search/index'))
+  assert.equal(config.navigationBarTitleText, '搜索食材')
+  assert.match(searchWxml, /placeholder="搜索食材，如“鸡胸肉”"/)
+  assert.match(searchWxml, /action="{{actionText}}"/)
+  assert.match(searchWxml, /bind:action-click="onActionClick"/)
+  assert.match(wxml, /wx:if="{{!hasSearchQuery}}"/)
+  assert.match(wxml, /常用与最近/)
+  assert.match(wxml, /食材列表/)
+  assert.match(wxml, /items="{{catalogIngredients}}"/)
+  assert.match(wxml, /<ui-tag variant="good" size="large">/)
+  assert.match(wxml, /wx:elif="{{searchResults\.length}}"/)
+  assert.match(wxml, /搜索结果/)
+  assert.match(wxml, /wx:else/)
+  assert.match(wxml, /没有找到“{{searchValue}}”/)
+  assert.match(wxml, /试试更短的关键词，或检查名称是否正确/)
+  assert.match(wxml, /recipe-ingredient-list/)
+  assert.match(wxml, /recipe-ingredient-popup/)
+  assert.match(wxml, /action-icon="\/assets\/icons\/recipe-cart-filled\.svg"/)
+  assert.match(js, /ingredientService\.searchIngredients/)
+  assert.match(js, /ingredientService\.loadIngredientCatalog/)
+  assert.match(js, /ingredientWorkbench\.addIngredient/)
+  assert.match(js, /customRecipeService\.saveDraft/)
+  assert.match(js, /getOpenerEventChannel/)
+  assert.match(js, /wx\.navigateBack/)
+  assert.match(wxss, /padding: 36rpx 32rpx 48rpx/)
+  assert.match(wxss, /\.ingredient-search-quick-option\s*{[^}]*flex: 0 0 auto;/s)
+  assert.match(tagWxss, /\.ui-tag--large\s*{[^}]*white-space: nowrap;/s)
+  assert.equal(config.usingComponents['recipe-ingredient-search'], '../../../components/vendor/recipe-ingredient-search/index')
+  assert.equal(config.usingComponents['recipe-ingredient-list'], '../../../components/vendor/recipe-ingredient-list/index')
+  assert.equal(config.usingComponents['recipe-ingredient-popup'], '../../../components/vendor/recipe-ingredient-popup/index')
+})
+
+test('只被自定义食谱使用的食材搜索服务不进入主包', () => {
+  const root = path.join(__dirname, '..')
+  const mainPackageService = path.join(root, 'services', 'ingredientService.js')
+  const subpackageService = path.join(
+    root,
+    'subpackages',
+    'custom-recipe',
+    'services',
+    'ingredientService.js'
+  )
+  const searchPage = fs.readFileSync(
+    path.join(root, 'subpackages', 'custom-recipe', 'ingredient-search', 'index.js'),
+    'utf8'
+  )
+
+  assert.equal(fs.existsSync(mainPackageService), false)
+  assert.equal(fs.existsSync(subpackageService), true)
+  assert.match(searchPage, /require\(['"]\.\.\/services\/ingredientService['"]\)/)
+})
+
+test('营养食材模式复用搜索页且不改变普通搜索默认态', () => {
+  const pageRoot = path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'ingredient-search')
+  const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const wxss = fs.readFileSync(path.join(pageRoot, 'index.wxss'), 'utf8')
+  const js = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const editJs = fs.readFileSync(
+    path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'edit', 'index.js'),
+    'utf8'
+  )
+
+  assert.match(js, /options\.mode === 'nutrient'/)
+  assert.match(js, /decodeURIComponent/)
+  assert.match(js, /nutrientIngredientService/)
+  assert.match(wxml, /wx:if="{{isNutrientMode}}"/)
+  assert.match(wxml, /{{nutrientGapText}}/)
+  assert.match(wxml, /按{{nutrientName}}含量排序/)
+  assert.match(wxml, /wx:if="{{!isNutrientMode}}"/)
+  assert.match(wxml, /常用与最近/)
+  assert.doesNotMatch(wxml, /食材分类/)
+  assert.match(wxss, /\.ingredient-search-gap-summary/)
+  assert.match(editJs, /mode=nutrient/)
+  assert.match(editJs, /gapDisplayValue/)
+})
+
+test('营养评估组件提供双标准、档案切换、建议入口和进阶表格', () => {
+  const root = path.join(__dirname, '..', 'components', 'nutrition-assessment')
+  const wxml = fs.readFileSync(path.join(root, 'index.wxml'), 'utf8')
+  const wxss = fs.readFileSync(path.join(root, 'index.wxss'), 'utf8')
+  const service = fs.readFileSync(path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'services', 'nutritionAssessmentService.js'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(root, 'index.json'), 'utf8'))
+
+  assert.match(wxml, /国标评估/)
+  assert.match(wxml, /FEDIAF 评估/)
+  assert.match(wxml, /需要补充/)
+  assert.ok(
+    wxml.indexOf('wx:for="{{item.highItems}}"') < wxml.indexOf('wx:for="{{item.lowItems}}"'),
+    '需要控制的红色元素应排在需要补充的黄色元素之前'
+  )
+  assert.match(wxml, /bind:tap="onLowAction"/)
+  assert.match(service, /挑选富含\$\{item\.name\}的食物/)
+  assert.match(wxml, /主要来源/)
+  assert.match(wxml, /全部元素对照/)
+  assert.match(wxml, /profileSelectorVisible/)
+  assert.match(wxss, /border-left: 6rpx solid var\(--df-color-status-low\)/)
+  assert.equal(config.usingComponents['ui-button'], '../ui/ui-button/index')
+  assert.ok(Object.values(config.usingComponents).every((value) => !value.includes('tdesign-miniprogram')))
+})
+
+test('营养评估的收起操作只有单一点击事件且箭头不会显示为实体文本', () => {
+  const wxml = fs.readFileSync(
+    path.join(__dirname, '..', 'components', 'nutrition-assessment', 'index.wxml'),
+    'utf8'
+  )
+
+  assert.match(wxml, /class="nutrition-assessment__collapse"[^>]*bindtap="onToggle"/)
+  assert.doesNotMatch(wxml, /<ui-button[^>]*bind:tap="onToggle"/)
+  assert.doesNotMatch(wxml, /&gt;/)
 })

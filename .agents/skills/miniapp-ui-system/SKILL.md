@@ -1,6 +1,6 @@
 ---
 name: miniapp-ui-system
-description: "Use when designing, refactoring, initializing, or enforcing a stable WeChat Mini Program frontend UI system: design tokens, UI Kernel primitives, third-party component wrappers, WXSS style isolation, AI frontend rules, scaffold generation, or UI consistency checks."
+description: "Use when designing, refactoring, initializing, or enforcing a stable WeChat Mini Program frontend UI system, including translating external design specifications into implementation: design tokens, UI Kernel primitives, third-party component wrappers, WXSS style isolation, AI frontend rules, scaffold generation, or UI consistency checks."
 ---
 
 # Miniapp UI System
@@ -16,7 +16,6 @@ description: "Use when designing, refactoring, initializing, or enforcing a stab
 - 要接入 TDesign、Vant Weapp、WeUI 等组件库，但不希望页面直接依赖第三方组件。
 - 要创建自定义组件、组件变体、设计 token、WXSS 样式隔离规范。
 - 要初始化项目脚手架或增加 UI 自动检查。
-- 要把 Figma 设计稿、variables、modes、Dev Mode 信息落地为微信小程序 UI。
 
 ## 决策
 
@@ -43,18 +42,17 @@ node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project . --dr
 node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project .
 ```
 
-4. 初始化脚手架必须让后续 AI 能发现生成文档：检查并更新项目已有的 AI 入口文件，例如 `AGENTS.md`、`CLAUDE.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`.cursorrules`、`.cursor/rules/*`、`.windsurfrules`、`docs/README.md`。入口里至少索引 `docs/ui/design-system.md`、`docs/ui/component-contracts.md`、`docs/ui/ai-frontend-rules.md` 和 `scripts/check-ui-system.js`。
+4. 初始化脚手架必须让后续 AI 能发现生成文档：检查并更新项目已有的 AI 入口文件，例如 `AGENTS.md`、`CLAUDE.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`.cursorrules`、`.cursor/rules/*`、`.windsurfrules`。入口里至少索引 `docs/ui/design-system.md`、`docs/ui/component-contracts.md`、`docs/ui/ai-frontend-rules.md` 和 `scripts/check-ui-system.js`。
 5. 初始化后，新 UI 必须先做组件来源判断：已有项目组件、组件库可包装能力、自研组件。
 6. 已引入组件库时，按钮、卡片、标签、输入、提示等基础视觉组件优先通过组件库包装实现；复杂、强视觉、高自定义需求再用 UI Kernel 组合或自研。
 7. 页面不直接使用第三方组件标签；组件库能力必须收敛到 `components/ui/*` 或 `components/vendor/*`。
 8. 改 UI 前说明使用哪些 token、哪些 UI 组件、是否新增变体；完成后运行 `npm run check:ui` 和项目测试。
-9. 涉及 Figma 设计稿落地时，先读 `references/figma-handoff.md`；Figma 是设计输入源，不直接替代小程序 UI 架构。
 
 ## 参考资料
 
 - 架构和目录规范：读 `references/ui-system-architecture.md`。
-- Figma 设计稿落地：读 `references/figma-handoff.md`。
-- Figma token 转换细则：读 `references/figma-token-mapping.md`。
+- 外部设计稿交付：读 `references/figma-handoff.md`。
+- 设计 token 转换细则：读 `references/figma-token-mapping.md`。
 - AI 前端开发规则：读 `references/ai-frontend-rules.md`。
 - 脚手架说明：读 `references/scaffold.md`。
 
@@ -65,5 +63,4 @@ node .agents/skills/miniapp-ui-system/scripts/init-ui-system.js --project .
 - 不要在页面新增 `.button`、`.card`、`.tag`、`.notice`、`.title` 这类全局泛名。
 - 不要在页面直接引用 `<t-button>`、`<van-button>`；先做 vendor wrapper。
 - 不要在普通页面/组件里新增裸 hex 色值；先把语义 token 加到 `styles/tokens.wxss`。
-- 不要把 Figma Dev Mode 的 CSS 片段直接粘成 WXSS；先映射 token、组件和小程序可支持的布局子集。
 - 不要用全局 WXSS 解决局部组件问题；优先用 `styleIsolation: "isolated"` 和明确的 `externalClasses`。

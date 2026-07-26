@@ -1,10 +1,9 @@
 {
-  "navigationBarTitleText": "自定义食谱",
+  "navigationBarTitleText": "食谱设计",
   "usingComponents": {
-    "dog-target-selector": "../../../components/dog-target-selector/index",
-    "ingredient-editor": "../../../components/ingredient-editor/index",
-    "ui-button": "../../../components/ui/ui-button/index",
-    "ui-card": "../../../components/ui/ui-card/index",
-    "ui-field": "../../../components/ui/ui-field/index"
+    "recipe-ingredient-list": "../../../components/vendor/recipe-ingredient-list/index",
+    "recipe-empty": "../../../components/vendor/recipe-empty/index",
+    "nutrition-assessment": "../../../components/nutrition-assessment/index",
+    "ui-button": "../../../components/ui/ui-button/index"
   }
 }

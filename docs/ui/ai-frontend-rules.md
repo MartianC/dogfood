@@ -11,7 +11,7 @@
 - 影响哪些页面或业务组件。
 - 如果来自 Figma，使用了哪个 frame、哪些 token map、哪些 component map。
 
-当前项目不引入 TDesign、Vant 或 WeUI。如后续引入，基础视觉组件必须先包装成 `components/ui/*` 或 `components/vendor/*`，页面不直接使用第三方标签。
+当前项目使用 `tdesign-miniprogram@1.15.3`。TDesign 仅允许出现在 `custom-tab-bar`、`components/vendor/*` 或 `components/ui/*`；页面和业务组件不直接使用第三方标签。新增 TDesign 组件前先扩展稳定适配契约，并同步项目 token。
 
 ## 必守规则
 

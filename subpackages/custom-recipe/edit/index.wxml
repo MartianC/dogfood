@@ -1,28 +1,57 @@
-<view class="page recipe-edit-page">
-  <ui-card>
-    <view class="recipe-eyebrow df-caption">给狗狗检查一份食谱</view>
-    <view class="recipe-title df-heading-xl">输入单餐参考量</view>
-    <view class="recipe-subtitle df-body">系统会按所选狗狗的年龄、体重、每日餐数、过敏源和忌口给出建议，不替代兽医判断。</view>
-  </ui-card>
-
-  <view class="section">
-    <ui-card>
-      <ui-field label="食谱名称">
-        <input class="recipe-control" value="{{title}}" bindinput="onTitle" placeholder="例如 家里简单饭" />
-      </ui-field>
-    </ui-card>
+<view class="page recipe-design-page {{ingredients.length ? 'recipe-design-page--editing' : ''}}">
+  <view class="recipe-design-header">
+    <view class="recipe-design-dog">{{targetDogName || '未选择狗狗'}}</view>
+    <view class="recipe-design-heading df-heading-xl">{{title}}</view>
   </view>
 
-  <view class="section">
-    <ingredient-editor ingredients="{{ingredients}}" bind:change="onIngredients" />
-  </view>
+  <block wx:if="{{!ingredients.length}}">
+    <view class="recipe-design-empty">
+      <recipe-empty
+        icon="search"
+        title="还没有添加食材"
+        description="搜索食材并填写克重后，本餐评估会自动更新。"
+        action-text="新增食材"
+        bind:action="onAddIngredient"
+      />
+    </view>
+  </block>
 
-  <view class="section">
-    <dog-target-selector dogs="{{dogs}}" selectedDogIds="{{selectedDogIds}}" bind:change="onTargetChange" />
-  </view>
+  <block wx:else>
+    <view class="recipe-design-editing-content">
+      <scroll-view class="recipe-design-ingredient-scroll" scroll-y enable-flex>
+        <view class="recipe-design-ingredient-scroll__content">
+          <recipe-ingredient-list
+            items="{{ingredientRows}}"
+            mode="edit"
+            action-icon="/assets/icons/recipe-delete-1-filled.svg"
+            bind:amountchange="onIngredientAmountChange"
+            bind:remove="onRemoveIngredient"
+          />
+          <view class="recipe-design-add-action">
+            <ui-button variant="ghost" bind:tap="onAddIngredient">添加食材</ui-button>
+          </view>
+        </view>
+      </scroll-view>
 
-  <view class="section recipe-actions">
-    <ui-button bind:tap="onCheckAdvice">检查并生成建议</ui-button>
-    <ui-button variant="secondary" bind:tap="onSaveDraft">保存草稿</ui-button>
-  </view>
+      <view class="recipe-design-summary-floating {{nutritionExpanded ? 'recipe-design-summary-floating--expanded' : ''}}">
+        <nutrition-assessment
+          assessment="{{mealAssessment}}"
+          loading="{{nutritionLoading}}"
+          expanded="{{nutritionExpanded}}"
+          bind:toggle="onNutritionToggle"
+          bind:profilechange="onNutritionProfileChange"
+          bind:nutrientselect="onNutritionNutrientSelect"
+          bind:adjustingredients="onNutritionAdjustIngredients"
+          bind:scaleconfirm="onMealScaleConfirm"
+          bind:completeprofile="onCompleteDogProfile"
+          bind:retry="onNutritionRetry"
+        />
+      </view>
+    </view>
+
+    <view class="bottom-action recipe-design-save-action">
+      <ui-button bind:tap="onSaveRecipe">保存食谱</ui-button>
+    </view>
+  </block>
+
 </view>

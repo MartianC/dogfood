@@ -730,7 +730,6 @@ const aiEntrypointCandidates = [
   '.github/copilot-instructions.md',
   '.cursorrules',
   '.windsurfrules',
-  'docs/README.md',
 ]
 const aiDocsIndexStart = '<!-- miniapp-ui-system:docs:start -->'
 const aiDocsIndexEnd = '<!-- miniapp-ui-system:docs:end -->'

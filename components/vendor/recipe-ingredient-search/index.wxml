@@ -1,0 +1,13 @@
+<t-search
+  t-class="recipe-ingredient-search__root"
+  t-class-action="recipe-ingredient-search__action"
+  t-class-input="recipe-ingredient-search__input"
+  t-class-input-container="recipe-ingredient-search__input-container"
+  value="{{value}}"
+  placeholder="搜索食材，如“鸡胸肉”"
+  action="{{actionText}}"
+  clearable
+  shape="round"
+  bind:change="onChange"
+  bind:action-click="onActionClick"
+/>

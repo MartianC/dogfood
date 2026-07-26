@@ -1,4 +1,4 @@
-<view class="page">
+<view class="page with-tab-bar">
   <empty-state wx:if="{{!plan}}" title="还没有生成清单" description="选择一道食谱后，可以生成批量制作清单。" actionText="去选食谱" bind:action="onGoRecipes" />
 
   <view wx:else>

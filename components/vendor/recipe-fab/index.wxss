@@ -1,0 +1,15 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-button-primary-bg-color: var(--df-color-primary);
+  --td-button-primary-border-color: var(--df-color-primary);
+  --td-button-primary-active-bg-color: var(--df-color-primary-pressed);
+  --td-button-primary-active-border-color: var(--df-color-primary-pressed);
+  --td-button-primary-color: var(--df-color-on-primary);
+}
+
+.recipe-fab {
+  display: block;
+}

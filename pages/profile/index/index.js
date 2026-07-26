@@ -1,6 +1,6 @@
 const authService = require('../../../services/authService')
 const dogService = require('../../../services/dogService')
-const { ageStageLabels, dietGoalLabels } = require('../../../utils/risk')
+const { dietGoalLabels } = require('../../../utils/risk')
 const assets = require('../../../utils/assets')
 
 Page({
@@ -8,12 +8,13 @@ Page({
     authState: 'guest',
     user: null,
     dogs: [],
-    ageStageLabels,
     dietGoalLabels,
     defaultDogAvatar: assets.defaultDogAvatar
   },
 
   async onShow() {
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
+    if (tabBar) tabBar.setData({ selected: 'profile' })
     const app = getApp()
     if (app.globalData.authReady) await app.globalData.authReady
     const dogs = await dogService.listDogs()

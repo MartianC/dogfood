@@ -1,0 +1,37 @@
+<t-popup
+  visible="{{visible}}"
+  placement="bottom"
+  close-on-overlay-click="{{true}}"
+  prevent-scroll-through="{{true}}"
+  overlay-props="{{ { duration: 240 } }}"
+  t-class-content="recipe-popup-content"
+  bind:visible-change="onVisibleChange"
+>
+  <view class="recipe-popup">
+    <view class="recipe-popup__heading">新建食谱</view>
+    <picker range="{{dogs}}" range-key="name" value="{{dogIndex}}" bindchange="onDogChange">
+      <t-cell
+        title="对应狗狗"
+        hover
+      >
+        <view slot="note" class="recipe-popup__dog-note">
+          <text>{{dogIndex >= 0 ? dogs[dogIndex].name : '请选择'}}</text>
+          <text class="recipe-popup__chevron">›</text>
+        </view>
+      </t-cell>
+    </picker>
+    <t-input
+      label="食谱名称"
+      placeholder="给这份食谱起个名字"
+      value="{{title}}"
+      maxlength="30"
+      status="{{errorText ? 'error' : 'default'}}"
+      tips="{{errorText}}"
+      bind:change="onTitleChange"
+    />
+    <view class="recipe-popup__actions">
+      <t-button theme="light" size="medium" block disabled="{{loading}}" bind:tap="onCancel">取消</t-button>
+      <t-button theme="primary" size="medium" block loading="{{loading}}" bind:tap="onConfirm">确认</t-button>
+    </view>
+  </view>
+</t-popup>

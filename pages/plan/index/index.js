@@ -25,6 +25,8 @@ Page({
   },
 
   async onShow() {
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
+    if (tabBar) tabBar.setData({ selected: 'plan' })
     const app = getApp()
     const history = await mealPlanService.listHistory()
     const plan = app.globalData.latestPlan || history[history.length - 1] || null

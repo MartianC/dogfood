@@ -1,4 +1,9 @@
-const { ingredientCategoryOptions } = require('../../data/options')
+const ingredientCategoryOptions = [
+  { value: 'meat', label: '肉类' },
+  { value: 'vegetable', label: '蔬菜' },
+  { value: 'carb', label: '主食' },
+  { value: 'other', label: '其他' }
+]
 
 Component({
   properties: {

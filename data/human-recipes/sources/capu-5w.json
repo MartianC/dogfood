@@ -1,0 +1,18 @@
+{
+  "source_id": "capu_5w",
+  "source_version": "capu_5w_source",
+  "source_sha256": "d35068b53bac6766b6251ce124358844cb2ef083a87ed80df811fe0de4d1defb",
+  "license_status": "verified",
+  "authorization_basis": "项目所有者确认已取得本项目所需的菜谱数据使用授权。",
+  "authorization_confirmed_by": "项目所有者",
+  "authorization_confirmed_at": "2026-07-23",
+  "published_field_scope": [
+    "recipe_id",
+    "categories",
+    "primary_category",
+    "title",
+    "ingredient_names",
+    "ingredient_amount_text"
+  ],
+  "notes": "本项目仅发布产品所需字段；授权合同或原始凭证由项目所有者在项目代码库之外保管。"
+}

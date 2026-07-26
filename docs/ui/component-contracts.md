@@ -9,7 +9,21 @@
 - 默认 slot 承载可变内容，组件内部只维护基础视觉和状态。
 - 所有 `components/ui/*` 默认声明 `styleIsolation: "isolated"`。
 
-当前不引入第三方组件库，因此基础组件为自研 UI Kernel。后续如引入 TDesign、Vant 或 WeUI，必须先包装到 `components/ui/*` 或 `components/vendor/*`。
+基础组件仍为自研 UI Kernel。项目已引入 `tdesign-miniprogram@1.15.3`，只允许通过 `custom-tab-bar` 和 `components/vendor/*` 适配层使用；页面不得直接依赖 TDesign 标签或事件细节。
+
+## TDesign vendor 适配
+
+| 路径 | 内部组件 | 对外契约 |
+| --- | --- | --- |
+| `custom-tab-bar` | `TabBar`、`TabBarItem` | data `selected`；内部根据四个固定路由调用 `wx.switchTab`；图标 `32rpx`、文字 `28rpx / 40rpx`，按下背景使用项目 `surface-pressed` |
+| `components/vendor/recipe-create-popup` | `Popup`、`Cell`、`Input`、`Button` | props `visible/dogs/loading`；events `visiblechange/cancel/confirm`；公开方法 `reset()` |
+| `components/vendor/recipe-fab` | `Fab` | event `tap` |
+| `components/vendor/recipe-empty` | `Empty`、`Button` | props `icon/title/description/actionText`；event `action` |
+| `components/vendor/recipe-ingredient-search` | `Search` | props `value/loading/actionText`；events `change/action`；页面负责决定默认、结果和无结果状态 |
+| `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input`、`Icon` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
+| `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
+
+vendor 适配层只负责第三方 API、主题和基础状态转换，不读取业务服务，不执行页面跳转，不保存食谱数据。
 
 ## ui-button
 
@@ -48,10 +62,10 @@
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
 | prop | `variant` | `neutral | good | warning`，默认 `neutral` |
-| prop | `size` | `small | medium`，默认 `medium` |
+| prop | `size` | `small | medium | large`，默认 `medium`；`large` 用于搜索页的常用食材胶囊 |
 | slot | 默认 | 标签文案 |
 
-长文案允许换行，避免在窄屏中撑破父容器。
+`small` 和 `medium` 的长文案允许换行，避免在窄屏中撑破父容器；搜索页专用的 `large` 保持单行，父级必须通过横向滚动或换行布局承接超宽内容。
 
 ## ui-notice
 

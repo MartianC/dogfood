@@ -21,10 +21,16 @@
 | `--df-color-line` | 默认边框 | `#d8e1da` |
 | `--df-color-line-strong` | 强边框、可选项边框 | `#b7c7bc` |
 | `--df-color-primary` | 品牌主色、主操作 | `#25684a` |
+| `--df-color-primary-pressed` | 主操作按下态 | `#1d523a` |
 | `--df-color-on-primary` | 主色背景上的文字 | `#ffffff` |
 | `--df-color-primary-soft` | 主色弱背景 | `#e3f0e8` |
+| `--df-color-primary-soft-pressed` | 浅色主操作按下态 | `#cfe4d6` |
+| `--df-color-surface-pressed` | 次要操作、单元格按下态 | `#eef3ef` |
 | `--df-color-warning` | 风险、删除、警示文字 | `#a84f34` |
+| `--df-color-warning-pressed` | 风险操作按下态 | `#873e29` |
 | `--df-color-warning-soft` | 风险弱背景 | `#f6e8e1` |
+| `--df-color-status-low` | 营养偏低、低于参考要求 | `#a77514` |
+| `--df-color-status-low-soft` | 营养偏低弱背景 | `#fff7e0` |
 | `--df-color-on-primary-muted` | 主色背景上的弱文字 | `rgba(255, 255, 255, 0.78)` |
 | `--df-color-mask` | 弹层遮罩 | `rgba(25, 24, 21, 0.44)` |
 
@@ -63,7 +69,20 @@
 - `ui-field`: 表单字段容器。
 - `ui-empty`: 空状态。
 
-当前不引入 TDesign、Vant 或 WeUI。后续如引入第三方组件库，基础视觉组件必须先包装到 `components/ui/*` 或 `components/vendor/*`，页面不直接使用组件库标签。
+当前引入 `tdesign-miniprogram@1.15.3`，仅通过 `custom-tab-bar` 和 `components/vendor/*` 适配层使用。页面与业务组件不直接使用 `<t-*>`；既有按钮、卡片、标签、提示和字段继续使用项目 UI Kernel。
+
+TDesign 适配范围：
+
+- `custom-tab-bar`：包装 `TabBar/TabBarItem`，固定使用 `theme=tag`、`shape=round`，通过公开 icon slot 使用本地图标。
+- `components/vendor/recipe-create-popup`：包装 `Popup/Cell/Input/Button`。
+- `components/vendor/recipe-fab`：包装 `Fab`。
+- `components/vendor/recipe-empty`：包装 `Empty/Button`。
+
+第三方组件主题必须映射 `--df-*` 语义色。因小程序组件样式隔离，`custom-tab-bar/index.js` 的 `tabBarStyle` 保存一份与本文件同步的 TDesign CSS 变量字符串；修改主色、表面色或弱色时必须同步更新。
+
+按下态规则：自研 `ui-button` 显式使用 `hover-class="ui-button--pressed"`，按 variant 映射 `primary-pressed`、`primary-soft-pressed`、`surface-pressed` 和 `warning-pressed`。TDesign Button/Fab 适配层必须同时覆盖 `--td-brand-color-active`、`--td-brand-color-light-active` 及对应的 `--td-button-*-active-*` 变量，禁止回退到 TDesign 默认蓝色。
+
+TabBar 图文比例：外框仍为设计稿 `343 × 56`；图标 slot 固定 `32rpx`（16 px），标签使用 `28rpx / 40rpx`（14 px），图标下方保留 `4rpx` 间距。不得通过放大图标或缩小文字改变四项布局。
 
 ## JSON 和 Canvas 同步规则
 
@@ -76,6 +95,7 @@
 | `app.json tabBar.backgroundColor` | `#ffffff` | `--df-color-surface` |
 | `app.json tabBar.color` | `#6f7b73` | `--df-color-muted` |
 | `app.json tabBar.selectedColor` | `#25684a` | `--df-color-primary` |
+| `custom-tab-bar/index.js tabBarStyle` | `#ffffff / #e3f0e8 / #25684a / #6f7b73` | `surface / primary-soft / primary / muted` |
 
 `pages/plan/index/index.js` 的分享图使用 `SHARE_COLORS` 常量集中映射 `surface`、`text`、`primary`、`textSecondary`、`muted`，并与本文件 token 保持一致。
 

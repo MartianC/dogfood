@@ -43,7 +43,7 @@ docs/ui/
 scripts/
   check-ui-system.js
 
-AGENTS.md / CLAUDE.md / GEMINI.md / .github/copilot-instructions.md / .cursor/rules/* / .windsurfrules / docs/README.md
+AGENTS.md / CLAUDE.md / GEMINI.md / .github/copilot-instructions.md / .cursor/rules/* / .windsurfrules
   # 已存在的 AI 入口文档应索引 docs/ui/* 和 scripts/check-ui-system.js
 ```
 

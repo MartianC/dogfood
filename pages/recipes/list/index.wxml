@@ -1,56 +1,36 @@
-<view class="page">
-  <view class="search">
-    <ui-field>
-      <input class="search-input" placeholder="搜索食材或食谱名称" value="{{keyword}}" bindinput="onSearch" />
-    </ui-field>
+<view class="page with-tab-bar recipe-library-page">
+  <view class="recipe-library-intro">记录常做的搭配，随时调整食材和份量。</view>
+
+  <view wx:if="{{recipes.length}}" class="recipe-library-list">
+    <recipe-library-card
+      wx:for="{{recipes}}"
+      wx:key="id"
+      recipe="{{item}}"
+      bind:taprecipe="onRecipeTap"
+    />
   </view>
 
-  <view class="select-block">
-    <picker range="{{modeOptions}}" range-key="label" value="{{modeIndex}}" bindchange="onMode">
-      <ui-field helpText="{{dogs.length ? '可按全部狗狗、单只狗狗或自定义条件筛选' : '未建档可选：全部食谱 / 自定义筛选'}}">
-        <text class="filter-label">筛选方式</text>
-        <text class="filter-value">{{modeOptions[modeIndex].label}}</text>
-      </ui-field>
-    </picker>
-
-    <picker wx:if="{{modeOptions[modeIndex].value === 'singleDog'}}" range="{{dogs}}" range-key="name" value="{{dogIndex}}" bindchange="onDog">
-      <ui-field helpText="只展示适合这只狗狗的食谱">
-        <text class="filter-label">选择狗狗</text>
-        <text class="filter-value">{{dogs[dogIndex].name}}</text>
-      </ui-field>
-    </picker>
-
-    <view wx:if="{{modeOptions[modeIndex].value === 'custom'}}" class="custom-filter">
-      <picker range="{{ageOptions}}" range-key="label" value="{{ageIndex}}" bindchange="onAge">
-        <ui-field>
-          <text class="filter-label">年龄</text>
-          <text class="filter-value">{{ageIndex >= 0 ? ageOptions[ageIndex].label : '不限'}}</text>
-        </ui-field>
-      </picker>
-      <picker range="{{goalOptions}}" range-key="label" value="{{goalIndex}}" bindchange="onGoal">
-        <ui-field>
-          <text class="filter-label">疾病/功能</text>
-          <text class="filter-value">{{goalIndex >= 0 ? goalOptions[goalIndex].label : '不限'}}</text>
-        </ui-field>
-      </picker>
-      <picker range="{{allergenOptions}}" range-key="label" value="{{allergenIndex}}" bindchange="onAllergen">
-        <ui-field>
-          <text class="filter-label">过敏</text>
-          <text class="filter-value">{{allergenIndex >= 0 ? '避开' + allergenOptions[allergenIndex].label : '不限'}}</text>
-        </ui-field>
-      </picker>
-    </view>
+  <view wx:else class="recipe-library-empty">
+    <recipe-empty
+      icon="add-circle"
+      title="先建立第一份食谱"
+      description="从常吃的食材开始，之后每次配餐都会更省心。"
+      action-text="新建食谱"
+      bind:action="openCreatePopup"
+    />
   </view>
 
-  <view wx:if="{{modeOptions[modeIndex].value === 'custom'}}" class="filter-notice">
-    <ui-notice variant="good">正在按自定义条件筛选：{{ageIndex >= 0 ? ageOptions[ageIndex].label : '年龄不限'}}、{{goalIndex >= 0 ? goalOptions[goalIndex].label : '功能不限'}}、{{allergenIndex >= 0 ? '避开' + allergenOptions[allergenIndex].label : '过敏不限'}}。</ui-notice>
+  <view wx:if="{{recipes.length}}" class="recipe-library-fab">
+    <recipe-fab bind:tap="openCreatePopup" />
   </view>
 
-  <view class="recipe-link">
-    <ui-notice clickable="{{true}}" bind:tap="onCustomRecipe">有现成食材？创建自定义食谱，按狗狗档案检查是否合适。</ui-notice>
-  </view>
-
-  <view class="section stack">
-    <recipe-card wx:for="{{filteredRecipes}}" wx:key="id" recipe="{{item}}" showFit="{{authState === 'has-profile'}}" bind:taprecipe="onRecipeTap" />
-  </view>
+  <recipe-create-popup
+    id="recipeCreatePopup"
+    visible="{{createVisible}}"
+    dogs="{{dogs}}"
+    loading="{{createLoading}}"
+    bind:visiblechange="onCreateVisibleChange"
+    bind:cancel="onCreateCancel"
+    bind:confirm="onCreateConfirm"
+  />
 </view>

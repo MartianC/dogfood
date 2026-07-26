@@ -4,6 +4,10 @@ function normalizeList(value) {
   return Array.isArray(value) ? value : []
 }
 
+function derivedAgeStage(dog) {
+  return dog && dog.lifeStage && dog.lifeStage.legacyAgeStage || dog && dog.ageStage || ''
+}
+
 function isHighFatIngredient(item) {
   const name = item.name || ''
   return highFatKeys.includes(item.allergenKey) || /肥|五花|油脂|皮|蛋黄/.test(name)
@@ -19,6 +23,7 @@ function categoryRatioReason(item, ratio, categoryRatios) {
 
 function buildAdviceForDog(customRecipe, dog) {
   const ingredients = normalizeList(customRecipe.ingredients)
+  const ageStage = derivedAgeStage(dog)
   const totalGram = ingredients.reduce((sum, item) => sum + Number(item.perMealAmountGram || 0), 0)
   const categoryGram = ingredients.reduce((sum, item) => {
     sum[item.category] = (sum[item.category] || 0) + Number(item.perMealAmountGram || 0)
@@ -73,12 +78,12 @@ function buildAdviceForDog(customRecipe, dog) {
       }
     }
 
-    if (dog.ageStage === 'puppy' || dog.ageStage === 'senior') {
+    if (ageStage === 'puppy' || ageStage === 'senior') {
       return {
         ingredientName: item.name,
         level: 'adjust',
         suggestion: '建议少量尝试',
-        reason: `${dog.name}属于${dog.ageStage === 'puppy' ? '幼犬' : '老年犬'}阶段，新食材或自定义比例建议更谨慎。`
+        reason: `${dog.name}属于${ageStage === 'puppy' ? '幼犬' : '老年犬'}阶段，新食材或自定义比例建议更谨慎。`
       }
     }
 
@@ -121,5 +126,6 @@ module.exports = {
   buildIngredientAdvices,
   buildAdviceSummary,
   isHighFatIngredient,
-  categoryRatioReason
+  categoryRatioReason,
+  derivedAgeStage
 }

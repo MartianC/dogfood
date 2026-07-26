@@ -1,0 +1,62 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-light: var(--df-color-primary-soft);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-brand-color-light-active: var(--df-color-primary-soft-pressed);
+  --td-text-color-primary: var(--df-color-text);
+  --td-text-color-placeholder: var(--df-color-muted);
+  --td-bg-color-container: var(--df-color-surface);
+  --td-component-stroke: var(--df-color-line);
+  --td-cell-hover-color: var(--df-color-surface-pressed);
+  --td-error-color: var(--df-color-warning);
+  --td-button-primary-bg-color: var(--df-color-primary);
+  --td-button-primary-border-color: var(--df-color-primary);
+  --td-button-primary-active-bg-color: var(--df-color-primary-pressed);
+  --td-button-primary-active-border-color: var(--df-color-primary-pressed);
+  --td-button-light-bg-color: var(--df-color-primary-soft);
+  --td-button-light-border-color: var(--df-color-primary-soft);
+  --td-button-light-color: var(--df-color-primary);
+  --td-button-light-active-bg-color: var(--df-color-primary-soft-pressed);
+  --td-button-light-active-border-color: var(--df-color-primary-soft-pressed);
+  --td-button-border-radius: var(--df-radius-sm);
+}
+
+.recipe-popup-content {
+  border-radius: var(--df-radius-xl) var(--df-radius-xl) 0 0;
+}
+
+.recipe-popup {
+  box-sizing: border-box;
+  padding: var(--df-space-5) var(--df-space-6);
+  background: var(--df-color-surface);
+}
+
+.recipe-popup__heading {
+  margin-bottom: var(--df-space-3);
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 700;
+  text-align: center;
+}
+
+.recipe-popup__dog-note {
+  display: flex;
+  align-items: center;
+  gap: var(--df-space-2);
+  color: var(--df-color-muted);
+}
+
+.recipe-popup__chevron {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-lg);
+  line-height: 1;
+}
+
+.recipe-popup__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--df-space-4);
+  margin-top: var(--df-space-5);
+}

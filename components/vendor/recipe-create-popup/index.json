@@ -1,0 +1,10 @@
+{
+  "component": true,
+  "styleIsolation": "isolated",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-popup": "tdesign-miniprogram/popup/popup"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "搜索食材",
+  "usingComponents": {
+    "recipe-ingredient-list": "../../../components/vendor/recipe-ingredient-list/index",
+    "recipe-ingredient-popup": "../../../components/vendor/recipe-ingredient-popup/index",
+    "recipe-ingredient-search": "../../../components/vendor/recipe-ingredient-search/index",
+    "ui-tag": "../../../components/ui/ui-tag/index"
+  }
+}

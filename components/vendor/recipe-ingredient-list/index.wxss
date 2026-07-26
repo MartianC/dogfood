@@ -1,0 +1,94 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-text-color-primary: var(--df-color-text);
+  --td-text-color-placeholder: var(--df-color-muted);
+  --td-bg-color-container: var(--df-color-surface);
+  --td-component-stroke: var(--df-color-line);
+  --td-cell-hover-color: var(--df-color-surface-pressed);
+  --td-input-text-color: var(--df-color-text);
+  --td-input-placeholder-color: var(--df-color-muted);
+  --td-input-bg-color: var(--df-color-surface-muted);
+  --td-input-default-text-color: var(--df-color-text);
+  --td-input-suffix-text-color: var(--df-color-muted);
+  --td-input-vertical-padding: 0;
+  --td-font-body-large: var(--df-font-lg) / 1.5;
+  --td-cell-vertical-padding: 16rpx;
+  --td-cell-horizontal-padding: 24rpx;
+  --td-cell-title-font: var(--df-font-md) / 1.4;
+  --td-cell-description-font: var(--df-font-sm) / 1.4;
+  --td-cell-title-color: var(--df-color-text);
+  --td-cell-description-color: var(--df-color-muted);
+  --td-spacer-2: 24rpx;
+}
+
+.recipe-ingredient-list__group {
+  box-sizing: border-box;
+  margin: 0;
+  border: 1rpx solid var(--df-color-line);
+  background: var(--df-color-surface);
+}
+
+.recipe-ingredient-list__cell--search {
+  --td-cell-horizontal-padding: 32rpx;
+  --td-cell-description-font: var(--df-font-xs) / 30rpx;
+}
+
+.recipe-ingredient-list__amount {
+  display: flex;
+  min-width: 194rpx;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--df-space-2);
+}
+
+.recipe-ingredient-list__ratio {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  white-space: nowrap;
+}
+
+.recipe-ingredient-list__input {
+  box-sizing: border-box;
+  flex: 0 0 160rpx;
+  width: 160rpx;
+  min-height: 72rpx;
+  padding: 0 var(--df-space-3);
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-md);
+  background: var(--df-color-surface-muted);
+  overflow: hidden;
+  font-weight: 700;
+}
+
+.recipe-ingredient-list__action {
+  display: flex;
+  width: 56rpx;
+  height: 56rpx;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--df-radius-pill);
+}
+
+.recipe-ingredient-list__action-icon {
+  display: block;
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.recipe-ingredient-list__action--edit {
+  background: var(--df-color-warning);
+}
+
+.recipe-ingredient-list__action--search {
+  width: 48rpx;
+  height: 48rpx;
+  background: var(--df-color-primary);
+}
+
+.recipe-ingredient-list__action--search .recipe-ingredient-list__action-icon {
+  width: 28rpx;
+  height: 28rpx;
+}

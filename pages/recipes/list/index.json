@@ -1,8 +1,9 @@
 {
-  "navigationBarTitleText": "食谱",
+  "navigationBarTitleText": "我的食谱",
   "usingComponents": {
-    "recipe-card": "../../../components/recipe-card/index",
-    "ui-field": "../../../components/ui/ui-field/index",
-    "ui-notice": "../../../components/ui/ui-notice/index"
+    "recipe-create-popup": "../../../components/vendor/recipe-create-popup/index",
+    "recipe-empty": "../../../components/vendor/recipe-empty/index",
+    "recipe-fab": "../../../components/vendor/recipe-fab/index",
+    "recipe-library-card": "../../../components/recipe-library-card/index"
   }
 }
