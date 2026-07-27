@@ -44,9 +44,18 @@ async function loadActiveRecipeVersion(database) {
 
 function normalizeRecipe(document) {
   return {
-    ...document,
-    id: document._id,
-    ingredients: Array.isArray(document.ingredients) ? document.ingredients : []
+    id: String(document._id || ''),
+    title: String(document.title || ''),
+    ingredients: Array.isArray(document.ingredients)
+      ? document.ingredients.map((ingredient) => ({
+        position: Number(ingredient.position || 0),
+        raw_name: String(ingredient.raw_name || ''),
+        amount_raw: ingredient.amount_raw == null
+          ? null
+          : String(ingredient.amount_raw),
+        mapping_status: String(ingredient.mapping_status || 'unmatched')
+      }))
+      : []
   }
 }
 
@@ -85,12 +94,16 @@ function createSearchHumanRecipes(database) {
       .get()
     const rows = Array.isArray(result.data) ? result.data : []
     const page = rows.slice(0, limit)
-    return {
+    const response = {
       contract: 'searchHumanRecipes/v1',
       recipeVersion,
       items: page.map(normalizeRecipe),
       nextCursor: rows.length > limit ? encodeCursor(page[page.length - 1]) : null
     }
+    if (Buffer.byteLength(JSON.stringify(response), 'utf8') > 256 * 1024) {
+      throw new Error('菜谱搜索响应超过 256 KB 合同预算')
+    }
+    return response
   }
 }
 

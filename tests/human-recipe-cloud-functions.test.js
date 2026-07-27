@@ -7,6 +7,9 @@ const {
 const {
   createGetHumanRecipe
 } = require('../cloudfunctions/getHumanRecipe/index')
+const mock = require('../services/adapters/mock')
+
+const MAX_SEARCH_RESPONSE_BYTES = 256 * 1024
 
 function matches(document, condition) {
   if (condition && condition.$and) return condition.$and.every((item) => matches(document, item))
@@ -91,7 +94,16 @@ const fixtures = {
       sortKey: 'a',
       title: 'A 菜',
       search_text: 'a 菜 番茄',
-      ingredients: [{ position: 0, raw_name: '番茄', components: [] }]
+      internalOnly: '不得泄漏',
+      ingredients: [{
+        position: 0,
+        raw_name: '番茄',
+        amount_raw: '2 个',
+        mapping_status: 'matched',
+        mapping_rule: 'internal-rule',
+        internalOnly: '不得泄漏',
+        components: [{ internalOnly: '不得泄漏' }]
+      }]
     },
     {
       _id: 'recipe-b',
@@ -133,7 +145,14 @@ test('搜索只解析 active recipe_version，并以 sortKey + _id 稳定游标�
   assert.equal(first.contract, 'searchHumanRecipes/v1')
   assert.equal(first.recipeVersion, 'recipe-v2')
   assert.deepEqual(first.items.map((item) => item.id), ['recipe-a', 'recipe-b'])
-  assert.deepEqual(first.items[0].ingredients, fixtures.human_recipes[0].ingredients)
+  assert.deepEqual(Object.keys(first.items[0]).sort(), ['id', 'ingredients', 'title'])
+  assert.deepEqual(first.items[0].ingredients, [{
+    position: 0,
+    raw_name: '番茄',
+    amount_raw: '2 个',
+    mapping_status: 'matched'
+  }])
+  assert.doesNotMatch(JSON.stringify(first), /internalOnly|search_text|mapping_rule/)
   assert.deepEqual(second.items.map((item) => item.id), ['recipe-c'])
   assert.equal(second.nextCursor, null)
   assert.deepEqual(
@@ -142,6 +161,44 @@ test('搜索只解析 active recipe_version，并以 sortKey + _id 稳定游标�
   )
   assert.equal(calls.filter((call) => call.name === 'human_recipes').length, 2)
   assert.equal(calls.some((call) => call.name === 'canine_ingredient_policies'), false)
+})
+
+test('云端与 Mock 搜索摘要键集合一致且最大页响应不携带内部投影', async () => {
+  const paddedFixtures = {
+    data_releases: fixtures.data_releases,
+    human_recipes: Array.from({ length: 21 }, (_, index) => ({
+      ...fixtures.human_recipes[0],
+      _id: `large-${String(index).padStart(2, '0')}`,
+      sortKey: `large-${String(index).padStart(2, '0')}`,
+      title: `大页菜谱 ${index}`,
+      internalOnly: 'x'.repeat(300000),
+      search_text: `大页菜谱 ${index}`,
+      ingredients: [{
+        ...fixtures.human_recipes[0].ingredients[0],
+        mapping_rule: 'internal-rule',
+        internalOnly: 'x'.repeat(10000)
+      }]
+    }))
+  }
+  const { database } = createDatabase(paddedFixtures)
+  const cloudResult = await createSearchHumanRecipes(database)({ limit: 20 })
+  const mockResult = await mock.searchHumanRecipes({ limit: 1 })
+
+  assert.deepEqual(
+    Object.keys(cloudResult.items[0]).sort(),
+    Object.keys(mockResult.items[0]).sort()
+  )
+  assert.deepEqual(
+    Object.keys(cloudResult.items[0].ingredients[0]).sort(),
+    Object.keys(mockResult.items[0].ingredients[0]).sort()
+  )
+  assert.ok(
+    Buffer.byteLength(JSON.stringify(cloudResult), 'utf8') <= MAX_SEARCH_RESPONSE_BYTES
+  )
+  assert.doesNotMatch(
+    JSON.stringify(cloudResult),
+    /internalOnly|search_text|mapping_rule/
+  )
 })
 
 test('详情只读取 active 版本且一次返回完整来源有序原料', async () => {
@@ -154,6 +211,7 @@ test('详情只读取 active 版本且一次返回完整来源有序原料', asy
   assert.equal(result.recipeVersion, 'recipe-v2')
   assert.equal(result.recipe.id, 'recipe-b')
   assert.deepEqual(result.recipe.ingredients, fixtures.human_recipes[1].ingredients)
+  assert.equal(result.recipe.search_text, 'b 菜 胡萝卜')
   assert.equal(calls.filter((call) => call.name === 'human_recipes').length, 1)
 })
 

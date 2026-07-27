@@ -123,12 +123,12 @@ CloudBase 公共只读投影
 
 ### 食材知识运行时投影
 
-- `data_releases`：发布指针和计数。字段：`release_id`、`schema_version`、`status`（当前固定 `staging`）、`catalog_version`、`policy_version`、`ranking_version`、`generated_at`、`sources[]`、`collections` 计数。
+- `data_releases`：发布指针和计数。字段：`release_id`、`base_release_id`、`schema_version`、`status`（当前固定 `staging`）、`catalog_version`、`policy_version`、`ranking_version`、独立 `recipe_version`、输入 `mapping_version`、`rollback_candidate`、`generated_at`、`sources[]`、`collections` 计数。
 - `food_nutrition_profiles`：一条 `source_release_id + fdc_id` 一份聚合快照。字段：`release_id`、`food_id`、`fdc_id`、食物描述/来源版本、`nutrient_count`、`known_nutrient_count`、`nutrients` 对象。`nutrients[nutrient_id]` 含 `name`、`unit`、`amount`、`value_status`。
 - `ingredient_catalog`：搜索和选择目录项。字段：`release_id`、`catalog_version`、`policy_version`、`concept_id`、`variant_id`、中文名/别名、分类、制备/部位/皮骨状态、`food_id`/`fdc_id`、来源版本、`policy_status`；新生成物不保存权限布尔字段。
 - `canine_ingredient_policies`：安全策略快照。字段：`policy_id`、`policy_version`、兼容目录版本、`subject_key`、`concept_id`、可选 `variant_id`、`decision`、`hazard_type`、`conditions`、`evidence`、`rationale`、审核人/时间和下次复核时间。
 - `nutrient_rankings`：版本化营养素排行。字段：`ranking_version`、兼容目录/策略版本、`nutrient_code`、中文名、单位、basis、`formula`、候选/入榜数量、生成时间、`items[]`。排行项含 rank、概念/形态/food ID、每 100g 数值和组成值。
-- `human_recipes`：授权菜谱运行时投影。历史 `recipe_version=2026-07-23-v1` 共6,082条且保持不变；v2 每条内嵌全部来源有序原料、映射组件、四态策略、阻断原因和版本快照，人饭分量只作参考。
+- `human_recipes`：授权菜谱运行时投影。历史 `recipe_version=2026-07-23-v1` 共6,082条且保持不变；v2 使用 `human-recipe-runtime-v2-<mapping_version>` 独立版本和新 `_id/release_id` 键空间，每条内嵌全部来源有序原料、映射组件、四态策略、阻断原因和版本快照，人饭分量只作参考。
 
 ## 4. 离线 SQLite 主库表
 

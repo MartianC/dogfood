@@ -102,3 +102,21 @@ test('mainPackageReachability/v2 遇到语法错误时关闭检查并返回失�
     /无法解析真实 require 图/
   )
 })
+
+test('mainPackageReachability/v2 不信任 Annex B 和 with 形成的动态 require', () => {
+  const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
+  const dynamicBindingFixtures = [
+    'fake-require-annex-b-block',
+    'fake-require-annex-b-if',
+    'fake-require-with'
+  ]
+
+  dynamicBindingFixtures.forEach((fixture) => {
+    const checker = createBoundaryChecker(path.join(fixtureRoot, fixture))
+    assert.deepEqual(
+      checker.findUnusedMainPackageJavaScript(),
+      ['utils/orphan.js'],
+      `${fixture} 不应建立可信 CommonJS 依赖`
+    )
+  })
+})

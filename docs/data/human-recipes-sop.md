@@ -88,7 +88,9 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 
 每条文档必须包含：
 
-- `recipe_version` / `mapping_version`；
+- 独立的 `recipe_version` 与输入 `mapping_version`；v2 的
+  `recipe_version=human-recipe-runtime-v2-<mapping_version>`，不得复用历史
+  v1 版本；
 - 兼容 `catalog_version` / `policy_version`；
 - 来源版本和授权状态；
 - 标题、分类、搜索文本；
@@ -110,6 +112,10 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 - 运行时文档至少具有一个已映射且非 `blocked` 组件；
 - 人饭分量全部标记为仅供参考；
 - `_id` 唯一，文档低于512 KiB；
+- v2 `_id`、`recipe_version`、运行时 `release_id` 和 `data_releases._id`
+  均不得与历史 v1 键空间重叠；
+- staging 报告和 `data_releases.rollback_candidate` 明确记录切换前的
+  active `recipe_version`；
 - SQLite 完整性和外键检查通过；
 - 抽检允许、阻断、未匹配和分量错位样本。
 
@@ -125,6 +131,8 @@ python3 scripts/fooddata/import_ingredient_cloudbase.py \
 ```
 
 严格先导入 `human_recipes`，按 `recipe_version` 校验数量，再更新 `data_releases`。正常查询必须带活动 `recipe_version`，客户端不能写入该集合。
+导入 staging 只允许新增 v2 键；不得用历史 v1 `_id` 做 Upsert，也不得在
+验收过程中切换 active。只有显式发布动作才能把指针从回滚候选切到新版本。
 
 ## 后续增量维护
 
@@ -149,4 +157,6 @@ python3 scripts/fooddata/import_ingredient_cloudbase.py \
 - 待审核高频写法：983种；
 - 历史 v1 至少有一个旧版安全可选组件的运行时菜谱：6,082条；该历史快照不就地改写。
 
-`mapping_version=2026-07-23-v1` 已导入 CloudBase staging。当前版本是保守基线，后续通过审核高频原料写法和扩展标准食材目录逐步增加可用菜谱。
+`mapping_version=2026-07-23-v1` 是当前映射输入；历史
+`recipe_version=2026-07-23-v1` 快照保持不变。新 v2 运行时投影使用独立
+`recipe_version` 和文档 ID，后续通过审核高频原料写法和扩展标准食材目录逐步增加可用菜谱。

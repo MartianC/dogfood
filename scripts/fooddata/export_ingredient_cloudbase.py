@@ -208,6 +208,17 @@ def release_slug(value: str) -> str:
     return slug.strip("_") or "release"
 
 
+def human_recipe_runtime_versions(
+    release_id: str,
+    mapping: sqlite3.Row | dict[str, Any],
+) -> dict[str, str]:
+    mapping_version = str(mapping["mapping_version"])
+    return {
+        "recipe_version": f"human-recipe-runtime-v2-{mapping_version}",
+        "release_id": f"human-recipe-release-v2-{release_id}-{mapping_version}",
+    }
+
+
 def document_bytes(document: dict[str, Any]) -> bytes:
     return json.dumps(document, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
@@ -796,6 +807,7 @@ def build_human_recipe_document(
     mapping: sqlite3.Row,
     recipe: dict[str, Any],
 ) -> dict[str, Any]:
+    runtime_versions = human_recipe_runtime_versions(release_id, mapping)
     raw_ingredients = recipe.pop("ingredients")
     ingredients: list[dict[str, Any]] = []
     for ingredient in raw_ingredients:
@@ -821,7 +833,7 @@ def build_human_recipe_document(
                         if component.get("policy_status") == "blocked"
                         else None
                     ),
-                    "recipe_version": mapping["mapping_version"],
+                    "recipe_version": runtime_versions["recipe_version"],
                     "mapping_version": mapping["mapping_version"],
                     "catalog_version": mapping["compatible_catalog_version"],
                     "policy_version": mapping["compatible_policy_version"],
@@ -870,14 +882,14 @@ def build_human_recipe_document(
     ]
     search_text = " ".join(dict.fromkeys(value for value in search_values if value))
     document_id = (
-        f"{release_slug(str(mapping['mapping_version']))}_recipe_"
+        f"{release_slug(runtime_versions['recipe_version'])}_recipe_"
         f"{release_slug(str(recipe['source_recipe_id']))}"
     )
     return {
         "_id": document_id,
         "projection_contract": "humanRecipeRuntimeProjection/v2",
-        "release_id": release_id,
-        "recipe_version": mapping["mapping_version"],
+        "release_id": runtime_versions["release_id"],
+        "recipe_version": runtime_versions["recipe_version"],
         "mapping_version": mapping["mapping_version"],
         "compatible_catalog_version": mapping["compatible_catalog_version"],
         "compatible_policy_version": mapping["compatible_policy_version"],
@@ -993,8 +1005,10 @@ def build_human_recipe_projection_report(
     *,
     release_id: str,
     recipe_version: str | None,
+    mapping_version: str | None,
     catalog_version: str | None,
     policy_version: str | None,
+    rollback_recipe_version: str | None,
 ) -> dict[str, Any]:
     status_distribution = Counter(
         component["policy_status"]
@@ -1012,7 +1026,7 @@ def build_human_recipe_projection_report(
     versions = {
         "releaseId": release_id,
         "recipeVersion": recipe_version,
-        "mappingVersion": recipe_version,
+        "mappingVersion": mapping_version,
         "catalogVersion": catalog_version,
         "policyVersion": policy_version,
     }
@@ -1053,7 +1067,7 @@ def build_human_recipe_projection_report(
         "versionChecksum": version_checksum,
         "rollbackCandidate": {
             "status": "requires-active-pointer",
-            "recipeVersion": None,
+            "recipeVersion": rollback_recipe_version,
         },
         "activation": {
             "targetStatus": "staging",
@@ -1122,9 +1136,19 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             (nutrient_ranking_version,),
         ).fetchone()[0] if nutrient_ranking_version else 0
         recipe_mapping = recipe_mapping_release(conn, version, safety_version)
-        recipe_version = (
+        mapping_version = (
             str(recipe_mapping["mapping_version"]) if recipe_mapping is not None else None
         )
+        runtime_versions = (
+            human_recipe_runtime_versions(release_id, recipe_mapping)
+            if recipe_mapping is not None
+            else {
+                "recipe_version": None,
+                "release_id": release_id,
+            }
+        )
+        recipe_version = runtime_versions["recipe_version"]
+        runtime_release_id = runtime_versions["release_id"]
         source_recipe_count = conn.execute(
             "SELECT COUNT(*) FROM human_recipe WHERE source_release_id=?",
             (recipe_mapping["source_release_id"],),
@@ -1135,21 +1159,37 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
         human_recipe_count = len(human_recipe_projection)
         projection_report = build_human_recipe_projection_report(
             human_recipe_projection,
-            release_id=release_id,
+            release_id=runtime_release_id,
             recipe_version=recipe_version,
+            mapping_version=mapping_version,
             catalog_version=version,
             policy_version=safety_version,
+            rollback_recipe_version=mapping_version,
         )
         validate_human_recipe_projection_report(projection_report)
         release_document = {
-            "_id": f"ingredient_release_{release_slug(release_id)}",
-            "release_id": release_id,
+            "_id": (
+                f"human_recipe_release_{release_slug(str(runtime_release_id))}"
+                if recipe_mapping is not None
+                else f"ingredient_release_{release_slug(release_id)}"
+            ),
+            "release_id": runtime_release_id,
             "schema_version": schema_version,
             "status": "staging",
             "catalog_version": version,
             "policy_version": safety_version,
             "ranking_version": nutrient_ranking_version,
             "recipe_version": recipe_version,
+            "mapping_version": mapping_version,
+            "rollback_candidate": (
+                {
+                    "status": "active",
+                    "recipe_version": mapping_version,
+                }
+                if mapping_version is not None
+                else None
+            ),
+            "base_release_id": release_id,
             "recipe_source_count": source_recipe_count,
             "generated_at": stable_export_timestamp(release_id),
             "sources": sources,
@@ -1246,7 +1286,8 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             if catalog_count == 0:
                 pending_collections.insert(1, "ingredient_catalog")
             manifest = {
-                "release_id": release_id,
+                "release_id": runtime_release_id,
+                "base_release_id": release_id,
                 "schema_version": schema_version,
                 "generated_at": stable_export_timestamp(release_id),
                 "sources": sources,

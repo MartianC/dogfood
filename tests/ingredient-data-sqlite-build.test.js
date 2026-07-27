@@ -658,10 +658,25 @@ test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行�
   assert.equal(protein.items[1].amount_per_100g, 0.88)
   assert.equal(manifest.collections.human_recipes.rows, 1)
   assert.equal(manifest.pending_collections.includes('human_recipes'), false)
-  assert.equal(release.recipe_version, 'test-recipe-mapping-v1')
+  assert.equal(
+    release.recipe_version,
+    'human-recipe-runtime-v2-test-recipe-mapping-v1'
+  )
+  assert.equal(release.mapping_version, 'test-recipe-mapping-v1')
+  assert.equal(
+    release.release_id,
+    'human-recipe-release-v2-2026-07-22-test-test-recipe-mapping-v1'
+  )
+  assert.equal(
+    release.rollback_candidate.recipe_version,
+    'test-recipe-mapping-v1'
+  )
   assert.equal(release.recipe_source_count, 2)
   assert.equal(release.collections.human_recipes, 1)
   const tomatoRecipe = humanRecipes.find((item) => item.source_recipe_id === '1')
+  assert.equal(tomatoRecipe.recipe_version, release.recipe_version)
+  assert.equal(tomatoRecipe.mapping_version, 'test-recipe-mapping-v1')
+  assert.equal(tomatoRecipe.release_id, release.release_id)
   assert.equal(tomatoRecipe.non_blocked_component_count, 1)
   assert.equal(tomatoRecipe.amounts_are_reference_only, true)
   assert.equal(tomatoRecipe.ingredients[0].components[0].concept_id, 'ingredient_tomato')

@@ -232,7 +232,7 @@ python3 scripts/fooddata/import_ingredient_cloudbase.py \
   --collection ingredient_catalog
 ```
 
-脚本只允许写入 `data_releases`、`food_nutrition_profiles`、`ingredient_catalog`、`canine_ingredient_policies`、`nutrient_rankings` 与 `human_recipes`，导入前校验 manifest 行数和 SHA-256，按稳定 `_id` 幂等 Upsert；各投影按 `release_id`、`policy_version`、`ranking_version` 或 `recipe_version` 核对本版本数量，不与历史版本总数混淆。它不会激活 `staging` 发布。
+脚本只允许写入 `data_releases`、`food_nutrition_profiles`、`ingredient_catalog`、`canine_ingredient_policies`、`nutrient_rankings` 与 `human_recipes`，导入前校验 manifest 行数和 SHA-256，按稳定 `_id` 幂等 Upsert；各投影按 `release_id`、`policy_version`、`ranking_version` 或 `recipe_version` 核对本版本数量，不与历史版本总数混淆。v2 人饭投影从输入 `mapping_version` 派生独立的运行时 `recipe_version`、`release_id` 和文档 ID，`data_releases` 同时保留旧 active 回滚候选，禁止与历史 v1 键空间重叠。脚本不会激活 `staging` 发布。
 
 CloudBase staging 的历史 v1 包含107条目录项、119条安全策略、44条营养素排行和6,082条人饭菜谱。目录结果为 `allowed=11`、`conditional=25`、`blocked=4`、`unknown=67`；这些历史投影按旧规则生成并保持不变。新 v2 投影使用 `allowed|conditional|unknown` 可操作、`blocked` 拒绝的统一规则，只写 staging，不自动切换 active。
 

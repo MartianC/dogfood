@@ -182,7 +182,14 @@ async function searchHumanRecipes(options = {}) {
     .map((recipe) => ({
       id: recipe._id,
       title: recipe.title,
-      ingredients: recipe.ingredients
+      ingredients: recipe.ingredients.map((ingredient) => ({
+        position: Number(ingredient.position || 0),
+        raw_name: String(ingredient.raw_name || ''),
+        amount_raw: ingredient.amount_raw == null
+          ? null
+          : String(ingredient.amount_raw),
+        mapping_status: String(ingredient.mapping_status || 'unmatched')
+      }))
     }))
   return {
     contract: 'searchHumanRecipes/v1',

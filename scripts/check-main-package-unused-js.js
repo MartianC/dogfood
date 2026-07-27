@@ -84,13 +84,23 @@ function isFunction(node) {
     || node.type === 'ArrowFunctionExpression'
 }
 
-function collectVarBindings(node, scope) {
+function hasUseStrictDirective(statements) {
+  return statements.some((statement) => statement.directive === 'use strict')
+}
+
+function collectVarBindings(node, scope, allowAnnexB) {
   if (!node || typeof node !== 'object') return
   if (Array.isArray(node)) {
-    node.forEach((item) => collectVarBindings(item, scope))
+    node.forEach((item) => collectVarBindings(item, scope, allowAnnexB))
     return
   }
-  if (isFunction(node) || node.type === 'ClassDeclaration' || node.type === 'ClassExpression') {
+  if (isFunction(node)) {
+    if (allowAnnexB && node.type === 'FunctionDeclaration' && node.id) {
+      scope.bindings.add(node.id.name)
+    }
+    return
+  }
+  if (node.type === 'ClassDeclaration' || node.type === 'ClassExpression') {
     return
   }
   if (node.type === 'VariableDeclaration' && node.kind === 'var') {
@@ -98,7 +108,7 @@ function collectVarBindings(node, scope) {
       addPatternBindings(declaration.id, scope)
     })
   }
-  Object.values(node).forEach((value) => collectVarBindings(value, scope))
+  Object.values(node).forEach((value) => collectVarBindings(value, scope, allowAnnexB))
 }
 
 function hasBinding(scope, name) {
@@ -109,45 +119,58 @@ function hasBinding(scope, name) {
 }
 
 function collectRequires(ast, requests) {
-  function visit(node, scope) {
+  function visit(node, scope, strictMode = false) {
     if (!node || typeof node !== 'object') return
     if (Array.isArray(node)) {
-      node.forEach((item) => visit(item, scope))
+      node.forEach((item) => visit(item, scope, strictMode))
       return
     }
 
     if (node.type === 'Program') {
       const programScope = new Scope(scope)
+      const programStrict = hasUseStrictDirective(node.body)
       addDirectBindings(node.body, programScope, true)
-      collectVarBindings(node, programScope)
-      visit(node.body, programScope)
+      collectVarBindings(node, programScope, !programStrict)
+      visit(node.body, programScope, programStrict)
       return
     }
 
     if (node.type === 'BlockStatement' || node.type === 'StaticBlock') {
       const blockScope = new Scope(scope)
       addDirectBindings(node.body, blockScope, false)
-      visit(node.body, blockScope)
+      visit(node.body, blockScope, strictMode)
       return
     }
 
     if (isFunction(node)) {
       const functionScope = new Scope(scope)
+      const functionStrict = strictMode || (
+        node.body.type === 'BlockStatement'
+        && hasUseStrictDirective(node.body.body)
+      )
       if (node.id) functionScope.bindings.add(node.id.name)
       node.params.forEach((parameter) => addPatternBindings(parameter, functionScope))
       if (node.body.type === 'BlockStatement') {
-        collectVarBindings(node.body, functionScope)
+        collectVarBindings(node.body, functionScope, !functionStrict)
       }
-      visit(node.params, functionScope)
-      visit(node.body, functionScope)
+      visit(node.params, functionScope, functionStrict)
+      visit(node.body, functionScope, functionStrict)
       return
     }
 
     if (node.type === 'CatchClause') {
       const catchScope = new Scope(scope)
       addPatternBindings(node.param, catchScope)
-      visit(node.param, catchScope)
-      visit(node.body, catchScope)
+      visit(node.param, catchScope, strictMode)
+      visit(node.body, catchScope, strictMode)
+      return
+    }
+
+    if (node.type === 'WithStatement') {
+      const withScope = new Scope(scope)
+      withScope.bindings.add('require')
+      visit(node.object, scope, strictMode)
+      visit(node.body, withScope, strictMode)
       return
     }
 
@@ -158,10 +181,10 @@ function collectRequires(ast, requests) {
           addPatternBindings(declaration.id, loopScope)
         })
       }
-      visit(node.init, loopScope)
-      visit(node.test, loopScope)
-      visit(node.update, loopScope)
-      visit(node.body, loopScope)
+      visit(node.init, loopScope, strictMode)
+      visit(node.test, loopScope, strictMode)
+      visit(node.update, loopScope, strictMode)
+      visit(node.body, loopScope, strictMode)
       return
     }
 
@@ -172,9 +195,9 @@ function collectRequires(ast, requests) {
           addPatternBindings(declaration.id, loopScope)
         })
       }
-      visit(node.left, loopScope)
-      visit(node.right, loopScope)
-      visit(node.body, loopScope)
+      visit(node.left, loopScope, strictMode)
+      visit(node.right, loopScope, strictMode)
+      visit(node.body, loopScope, strictMode)
       return
     }
 
@@ -185,10 +208,10 @@ function collectRequires(ast, requests) {
         switchScope,
         false
       )
-      visit(node.discriminant, scope)
+      visit(node.discriminant, scope, strictMode)
       node.cases.forEach((switchCase) => {
-        visit(switchCase.test, switchScope)
-        visit(switchCase.consequent, switchScope)
+        visit(switchCase.test, switchScope, strictMode)
+        visit(switchCase.consequent, switchScope, strictMode)
       })
       return
     }
@@ -196,8 +219,8 @@ function collectRequires(ast, requests) {
     if (node.type === 'ClassDeclaration' || node.type === 'ClassExpression') {
       const classScope = new Scope(scope)
       if (node.id) classScope.bindings.add(node.id.name)
-      visit(node.superClass, scope)
-      visit(node.body, classScope)
+      visit(node.superClass, scope, strictMode)
+      visit(node.body, classScope, true)
       return
     }
 
@@ -216,7 +239,7 @@ function collectRequires(ast, requests) {
       requests.push(node.arguments[0].value)
     }
 
-    Object.values(node).forEach((value) => visit(value, scope))
+    Object.values(node).forEach((value) => visit(value, scope, strictMode))
   }
 
   visit(ast, null)

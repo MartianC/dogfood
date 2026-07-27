@@ -6,6 +6,8 @@ const { spawnSync } = require('node:child_process')
 
 const root = path.resolve(__dirname, '..')
 const exporter = path.join(root, 'scripts/fooddata/export_ingredient_cloudbase.py')
+const historicalSQLite = process.env.DOGFOOD_HISTORICAL_RECIPE_SQLITE || ''
+const historicalExportDir = process.env.DOGFOOD_HISTORICAL_RECIPE_EXPORT_DIR || ''
 
 function runPython(body) {
   return spawnSync('python3', ['-c', body], {
@@ -75,22 +77,34 @@ recipe = {
         ])
     ],
 }
+versions = module.human_recipe_runtime_versions("release-v2", mapping)
 document = module.build_human_recipe_document("release-v2", mapping, recipe)
 report = module.build_human_recipe_projection_report(
     [document],
-    release_id="release-v2",
-    recipe_version="recipe-map-v2",
+    release_id=versions["release_id"],
+    recipe_version=versions["recipe_version"],
+    mapping_version="recipe-map-v2",
     catalog_version="catalog-v2",
     policy_version="policy-v2",
+    rollback_recipe_version="recipe-map-v2",
 )
 module.validate_human_recipe_projection_report(report)
-print(json.dumps({"document": document, "report": report}, ensure_ascii=False))
+print(json.dumps({"document": document, "report": report, "versions": versions}, ensure_ascii=False))
 `
   const result = runPython(script)
   assert.equal(result.status, 0, result.stderr)
-  const { document, report } = JSON.parse(result.stdout)
+  const { document, report, versions } = JSON.parse(result.stdout)
 
   assert.equal(document.projection_contract, 'humanRecipeRuntimeProjection/v2')
+  assert.equal(versions.recipe_version, 'human-recipe-runtime-v2-recipe-map-v2')
+  assert.equal(
+    versions.release_id,
+    'human-recipe-release-v2-release-v2-recipe-map-v2'
+  )
+  assert.equal(document.recipe_version, versions.recipe_version)
+  assert.equal(document.mapping_version, 'recipe-map-v2')
+  assert.equal(document.release_id, versions.release_id)
+  assert.notEqual(document._id, 'recipe_map_v2_recipe_recipe_1')
   assert.deepEqual(document.ingredients.map((item) => item.raw_name), [
     '番茄', '胡萝卜', '香菜', '洋葱', '一撮盐'
   ])
@@ -101,7 +115,7 @@ print(json.dumps({"document": document, "report": report}, ensure_ascii=False))
     ['amount_is_reference_only', 'amount_raw', 'mapping_status', 'position', 'raw_name']
   )
   for (const component of document.ingredients.slice(0, 4).map((item) => item.components[0])) {
-    assert.equal(component.recipe_version, 'recipe-map-v2')
+    assert.equal(component.recipe_version, versions.recipe_version)
     assert.equal(component.mapping_version, 'recipe-map-v2')
     assert.equal(component.catalog_version, 'catalog-v2')
     assert.equal(component.policy_version, 'policy-v2')
@@ -116,7 +130,119 @@ print(json.dumps({"document": document, "report": report}, ensure_ascii=False))
   })
   assert.equal(report.blockedReasons['含有 不适合犬只的成分。 请勿添加。'], 1)
   assert.equal(report.rollbackCandidate.status, 'requires-active-pointer')
+  assert.equal(report.rollbackCandidate.recipeVersion, 'recipe-map-v2')
+  assert.equal(report.versions.recipeVersion, versions.recipe_version)
+  assert.equal(report.versions.mappingVersion, 'recipe-map-v2')
   assert.equal(report.activation.productionActiveSwitchAllowed, false)
+})
+
+test('真实历史 SQLite 的 v2 staging 与 v1 键空间隔离且显式切换前 active 不变', {
+  skip: !historicalSQLite || !historicalExportDir
+}, () => {
+  const tmp = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'human-recipe-v2-'))
+  const outDir = path.join(tmp, 'cloudbase')
+  try {
+    const result = spawnSync('python3', [
+      exporter,
+      '--sqlite', historicalSQLite,
+      '--out-dir', outDir
+    ], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 16 * 1024 * 1024
+    })
+    assert.equal(result.status, 0, result.stderr)
+
+    const oldLines = fs.readFileSync(
+      path.join(historicalExportDir, 'human_recipes.jsonl'),
+      'utf8'
+    ).trim().split('\n')
+    const newLines = fs.readFileSync(
+      path.join(outDir, 'human_recipes.jsonl'),
+      'utf8'
+    ).trim().split('\n')
+    const oldDocuments = new Map(oldLines.map((line) => {
+      const document = JSON.parse(line)
+      return [document._id, line]
+    }))
+    const newDocuments = newLines.map((line) => JSON.parse(line))
+    const newRelease = JSON.parse(fs.readFileSync(
+      path.join(outDir, 'data_releases.jsonl'),
+      'utf8'
+    ).trim())
+    const report = JSON.parse(fs.readFileSync(
+      path.join(outDir, 'human-recipe-projection-report.json'),
+      'utf8'
+    ))
+
+    assert.equal(newDocuments.length, 22079)
+    assert.equal(
+      newDocuments.every((document) => document.mapping_version === '2026-07-23-v1'),
+      true
+    )
+    assert.equal(
+      newDocuments.every(
+        (document) => document.recipe_version !== '2026-07-23-v1'
+      ),
+      true
+    )
+    assert.equal(
+      newDocuments.some((document) => oldDocuments.has(document._id)),
+      false
+    )
+    assert.notEqual(newRelease._id, 'ingredient_release_2026_07_22_policy_v1')
+    assert.notEqual(newRelease.release_id, '2026-07-22-policy-v1')
+    assert.equal(newRelease.mapping_version, '2026-07-23-v1')
+    assert.equal(
+      newRelease.rollback_candidate.recipe_version,
+      '2026-07-23-v1'
+    )
+    assert.equal(report.versions.recipeVersion, newRelease.recipe_version)
+    assert.equal(report.versions.mappingVersion, '2026-07-23-v1')
+    assert.equal(report.rollbackCandidate.recipeVersion, '2026-07-23-v1')
+
+    const simulatedRecipes = new Map(oldDocuments)
+    newLines.forEach((line) => {
+      const document = JSON.parse(line)
+      simulatedRecipes.set(document._id, line)
+    })
+    oldDocuments.forEach((line, id) => {
+      assert.equal(simulatedRecipes.get(id), line)
+    })
+
+    const releases = [
+      {
+        _id: 'legacy-active',
+        status: 'active',
+        recipe_version: '2026-07-23-v1'
+      },
+      newRelease
+    ]
+    const activeRecipeVersion = () => releases.find(
+      (release) => release.status === 'active'
+    ).recipe_version
+    assert.equal(activeRecipeVersion(), '2026-07-23-v1')
+    assert.equal(
+      [...simulatedRecipes.values()]
+        .map((line) => JSON.parse(line))
+        .filter((document) => document.recipe_version === activeRecipeVersion())
+        .length,
+      oldDocuments.size
+    )
+
+    releases[0].status = 'staging'
+    releases[1].status = 'active'
+    assert.equal(activeRecipeVersion(), newRelease.recipe_version)
+    assert.equal(
+      [...simulatedRecipes.values()]
+        .map((line) => JSON.parse(line))
+        .filter((document) => document.recipe_version === activeRecipeVersion())
+        .length,
+      22079
+    )
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true })
+  }
 })
 
 test('投影报告 schema 固定机器契约且导出器拒绝 active 输出', () => {
