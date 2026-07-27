@@ -98,3 +98,33 @@ test('完整且满 8 周的普通档案 eligible，不从旧字段推断治疗�
 
   assert.deepEqual(result, { status: 'eligible', reasonCodes: [] })
 })
+
+test('非法或损坏的特殊营养需求失败关闭，不得判定 eligible', () => {
+  const invalidNeeds = [
+    {
+      hasDisease: 'false',
+      reproductiveStatus: 'none',
+      therapeuticWeightManagement: 'none'
+    },
+    {
+      hasDisease: false,
+      reproductiveStatus: 'unknown',
+      therapeuticWeightManagement: 'none'
+    },
+    {
+      hasDisease: false,
+      reproductiveStatus: 'none',
+      therapeuticWeightManagement: 'daily'
+    }
+  ]
+
+  invalidNeeds.forEach((specialNutritionNeeds) => {
+    const result = evaluateSharedMealDogEligibility({
+      ...eligibleDog,
+      specialNutritionNeeds
+    }, { today: '2026-07-27' })
+
+    assert.equal(result.status, 'incomplete')
+    assert.deepEqual(result.reasonCodes, ['invalid_special_nutrition_needs'])
+  })
+})

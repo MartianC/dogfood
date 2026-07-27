@@ -48,11 +48,11 @@ async function createDog(payload) {
     avoidIngredients: [],
     avatarUrl: '',
     dietGoal: 'daily',
-    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
-    specialNutritionNeeds: normalizeSpecialNutritionNeeds(payload.specialNutritionNeeds),
     createdAt: now(),
     updatedAt: now(),
-    ...payload
+    ...payload,
+    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
+    specialNutritionNeeds: normalizeSpecialNutritionNeeds(payload.specialNutritionNeeds)
   }
   storage.setSync('mockDogs', dogs.concat(dog))
   return dog

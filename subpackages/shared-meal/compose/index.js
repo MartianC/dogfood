@@ -1,4 +1,12 @@
-const { restoreDraft, resetDraft } = require('../../../services/sharedMealDraftService')
+const env = require('../../../config/env')
+const rawAdapter = env.useCloudBase
+  ? require('../../../services/adapters/cloudbase')
+  : require('../../../services/adapters/mock')
+const {
+  restoreTrustedDraft,
+  resetDraft,
+  normalizeHumanRecipeDetail
+} = require('../../../services/sharedMealDraftService')
 const {
   evaluateSharedMealDogEligibility
 } = require('../../../services/sharedMealDogEligibility')
@@ -24,10 +32,12 @@ Page({
     errorText: ''
   },
 
-  onLoad(options) {
+  async onLoad(options) {
     const draftId = String(options.draftId || '')
     this.setData({ draftId })
-    const restored = restoreDraft(draftId)
+    const restored = await restoreTrustedDraft(draftId, async (humanMenuId) => (
+      normalizeHumanRecipeDetail(await rawAdapter.getHumanRecipe(humanMenuId))
+    ))
     if (restored.status !== 'restored') {
       this.setData({ errorText: '草稿已失效，请返回后重新开始。' })
       return

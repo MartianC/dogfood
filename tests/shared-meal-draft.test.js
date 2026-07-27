@@ -8,6 +8,7 @@ const {
   createDraftFromMenus,
   saveDraft,
   restoreDraft,
+  restoreTrustedDraft,
   resetDraft
 } = require('../services/sharedMealDraftService')
 
@@ -146,7 +147,7 @@ test('旧版或损坏草稿显式失效，只有明确 reset 才清除', () => {
   assert.equal(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
 })
 
-test('草稿顶层版本必须与所有来源食材版本一致', () => {
+test('草稿顶层共同发布版本必须与所有来源食材一致', () => {
   const draft = createDraftFromMenus({
     id: 'draft-version-mismatch',
     dog,
@@ -165,4 +166,106 @@ test('草稿顶层版本必须与所有来源食材版本一致', () => {
   tampered.ingredients[0].dataVersions.policyVersion = 'other-policy'
 
   assert.throws(() => saveDraft(tampered), /草稿版本与食材版本不一致/)
+})
+
+test('同步篡改三份缓存也必须经 Issue 1 可信详情重验', async () => {
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  const forgedMenu = menu()
+  const draft = createDraftFromMenus({
+    id: 'draft-trusted-detail',
+    dog,
+    humanMenus: [forgedMenu],
+    sourceIngredientSelections: [{
+      humanMenuId: forgedMenu.id,
+      ingredientPosition: 0,
+      conceptId: fixture.conceptId,
+      variantId: fixture.variantId
+    }],
+    dataVersions
+  })
+  saveDraft(draft)
+
+  const blockedTrustedMenu = menu({ policyStatus: 'blocked' })
+  const blockedResult = await restoreTrustedDraft(
+    draft.id,
+    async () => blockedTrustedMenu
+  )
+  assert.deepEqual(blockedResult, {
+    status: 'invalid',
+    reason: 'untrusted_recipe_detail',
+    draft: null
+  })
+
+  const unmappedTrustedMenu = menu()
+  unmappedTrustedMenu.ingredients[0].components = []
+  const unmappedResult = await restoreTrustedDraft(
+    draft.id,
+    async () => unmappedTrustedMenu
+  )
+  assert.deepEqual(unmappedResult, {
+    status: 'invalid',
+    reason: 'untrusted_recipe_detail',
+    draft: null
+  })
+})
+
+test('共同发布版本一致时保留各食材不同的营养来源版本', () => {
+  const secondVersions = {
+    ...dataVersions,
+    nutritionSourceReleaseId: 'usda-sr-legacy-2018-04'
+  }
+  const secondMenu = {
+    ...menu({
+      conceptId: 'ingredient_beef',
+      variantId: 'variant_beef_raw',
+      foodId: 'food_beef',
+      displayName: '牛肉',
+      category: 'meat',
+      dataVersions: secondVersions
+    }),
+    id: 'human_recipe_beef'
+  }
+  const draft = createDraftFromMenus({
+    id: 'draft-mixed-nutrition-source',
+    dog,
+    humanMenus: [menu(), secondMenu],
+    sourceIngredientSelections: [
+      {
+        humanMenuId: 'human_recipe_chicken',
+        ingredientPosition: 0,
+        conceptId: fixture.conceptId,
+        variantId: fixture.variantId
+      },
+      {
+        humanMenuId: 'human_recipe_beef',
+        ingredientPosition: 0,
+        conceptId: 'ingredient_beef',
+        variantId: 'variant_beef_raw'
+      }
+    ],
+    dataVersions
+  })
+
+  assert.deepEqual(
+    draft.ingredients.map((ingredient) => ingredient.dataVersions.nutritionSourceReleaseId),
+    [dataVersions.nutritionSourceReleaseId, secondVersions.nutritionSourceReleaseId]
+  )
+})
+
+test('ingredientPosition 必须是大于等于 0 的整数', () => {
+  const negativePositionMenu = menu()
+  negativePositionMenu.ingredients[0].position = -1
+
+  assert.throws(() => createDraftFromMenus({
+    id: 'draft-negative-position',
+    dog,
+    humanMenus: [negativePositionMenu],
+    sourceIngredientSelections: [{
+      humanMenuId: negativePositionMenu.id,
+      ingredientPosition: -1,
+      conceptId: fixture.conceptId,
+      variantId: fixture.variantId
+    }],
+    dataVersions
+  }), /来源选择字段无效/)
 })

@@ -6,63 +6,9 @@ const rawAdapter = env.useCloudBase
 const {
   restoreDraft,
   createDraftFromMenus,
-  saveDraft
+  saveDraft,
+  normalizeHumanRecipeDetail
 } = require('../../../../services/sharedMealDraftService')
-
-function componentDataVersions(recipe, component, recipeVersion) {
-  return {
-    runtimeReleaseId: String(recipe.release_id || recipe.runtimeReleaseId || recipeVersion || ''),
-    recipeVersion: component.recipe_version || recipe.recipe_version || recipeVersion || null,
-    mappingVersion: component.mapping_version || recipe.mapping_version || null,
-    catalogVersion: String(
-      component.catalog_version || recipe.compatible_catalog_version || ''
-    ),
-    policyVersion: String(
-      component.policy_version || recipe.compatible_policy_version || ''
-    ),
-    nutritionSourceReleaseId: String(
-      component.food_source_release_id
-      || component.nutrition_source_release_id
-      || recipe.base_release_id
-      || recipe.release_id
-      || ''
-    )
-  }
-}
-
-function normalizeRecipeDetail(result = {}) {
-  const recipe = result.recipe || {}
-  return {
-    id: String(recipe.id || recipe._id || ''),
-    title: String(recipe.title || ''),
-    ingredients: (Array.isArray(recipe.ingredients) ? recipe.ingredients : [])
-      .slice()
-      .sort((left, right) => Number(left.position || 0) - Number(right.position || 0))
-      .map((ingredient) => ({
-        position: Number(ingredient.position || 0),
-        sourceText: String(ingredient.raw_name || ''),
-        amountText: String(ingredient.amount_raw || ''),
-        components: (Array.isArray(ingredient.components) ? ingredient.components : []).map((component) => {
-          const policyStatus = String(component.policy_status || 'unknown')
-          const canSelect = policyStatus !== 'blocked'
-          return {
-            conceptId: String(component.concept_id || ''),
-            variantId: String(component.variant_id || ''),
-            foodId: String(component.food_id || ''),
-            displayName: String(component.display_name_zh || component.canonical_name_zh || ''),
-            category: String(component.category_code || 'other'),
-            policyStatus,
-            blockedReason: canSelect ? '' : String(
-              component.blockedReason || '当前策略不允许加入狗饭。'
-            ),
-            canSelect,
-            selected: canSelect,
-            dataVersions: componentDataVersions(recipe, component, result.recipeVersion)
-          }
-        })
-      }))
-  }
-}
 
 Page({
   data: {
@@ -114,7 +60,7 @@ Page({
     if (!recipe) return
     this.setData({ loading: true, errorText: '' })
     try {
-      const selectedRecipe = normalizeRecipeDetail(await rawAdapter.getHumanRecipe(recipe.id))
+      const selectedRecipe = normalizeHumanRecipeDetail(await rawAdapter.getHumanRecipe(recipe.id))
       const selectedCount = selectedRecipe.ingredients.reduce((count, ingredient) => (
         count + ingredient.components.filter((component) => component.selected).length
       ), 0)
@@ -186,5 +132,5 @@ Page({
 })
 
 module.exports = {
-  normalizeRecipeDetail
+  normalizeRecipeDetail: normalizeHumanRecipeDetail
 }

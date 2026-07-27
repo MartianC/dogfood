@@ -48,7 +48,8 @@ test('sharedMealCreateRoute/v1 注册选狗、菜单搜索和 compose 连续路�
   assert.match(menuSearch, /createDraftFromMenus/)
   assert.match(menuSearch, /compose\/index\?draftId=/)
   assert.match(compose, /const draftId = String\(options\.draftId/)
-  assert.match(compose, /restoreDraft\(draftId\)/)
+  assert.match(compose, /restoreTrustedDraft\(draftId/)
+  assert.match(compose, /getHumanRecipe\(humanMenuId\)/)
   assert.doesNotMatch(compose, /options\.(ingredients|foodId|conceptId|variantId)/)
 })
 
@@ -161,7 +162,7 @@ test('compose 对 eligible 菜谱草稿显示能量目标且不填入食材克�
     data: structuredClone(definition.data),
     setData(patch) { Object.assign(this.data, patch) }
   }
-  definition.onLoad.call(context, { draftId: 'draft-compose' })
+  await definition.onLoad.call(context, { draftId: 'draft-compose' })
 
   assert.match(context.data.energyTargetText, /千卡/)
   assert.ok(context.data.ingredients.length >= 1)

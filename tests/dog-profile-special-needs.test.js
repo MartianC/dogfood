@@ -128,3 +128,26 @@ test('Mock 适配器边界拒绝非法特殊营养状态', async () => {
   )
   assert.deepEqual(storage.getSync('mockDogs', []), [])
 })
+
+test('Mock create/update 固定 v3 并精确保存特殊营养需求白名单', async () => {
+  storage.removeSync('mockDogs')
+  const payload = {
+    ...completeDog,
+    schemaVersion: 999,
+    specialNutritionNeeds: {
+      ...completeDog.specialNutritionNeeds,
+      unexpected: '不得保存'
+    }
+  }
+
+  const created = await mockAdapter.createDog(payload)
+  assert.equal(created.schemaVersion, 3)
+  assert.deepEqual(created.specialNutritionNeeds, completeDog.specialNutritionNeeds)
+
+  const updated = await mockAdapter.updateDog(created.id, {
+    ...payload,
+    name: '布丁更新'
+  })
+  assert.equal(updated.schemaVersion, 3)
+  assert.deepEqual(updated.specialNutritionNeeds, completeDog.specialNutritionNeeds)
+})

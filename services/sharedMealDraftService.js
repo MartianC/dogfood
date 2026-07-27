@@ -25,6 +25,9 @@ const DATA_VERSION_KEYS = [
   'policyVersion',
   'nutritionSourceReleaseId'
 ]
+const SHARED_RELEASE_VERSION_KEYS = DATA_VERSION_KEYS.filter((key) => (
+  key !== 'nutritionSourceReleaseId'
+))
 
 function hasExactKeys(value, expectedKeys) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false
@@ -54,9 +57,29 @@ function validateSourceRef(value) {
   if (!hasExactKeys(value, ['humanMenuId', 'ingredientPosition'])) {
     throw new Error('共享本餐食材来源字段无效')
   }
-  if (!isNonEmptyString(value.humanMenuId) || !Number.isInteger(value.ingredientPosition)) {
+  if (
+    !isNonEmptyString(value.humanMenuId)
+    || !Number.isInteger(value.ingredientPosition)
+    || value.ingredientPosition < 0
+  ) {
     throw new Error('共享本餐食材来源字段无效')
   }
+}
+
+function validateSourceSelection(value) {
+  if (!hasExactKeys(value, [
+    'humanMenuId',
+    'ingredientPosition',
+    'conceptId',
+    'variantId'
+  ])) throw new Error('共享本餐来源选择字段无效')
+  if (
+    !isNonEmptyString(value.humanMenuId)
+    || !Number.isInteger(value.ingredientPosition)
+    || value.ingredientPosition < 0
+    || !isNonEmptyString(value.conceptId)
+    || !isNonEmptyString(value.variantId)
+  ) throw new Error('共享本餐来源选择字段无效')
 }
 
 function validateSharedMealIngredient(ingredient) {
@@ -102,6 +125,7 @@ function findSelectedComponent(humanMenus, selection) {
 function buildIngredients(humanMenus, sourceIngredientSelections) {
   const byIdentity = new Map()
   sourceIngredientSelections.forEach((selection) => {
+    validateSourceSelection(selection)
     const component = findSelectedComponent(humanMenus, selection)
     validateDataVersions(component.dataVersions)
     const identity = `${component.conceptId}\u0000${component.variantId}`
@@ -135,6 +159,68 @@ function buildIngredients(humanMenus, sourceIngredientSelections) {
     })
   })
   return [...byIdentity.values()].map(validateSharedMealIngredient)
+}
+
+function hasSameSharedReleaseVersions(left, right) {
+  return SHARED_RELEASE_VERSION_KEYS.every((key) => left[key] === right[key])
+}
+
+function componentDataVersions(recipe, component, recipeVersion) {
+  return {
+    runtimeReleaseId: String(recipe.release_id || recipe.runtimeReleaseId || recipeVersion || ''),
+    recipeVersion: component.recipe_version || recipe.recipe_version || recipeVersion || null,
+    mappingVersion: component.mapping_version || recipe.mapping_version || null,
+    catalogVersion: String(
+      component.catalog_version || recipe.compatible_catalog_version || ''
+    ),
+    policyVersion: String(
+      component.policy_version || recipe.compatible_policy_version || ''
+    ),
+    nutritionSourceReleaseId: String(
+      component.food_source_release_id
+      || component.nutrition_source_release_id
+      || recipe.base_release_id
+      || recipe.release_id
+      || ''
+    )
+  }
+}
+
+function normalizeHumanRecipeDetail(result = {}) {
+  const recipe = result.recipe || {}
+  return {
+    id: String(recipe.id || recipe._id || ''),
+    title: String(recipe.title || ''),
+    ingredients: (Array.isArray(recipe.ingredients) ? recipe.ingredients : [])
+      .slice()
+      .sort((left, right) => Number(left.position || 0) - Number(right.position || 0))
+      .map((ingredient) => ({
+        position: Number(ingredient.position || 0),
+        sourceText: String(ingredient.raw_name || ''),
+        amountText: String(ingredient.amount_raw || ''),
+        components: (Array.isArray(ingredient.components) ? ingredient.components : [])
+          .map((component) => {
+            const policyStatus = String(component.policy_status || 'unknown')
+            const canSelect = policyStatus !== 'blocked'
+            return {
+              conceptId: String(component.concept_id || ''),
+              variantId: String(component.variant_id || ''),
+              foodId: String(component.food_id || ''),
+              displayName: String(
+                component.display_name_zh || component.canonical_name_zh || ''
+              ),
+              category: String(component.category_code || 'other'),
+              policyStatus,
+              blockedReason: canSelect ? '' : String(
+                component.blockedReason || '当前策略不允许加入狗饭。'
+              ),
+              canSelect,
+              selected: canSelect,
+              dataVersions: componentDataVersions(recipe, component, result.recipeVersion)
+            }
+          })
+      }))
+  }
 }
 
 function createDraftFromMenus({
@@ -191,14 +277,23 @@ function validateDraft(draft) {
   if (
     draft.dataVersions
     && draft.ingredients.some((ingredient) => (
-      JSON.stringify(ingredient.dataVersions) !== JSON.stringify(draft.dataVersions)
+      !hasSameSharedReleaseVersions(ingredient.dataVersions, draft.dataVersions)
     ))
   ) throw new Error('共享本餐草稿版本与食材版本不一致')
+  return draft
+}
 
-  const trustedIngredients = buildIngredients(
-    draft.humanMenus,
-    draft.sourceIngredientSelections
-  )
+function validateDraftAgainstTrustedMenus(draft, trustedHumanMenus) {
+  validateDraft(draft)
+  if (!Array.isArray(trustedHumanMenus)) {
+    throw new Error('共享本餐可信菜谱详情无效')
+  }
+  const expectedMenuIds = draft.humanMenus.map((menu) => menu && menu.id)
+  const trustedMenuIds = trustedHumanMenus.map((menu) => menu && menu.id)
+  if (JSON.stringify(expectedMenuIds) !== JSON.stringify(trustedMenuIds)) {
+    throw new Error('共享本餐可信菜谱详情不一致')
+  }
+  const trustedIngredients = buildIngredients(trustedHumanMenus, draft.sourceIngredientSelections)
   if (trustedIngredients.length !== draft.ingredients.length) {
     throw new Error('共享本餐草稿食材与来源选择不一致')
   }
@@ -246,6 +341,28 @@ function restoreDraft(expectedId) {
   }
 }
 
+async function restoreTrustedDraft(expectedId, loadTrustedHumanMenu) {
+  const restored = restoreDraft(expectedId)
+  if (restored.status !== 'restored' || restored.draft.humanMenus.length === 0) {
+    return restored
+  }
+  if (typeof loadTrustedHumanMenu !== 'function') {
+    return { status: 'invalid', reason: 'untrusted_recipe_detail', draft: null }
+  }
+  try {
+    const trustedHumanMenus = await Promise.all(
+      restored.draft.humanMenus.map((menu) => loadTrustedHumanMenu(menu.id))
+    )
+    validateDraftAgainstTrustedMenus(restored.draft, trustedHumanMenus)
+    return {
+      status: 'restored',
+      draft: { ...restored.draft, humanMenus: trustedHumanMenus }
+    }
+  } catch (error) {
+    return { status: 'invalid', reason: 'untrusted_recipe_detail', draft: null }
+  }
+}
+
 function resetDraft(expectedId) {
   const draft = storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
   if (!draft || (expectedId && draft.id !== expectedId)) return false
@@ -286,9 +403,12 @@ module.exports = {
   SHARED_MEAL_DRAFT_STORAGE_KEY,
   validateSharedMealIngredient,
   validateDraft,
+  validateDraftAgainstTrustedMenus,
+  normalizeHumanRecipeDetail,
   createDraftFromMenus,
   saveDraft,
   restoreDraft,
+  restoreTrustedDraft,
   resetDraft,
   refreshDraftDog,
   saveDogSelectionDraft
