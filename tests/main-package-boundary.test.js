@@ -38,3 +38,21 @@ test('mainPackageReachability/v2 正反 fixtures 保留分包共享并拒绝孤�
   assert.deepEqual(positive.findUnusedMainPackageJavaScript(), [])
   assert.deepEqual(negative.findUnusedMainPackageJavaScript(), ['utils/orphan.js'])
 })
+
+test('mainPackageReachability/v2 不把注释或字符串里的伪造 require 计入依赖图', () => {
+  const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
+  const fakeRequireFixtures = [
+    'fake-require-line-comment',
+    'fake-require-block-comment',
+    'fake-require-string'
+  ]
+
+  fakeRequireFixtures.forEach((fixture) => {
+    const checker = createBoundaryChecker(path.join(fixtureRoot, fixture))
+    assert.deepEqual(
+      checker.findUnusedMainPackageJavaScript(),
+      ['utils/orphan.js'],
+      `${fixture} 不应让孤儿根 JS 变为可达`
+    )
+  })
+})

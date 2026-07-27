@@ -8,6 +8,7 @@ from collections import Counter
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import sys
 import tempfile
@@ -21,6 +22,12 @@ OPERATION_RULES_PATH = (
     / "contracts"
     / "shared-meal"
     / "ingredient-operation-rules-v1.json"
+)
+PROJECTION_REPORT_SCHEMA_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "contracts"
+    / "shared-meal"
+    / "human-recipe-projection-report-v1.schema.json"
 )
 REQUIRED_TABLES = {
     "data_build",
@@ -62,6 +69,119 @@ def normalize_policy_status(value: Any) -> str:
 
 def can_operate_ingredient(value: Any) -> bool:
     return normalize_policy_status(value) != OPERATION_RULES["blockedStatus"]
+
+
+def json_schema_type_matches(value: Any, expected: str) -> bool:
+    checks = {
+        "object": lambda item: isinstance(item, dict),
+        "array": lambda item: isinstance(item, list),
+        "string": lambda item: isinstance(item, str),
+        "integer": lambda item: isinstance(item, int) and not isinstance(item, bool),
+        "number": lambda item: (
+            isinstance(item, (int, float)) and not isinstance(item, bool)
+        ),
+        "boolean": lambda item: isinstance(item, bool),
+        "null": lambda item: item is None,
+    }
+    checker = checks.get(expected)
+    if checker is None:
+        raise ValueError(f"投影报告 schema 使用了不支持的类型：{expected}")
+    return checker(value)
+
+
+def validate_json_schema(
+    value: Any,
+    schema: dict[str, Any],
+    *,
+    location: str = "$",
+) -> list[str]:
+    errors: list[str] = []
+    expected_types = schema.get("type")
+    if expected_types is not None:
+        allowed_types = (
+            [expected_types] if isinstance(expected_types, str) else expected_types
+        )
+        if not isinstance(allowed_types, list) or not all(
+            isinstance(item, str) for item in allowed_types
+        ):
+            raise ValueError(f"投影报告 schema type 无效：{location}")
+        if not any(json_schema_type_matches(value, item) for item in allowed_types):
+            errors.append(
+                f"{location} 类型应为 {'|'.join(allowed_types)}，实际为 {type(value).__name__}"
+            )
+            return errors
+
+    if "const" in schema and value != schema["const"]:
+        errors.append(f"{location} 必须等于 {schema['const']!r}")
+
+    if isinstance(value, dict):
+        properties = schema.get("properties", {})
+        if not isinstance(properties, dict):
+            raise ValueError(f"投影报告 schema properties 无效：{location}")
+        required = schema.get("required", [])
+        if not isinstance(required, list):
+            raise ValueError(f"投影报告 schema required 无效：{location}")
+        for key in required:
+            if key not in value:
+                errors.append(f"{location}.{key} 是必填字段")
+        for key, item in value.items():
+            if key in properties:
+                errors.extend(
+                    validate_json_schema(
+                        item,
+                        properties[key],
+                        location=f"{location}.{key}",
+                    )
+                )
+                continue
+            additional = schema.get("additionalProperties", True)
+            if additional is False:
+                errors.append(f"{location}.{key} 是未声明字段")
+            elif isinstance(additional, dict):
+                errors.extend(
+                    validate_json_schema(
+                        item,
+                        additional,
+                        location=f"{location}.{key}",
+                    )
+                )
+
+    if isinstance(value, list) and isinstance(schema.get("items"), dict):
+        for index, item in enumerate(value):
+            errors.extend(
+                validate_json_schema(
+                    item,
+                    schema["items"],
+                    location=f"{location}[{index}]",
+                )
+            )
+
+    if isinstance(value, str):
+        if "minLength" in schema and len(value) < int(schema["minLength"]):
+            errors.append(f"{location} 长度不能小于 {schema['minLength']}")
+        if "pattern" in schema and re.search(str(schema["pattern"]), value) is None:
+            errors.append(f"{location} 不符合 pattern={schema['pattern']}")
+
+    if (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and "minimum" in schema
+        and value < schema["minimum"]
+    ):
+        errors.append(f"{location} 不能小于 {schema['minimum']}")
+
+    return errors
+
+
+def validate_human_recipe_projection_report(report: dict[str, Any]) -> None:
+    schema = json.loads(
+        PROJECTION_REPORT_SCHEMA_PATH.read_text(encoding="utf-8")
+    )
+    if schema.get("$id") != "humanRecipeProjectionStagingReport/v1":
+        raise ValueError("投影报告 schema 契约版本不正确")
+    errors = validate_json_schema(report, schema)
+    if errors:
+        raise ValueError("投影报告 schema 校验失败：" + "；".join(errors))
 
 
 def parse_args() -> argparse.Namespace:
@@ -1020,6 +1140,7 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             catalog_version=version,
             policy_version=safety_version,
         )
+        validate_human_recipe_projection_report(projection_report)
         release_document = {
             "_id": f"ingredient_release_{release_slug(release_id)}",
             "release_id": release_id,

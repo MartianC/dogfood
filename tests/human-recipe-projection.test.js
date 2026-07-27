@@ -83,6 +83,7 @@ report = module.build_human_recipe_projection_report(
     catalog_version="catalog-v2",
     policy_version="policy-v2",
 )
+module.validate_human_recipe_projection_report(report)
 print(json.dumps({"document": document, "report": report}, ensure_ascii=False))
 `
   const result = runPython(script)

@@ -636,6 +636,8 @@ test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行�
     path.join(outDir, 'data_releases.jsonl'),
     'utf8'
   ).trim())
+  const projectionReportPath = path.join(outDir, 'human-recipe-projection-report.json')
+  const projectionReport = JSON.parse(fs.readFileSync(projectionReportPath, 'utf8'))
 
   assert.equal(manifest.collections.canine_ingredient_policies.rows, 2)
   assert.equal(manifest.pending_collections.includes('canine_ingredient_policies'), false)
@@ -665,6 +667,73 @@ test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行�
   assert.equal(tomatoRecipe.ingredients[0].components[0].concept_id, 'ingredient_tomato')
   assert.equal('is_selectable' in tomatoRecipe.ingredients[0].components[0], false)
   assert.equal(tomatoRecipe.ingredients[1].mapping_status, 'unmatched')
+  assert.equal(projectionReport.$schema, 'humanRecipeProjectionStagingReport/v1')
+  assert.equal(projectionReport.counts.recipes, humanRecipes.length)
+  assert.equal(
+    manifest.reports.human_recipe_projection.sha256,
+    crypto.createHash('sha256').update(fs.readFileSync(projectionReportPath)).digest('hex')
+  )
+
+  const invalidReportMutations = [
+    'missing-required',
+    'wrong-const',
+    'extra-property',
+    'wrong-type'
+  ]
+  const invalidReportScript = `
+import importlib.util
+import pathlib
+import sys
+
+root = pathlib.Path.cwd()
+spec = importlib.util.spec_from_file_location(
+    "projection",
+    root / "scripts/fooddata/export_ingredient_cloudbase.py",
+)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+original_builder = module.build_human_recipe_projection_report
+mutation = sys.argv[3]
+
+def invalid_builder(*args, **kwargs):
+    report = original_builder(*args, **kwargs)
+    if mutation == "missing-required":
+        del report["counts"]
+    elif mutation == "wrong-const":
+        report["activation"]["targetStatus"] = "active"
+    elif mutation == "extra-property":
+        report["unexpected"] = True
+    elif mutation == "wrong-type":
+        report["counts"]["recipes"] = "one"
+    return report
+
+module.build_human_recipe_projection_report = invalid_builder
+try:
+    module.export_documents(pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]))
+except ValueError as error:
+    print(str(error))
+    raise SystemExit(3)
+raise SystemExit(0)
+`
+
+  invalidReportMutations.forEach((mutation) => {
+    const invalidOutDir = path.join(tmp, `cloudbase-invalid-report-${mutation}`)
+    const invalidResult = runPython(
+      invalidReportScript,
+      [output, invalidOutDir, mutation]
+    )
+
+    assert.equal(invalidResult.status, 3, invalidResult.stderr || invalidResult.stdout)
+    assert.match(invalidResult.stdout, /投影报告.*schema|schema.*投影报告/)
+    assert.equal(
+      fs.existsSync(path.join(invalidOutDir, 'human-recipe-projection-report.json')),
+      false
+    )
+    assert.equal(
+      fs.existsSync(path.join(invalidOutDir, 'cloudbase-ingredient-import-manifest.json')),
+      false
+    )
+  })
 })
 
 test('食材目录种子拒绝未受控分类和跨概念别名冲突', () => {
