@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/home/index"
+  ],
+  "subpackages": [
+    {
+      "root": "subpackages/feature",
+      "pages": [
+        "entry/index"
+      ]
+    }
+  ]
+}

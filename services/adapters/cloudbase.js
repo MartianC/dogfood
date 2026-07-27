@@ -52,6 +52,20 @@ async function listMealPlans() {
   return callFunction('saveMealPlan', { action: 'list' })
 }
 
+async function searchHumanRecipes(options = {}) {
+  if (!canUseCloud()) return mock.searchHumanRecipes(options)
+  return callFunction('searchHumanRecipes', {
+    query: String(options.query || ''),
+    limit: options.limit,
+    cursor: options.cursor || null
+  })
+}
+
+async function getHumanRecipe(recipeId) {
+  if (!canUseCloud()) return mock.getHumanRecipe(recipeId)
+  return callFunction('getHumanRecipe', { recipeId })
+}
+
 module.exports = {
   login,
   listDogs,
@@ -60,5 +74,7 @@ module.exports = {
   deleteDog,
   saveCustomRecipe,
   saveMealPlan,
-  listMealPlans
+  listMealPlans,
+  searchHumanRecipes,
+  getHumanRecipe
 }

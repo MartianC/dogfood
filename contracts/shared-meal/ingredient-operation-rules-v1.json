@@ -1,0 +1,16 @@
+{
+  "contract": "ingredientOperationRules/v1",
+  "policyStatusField": "policy_status",
+  "blockedStatus": "blocked",
+  "knownStatuses": [
+    "allowed",
+    "conditional",
+    "unknown",
+    "blocked"
+  ],
+  "operations": {
+    "search": "nonBlocked",
+    "add": "nonBlocked",
+    "autoInclude": "nonBlocked"
+  }
+}

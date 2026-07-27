@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import sys
 import tempfile
@@ -15,6 +17,18 @@ from typing import Any, Iterator
 
 
 MAX_DOCUMENT_BYTES = 512 * 1024
+OPERATION_RULES_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "contracts"
+    / "shared-meal"
+    / "ingredient-operation-rules-v1.json"
+)
+PROJECTION_REPORT_SCHEMA_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "contracts"
+    / "shared-meal"
+    / "human-recipe-projection-report-v1.schema.json"
+)
 REQUIRED_TABLES = {
     "data_build",
     "source_release",
@@ -35,10 +49,151 @@ REQUIRED_TABLES = {
 }
 
 
+def load_operation_rules() -> dict[str, Any]:
+    rules = json.loads(OPERATION_RULES_PATH.read_text(encoding="utf-8"))
+    if rules.get("contract") != "ingredientOperationRules/v1":
+        raise ValueError("食材操作规则契约版本不正确")
+    if rules.get("blockedStatus") != "blocked":
+        raise ValueError("食材操作规则必须只阻断 blocked")
+    return rules
+
+
+OPERATION_RULES = load_operation_rules()
+
+
+def normalize_policy_status(value: Any) -> str:
+    normalized = str(value or "unknown").strip().lower()
+    known_statuses = set(OPERATION_RULES["knownStatuses"])
+    return normalized if normalized in known_statuses else "unknown"
+
+
+def can_operate_ingredient(value: Any) -> bool:
+    return normalize_policy_status(value) != OPERATION_RULES["blockedStatus"]
+
+
+def json_schema_type_matches(value: Any, expected: str) -> bool:
+    checks = {
+        "object": lambda item: isinstance(item, dict),
+        "array": lambda item: isinstance(item, list),
+        "string": lambda item: isinstance(item, str),
+        "integer": lambda item: isinstance(item, int) and not isinstance(item, bool),
+        "number": lambda item: (
+            isinstance(item, (int, float)) and not isinstance(item, bool)
+        ),
+        "boolean": lambda item: isinstance(item, bool),
+        "null": lambda item: item is None,
+    }
+    checker = checks.get(expected)
+    if checker is None:
+        raise ValueError(f"投影报告 schema 使用了不支持的类型：{expected}")
+    return checker(value)
+
+
+def validate_json_schema(
+    value: Any,
+    schema: dict[str, Any],
+    *,
+    location: str = "$",
+) -> list[str]:
+    errors: list[str] = []
+    expected_types = schema.get("type")
+    if expected_types is not None:
+        allowed_types = (
+            [expected_types] if isinstance(expected_types, str) else expected_types
+        )
+        if not isinstance(allowed_types, list) or not all(
+            isinstance(item, str) for item in allowed_types
+        ):
+            raise ValueError(f"投影报告 schema type 无效：{location}")
+        if not any(json_schema_type_matches(value, item) for item in allowed_types):
+            errors.append(
+                f"{location} 类型应为 {'|'.join(allowed_types)}，实际为 {type(value).__name__}"
+            )
+            return errors
+
+    if "const" in schema and value != schema["const"]:
+        errors.append(f"{location} 必须等于 {schema['const']!r}")
+
+    if isinstance(value, dict):
+        properties = schema.get("properties", {})
+        if not isinstance(properties, dict):
+            raise ValueError(f"投影报告 schema properties 无效：{location}")
+        required = schema.get("required", [])
+        if not isinstance(required, list):
+            raise ValueError(f"投影报告 schema required 无效：{location}")
+        for key in required:
+            if key not in value:
+                errors.append(f"{location}.{key} 是必填字段")
+        for key, item in value.items():
+            if key in properties:
+                errors.extend(
+                    validate_json_schema(
+                        item,
+                        properties[key],
+                        location=f"{location}.{key}",
+                    )
+                )
+                continue
+            additional = schema.get("additionalProperties", True)
+            if additional is False:
+                errors.append(f"{location}.{key} 是未声明字段")
+            elif isinstance(additional, dict):
+                errors.extend(
+                    validate_json_schema(
+                        item,
+                        additional,
+                        location=f"{location}.{key}",
+                    )
+                )
+
+    if isinstance(value, list) and isinstance(schema.get("items"), dict):
+        for index, item in enumerate(value):
+            errors.extend(
+                validate_json_schema(
+                    item,
+                    schema["items"],
+                    location=f"{location}[{index}]",
+                )
+            )
+
+    if isinstance(value, str):
+        if "minLength" in schema and len(value) < int(schema["minLength"]):
+            errors.append(f"{location} 长度不能小于 {schema['minLength']}")
+        if "pattern" in schema and re.search(str(schema["pattern"]), value) is None:
+            errors.append(f"{location} 不符合 pattern={schema['pattern']}")
+
+    if (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and "minimum" in schema
+        and value < schema["minimum"]
+    ):
+        errors.append(f"{location} 不能小于 {schema['minimum']}")
+
+    return errors
+
+
+def validate_human_recipe_projection_report(report: dict[str, Any]) -> None:
+    schema = json.loads(
+        PROJECTION_REPORT_SCHEMA_PATH.read_text(encoding="utf-8")
+    )
+    if schema.get("$id") != "humanRecipeProjectionStagingReport/v1":
+        raise ValueError("投影报告 schema 契约版本不正确")
+    errors = validate_json_schema(report, schema)
+    if errors:
+        raise ValueError("投影报告 schema 校验失败：" + "；".join(errors))
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="导出食材知识层 CloudBase 投影")
     parser.add_argument("--sqlite", required=True, help="食材知识层离线 SQLite 路径")
     parser.add_argument("--out-dir", required=True, help="输出 JSONL 目录")
+    parser.add_argument(
+        "--status",
+        choices=("staging",),
+        default="staging",
+        help="投影只允许输出 staging；工具不切换 production active",
+    )
     return parser.parse_args()
 
 
@@ -51,6 +206,17 @@ def stable_export_timestamp(release_id: str) -> str:
 def release_slug(value: str) -> str:
     slug = "".join(character if character.isalnum() else "_" for character in value)
     return slug.strip("_") or "release"
+
+
+def human_recipe_runtime_versions(
+    release_id: str,
+    mapping: sqlite3.Row | dict[str, Any],
+) -> dict[str, str]:
+    mapping_version = str(mapping["mapping_version"])
+    return {
+        "recipe_version": f"human-recipe-runtime-v2-{mapping_version}",
+        "release_id": f"human-recipe-release-v2-{release_id}-{mapping_version}",
+    }
 
 
 def document_bytes(document: dict[str, Any]) -> bytes:
@@ -420,12 +586,6 @@ def catalog_documents(
             str(row["concept_id"])
         )
         decision = str(policy["decision"]) if policy is not None else "unknown"
-        conditions = (
-            json.loads(str(policy["conditions_json"])) if policy is not None else {}
-        )
-        is_selectable = decision == "allowed" or (
-            decision == "conditional" and conditions.get("enforceable") is True
-        )
         aliases = [
             alias
             for alias in alias_map.get(str(row["concept_id"]), [])
@@ -454,8 +614,6 @@ def catalog_documents(
             "is_default": bool(row["is_default"]),
             "review_status": "reviewed",
             "policy_status": decision,
-            "is_searchable": True,
-            "is_selectable": is_selectable,
         }
 
 
@@ -574,15 +732,22 @@ def ranking_documents(
 
 def policy_projection(
     policy: sqlite3.Row | None,
-) -> tuple[str, bool]:
+) -> tuple[str, str | None]:
     if policy is None:
-        return "unknown", False
-    decision = str(policy["decision"])
-    conditions = json.loads(str(policy["conditions_json"]))
-    selectable = decision == "allowed" or (
-        decision == "conditional" and conditions.get("enforceable") is True
+        return "unknown", None
+    decision = normalize_policy_status(policy["decision"])
+    return decision, sanitize_blocked_reason(
+        policy["rationale"] if decision == "blocked" else None
     )
-    return decision, selectable
+
+
+def sanitize_blocked_reason(value: Any) -> str | None:
+    if value is None:
+        return None
+    normalized = " ".join(str(value).split()).strip()
+    if not normalized:
+        return "当前策略不允许加入狗饭。"
+    return normalized[:240]
 
 
 def human_recipe_rows(
@@ -642,63 +807,105 @@ def build_human_recipe_document(
     mapping: sqlite3.Row,
     recipe: dict[str, Any],
 ) -> dict[str, Any]:
-    ingredients = recipe.pop("ingredients")
-    selectable_component_count = sum(
+    runtime_versions = human_recipe_runtime_versions(release_id, mapping)
+    raw_ingredients = recipe.pop("ingredients")
+    ingredients: list[dict[str, Any]] = []
+    for ingredient in raw_ingredients:
+        components = ingredient.get("components") or []
+        if not components:
+            ingredients.append(
+                {
+                    "position": ingredient["position"],
+                    "raw_name": ingredient["raw_name"],
+                    "amount_raw": ingredient.get("amount_raw"),
+                    "amount_is_reference_only": True,
+                    "mapping_status": ingredient.get("mapping_status") or "unmatched",
+                }
+            )
+            continue
+        versioned_components = []
+        for component in components:
+            versioned_components.append(
+                {
+                    **component,
+                    "blockedReason": sanitize_blocked_reason(
+                        component.get("blockedReason")
+                        if component.get("policy_status") == "blocked"
+                        else None
+                    ),
+                    "recipe_version": runtime_versions["recipe_version"],
+                    "mapping_version": mapping["mapping_version"],
+                    "catalog_version": mapping["compatible_catalog_version"],
+                    "policy_version": mapping["compatible_policy_version"],
+                }
+            )
+        ingredients.append(
+            {
+                **ingredient,
+                "components": versioned_components,
+            }
+        )
+
+    non_blocked_component_count = sum(
         1
         for ingredient in ingredients
-        for component in ingredient["components"]
-        if component["is_selectable"]
+        for component in ingredient.get("components", [])
+        if can_operate_ingredient(component["policy_status"])
     )
     blocked_component_count = sum(
         1
         for ingredient in ingredients
-        for component in ingredient["components"]
+        for component in ingredient.get("components", [])
         if component["policy_status"] == "blocked"
     )
     mapped_ingredient_count = sum(
-        1 for ingredient in ingredients if ingredient["components"]
+        1 for ingredient in ingredients if ingredient.get("components")
     )
     unresolved_ingredient_count = sum(
         1
         for ingredient in ingredients
         if ingredient["mapping_status"] in {"unmatched", "ambiguous"}
-        or not ingredient["components"]
+        or not ingredient.get("components")
     )
     search_values = [
         recipe["normalized_title"],
         *recipe["categories"],
-        *[ingredient["normalized_name"] for ingredient in ingredients],
+        *[
+            ingredient.get("normalized_name") or ingredient["raw_name"]
+            for ingredient in ingredients
+        ],
         *[
             component["canonical_name_zh"]
             for ingredient in ingredients
-            for component in ingredient["components"]
+            for component in ingredient.get("components", [])
         ],
     ]
     search_text = " ".join(dict.fromkeys(value for value in search_values if value))
+    document_id = (
+        f"{release_slug(runtime_versions['recipe_version'])}_recipe_"
+        f"{release_slug(str(recipe['source_recipe_id']))}"
+    )
     return {
-        "_id": (
-            f"{release_slug(str(mapping['mapping_version']))}_recipe_"
-            f"{release_slug(str(recipe['source_recipe_id']))}"
-        ),
-        "release_id": release_id,
-        "recipe_version": mapping["mapping_version"],
+        "_id": document_id,
+        "projection_contract": "humanRecipeRuntimeProjection/v2",
+        "release_id": runtime_versions["release_id"],
+        "recipe_version": runtime_versions["recipe_version"],
         "mapping_version": mapping["mapping_version"],
         "compatible_catalog_version": mapping["compatible_catalog_version"],
         "compatible_policy_version": mapping["compatible_policy_version"],
         "source_release_id": mapping["source_release_id"],
         "source_license_status": mapping["license_status"],
         **recipe,
+        "sortKey": str(recipe["normalized_title"] or recipe["title"]).casefold(),
         "search_text": search_text,
         "ingredients": ingredients,
         "mapped_ingredient_count": mapped_ingredient_count,
         "unresolved_ingredient_count": unresolved_ingredient_count,
-        "selectable_component_count": selectable_component_count,
+        "non_blocked_component_count": non_blocked_component_count,
         "blocked_component_count": blocked_component_count,
-        "has_selectable_ingredients": selectable_component_count > 0,
-        "is_searchable": selectable_component_count > 0,
         "amounts_are_reference_only": True,
         "status": (
-            "ready" if selectable_component_count > 0 else "no_selectable_ingredients"
+            "ready" if non_blocked_component_count > 0 else "no_non_blocked_ingredients"
         ),
         "generated_at": mapping["generated_at"],
     }
@@ -724,7 +931,7 @@ def human_recipe_documents(
             if current_recipe is None:
                 raise ValueError("菜谱投影构建状态异常")
             document = build_human_recipe_document(release_id, mapping, current_recipe)
-            if document["is_searchable"]:
+            if document["non_blocked_component_count"] > 0:
                 yield document
             current_recipe = None
             current_mention_position = None
@@ -768,7 +975,7 @@ def human_recipe_documents(
         policy = variant_policies.get(str(row["variant_id"])) or concept_policies.get(
             str(row["concept_id"])
         )
-        policy_status, is_selectable = policy_projection(policy)
+        policy_status, blocked_reason = policy_projection(policy)
         current_ingredient["components"].append(
             {
                 "position": row["component_position"],
@@ -783,14 +990,90 @@ def human_recipe_documents(
                 "part_or_cut": row["part_or_cut"],
                 "skin_bone_state": row["skin_bone_state"],
                 "policy_status": policy_status,
-                "is_selectable": is_selectable,
+                "blockedReason": blocked_reason,
             }
         )
 
     if current_recipe is not None:
         document = build_human_recipe_document(release_id, mapping, current_recipe)
-        if document["is_searchable"]:
+        if document["non_blocked_component_count"] > 0:
             yield document
+
+
+def build_human_recipe_projection_report(
+    documents: list[dict[str, Any]],
+    *,
+    release_id: str,
+    recipe_version: str | None,
+    mapping_version: str | None,
+    catalog_version: str | None,
+    policy_version: str | None,
+    rollback_recipe_version: str | None,
+) -> dict[str, Any]:
+    status_distribution = Counter(
+        component["policy_status"]
+        for document in documents
+        for ingredient in document["ingredients"]
+        for component in ingredient.get("components", [])
+    )
+    blocked_reasons = Counter(
+        component["blockedReason"]
+        for document in documents
+        for ingredient in document["ingredients"]
+        for component in ingredient.get("components", [])
+        if component["policy_status"] == "blocked" and component.get("blockedReason")
+    )
+    versions = {
+        "releaseId": release_id,
+        "recipeVersion": recipe_version,
+        "mappingVersion": mapping_version,
+        "catalogVersion": catalog_version,
+        "policyVersion": policy_version,
+    }
+    version_checksum = hashlib.sha256(
+        json.dumps(
+            versions, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    ).hexdigest()
+    ingredient_count = sum(len(document["ingredients"]) for document in documents)
+    mapped_ingredient_count = sum(
+        document["mapped_ingredient_count"] for document in documents
+    )
+    return {
+        "$schema": "humanRecipeProjectionStagingReport/v1",
+        "releaseId": release_id,
+        "counts": {
+            "recipes": len(documents),
+            "sourceIngredients": ingredient_count,
+            "mappedIngredients": mapped_ingredient_count,
+            "unmappedIngredients": ingredient_count - mapped_ingredient_count,
+            "nonBlockedComponents": sum(
+                document["non_blocked_component_count"] for document in documents
+            ),
+            "blockedComponents": sum(
+                document["blocked_component_count"] for document in documents
+            ),
+        },
+        "samples": [
+            {"id": document["_id"], "title": document["title"]}
+            for document in documents[:10]
+        ],
+        "policyStatusDistribution": {
+            status: status_distribution.get(status, 0)
+            for status in ("allowed", "conditional", "unknown", "blocked")
+        },
+        "blockedReasons": dict(sorted(blocked_reasons.items())),
+        "versions": versions,
+        "versionChecksum": version_checksum,
+        "rollbackCandidate": {
+            "status": "requires-active-pointer",
+            "recipeVersion": rollback_recipe_version,
+        },
+        "activation": {
+            "targetStatus": "staging",
+            "productionActiveSwitchAllowed": False,
+        },
+    }
 
 
 def write_jsonl(
@@ -853,28 +1136,60 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             (nutrient_ranking_version,),
         ).fetchone()[0] if nutrient_ranking_version else 0
         recipe_mapping = recipe_mapping_release(conn, version, safety_version)
-        recipe_version = (
+        mapping_version = (
             str(recipe_mapping["mapping_version"]) if recipe_mapping is not None else None
         )
+        runtime_versions = (
+            human_recipe_runtime_versions(release_id, recipe_mapping)
+            if recipe_mapping is not None
+            else {
+                "recipe_version": None,
+                "release_id": release_id,
+            }
+        )
+        recipe_version = runtime_versions["recipe_version"]
+        runtime_release_id = runtime_versions["release_id"]
         source_recipe_count = conn.execute(
             "SELECT COUNT(*) FROM human_recipe WHERE source_release_id=?",
             (recipe_mapping["source_release_id"],),
         ).fetchone()[0] if recipe_mapping is not None else 0
-        human_recipe_count = sum(
-            1
-            for _ in human_recipe_documents(
-                conn, release_id, recipe_mapping, safety_version
-            )
+        human_recipe_projection = list(
+            human_recipe_documents(conn, release_id, recipe_mapping, safety_version)
         )
+        human_recipe_count = len(human_recipe_projection)
+        projection_report = build_human_recipe_projection_report(
+            human_recipe_projection,
+            release_id=runtime_release_id,
+            recipe_version=recipe_version,
+            mapping_version=mapping_version,
+            catalog_version=version,
+            policy_version=safety_version,
+            rollback_recipe_version=mapping_version,
+        )
+        validate_human_recipe_projection_report(projection_report)
         release_document = {
-            "_id": f"ingredient_release_{release_slug(release_id)}",
-            "release_id": release_id,
+            "_id": (
+                f"human_recipe_release_{release_slug(str(runtime_release_id))}"
+                if recipe_mapping is not None
+                else f"ingredient_release_{release_slug(release_id)}"
+            ),
+            "release_id": runtime_release_id,
             "schema_version": schema_version,
             "status": "staging",
             "catalog_version": version,
             "policy_version": safety_version,
             "ranking_version": nutrient_ranking_version,
             "recipe_version": recipe_version,
+            "mapping_version": mapping_version,
+            "rollback_candidate": (
+                {
+                    "status": "active",
+                    "recipe_version": mapping_version,
+                }
+                if mapping_version is not None
+                else None
+            ),
+            "base_release_id": release_id,
             "recipe_source_count": source_recipe_count,
             "generated_at": stable_export_timestamp(release_id),
             "sources": sources,
@@ -895,6 +1210,9 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             "canine_ingredient_policies": out_dir / "canine_ingredient_policies.jsonl",
             "nutrient_rankings": out_dir / "nutrient_rankings.jsonl",
             "human_recipes": out_dir / "human_recipes.jsonl",
+            "human_recipe_projection_report": (
+                out_dir / "human-recipe-projection-report.json"
+            ),
             "manifest": out_dir / "cloudbase-ingredient-import-manifest.json",
         }
         existing = [path for path in targets.values() if path.exists()]
@@ -937,9 +1255,7 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
                 ),
                 "human_recipes": write_jsonl(
                     temporary_paths["human_recipes"],
-                    human_recipe_documents(
-                        conn, release_id, recipe_mapping, safety_version
-                    ),
+                    iter(human_recipe_projection),
                 ),
             }
             collections["data_releases"]["file"] = targets["data_releases"].name
@@ -956,6 +1272,10 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
                 "nutrient_rankings"
             ].name
             collections["human_recipes"]["file"] = targets["human_recipes"].name
+            temporary_paths["human_recipe_projection_report"].write_text(
+                json.dumps(projection_report, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
             pending_collections = []
             if human_recipe_count == 0:
                 pending_collections.append("human_recipes")
@@ -966,11 +1286,21 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             if catalog_count == 0:
                 pending_collections.insert(1, "ingredient_catalog")
             manifest = {
-                "release_id": release_id,
+                "release_id": runtime_release_id,
+                "base_release_id": release_id,
                 "schema_version": schema_version,
                 "generated_at": stable_export_timestamp(release_id),
                 "sources": sources,
                 "collections": collections,
+                "reports": {
+                    "human_recipe_projection": {
+                        "file": targets["human_recipe_projection_report"].name,
+                        "schema": "humanRecipeProjectionStagingReport/v1",
+                        "sha256": sha256_file(
+                            temporary_paths["human_recipe_projection_report"]
+                        ),
+                    }
+                },
                 "pending_collections": pending_collections,
             }
             temporary_paths["manifest"].write_text(

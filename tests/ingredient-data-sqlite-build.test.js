@@ -342,7 +342,7 @@ test('CloudBase 导出器区分已知零值和未知营养值', () => {
   assert.equal(tomato.nutrients['1008'].value_status, 'unknown')
 })
 
-test('食材目录种子写入概念、别名和形态并导出不可选择的目录投影', () => {
+test('食材目录种子写入概念、别名和形态且新投影不含权限布尔字段', () => {
   const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
   const seedPath = path.join(tmp, 'catalog.json')
   const outDir = path.join(tmp, 'cloudbase')
@@ -422,7 +422,8 @@ test('食材目录种子写入概念、别名和形态并导出不可选择的�
   assert.equal(release.collections.ingredient_catalog, 2)
   assert.deepEqual(catalog.find((item) => item.concept_id === 'ingredient_tomato').aliases, ['西红柿'])
   assert.equal(catalog.every((item) => item.policy_status === 'unknown'), true)
-  assert.equal(catalog.every((item) => item.is_selectable === false), true)
+  assert.equal(catalog.every((item) => !('is_selectable' in item)), true)
+  assert.equal(catalog.every((item) => !('is_searchable' in item)), true)
 })
 
 test('CloudBase 导出器拒绝覆盖已经存在的导出文件', () => {
@@ -445,7 +446,7 @@ test('CloudBase 导出器拒绝覆盖已经存在的导出文件', () => {
   assert.equal(fs.readFileSync(path.join(outDir, 'data_releases.jsonl'), 'utf8'), 'keep')
 })
 
-test('犬食安全策略完整覆盖目录并反向生成可选择状态', () => {
+test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行时投影', () => {
   const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
   const catalogSeed = path.join(tmp, 'catalog.json')
   const policySeed = path.join(tmp, 'policies.json')
@@ -563,9 +564,9 @@ test('犬食安全策略完整覆盖目录并反向生成可选择状态', () =>
     ranking_version: 'test-ranking-v1',
     compatible_catalog_version: 'test-catalog-v1',
     compatible_policy_version: 'test-policy-v1',
-    selectable_variants: 1,
+    non_blocked_variants: 2,
     nutrient_rankings: 2,
-    ranking_items: 1,
+    ranking_items: 2,
     empty_rankings: 1
   })
 
@@ -635,11 +636,13 @@ test('犬食安全策略完整覆盖目录并反向生成可选择状态', () =>
     path.join(outDir, 'data_releases.jsonl'),
     'utf8'
   ).trim())
+  const projectionReportPath = path.join(outDir, 'human-recipe-projection-report.json')
+  const projectionReport = JSON.parse(fs.readFileSync(projectionReportPath, 'utf8'))
 
   assert.equal(manifest.collections.canine_ingredient_policies.rows, 2)
   assert.equal(manifest.pending_collections.includes('canine_ingredient_policies'), false)
   assert.equal(policies.length, 2)
-  assert.equal(catalog.find((item) => item.concept_id === 'ingredient_tomato').is_selectable, true)
+  assert.equal('is_selectable' in catalog.find((item) => item.concept_id === 'ingredient_tomato'), false)
   assert.equal(catalog.find((item) => item.concept_id === 'ingredient_pork_heart').policy_status, 'unknown')
   assert.equal(manifest.collections.nutrient_rankings.rows, 2)
   assert.equal(manifest.pending_collections.includes('nutrient_rankings'), false)
@@ -647,20 +650,105 @@ test('犬食安全策略完整覆盖目录并反向生成可选择状态', () =>
   assert.equal(release.collections.nutrient_rankings, 2)
   assert.equal(rankings.find((item) => item.nutrient_code === 'vitamin_d').ranked_count, 0)
   const protein = rankings.find((item) => item.nutrient_code === 'protein')
-  assert.equal(protein.items.length, 1)
-  assert.equal(protein.items[0].variant_id, 'variant_tomato_raw')
-  assert.equal(protein.items[0].amount_per_100g, 0.88)
+  assert.equal(protein.items.length, 2)
+  assert.deepEqual(protein.items.map((item) => item.variant_id), [
+    'variant_pork_heart_raw',
+    'variant_tomato_raw'
+  ])
+  assert.equal(protein.items[1].amount_per_100g, 0.88)
   assert.equal(manifest.collections.human_recipes.rows, 1)
   assert.equal(manifest.pending_collections.includes('human_recipes'), false)
-  assert.equal(release.recipe_version, 'test-recipe-mapping-v1')
+  assert.equal(
+    release.recipe_version,
+    'human-recipe-runtime-v2-test-recipe-mapping-v1'
+  )
+  assert.equal(release.mapping_version, 'test-recipe-mapping-v1')
+  assert.equal(
+    release.release_id,
+    'human-recipe-release-v2-2026-07-22-test-test-recipe-mapping-v1'
+  )
+  assert.equal(
+    release.rollback_candidate.recipe_version,
+    'test-recipe-mapping-v1'
+  )
   assert.equal(release.recipe_source_count, 2)
   assert.equal(release.collections.human_recipes, 1)
   const tomatoRecipe = humanRecipes.find((item) => item.source_recipe_id === '1')
-  assert.equal(tomatoRecipe.has_selectable_ingredients, true)
+  assert.equal(tomatoRecipe.recipe_version, release.recipe_version)
+  assert.equal(tomatoRecipe.mapping_version, 'test-recipe-mapping-v1')
+  assert.equal(tomatoRecipe.release_id, release.release_id)
+  assert.equal(tomatoRecipe.non_blocked_component_count, 1)
   assert.equal(tomatoRecipe.amounts_are_reference_only, true)
   assert.equal(tomatoRecipe.ingredients[0].components[0].concept_id, 'ingredient_tomato')
-  assert.equal(tomatoRecipe.ingredients[0].components[0].is_selectable, true)
+  assert.equal('is_selectable' in tomatoRecipe.ingredients[0].components[0], false)
   assert.equal(tomatoRecipe.ingredients[1].mapping_status, 'unmatched')
+  assert.equal(projectionReport.$schema, 'humanRecipeProjectionStagingReport/v1')
+  assert.equal(projectionReport.counts.recipes, humanRecipes.length)
+  assert.equal(
+    manifest.reports.human_recipe_projection.sha256,
+    crypto.createHash('sha256').update(fs.readFileSync(projectionReportPath)).digest('hex')
+  )
+
+  const invalidReportMutations = [
+    'missing-required',
+    'wrong-const',
+    'extra-property',
+    'wrong-type'
+  ]
+  const invalidReportScript = `
+import importlib.util
+import pathlib
+import sys
+
+root = pathlib.Path.cwd()
+spec = importlib.util.spec_from_file_location(
+    "projection",
+    root / "scripts/fooddata/export_ingredient_cloudbase.py",
+)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+original_builder = module.build_human_recipe_projection_report
+mutation = sys.argv[3]
+
+def invalid_builder(*args, **kwargs):
+    report = original_builder(*args, **kwargs)
+    if mutation == "missing-required":
+        del report["counts"]
+    elif mutation == "wrong-const":
+        report["activation"]["targetStatus"] = "active"
+    elif mutation == "extra-property":
+        report["unexpected"] = True
+    elif mutation == "wrong-type":
+        report["counts"]["recipes"] = "one"
+    return report
+
+module.build_human_recipe_projection_report = invalid_builder
+try:
+    module.export_documents(pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]))
+except ValueError as error:
+    print(str(error))
+    raise SystemExit(3)
+raise SystemExit(0)
+`
+
+  invalidReportMutations.forEach((mutation) => {
+    const invalidOutDir = path.join(tmp, `cloudbase-invalid-report-${mutation}`)
+    const invalidResult = runPython(
+      invalidReportScript,
+      [output, invalidOutDir, mutation]
+    )
+
+    assert.equal(invalidResult.status, 3, invalidResult.stderr || invalidResult.stdout)
+    assert.match(invalidResult.stdout, /投影报告.*schema|schema.*投影报告/)
+    assert.equal(
+      fs.existsSync(path.join(invalidOutDir, 'human-recipe-projection-report.json')),
+      false
+    )
+    assert.equal(
+      fs.existsSync(path.join(invalidOutDir, 'cloudbase-ingredient-import-manifest.json')),
+      false
+    )
+  })
 })
 
 test('食材目录种子拒绝未受控分类和跨概念别名冲突', () => {
