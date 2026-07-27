@@ -106,41 +106,41 @@ test('mainPackageReachability/v2 遇到语法错误时关闭检查并返回失�
 
 test('mainPackageReachability/v2 不信任 Annex B 和 with 形成的动态 require', () => {
   const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
-  const dynamicBindingFixtures = [
-    'fake-require-annex-b-block',
+  const annexBBlock = createBoundaryChecker(
+    path.join(fixtureRoot, 'fake-require-annex-b-block')
+  )
+  assert.deepEqual(
+    annexBBlock.findUnusedMainPackageJavaScript(),
+    ['utils/orphan.js']
+  )
+
+  const sourceFixtures = [
+    'fake-require-annex-b-if',
     'fake-require-with'
   ]
-
-  dynamicBindingFixtures.forEach((fixture) => {
-    const checker = createBoundaryChecker(path.join(fixtureRoot, fixture))
-    assert.deepEqual(
-      checker.findUnusedMainPackageJavaScript(),
-      ['utils/orphan.js'],
-      `${fixture} 不应建立可信 CommonJS 依赖`
+  sourceFixtures.forEach((fixture) => {
+    const temporaryRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), `main-package-${fixture}-`)
     )
+    const temporaryProject = path.join(temporaryRoot, 'project')
+    try {
+      fs.cpSync(
+        path.join(fixtureRoot, fixture),
+        temporaryProject,
+        { recursive: true }
+      )
+      fs.renameSync(
+        path.join(temporaryProject, 'pages/home/index.source.txt'),
+        path.join(temporaryProject, 'pages/home/index.js')
+      )
+      const checker = createBoundaryChecker(temporaryProject)
+      assert.deepEqual(
+        checker.findUnusedMainPackageJavaScript(),
+        ['utils/orphan.js'],
+        `${fixture} 不应建立可信 CommonJS 依赖`
+      )
+    } finally {
+      fs.rmSync(temporaryRoot, { recursive: true, force: true })
+    }
   })
-
-  const temporaryRoot = fs.mkdtempSync(
-    path.join(os.tmpdir(), 'main-package-annex-b-if-')
-  )
-  const temporaryProject = path.join(temporaryRoot, 'project')
-  try {
-    fs.cpSync(
-      path.join(fixtureRoot, 'fake-require-annex-b-if'),
-      temporaryProject,
-      { recursive: true }
-    )
-    fs.renameSync(
-      path.join(temporaryProject, 'pages/home/index.source.txt'),
-      path.join(temporaryProject, 'pages/home/index.js')
-    )
-    const checker = createBoundaryChecker(temporaryProject)
-    assert.deepEqual(
-      checker.findUnusedMainPackageJavaScript(),
-      ['utils/orphan.js'],
-      'fake-require-annex-b-if 不应建立可信 CommonJS 依赖'
-    )
-  } finally {
-    fs.rmSync(temporaryRoot, { recursive: true, force: true })
-  }
 })
