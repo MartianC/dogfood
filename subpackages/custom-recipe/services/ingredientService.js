@@ -1,7 +1,6 @@
 const env = require('../../../config/env')
 const storage = require('../../../utils/storage')
 const recipes = require('../../../data/recipes')
-const { canSearchIngredient } = require('../../../utils/ingredientOperationRules')
 const runtimeDataReleaseService = require('./runtimeDataReleaseService')
 
 const RECENT_KEY = 'recentIngredients'
@@ -78,7 +77,7 @@ function normalizeIngredient(item = {}) {
 }
 
 function isIngredientPolicyOpen(item = {}) {
-  return canSearchIngredient(item)
+  return String(item.policyStatus || item.policy_status || 'unknown') !== 'blocked'
 }
 
 function normalizeCatalogIngredient(item = {}) {
@@ -177,6 +176,7 @@ async function loadCloudIngredientCatalog() {
   const records = await readAll(database.collection('ingredient_catalog').where({
     catalog_version: release.catalog_version,
     policy_version: release.policy_version,
+    is_searchable: true,
     policy_status: database.command.neq('blocked')
   }))
   const ingredientsByConcept = records

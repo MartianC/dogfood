@@ -121,10 +121,6 @@
         "type": "file"
       },
       {
-        "value": "subpackages/shared-meal/services/humanRecipeService.js",
-        "type": "file"
-      },
-      {
         "value": "subpackages/dog-profile/services/fileService.js",
         "type": "file"
       },
