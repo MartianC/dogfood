@@ -24,26 +24,202 @@ const acorn = require('internal/deps/acorn/acorn/dist/acorn')
 const sources = JSON.parse(fs.readFileSync(0, 'utf8'))
 const result = {}
 
-function collectRequires(node, requests) {
-  if (!node || typeof node !== 'object') return
-  if (Array.isArray(node)) {
-    node.forEach((item) => collectRequires(item, requests))
+class Scope {
+  constructor(parent = null) {
+    this.parent = parent
+    this.bindings = new Set()
+  }
+}
+
+function addPatternBindings(pattern, scope) {
+  if (!pattern) return
+  if (pattern.type === 'Identifier') {
+    scope.bindings.add(pattern.name)
     return
   }
-  if (
-    node.type === 'CallExpression'
-    && node.optional !== true
-    && node.callee
-    && node.callee.type === 'Identifier'
-    && node.callee.name === 'require'
-    && node.arguments
-    && node.arguments.length === 1
-    && node.arguments[0].type === 'Literal'
-    && typeof node.arguments[0].value === 'string'
-  ) {
-    requests.push(node.arguments[0].value)
+  if (pattern.type === 'RestElement') {
+    addPatternBindings(pattern.argument, scope)
+    return
   }
-  Object.values(node).forEach((value) => collectRequires(value, requests))
+  if (pattern.type === 'AssignmentPattern') {
+    addPatternBindings(pattern.left, scope)
+    return
+  }
+  if (pattern.type === 'ArrayPattern') {
+    pattern.elements.forEach((item) => addPatternBindings(item, scope))
+    return
+  }
+  if (pattern.type === 'ObjectPattern') {
+    pattern.properties.forEach((property) => {
+      addPatternBindings(
+        property.type === 'RestElement' ? property.argument : property.value,
+        scope
+      )
+    })
+  }
+}
+
+function addDirectBindings(statements, scope, includeVar) {
+  statements.forEach((statement) => {
+    if (
+      statement.type === 'VariableDeclaration'
+      && (includeVar || statement.kind !== 'var')
+    ) {
+      statement.declarations.forEach((declaration) => {
+        addPatternBindings(declaration.id, scope)
+      })
+    }
+    if (
+      (statement.type === 'FunctionDeclaration' || statement.type === 'ClassDeclaration')
+      && statement.id
+    ) {
+      scope.bindings.add(statement.id.name)
+    }
+  })
+}
+
+function isFunction(node) {
+  return node.type === 'FunctionDeclaration'
+    || node.type === 'FunctionExpression'
+    || node.type === 'ArrowFunctionExpression'
+}
+
+function collectVarBindings(node, scope) {
+  if (!node || typeof node !== 'object') return
+  if (Array.isArray(node)) {
+    node.forEach((item) => collectVarBindings(item, scope))
+    return
+  }
+  if (isFunction(node) || node.type === 'ClassDeclaration' || node.type === 'ClassExpression') {
+    return
+  }
+  if (node.type === 'VariableDeclaration' && node.kind === 'var') {
+    node.declarations.forEach((declaration) => {
+      addPatternBindings(declaration.id, scope)
+    })
+  }
+  Object.values(node).forEach((value) => collectVarBindings(value, scope))
+}
+
+function hasBinding(scope, name) {
+  for (let current = scope; current; current = current.parent) {
+    if (current.bindings.has(name)) return true
+  }
+  return false
+}
+
+function collectRequires(ast, requests) {
+  function visit(node, scope) {
+    if (!node || typeof node !== 'object') return
+    if (Array.isArray(node)) {
+      node.forEach((item) => visit(item, scope))
+      return
+    }
+
+    if (node.type === 'Program') {
+      const programScope = new Scope(scope)
+      addDirectBindings(node.body, programScope, true)
+      collectVarBindings(node, programScope)
+      visit(node.body, programScope)
+      return
+    }
+
+    if (node.type === 'BlockStatement' || node.type === 'StaticBlock') {
+      const blockScope = new Scope(scope)
+      addDirectBindings(node.body, blockScope, false)
+      visit(node.body, blockScope)
+      return
+    }
+
+    if (isFunction(node)) {
+      const functionScope = new Scope(scope)
+      if (node.id) functionScope.bindings.add(node.id.name)
+      node.params.forEach((parameter) => addPatternBindings(parameter, functionScope))
+      if (node.body.type === 'BlockStatement') {
+        collectVarBindings(node.body, functionScope)
+      }
+      visit(node.params, functionScope)
+      visit(node.body, functionScope)
+      return
+    }
+
+    if (node.type === 'CatchClause') {
+      const catchScope = new Scope(scope)
+      addPatternBindings(node.param, catchScope)
+      visit(node.param, catchScope)
+      visit(node.body, catchScope)
+      return
+    }
+
+    if (node.type === 'ForStatement') {
+      const loopScope = new Scope(scope)
+      if (node.init && node.init.type === 'VariableDeclaration' && node.init.kind !== 'var') {
+        node.init.declarations.forEach((declaration) => {
+          addPatternBindings(declaration.id, loopScope)
+        })
+      }
+      visit(node.init, loopScope)
+      visit(node.test, loopScope)
+      visit(node.update, loopScope)
+      visit(node.body, loopScope)
+      return
+    }
+
+    if (node.type === 'ForInStatement' || node.type === 'ForOfStatement') {
+      const loopScope = new Scope(scope)
+      if (node.left.type === 'VariableDeclaration' && node.left.kind !== 'var') {
+        node.left.declarations.forEach((declaration) => {
+          addPatternBindings(declaration.id, loopScope)
+        })
+      }
+      visit(node.left, loopScope)
+      visit(node.right, loopScope)
+      visit(node.body, loopScope)
+      return
+    }
+
+    if (node.type === 'SwitchStatement') {
+      const switchScope = new Scope(scope)
+      addDirectBindings(
+        node.cases.flatMap((switchCase) => switchCase.consequent),
+        switchScope,
+        false
+      )
+      visit(node.discriminant, scope)
+      node.cases.forEach((switchCase) => {
+        visit(switchCase.test, switchScope)
+        visit(switchCase.consequent, switchScope)
+      })
+      return
+    }
+
+    if (node.type === 'ClassDeclaration' || node.type === 'ClassExpression') {
+      const classScope = new Scope(scope)
+      if (node.id) classScope.bindings.add(node.id.name)
+      visit(node.superClass, scope)
+      visit(node.body, classScope)
+      return
+    }
+
+    if (
+      node.type === 'CallExpression'
+      && node.optional !== true
+      && node.callee
+      && node.callee.type === 'Identifier'
+      && node.callee.name === 'require'
+      && !hasBinding(scope, 'require')
+      && node.arguments
+      && node.arguments.length === 1
+      && node.arguments[0].type === 'Literal'
+      && typeof node.arguments[0].value === 'string'
+    ) {
+      requests.push(node.arguments[0].value)
+    }
+
+    Object.values(node).forEach((value) => visit(value, scope))
+  }
+
+  visit(ast, null)
 }
 
 for (const [file, source] of Object.entries(sources)) {

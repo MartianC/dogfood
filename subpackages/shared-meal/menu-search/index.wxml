@@ -9,80 +9,88 @@
 
   <ui-notice wx:if="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
 
-  <view wx:if="{{!selectedRecipe}}" class="shared-meal-menu-results">
-    <view wx:if="{{loading}}" class="shared-meal-menu-loading">正在读取已发布菜谱</view>
-    <ui-empty
-      wx:elif="{{!recipes.length}}"
-      title="没有找到菜谱"
-      description="试试菜名或原料关键词"
-    />
-    <view
-      wx:else
-      wx:for="{{recipes}}"
-      wx:key="id"
-      class="shared-meal-menu-result"
-      data-index="{{index}}"
-      bindtap="onSelectRecipe"
-      aria-role="button"
-      aria-label="选择{{item.title}}"
-    >
-      <ui-card>
-        <view class="shared-meal-menu-result__name">{{item.title}}</view>
-        <view class="shared-meal-menu-result__meta">
-          {{item.ingredients.length}} 项来源原料
-        </view>
-      </ui-card>
-    </view>
-  </view>
-
-  <view wx:else class="shared-meal-menu-detail">
-    <view class="shared-meal-menu-detail__name">{{selectedRecipe.title}}</view>
-    <view class="shared-meal-menu-detail__hint">
-      原料按菜谱来源顺序展示；可共用项可点选。
-    </view>
-
-    <view
-      wx:for="{{selectedRecipe.ingredients}}"
-      wx:key="position"
-      wx:for-item="item"
-      class="shared-meal-menu-ingredient"
-    >
-      <ui-card padding="small">
-        <view class="shared-meal-menu-ingredient__source">
-          <text>{{item.sourceText}}</text>
-          <text wx:if="{{item.amountText}}" class="shared-meal-menu-ingredient__amount">
-            {{item.amountText}}
-          </text>
-        </view>
-
-        <view wx:if="{{!item.components.length}}" class="shared-meal-menu-ingredient__unmapped">
-          未映射，仅保留来源文字
-        </view>
-
+  <block wx:if="{{!selectedRecipe}}">
+    <view class="shared-meal-menu-results">
+      <block wx:if="{{loading}}">
+        <view class="shared-meal-menu-loading">正在读取已发布菜谱</view>
+      </block>
+      <block wx:elif="{{!recipes.length}}">
+        <ui-empty
+          title="没有找到菜谱"
+          description="试试菜名或原料关键词"
+        />
+      </block>
+      <block wx:else>
         <view
-          wx:for="{{item.components}}"
-          wx:key="variantId"
-          wx:for-item="component"
-          wx:for-index="componentIndex"
-          class="shared-meal-menu-component shared-meal-menu-component--{{component.canSelect ? 'open' : 'blocked'}}"
-          data-ingredient-index="{{index}}"
-          data-component-index="{{componentIndex}}"
-          bindtap="onToggleComponent"
-          aria-role="{{component.canSelect ? 'button' : 'text'}}"
-          aria-disabled="{{!component.canSelect}}"
+          wx:for="{{recipes}}"
+          wx:key="id"
+          class="shared-meal-menu-result"
+          data-index="{{index}}"
+          bindtap="onSelectRecipe"
+          aria-role="button"
+          aria-label="选择{{item.title}}"
         >
-          <view class="shared-meal-menu-component__main">
-            <text>{{component.displayName}}</text>
-            <ui-tag variant="{{component.canSelect ? 'good' : 'warning'}}" size="small">
-              {{component.canSelect ? (component.selected ? '已选择' : '可共用') : '不可共用'}}
-            </ui-tag>
-          </view>
-          <view
-            wx:if="{{!component.canSelect}}"
-            class="shared-meal-menu-component__reason"
-          >{{component.blockedReason}}</view>
+          <ui-card>
+            <view class="shared-meal-menu-result__name">{{item.title}}</view>
+            <view class="shared-meal-menu-result__meta">
+              {{item.ingredients.length}} 项来源原料
+            </view>
+          </ui-card>
         </view>
-      </ui-card>
+      </block>
     </view>
-  </view>
+  </block>
+
+  <block wx:else>
+    <view class="shared-meal-menu-detail">
+      <view class="shared-meal-menu-detail__name">{{selectedRecipe.title}}</view>
+      <view class="shared-meal-menu-detail__hint">
+        原料按菜谱来源顺序展示；可共用项可点选。
+      </view>
+
+      <view
+        wx:for="{{selectedRecipe.ingredients}}"
+        wx:key="position"
+        wx:for-item="item"
+        class="shared-meal-menu-ingredient"
+      >
+        <ui-card padding="small">
+          <view class="shared-meal-menu-ingredient__source">
+            <text>{{item.sourceText}}</text>
+            <text wx:if="{{item.amountText}}" class="shared-meal-menu-ingredient__amount">
+              {{item.amountText}}
+            </text>
+          </view>
+
+          <view wx:if="{{!item.components.length}}" class="shared-meal-menu-ingredient__unmapped">
+            未映射，仅保留来源文字
+          </view>
+
+          <view
+            wx:for="{{item.components}}"
+            wx:key="variantId"
+            wx:for-item="component"
+            wx:for-index="componentIndex"
+            class="shared-meal-menu-component shared-meal-menu-component--{{component.canSelect ? 'open' : 'blocked'}}"
+            data-ingredient-index="{{index}}"
+            data-component-index="{{componentIndex}}"
+            bindtap="onToggleComponent"
+            aria-role="{{component.canSelect ? 'button' : 'text'}}"
+            aria-disabled="{{!component.canSelect}}"
+          >
+            <view class="shared-meal-menu-component__main">
+              <text>{{component.displayName}}</text>
+              <ui-tag variant="{{component.canSelect ? 'good' : 'warning'}}" size="small">
+                {{component.canSelect ? (component.selected ? '已选择' : '可共用') : '不可共用'}}
+              </ui-tag>
+            </view>
+            <view
+              wx:if="{{!component.canSelect}}"
+              class="shared-meal-menu-component__reason"
+            >{{component.blockedReason}}</view>
+          </view>
+        </ui-card>
+      </view>
+    </view>
+  </block>
 </view>

@@ -8,6 +8,43 @@ const cloudbase = require('../services/adapters/cloudbase')
 const mock = require('../services/adapters/mock')
 const humanRecipeService = require('../subpackages/shared-meal/services/humanRecipeService')
 
+function assertNoOrphanConditionalBranches(template) {
+  const frames = [{ lastConditional: null }]
+  const tagPattern = /<(\/?)([a-z][\w-]*)([^>]*?)(\/?)>/gi
+
+  for (const match of template.matchAll(tagPattern)) {
+    const [, closing, tagName, attributes, selfClosing] = match
+    if (closing) {
+      frames.pop()
+      continue
+    }
+
+    const parent = frames[frames.length - 1]
+    const branch = /\bwx:if\b/.test(attributes)
+      ? 'if'
+      : /\bwx:elif\b/.test(attributes)
+        ? 'elif'
+        : /\bwx:else\b/.test(attributes)
+          ? 'else'
+          : ''
+
+    if (
+      (branch === 'elif' || branch === 'else')
+      && (!parent.lastConditional || parent.lastConditional.tagName !== tagName)
+    ) {
+      throw new Error(`${tagName} 的 wx:${branch} 前没有同级同标签的 wx:if`)
+    }
+
+    parent.lastConditional = branch === 'if' || branch === 'elif'
+      ? { tagName }
+      : null
+
+    if (!selfClosing) {
+      frames.push({ lastConditional: null })
+    }
+  }
+}
+
 test('CloudBase adapter 的搜索和详情最终调用对应云函数', async () => {
   const originalWx = global.wx
   const calls = []
@@ -121,4 +158,17 @@ test('菜单页只走受控服务查询已发布菜谱并展示全部来源原�
   assert.match(template, /component\.canSelect/)
   assert.doesNotMatch([source, template].join('\n'), /自定义菜名|自定义原料|狗狗需求推荐|为狗推荐/)
   assert.doesNotMatch(template, /<button\b/)
+})
+
+test('菜单页条件分支保持编译器可识别的连续 wx:if 链', () => {
+  const template = fs.readFileSync(
+    path.join(root, 'subpackages/shared-meal/menu-search/index.wxml'),
+    'utf8'
+  )
+
+  assert.throws(
+    () => assertNoOrphanConditionalBranches('<view><block wx:else></block></view>'),
+    /wx:else 前没有/
+  )
+  assert.doesNotThrow(() => assertNoOrphanConditionalBranches(template))
 })

@@ -56,3 +56,49 @@ test('mainPackageReachability/v2 不把注释或字符串里的伪造 require �
     )
   })
 })
+
+test('mainPackageReachability/v2 忽略被参数、局部变量和嵌套作用域遮蔽的 require', () => {
+  const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
+  const shadowedRequireFixtures = [
+    'fake-require-parameter',
+    'fake-require-local',
+    'fake-require-nested-scope'
+  ]
+
+  shadowedRequireFixtures.forEach((fixture) => {
+    const checker = createBoundaryChecker(path.join(fixtureRoot, fixture))
+    assert.deepEqual(
+      checker.findUnusedMainPackageJavaScript(),
+      ['utils/orphan.js'],
+      `${fixture} 不应把被遮蔽的 require 当作 CommonJS 依赖`
+    )
+  })
+})
+
+test('mainPackageReachability/v2 忽略成员调用、动态参数和模板字符串', () => {
+  const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
+  const checker = createBoundaryChecker(path.join(fixtureRoot, 'fake-require-nonstatic'))
+
+  assert.deepEqual(checker.findUnusedMainPackageJavaScript(), ['utils/orphan.js'])
+})
+
+test('mainPackageReachability/v2 识别转义后的静态字符串 require', () => {
+  const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
+  const checker = createBoundaryChecker(path.join(fixtureRoot, 'static-require-escaped'))
+
+  assert.equal(
+    checker.collectReachableMainJavaScript().has('utils/sharedRule.js'),
+    true
+  )
+  assert.deepEqual(checker.findUnusedMainPackageJavaScript(), [])
+})
+
+test('mainPackageReachability/v2 遇到语法错误时关闭检查并返回失败', () => {
+  const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
+  const checker = createBoundaryChecker(path.join(fixtureRoot, 'syntax-error'))
+
+  assert.throws(
+    () => checker.findUnusedMainPackageJavaScript(),
+    /无法解析真实 require 图/
+  )
+})
