@@ -1,5 +1,10 @@
 const storage = require('../../utils/storage')
 const env = require('../../config/env')
+const {
+  DOG_PROFILE_SCHEMA_VERSION,
+  normalizeSpecialNutritionNeeds,
+  validateSpecialNutritionNeeds
+} = require('../dogProfileContract')
 
 function now() {
   return new Date().toISOString()
@@ -17,6 +22,7 @@ function validateHiddenArrays(payload = {}) {
     Object.prototype.hasOwnProperty.call(payload, 'avoidIngredients')
     && !Array.isArray(payload.avoidIngredients)
   ) throw new Error('忌口数据格式不正确')
+  validateSpecialNutritionNeeds(payload.specialNutritionNeeds)
 }
 
 async function login() {
@@ -42,6 +48,8 @@ async function createDog(payload) {
     avoidIngredients: [],
     avatarUrl: '',
     dietGoal: 'daily',
+    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
+    specialNutritionNeeds: normalizeSpecialNutritionNeeds(payload.specialNutritionNeeds),
     createdAt: now(),
     updatedAt: now(),
     ...payload
@@ -53,7 +61,13 @@ async function createDog(payload) {
 async function updateDog(id, payload) {
   validateHiddenArrays(payload)
   const dogs = await listDogs()
-  const next = dogs.map((dog) => dog.id === id ? { ...dog, ...payload, updatedAt: now() } : dog)
+  const next = dogs.map((dog) => dog.id === id ? {
+    ...dog,
+    ...payload,
+    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
+    specialNutritionNeeds: normalizeSpecialNutritionNeeds(payload.specialNutritionNeeds),
+    updatedAt: now()
+  } : dog)
   storage.setSync('mockDogs', next)
   return next.find((dog) => dog.id === id)
 }
@@ -97,6 +111,12 @@ async function listMealPlans() {
 const MOCK_HUMAN_RECIPES = [
   {
     _id: 'mock_human_tomato_egg',
+    release_id: 'mock-runtime-release-v2',
+    base_release_id: 'mock-nutrition-release-v1',
+    recipe_version: 'mock-recipe-v2',
+    mapping_version: 'mock-mapping-v2',
+    compatible_catalog_version: 'mock-catalog-v1',
+    compatible_policy_version: 'mock-policy-v1',
     title: '番茄炒蛋',
     sortKey: '番茄炒蛋',
     ingredients: [
@@ -110,6 +130,7 @@ const MOCK_HUMAN_RECIPES = [
           variant_id: 'variant_tomato_raw',
           food_id: 'food_tomato',
           display_name_zh: '番茄',
+          category_code: 'vegetable',
           policy_status: 'allowed',
           blockedReason: null
         }]
@@ -124,6 +145,7 @@ const MOCK_HUMAN_RECIPES = [
           variant_id: 'variant_egg_cooked',
           food_id: 'food_egg',
           display_name_zh: '鸡蛋',
+          category_code: 'egg',
           policy_status: 'conditional',
           blockedReason: null
         }]
@@ -132,6 +154,12 @@ const MOCK_HUMAN_RECIPES = [
   },
   {
     _id: 'mock_human_onion_beef',
+    release_id: 'mock-runtime-release-v2',
+    base_release_id: 'mock-nutrition-release-v1',
+    recipe_version: 'mock-recipe-v2',
+    mapping_version: 'mock-mapping-v2',
+    compatible_catalog_version: 'mock-catalog-v1',
+    compatible_policy_version: 'mock-policy-v1',
     title: '洋葱牛肉',
     sortKey: '洋葱牛肉',
     ingredients: [
@@ -145,6 +173,7 @@ const MOCK_HUMAN_RECIPES = [
           variant_id: 'variant_onion_raw',
           food_id: 'food_onion',
           display_name_zh: '洋葱',
+          category_code: 'vegetable',
           policy_status: 'blocked',
           blockedReason: '洋葱不适合犬只食用。'
         }]
@@ -159,6 +188,7 @@ const MOCK_HUMAN_RECIPES = [
           variant_id: 'variant_beef_cooked',
           food_id: 'food_beef',
           display_name_zh: '牛肉',
+          category_code: 'meat',
           policy_status: 'unknown',
           blockedReason: null
         }]

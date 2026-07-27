@@ -32,7 +32,10 @@
     {
       "root": "subpackages/shared-meal",
       "pages": [
-        "menu-search/index"
+        "menu-search/index",
+        "dog-select/index",
+        "dog-select/menu-search/index",
+        "compose/index"
       ]
     }
   ],

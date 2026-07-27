@@ -55,7 +55,12 @@ test('小程序配置包含四个 Tab 和关键分包路由', () => {
   const sharedMealPackage = appJson.subpackages.find(
     (item) => item.root === 'subpackages/shared-meal'
   )
-  assert.deepEqual(sharedMealPackage.pages, ['menu-search/index'])
+  assert.deepEqual(sharedMealPackage.pages, [
+    'menu-search/index',
+    'dog-select/index',
+    'dog-select/menu-search/index',
+    'compose/index'
+  ])
 })
 
 test('TabBar 使用本地图标资源', () => {

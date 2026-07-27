@@ -1,6 +1,13 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const service = require('../subpackages/custom-recipe/services/energyRequirementService')
+const service = require('../services/meal-assessment/energyRequirementService')
+const compatibilityService = require('../subpackages/custom-recipe/services/energyRequirementService')
+
+test('根共享实现与 custom-recipe 兼容 re-export 指向同一行为', () => {
+  assert.equal(compatibilityService, service)
+  assert.equal(compatibilityService.calculateEnergyRequirement, service.calculateEnergyRequirement)
+  assert.deepEqual(compatibilityService.ACTIVITY_FACTORS, service.ACTIVITY_FACTORS)
+})
 
 test('幼犬按品种估算的成年体重计算每日和本餐目标', () => {
   const result = service.calculateEnergyRequirement({

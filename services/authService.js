@@ -1,7 +1,7 @@
 const env = require('../config/env')
 const storage = require('../utils/storage')
 const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./adapters/mock')
-const DOGS_CACHE_SCHEMA_VERSION = 2
+const { DOGS_CACHE_SCHEMA_VERSION } = require('./dogProfileContract')
 
 let authState = 'guest'
 let currentUser = null

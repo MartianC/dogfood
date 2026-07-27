@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sharedMealIngredient/v1",
+  "title": "共享本餐食材 v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "ingredientId",
+    "foodId",
+    "conceptId",
+    "variantId",
+    "name",
+    "category",
+    "policyStatus",
+    "perMealAmountGram",
+    "sourceRefs",
+    "dataVersions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "ingredientId": { "type": "string", "minLength": 1 },
+    "foodId": { "type": "string", "minLength": 1 },
+    "conceptId": { "type": "string", "minLength": 1 },
+    "variantId": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "category": { "type": "string", "minLength": 1 },
+    "policyStatus": {
+      "enum": ["allowed", "conditional", "unknown", "blocked"]
+    },
+    "perMealAmountGram": {
+      "type": ["number", "null"],
+      "minimum": 0
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["humanMenuId", "ingredientPosition"],
+        "properties": {
+          "humanMenuId": { "type": "string", "minLength": 1 },
+          "ingredientPosition": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "dataVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtimeReleaseId",
+        "recipeVersion",
+        "mappingVersion",
+        "catalogVersion",
+        "policyVersion",
+        "nutritionSourceReleaseId"
+      ],
+      "properties": {
+        "runtimeReleaseId": { "type": "string", "minLength": 1 },
+        "recipeVersion": { "type": ["string", "null"] },
+        "mappingVersion": { "type": ["string", "null"] },
+        "catalogVersion": { "type": "string", "minLength": 1 },
+        "policyVersion": { "type": "string", "minLength": 1 },
+        "nutritionSourceReleaseId": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

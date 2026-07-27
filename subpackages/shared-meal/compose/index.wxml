@@ -1,0 +1,36 @@
+<view class="page shared-meal-compose-page">
+  <ui-notice wx:if="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
+  <ui-button wx:if="{{errorText}}" variant="ghost" bind:tap="onRestart">明确重新开始</ui-button>
+
+  <block wx:if="{{dog && !errorText}}">
+    <ui-card variant="primary">
+      <view class="shared-meal-compose-energy-label">{{dog.name}}的本餐能量目标</view>
+      <view class="shared-meal-compose-energy-value">{{energyTargetText}}</view>
+    </ui-card>
+
+    <ui-notice variant="neutral">系统不会自动生成单项克重或比例；请按实际为狗狗单独无调味制作的用量填写。</ui-notice>
+
+    <view class="shared-meal-compose-section">
+      <view class="shared-meal-compose-section__heading">今天的人饭</view>
+      <ui-card wx:for="{{humanMenus}}" wx:key="id" padding="small">
+        <view class="shared-meal-compose-menu-name">{{item.title}}</view>
+        <view class="shared-meal-compose-menu-meta">{{item.ingredients.length}} 项来源原料</view>
+      </ui-card>
+    </view>
+
+    <view class="shared-meal-compose-section">
+      <view class="shared-meal-compose-section__heading">狗狗这顿吃什么</view>
+      <ui-card wx:for="{{ingredients}}" wx:key="variantId" padding="small">
+        <view class="shared-meal-compose-ingredient">
+          <view>
+            <view class="shared-meal-compose-ingredient__name">{{item.name}}</view>
+            <view class="shared-meal-compose-ingredient__source">来自 {{item.sourceRefs.length}} 道来源原料</view>
+          </view>
+          <ui-tag variant="neutral">{{item.amountText || '待填写'}}</ui-tag>
+        </view>
+      </ui-card>
+    </view>
+
+    <ui-button variant="ghost" bind:tap="onRestart">明确重新开始</ui-button>
+  </block>
+</view>

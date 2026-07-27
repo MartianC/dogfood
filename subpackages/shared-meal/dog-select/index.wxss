@@ -1,0 +1,45 @@
+@import "../../../styles/tokens.wxss";
+
+.shared-meal-dog-page {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.shared-meal-dog-loading {
+  padding: var(--df-space-6) 0;
+  color: var(--df-color-muted);
+  text-align: center;
+}
+
+.shared-meal-dog-list {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.shared-meal-dog-option {
+  min-height: var(--df-touch-min);
+}
+
+.shared-meal-dog-option__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-3);
+}
+
+.shared-meal-dog-option__name {
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 700;
+}
+
+.shared-meal-dog-option__meta {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.shared-meal-dog-warning {
+  margin-bottom: var(--df-space-1);
+  font-weight: 700;
+}

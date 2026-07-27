@@ -85,6 +85,30 @@
             </view>
           </view>
         </ui-field>
+
+        <ui-field label="是否有已确诊疾病" helpText="未确认时可以保存，但开始本餐前需要补充。">
+          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="是否有已确诊疾病">
+            <view wx:for="{{diseaseStatusOptions}}" wx:key="label" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.hasDisease === item.value}}" data-key="hasDisease" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">
+              <ui-tag variant="{{form.specialNutritionNeeds.hasDisease === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+            </view>
+          </view>
+        </ui-field>
+
+        <ui-field label="生殖状态" helpText="妊娠或哺乳期需要专业营养建议。">
+          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="生殖状态">
+            <view wx:for="{{reproductiveStatusOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.reproductiveStatus === item.value}}" data-key="reproductiveStatus" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">
+              <ui-tag variant="{{form.specialNutritionNeeds.reproductiveStatus === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+            </view>
+          </view>
+        </ui-field>
+
+        <ui-field label="治疗性体重管理" helpText="普通体况管理不属于治疗性减重或增重。">
+          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="治疗性体重管理">
+            <view wx:for="{{therapeuticWeightManagementOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.therapeuticWeightManagement === item.value}}" data-key="therapeuticWeightManagement" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">
+              <ui-tag variant="{{form.specialNutritionNeeds.therapeuticWeightManagement === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+            </view>
+          </view>
+        </ui-field>
       </view>
     </ui-card>
   </view>
