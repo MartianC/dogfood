@@ -28,6 +28,12 @@
         "ingredient-search/index",
         "advice/index"
       ]
+    },
+    {
+      "root": "subpackages/shared-meal",
+      "pages": [
+        "menu-search/index"
+      ]
     }
   ],
   "window": {

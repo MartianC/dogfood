@@ -12,10 +12,10 @@
 2. **保留来源原文**：菜谱标题、分类、原料名、分量和原始位置不能因标准化而丢失。
 3. **写法映射复用**：映射针对规范化原料写法维护，不对34万次原料出现逐条人工处理。
 4. **精确优先**：只有审核过的唯一标准名称或别名可以自动通过；编辑距离、向量和大模型只能生成候选。
-5. **默认不可选择**：未匹配、歧义、没有营养形态或策略不允许的组件保持不可选择。
+5. **未知不冒充安全结论**：未匹配和歧义项只保留来源文字；已映射组件按策略四态展示。
 6. **映射与安全分离**：原料成功映射不等于适合犬只；必须再解析当前犬食策略。
 7. **完整映射快照**：每个 `mapping_version` 对全部规范化写法给出明确结论，不能用缺行表示未知。
-8. **只发布可用菜谱**：运行时 `human_recipes` 只包含至少一个 `is_selectable=true` 组件的菜谱。
+8. **只发布可操作菜谱**：运行时 `human_recipes` 只包含至少一个已映射且非 `blocked` 组件的菜谱。
 9. **分量只作参考**：所有来源分量必须带 `amount_is_reference_only=true`。
 10. **先 staging 后激活**：导入、版本计数、阻断样本和查询链路全部通过前不得激活。
 
@@ -84,7 +84,7 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 
 ### 4. 生成运行时投影
 
-导出器将每次原料提及与映射组件连接，再解析形态级优先、概念级回退的有效犬食策略。只有至少一个组件可选择的菜谱进入 `human_recipes.jsonl`。
+导出器将每次原料提及与映射组件连接，再解析形态级优先、概念级回退的有效犬食策略。只有至少一个已映射且非 `blocked` 组件的菜谱进入 `human_recipes.jsonl`。
 
 每条文档必须包含：
 
@@ -94,8 +94,8 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 - 标题、分类、搜索文本；
 - 原料原文、规范化写法和来源分量；
 - 映射状态及组件的 `concept_id`、`variant_id`、`food_id`；
-- `policy_status`、`is_selectable`；
-- 映射、未解决、可选择和阻断数量；
+- `policy_status`，以及仅对 `blocked` 组件整理后的 `blockedReason`；
+- 映射、未解决、非 blocked 和阻断数量；
 - `amounts_are_reference_only=true`。
 
 ### 5. 发布前校验
@@ -105,9 +105,9 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 - 来源授权为 `verified`，SHA-256 与实际 CSV 一致；
 - `recipe_ingredient_term` 与映射决策数量完全一致；
 - 所有组件引用当前目录的合法概念和形态；
-- 所有可选择组件符合当前有效策略；
-- `blocked`、`unknown` 和不可执行的 `conditional` 不可选择；
-- 运行时文档至少具有一个可选择组件；
+- 所有映射组件引用当前有效策略；
+- `allowed`、`conditional`、`unknown` 可操作，`blocked` 不可操作；
+- 运行时文档至少具有一个已映射且非 `blocked` 组件；
 - 人饭分量全部标记为仅供参考；
 - `_id` 唯一，文档低于512 KiB；
 - SQLite 完整性和外键检查通过；
@@ -147,6 +147,6 @@ python3 scripts/fooddata/import_ingredient_cloudbase.py \
 - 精确匹配写法：128种；
 - 已映射出现次数：41,117次，覆盖率12.07%；
 - 待审核高频写法：983种；
-- 当前至少有一个安全可选组件的运行时菜谱：6,082条。
+- 历史 v1 至少有一个旧版安全可选组件的运行时菜谱：6,082条；该历史快照不就地改写。
 
 `mapping_version=2026-07-23-v1` 已导入 CloudBase staging。当前版本是保守基线，后续通过审核高频原料写法和扩展标准食材目录逐步增加可用菜谱。

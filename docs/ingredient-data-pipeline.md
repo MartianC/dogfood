@@ -65,7 +65,7 @@ python3 scripts/fooddata/seed_nutrient_rankings.py \
   --rules data/nutrient-rankings/releases/2026-07-22-v1.json
 ```
 
-排行只包含有效 `is_selectable=true` 的目录形态；缺少完整组成值的组合营养素不会把缺失值当零。
+新排行按 `ingredientOperationRules/v1` 只排除 `blocked`；缺少完整组成值的组合营养素不会把缺失值当零。
 
 随后生成完整原料写法映射快照：
 
@@ -75,7 +75,7 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
   --mapping data/human-recipes/mappings/2026-07-23-v1.json
 ```
 
-首版只使用已批准唯一别名精确匹配；其余写法明确保存为 `unmatched` 并保持不可选择。
+首版只使用已批准唯一别名精确匹配；其余写法明确保存为 `unmatched`，只保留来源文字，不制造目录身份或安全结论。
 
 ## 导出 CloudBase 只读投影
 
@@ -92,7 +92,7 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 - `ingredient_catalog.jsonl`：107 条一食材形态一文档的狗饭常用食材搜索目录。
 - `canine_ingredient_policies.jsonl`：119 条概念或形态级完整策略快照。
 - `nutrient_rankings.jsonl`：44 条一营养素一文档的安全过滤排行，共180个排行项。
-- `human_recipes.jsonl`：6,082条至少含一个当前安全可选组件的菜谱运行时投影。
+- `human_recipes.jsonl`：历史 v1 为6,082条旧规则投影；新生成的 v2 仅要求至少一个已映射且非 `blocked` 组件，历史文件不就地改写。
 - `cloudbase-ingredient-import-manifest.json`：来源 SHA-256、行数、最大文档体积和文件校验值。
 
 真实导出中，最大营养快照为 13,357 bytes，低于项目采用的 512 KiB 文档预算。营养素按稳定 `nutrient_id` 存入 `nutrients` 对象：
@@ -188,7 +188,7 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 
 后续填充、修正或下线目录项必须遵循 [`ingredient_catalog` 持续填充 SOP](data/ingredient-catalog-sop.md)。每一批使用新的完整目录快照和新建的离线 SQLite；不能把下一批种子直接叠加到上一批 SQLite，也不能绕过 staging 在云端手工补记录。
 
-每次 `ingredient_catalog` 导入 staging 后，必须按照 [`canine_ingredient_policies` 持续整理与发布 SOP](data/canine-ingredient-policies-sop.md) 重新执行策略覆盖对账、受影响项审核和目录反向投影。无变化策略可以版本化延续；新增或受影响项在审核完成前保持 `unknown` 且不可选择。
+每次 `ingredient_catalog` 导入 staging 后，必须按照 [`canine_ingredient_policies` 持续整理与发布 SOP](data/canine-ingredient-policies-sop.md) 重新执行策略覆盖对账、受影响项审核和目录反向投影。无变化策略可以版本化延续；新增或受影响项在审核完成前保持 `unknown`，不得制造安全结论。
 
 每次目录、策略、USDA 来源或营养公式变化后，必须按照 [`nutrient_rankings` 生成与发布 SOP](data/nutrient-rankings-sop.md) 重新生成完整排行。空排行必须显式保留，不能回退到未经审核食材。
 
@@ -234,7 +234,7 @@ python3 scripts/fooddata/import_ingredient_cloudbase.py \
 
 脚本只允许写入 `data_releases`、`food_nutrition_profiles`、`ingredient_catalog`、`canine_ingredient_policies`、`nutrient_rankings` 与 `human_recipes`，导入前校验 manifest 行数和 SHA-256，按稳定 `_id` 幂等 Upsert；各投影按 `release_id`、`policy_version`、`ranking_version` 或 `recipe_version` 核对本版本数量，不与历史版本总数混淆。它不会激活 `staging` 发布。
 
-CloudBase staging 当前包含107条目录项、119条安全策略、44条营养素排行和6,082条人饭菜谱。目录有效结果为 `allowed=11`、`conditional=25`、`blocked=4`、`unknown=67`；只有11个具有明确证据且无需额外机器条件的形态进入排行和菜谱选择。人饭来源共50,000条，运行时只发布至少含一个安全可选组件的菜谱。该策略版本尚未通过兽医终审，发布记录保持 staging。
+CloudBase staging 的历史 v1 包含107条目录项、119条安全策略、44条营养素排行和6,082条人饭菜谱。目录结果为 `allowed=11`、`conditional=25`、`blocked=4`、`unknown=67`；这些历史投影按旧规则生成并保持不变。新 v2 投影使用 `allowed|conditional|unknown` 可操作、`blocked` 拒绝的统一规则，只写 staging，不自动切换 active。
 
 正常小程序查询不直接关联离线规范化表：
 
@@ -250,6 +250,5 @@ CloudBase staging 当前包含107条目录项、119条安全策略、44条营养
 2. 实现云函数保存配方时的策略二次校验、策略集合权限和索引。
 3. 设计烹饪状态确认，满足后再评估是否开放需要熟制的 `conditional` 形态。
 4. 将小程序“富含营养素食材”查询切换到当前活动 `ranking_version`，并实现空排行状态。
-5. 实现人饭菜谱云函数搜索/详情接口，并始终按活动 `recipe_version` 查询。
-6. 优先审核高频未匹配原料写法，并将调味料、复合食品和安全关键项分流。
-7. 通过不可变版本组合和活动版本指针完成 CloudBase 发布与回滚。
+5. 优先审核高频未匹配原料写法，并将调味料、复合食品和安全关键项分流。
+6. 通过不可变版本组合和活动版本指针完成 CloudBase 发布与回滚。

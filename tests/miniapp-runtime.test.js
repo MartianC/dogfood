@@ -99,6 +99,7 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
     'subpackages/custom-recipe/services/energyRequirementService.js',
     'subpackages/custom-recipe/services/mealEnergyService.js',
     'subpackages/custom-recipe/services/mealAssessmentService.js',
+    'subpackages/shared-meal/services/humanRecipeService.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
     'subpackages/plan-extra/services/planCalculatorService.js'
