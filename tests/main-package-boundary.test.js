@@ -96,12 +96,28 @@ test('mainPackageReachability/v2 识别转义后的静态字符串 require', () 
 
 test('mainPackageReachability/v2 遇到语法错误时关闭检查并返回失败', () => {
   const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
-  const checker = createBoundaryChecker(path.join(fixtureRoot, 'syntax-error'))
-
-  assert.throws(
-    () => checker.findUnusedMainPackageJavaScript(),
-    /无法解析真实 require 图/
+  const temporaryRoot = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'main-package-syntax-error-')
   )
+  const temporaryProject = path.join(temporaryRoot, 'project')
+  try {
+    fs.cpSync(
+      path.join(fixtureRoot, 'syntax-error'),
+      temporaryProject,
+      { recursive: true }
+    )
+    fs.renameSync(
+      path.join(temporaryProject, 'pages/home/index.source.txt'),
+      path.join(temporaryProject, 'pages/home/index.js')
+    )
+    const checker = createBoundaryChecker(temporaryProject)
+    assert.throws(
+      () => checker.findUnusedMainPackageJavaScript(),
+      /无法解析真实 require 图/
+    )
+  } finally {
+    fs.rmSync(temporaryRoot, { recursive: true, force: true })
+  }
 })
 
 test('mainPackageReachability/v2 不信任 Annex B 和 with 形成的动态 require', () => {
