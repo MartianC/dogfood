@@ -20,32 +20,6 @@ REQUIRED_TABLES = {
     "nutrient_ranking",
     "nutrient_ranking_item",
 }
-OPERATION_RULES_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "contracts"
-    / "shared-meal"
-    / "ingredient-operation-rules-v1.json"
-)
-
-
-def load_operation_rules() -> dict[str, Any]:
-    rules = json.loads(OPERATION_RULES_PATH.read_text(encoding="utf-8"))
-    if (
-        rules.get("contract") != "ingredientOperationRules/v1"
-        or rules.get("blockedStatus") != "blocked"
-    ):
-        raise ValueError("食材操作规则契约无效")
-    return rules
-
-
-OPERATION_RULES = load_operation_rules()
-
-
-def can_operate_ingredient(value: Any) -> bool:
-    normalized = str(value or "unknown").strip().lower()
-    if normalized not in set(OPERATION_RULES["knownStatuses"]):
-        normalized = "unknown"
-    return normalized != OPERATION_RULES["blockedStatus"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -152,7 +126,7 @@ def validate_formula(rule: dict[str, Any]) -> list[list[dict[str, Any]]]:
     return normalized
 
 
-def eligible_variants(conn: sqlite3.Connection, policy: str) -> list[sqlite3.Row]:
+def selectable_variants(conn: sqlite3.Connection, policy: str) -> list[sqlite3.Row]:
     conn.row_factory = sqlite3.Row
     return list(
         conn.execute(
@@ -193,8 +167,13 @@ def eligible_variants(conn: sqlite3.Connection, policy: str) -> list[sqlite3.Row
     )
 
 
-def is_operation_eligible(row: sqlite3.Row) -> bool:
-    return can_operate_ingredient(row["decision"])
+def is_selectable(row: sqlite3.Row) -> bool:
+    if row["decision"] == "allowed":
+        return True
+    if row["decision"] != "conditional":
+        return False
+    conditions = json.loads(str(row["conditions_json"]))
+    return conditions.get("enforceable") is True
 
 
 def nutrient_values(
@@ -257,11 +236,7 @@ def seed_rankings(conn: sqlite3.Connection, rules: dict[str, Any]) -> dict[str, 
     ranking_version = str(rules["ranking_version"])
     generated_at = str(rules["generated_at"])
     max_items = int(rules["max_items"])
-    variants = [
-        row
-        for row in eligible_variants(conn, actual_policy)
-        if is_operation_eligible(row)
-    ]
+    variants = [row for row in selectable_variants(conn, actual_policy) if is_selectable(row)]
     value_cache = {
         str(row["variant_id"]): nutrient_values(
             conn, str(row["source_release_id"]), int(row["source_food_id"])
@@ -355,7 +330,7 @@ def seed_rankings(conn: sqlite3.Connection, rules: dict[str, Any]) -> dict[str, 
         "ranking_version": ranking_version,
         "compatible_catalog_version": actual_catalog,
         "compatible_policy_version": actual_policy,
-        "non_blocked_variants": len(variants),
+        "selectable_variants": len(variants),
         "nutrient_rankings": len(nutrient_codes),
         "ranking_items": total_items,
         "empty_rankings": empty_rankings,

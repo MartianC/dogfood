@@ -8,7 +8,7 @@
 
 本文只负责食材身份、中文名称、分类、别名和 USDA 营养来源。犬食安全结论由 `canine_ingredient_policies` 单独审核和发布；进入目录不等于允许犬只食用。
 
-每次目录导入 staging 后，必须继续执行 [`canine_ingredient_policies` 持续整理与发布 SOP](canine-ingredient-policies-sop.md) 的覆盖对账。新增目录项先保持 `policy_status=unknown`，安全策略完成后再反向生成唯一 `policy_status`；新生成物不保存权限布尔字段。
+每次目录导入 staging 后，必须继续执行 [`canine_ingredient_policies` 持续整理与发布 SOP](canine-ingredient-policies-sop.md) 的覆盖对账。新增目录项先保持不可选择，安全策略完成后再反向生成目录的 `policy_status` 和 `is_selectable`。
 
 ## 强制原则
 
@@ -16,7 +16,7 @@
 2. **旧版本不可改**：已导入 staging 或生产的种子和导出包必须保留；下一批从上一版复制出新文件再修改。
 3. **稳定 ID 不复用**：`concept_id` 和 `variant_id` 发布后不能因改名而改变，也不能重新分配给另一种食材。
 4. **原始数据不手改**：Foundation 和 SR Legacy 只作为来源；产品中文名、分类和别名只写入目录种子。
-5. **安全策略分离**：目录审核完成时仍可保持 `policy_status=unknown`，不在目录审核阶段猜测 `allowed`。
+5. **安全策略分离**：目录审核完成时仍可保持 `policy_status=unreviewed`、`is_selectable=false`。
 6. **双人/双轮复核**：制作者不能把自己的候选直接视为已复核；至少需要另一个人或独立审核轮次确认身份、状态和来源。
 7. **只从版本化种子发布**：禁止只在 SQLite 或云控制台手工新增、改名或删除目录项。
 8. **先 staging，后激活**：任何目录批次都不得由导入脚本自动切换活动版本。
@@ -112,7 +112,7 @@ flowchart TD
 - 对中文名、别名、一级/二级分类和默认形态逐项复核。
 - 对 USDA 英文描述、来源版本、`fdc_id`、状态及营养明细逐项复核。
 - 每个概念恰好一个默认形态；若无法确定默认形态，不发布该概念。
-- 安全状态未审核时保持 `unknown`，不在目录审核阶段猜测 `allowed`。
+- 安全状态未审核时保持不可选择，不在目录审核阶段猜测 `allowed`。
 
 ### 3. 从原始来源重新构建
 
@@ -144,7 +144,7 @@ python3 scripts/fooddata/seed_ingredient_catalog.py \
 - 一级分类全部来自受控词表。
 - 每个形态的英文描述匹配且至少有一条营养记录。
 - 全部目录项均有 `catalog_version`，且本次导出只有一个版本。
-- 未审核安全策略的目录项保持 `policy_status=unknown`，并且新投影不生成权限布尔字段。
+- 未审核安全策略的目录项保持 `is_selectable=false`。
 - 对新增和修改项做 100% 人工抽检；对未改旧项做固定比例回归抽检。
 
 至少运行：
