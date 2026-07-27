@@ -1,6 +1,7 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
+const os = require('node:os')
 const path = require('node:path')
 
 const {
@@ -107,7 +108,6 @@ test('mainPackageReachability/v2 不信任 Annex B 和 with 形成的动态 requ
   const fixtureRoot = path.join(__dirname, 'fixtures', 'main-package-boundary')
   const dynamicBindingFixtures = [
     'fake-require-annex-b-block',
-    'fake-require-annex-b-if',
     'fake-require-with'
   ]
 
@@ -119,4 +119,28 @@ test('mainPackageReachability/v2 不信任 Annex B 和 with 形成的动态 requ
       `${fixture} 不应建立可信 CommonJS 依赖`
     )
   })
+
+  const temporaryRoot = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'main-package-annex-b-if-')
+  )
+  const temporaryProject = path.join(temporaryRoot, 'project')
+  try {
+    fs.cpSync(
+      path.join(fixtureRoot, 'fake-require-annex-b-if'),
+      temporaryProject,
+      { recursive: true }
+    )
+    fs.renameSync(
+      path.join(temporaryProject, 'pages/home/index.source.txt'),
+      path.join(temporaryProject, 'pages/home/index.js')
+    )
+    const checker = createBoundaryChecker(temporaryProject)
+    assert.deepEqual(
+      checker.findUnusedMainPackageJavaScript(),
+      ['utils/orphan.js'],
+      'fake-require-annex-b-if 不应建立可信 CommonJS 依赖'
+    )
+  } finally {
+    fs.rmSync(temporaryRoot, { recursive: true, force: true })
+  }
 })
