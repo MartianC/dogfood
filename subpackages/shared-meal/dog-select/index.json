@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "选择这次的狗狗",
+  "usingComponents": {
+    "ui-card": "../../../components/ui/ui-card/index",
+    "ui-empty": "../../../components/ui/ui-empty/index",
+    "ui-notice": "../../../components/ui/ui-notice/index",
+    "ui-tag": "../../../components/ui/ui-tag/index"
+  }
+}

@@ -123,9 +123,7 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
                           is_default: false,
                           catalog_version: 'catalog-v1',
                           policy_version: 'policy-v1',
-                          policy_status: 'conditional',
-                          is_searchable: true,
-                          is_selectable: false
+                          policy_status: 'conditional'
                         },
                         {
                           food_id: 'food_1',
@@ -138,9 +136,7 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
                           is_default: true,
                           catalog_version: 'catalog-v1',
                           policy_version: 'policy-v1',
-                          policy_status: 'unknown',
-                          is_searchable: true,
-                          is_selectable: false
+                          policy_status: 'unknown'
                         },
                         {
                           food_id: 'food_3',
@@ -153,9 +149,7 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
                           is_default: true,
                           catalog_version: 'catalog-v1',
                           policy_version: 'policy-v1',
-                          policy_status: 'blocked',
-                          is_searchable: true,
-                          is_selectable: false
+                          policy_status: 'blocked'
                         }
                       ]
                     }
@@ -177,7 +171,6 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
     assert.deepEqual(catalogWhereCalls, [{
       catalog_version: 'catalog-v1',
       policy_version: 'policy-v1',
-      is_searchable: true,
       policy_status: notBlocked
     }])
     assert.equal(catalog[0].name, '胡萝卜')

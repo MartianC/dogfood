@@ -1,14 +1,29 @@
 const dogService = require('../../services/dogService')
-const recipeUtils = require('../../utils/recipe')
 const authService = require('../../services/authService')
-const mealPlanService = require('../../services/mealPlanService')
+const sharedMealRecordService = require('../../services/sharedMealRecordService')
+const { MAIN_TABS } = require('../../services/navigationMigrationService')
+
+function todayText(now = new Date()) {
+  return `${now.getMonth() + 1}月${now.getDate()}日 · 今天也一起好好吃饭`
+}
+
+function latestRecordView(record) {
+  if (!record) return null
+  const menuText = (record.humanMenu || []).map((item) => item.title).filter(Boolean).join('、')
+  return {
+    ...record,
+    dogName: record.dogSnapshot && record.dogSnapshot.name || '狗狗',
+    menuText: menuText || '这一顿',
+    ingredientCount: (record.dogMealItems || []).length
+  }
+}
 
 Page({
   data: {
     authState: 'guest',
     dogs: [],
-    recommendations: [],
-    latestPlan: null
+    todayText: todayText(),
+    latestRecord: null
   },
 
   async onShow() {
@@ -18,46 +33,38 @@ Page({
     if (app.globalData.authReady) await app.globalData.authReady
     const authStateBeforeLoad = authService.getAuthState()
     const dogs = authStateBeforeLoad === 'guest' ? [] : await dogService.listDogs()
-    const authState = authService.getAuthState()
-    const mode = dogs.length ? 'allDogs' : 'all'
-    const recommendations = recipeUtils.filterRecipes(app.globalData.recipes, { mode, dogs }).slice(0, 3)
-    let history = []
-    if (authState !== 'guest') {
+    let latestRecord = null
+    if (authService.getAuthState() !== 'guest') {
       try {
-        history = await mealPlanService.listHistory()
+        const result = await sharedMealRecordService.list({ limit: 1 })
+        latestRecord = latestRecordView(result.items && result.items[0])
       } catch (error) {
-        history = []
+        latestRecord = null
       }
     }
     this.setData({
-      authState,
+      authState: authService.getAuthState(),
       dogs,
-      recommendations,
-      latestPlan: app.globalData.latestPlan || history[history.length - 1] || null
+      todayText: todayText(),
+      latestRecord
     })
   },
 
-  async onAddDog() {
-    if (this.data.authState === 'guest') {
-      const ok = await authService.login()
-      if (!ok) return
-    }
-    wx.navigateTo({ url: '/subpackages/dog-profile/dog-edit/index' })
+  onCreateMeal() {
+    wx.navigateTo({ url: '/subpackages/shared-meal/dog-select/index' })
   },
 
-  onBrowseRecipes() {
-    wx.switchTab({ url: '/pages/recipes/list/index' })
+  onOpenLatestRecord() {
+    if (!this.data.latestRecord) return
+    wx.navigateTo({
+      url: `/subpackages/shared-meal/record-detail/index?recordId=${encodeURIComponent(this.data.latestRecord.id)}`
+    })
   },
 
-  onRecipeTap(e) {
-    wx.navigateTo({ url: `/pages/recipes/detail/index?id=${e.detail.recipe.id}` })
-  },
-
-  onEditDog(e) {
-    wx.navigateTo({ url: `/subpackages/dog-profile/dog-edit/index?id=${e.detail.dog.id}` })
-  },
-
-  onOpenPlan() {
-    wx.switchTab({ url: '/pages/plan/index/index' })
+  onOpenRecords() {
+    const recordsTab = MAIN_TABS.find((item) => item.value === 'records')
+    wx.switchTab({ url: `/${recordsTab.pagePath}` })
   }
 })
+
+module.exports = { todayText, latestRecordView }

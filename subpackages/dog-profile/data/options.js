@@ -22,9 +22,29 @@ const bodyConditionOptions = [
   { value: 'overweight', label: '偏胖' }
 ]
 
+const diseaseStatusOptions = [
+  { value: false, label: '没有' },
+  { value: true, label: '有' }
+]
+
+const reproductiveStatusOptions = [
+  { value: 'none', label: '无特殊状态' },
+  { value: 'pregnant', label: '妊娠' },
+  { value: 'lactating', label: '哺乳' }
+]
+
+const therapeuticWeightManagementOptions = [
+  { value: 'none', label: '没有' },
+  { value: 'loss', label: '治疗性减重' },
+  { value: 'gain', label: '治疗性增重' }
+]
+
 module.exports = {
   dietGoalOptions,
   breedOptions,
   activityDurationBands,
-  bodyConditionOptions
+  bodyConditionOptions,
+  diseaseStatusOptions,
+  reproductiveStatusOptions,
+  therapeuticWeightManagementOptions
 }

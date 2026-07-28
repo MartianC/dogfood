@@ -4,122 +4,94 @@ const fs = require('node:fs')
 const path = require('node:path')
 const vm = require('node:vm')
 
-function loadHomePage({ dogService, mealPlanService, authState = 'guest' }) {
+function loadHomePage({ dogService, recordService, authState = 'guest' }) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.js'), 'utf8')
   const getAuthState = typeof authState === 'function' ? authState : () => authState
   const dependencies = {
     '../../services/dogService': dogService,
-    '../../utils/recipe': require('../utils/recipe'),
     '../../services/authService': { getAuthState },
-    '../../services/mealPlanService': mealPlanService
+    '../../services/sharedMealRecordService': recordService,
+    '../../services/navigationMigrationService': {
+      MAIN_TABS: [{ value: 'records', pagePath: 'pages/records/index' }]
+    }
   }
   let definition
-
   const context = {
-    Page(page) {
-      definition = page
-    },
-    getApp() {
-      return {
-        globalData: {
-          authReady: Promise.resolve(),
-          recipes: require('../data/recipes'),
-          latestPlan: null
-        }
-      }
-    },
+    Page(page) { definition = page },
+    getApp() { return { globalData: { authReady: Promise.resolve() } } },
     require(request) {
       if (!Object.prototype.hasOwnProperty.call(dependencies, request)) {
         throw new Error(`测试未提供依赖：${request}`)
       }
       return dependencies[request]
     },
+    module: { exports: {} },
+    exports: {},
+    Date,
     Promise,
     console
   }
-
-  vm.runInNewContext(`(function () { ${source}\n })()`, context, {
-    filename: 'pages/home/index.js'
-  })
+  vm.runInNewContext(`(function () { ${source}\n })()`, context, { filename: 'pages/home/index.js' })
   return definition
 }
 
-test('游客主页不因云端数据不可用而阻断本地推荐食谱', async () => {
-  const pageDefinition = loadHomePage({
-    dogService: {
-      listDogs: async () => {
-        throw new Error('游客不应请求狗狗云函数')
-      }
-    },
-    mealPlanService: {
-      listHistory: async () => {
-        throw new Error('游客不应请求历史清单云函数')
-      }
-    }
+test('游客主页不请求档案或记录，仍可看到本餐主入口', async () => {
+  const definition = loadHomePage({
+    dogService: { listDogs: async () => { throw new Error('游客不应请求档案') } },
+    recordService: { list: async () => { throw new Error('游客不应请求记录') } }
   })
   let viewData
-  const page = {
+  await definition.onShow.call({
     getTabBar: () => ({ setData() {} }),
-    setData(data) {
-      viewData = data
-    }
-  }
-
-  await pageDefinition.onShow.call(page)
-
-  assert.ok(viewData)
+    setData(data) { viewData = data }
+  })
   assert.equal(viewData.authState, 'guest')
-  assert.ok(viewData.recommendations.length > 0)
-  assert.equal(viewData.latestPlan, null)
+  assert.equal(viewData.dogs.length, 0)
+  assert.equal(viewData.latestRecord, null)
 })
 
-test('已登录主页在历史清单云函数失败时仍显示本地推荐食谱', async () => {
-  const pageDefinition = loadHomePage({
+test('已登录主页在记录服务失败时仍保留主流程', async () => {
+  const definition = loadHomePage({
     authState: 'logged-in',
     dogService: { listDogs: async () => [] },
-    mealPlanService: {
-      listHistory: async () => {
-        throw new Error('FunctionName parameter could not be found')
-      }
-    }
+    recordService: { list: async () => { throw new Error('network') } }
   })
   let viewData
-  const page = {
+  await definition.onShow.call({
     getTabBar: () => ({ setData() {} }),
-    setData(data) {
-      viewData = data
-    }
-  }
-
-  await pageDefinition.onShow.call(page)
-
-  assert.ok(viewData)
+    setData(data) { viewData = data }
+  })
   assert.equal(viewData.authState, 'logged-in')
-  assert.ok(viewData.recommendations.length > 0)
-  assert.equal(viewData.latestPlan, null)
+  assert.equal(viewData.latestRecord, null)
 })
 
-test('主页使用拉取狗狗档案后的最新登录状态', async () => {
+test('主页使用拉取档案后的最新登录状态并展示最近记录', async () => {
   let authState = 'logged-in'
-  const pageDefinition = loadHomePage({
+  const definition = loadHomePage({
     authState: () => authState,
     dogService: {
       listDogs: async () => {
         authState = 'has-profile'
-        return []
+        return [{ id: 'dog-1', name: '布丁' }]
       }
     },
-    mealPlanService: { listHistory: async () => [] }
+    recordService: {
+      list: async () => ({
+        items: [{
+          id: 'record-1',
+          dogSnapshot: { name: '布丁' },
+          humanMenu: [{ title: '番茄炒蛋' }],
+          dogMealItems: [{ name: '鸡蛋' }]
+        }]
+      })
+    }
   })
   let viewData
-  const page = {
+  await definition.onShow.call({
     getTabBar: () => ({ setData() {} }),
-    setData(data) {
-      viewData = data
-    }
-  }
-
-  await pageDefinition.onShow.call(page)
-
+    setData(data) { viewData = data }
+  })
   assert.equal(viewData.authState, 'has-profile')
+  assert.equal(viewData.latestRecord.dogName, '布丁')
+  assert.equal(viewData.latestRecord.menuText, '番茄炒蛋')
 })

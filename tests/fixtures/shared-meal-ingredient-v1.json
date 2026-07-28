@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "ingredientId": "food_171077",
+  "foodId": "food_171077",
+  "conceptId": "ingredient_chicken_breast",
+  "variantId": "variant_chicken_breast_cooked",
+  "name": "鸡胸肉（熟）",
+  "category": "meat",
+  "policyStatus": "allowed",
+  "perMealAmountGram": null,
+  "sourceRefs": [
+    {
+      "humanMenuId": "human_recipe_chicken",
+      "ingredientPosition": 0
+    }
+  ],
+  "dataVersions": {
+    "runtimeReleaseId": "runtime-2026-07-27",
+    "recipeVersion": "recipe-v2",
+    "mappingVersion": "mapping-v2",
+    "catalogVersion": "catalog-v2",
+    "policyVersion": "policy-v2",
+    "nutritionSourceReleaseId": "usda-foundation-2026-04"
+  }
+}

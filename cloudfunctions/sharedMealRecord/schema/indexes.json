@@ -1,0 +1,24 @@
+{
+  "contract": "sharedMealRecordIndexes/v1",
+  "collection": "shared_meal_records",
+  "indexes": [
+    {
+      "name": "owner_idempotency_unique",
+      "unique": true,
+      "fields": [
+        { "field": "_openid", "order": "asc" },
+        { "field": "idempotencyKey", "order": "asc" }
+      ]
+    },
+    {
+      "name": "owner_dog_meal_time",
+      "unique": false,
+      "fields": [
+        { "field": "_openid", "order": "asc" },
+        { "field": "targetDogId", "order": "asc" },
+        { "field": "mealTime", "order": "desc" },
+        { "field": "_id", "order": "desc" }
+      ]
+    }
+  ]
+}

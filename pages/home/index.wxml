@@ -1,35 +1,37 @@
-<view class="page with-tab-bar">
-  <ui-card wx:if="{{authState !== 'has-profile'}}">
-    <view class="home-eyebrow df-caption">狗饭清单工具</view>
-    <view class="home-title df-heading-xl">先看食谱，需要清单时再建档</view>
-    <view class="home-subtitle df-body">浏览食谱不需要登录。添加狗狗后，可按每日餐数和制作周期换算采购总量。</view>
-    <view class="home-actions">
-      <ui-button bind:tap="onAddDog">添加狗狗档案</ui-button>
-      <ui-button variant="secondary" bind:tap="onBrowseRecipes">先浏览食谱</ui-button>
+<view class="page with-tab-bar home-page">
+  <view class="home-greeting">
+    <view class="home-greeting__date">{{todayText}}</view>
+    <view class="home-greeting__heading df-heading-xl">和狗狗共享食材，分开做一顿饭</view>
+    <view class="home-greeting__copy df-body">从你已经决定的人饭菜单里挑选基础食材，为狗狗单独称量、无调味烹饪。</view>
+  </view>
+
+  <ui-card variant="primary" padding="large">
+    <view class="home-create">
+      <view class="home-create__mark">＋</view>
+      <view class="home-create__heading">记录一起吃的一顿</view>
+      <view class="home-create__copy">选择这次的狗狗和人饭菜单，再填写狗饭克重。</view>
+      <ui-button bind:tap="onCreateMeal">开始记录</ui-button>
     </view>
   </ui-card>
 
-  <view wx:else class="section">
+  <ui-card wx:if="{{dogs.length}}">
+    <view class="home-dogs__heading">这次可以选择</view>
+    <view class="home-dogs__names">{{dogs.length === 1 ? dogs[0].name : dogs.length + ' 只狗狗，开始时再单选'}}</view>
+  </ui-card>
+
+  <view class="home-recent">
     <view class="section-head">
-      <view class="df-heading-lg">全部狗狗档案</view>
-      <view class="section-action" bindtap="onAddDog">新增</view>
+      <view class="df-heading-lg">最近一顿</view>
+      <view class="section-action" aria-role="button" bindtap="onOpenRecords">全部记录</view>
     </view>
-    <view class="stack">
-      <dog-card wx:for="{{dogs}}" wx:key="id" dog="{{item}}" editable bind:editdog="onEditDog" />
-    </view>
+    <ui-card wx:if="{{latestRecord}}" padding="small">
+      <view class="home-record" aria-role="button" aria-label="查看最近一顿记录" bindtap="onOpenLatestRecord">
+        <view class="home-record__heading">{{latestRecord.dogName}} · {{latestRecord.menuText}}</view>
+        <view class="home-record__meta">{{latestRecord.ingredientCount}} 种狗饭食材 · 查看保存时快照</view>
+      </view>
+    </ui-card>
+    <ui-empty wx:else title="还没有记录" description="保存第一顿后，会在这里显示最近的单餐快照。" />
   </view>
 
-  <view class="section">
-    <view class="section-head">
-      <view class="df-heading-lg">{{authState === 'has-profile' ? '适合全部狗狗' : '推荐食谱'}}</view>
-      <view class="section-action" bindtap="onBrowseRecipes">全部</view>
-    </view>
-    <view class="stack">
-      <recipe-card wx:for="{{recommendations}}" wx:key="id" recipe="{{item}}" showFit="{{authState === 'has-profile'}}" bind:taprecipe="onRecipeTap" />
-    </view>
-  </view>
-
-  <view wx:if="{{latestPlan}}" class="section">
-    <ui-notice variant="good" clickable="{{true}}" bind:tap="onOpenPlan">最近一次清单：{{latestPlan.recipeName}}，{{latestPlan.periodDays}} 天批量制作。</ui-notice>
-  </view>
+  <ui-notice variant="neutral">本功能只评估并记录单餐，不提供长期完整性结论。</ui-notice>
 </view>

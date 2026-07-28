@@ -5,7 +5,10 @@ const {
   dietGoalOptions,
   breedOptions,
   activityDurationBands,
-  bodyConditionOptions
+  bodyConditionOptions,
+  diseaseStatusOptions,
+  reproductiveStatusOptions,
+  therapeuticWeightManagementOptions
 } = require('../data/options')
 const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
 const {
@@ -46,6 +49,7 @@ function activityHoursValue(value, fallback = null) {
 }
 
 function formFromDog(dog, { defaultActivityHours = null } = {}) {
+  const specialNutritionNeeds = dog.specialNutritionNeeds || {}
   return {
     name: dog.name || '',
     birthDate: dog.birthDate || '',
@@ -57,6 +61,18 @@ function formFromDog(dog, { defaultActivityHours = null } = {}) {
     neutered: Boolean(dog.neutered),
     avatarUrl: dog.avatarUrl || '',
     dietGoal: dog.dietGoal || 'daily',
+    specialNutritionNeeds: {
+      hasDisease: Object.prototype.hasOwnProperty.call(specialNutritionNeeds, 'hasDisease')
+        ? specialNutritionNeeds.hasDisease
+        : null,
+      reproductiveStatus: Object.prototype.hasOwnProperty.call(specialNutritionNeeds, 'reproductiveStatus')
+        ? specialNutritionNeeds.reproductiveStatus
+        : null,
+      therapeuticWeightManagement: Object.prototype.hasOwnProperty.call(
+        specialNutritionNeeds,
+        'therapeuticWeightManagement'
+      ) ? specialNutritionNeeds.therapeuticWeightManagement : null
+    },
     allergens: Array.isArray(dog.allergens) ? dog.allergens : [],
     avoidIngredients: Array.isArray(dog.avoidIngredients) ? dog.avoidIngredients : []
   }
@@ -82,11 +98,15 @@ const initialForm = formFromDog({}, { defaultActivityHours: 1.5 })
 Page({
   data: {
     id: '',
+    redirect: '',
     form: initialForm,
     ...profileState(initialForm),
     breedOptions,
     dietGoalOptions,
     bodyConditionOptions,
+    diseaseStatusOptions,
+    reproductiveStatusOptions,
+    therapeuticWeightManagementOptions,
     breedIndex: 0,
     goalIndex: 0,
     birthDateError: '',
@@ -98,6 +118,7 @@ Page({
   },
 
   async onLoad(options) {
+    this.setData({ redirect: decodeURIComponent(options.redirect || '') })
     if (authService.getAuthState() === 'guest') await authService.login()
     if (!options.id) return
 
@@ -170,6 +191,11 @@ Page({
     this.setData({ goalIndex, 'form.dietGoal': option.value })
   },
 
+  onSpecialNutritionNeed(event) {
+    const { key, value } = event.currentTarget.dataset
+    this.setData({ [`form.specialNutritionNeeds.${key}`]: value })
+  },
+
   async onChooseAvatar() {
     try {
       const tempFilePath = await fileService.chooseLocalImage()
@@ -203,6 +229,10 @@ Page({
       if (this.data.id) await dogService.updateDog(this.data.id, payload)
       else await dogService.createDog(payload)
       wx.showToast({ title: '已保存', icon: 'success' })
+      if (this.data.redirect) {
+        wx.redirectTo({ url: this.data.redirect })
+        return
+      }
       setTimeout(() => wx.navigateBack(), 400)
     } catch (error) {
       const fieldErrors = profileErrors(error.message)

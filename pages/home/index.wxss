@@ -1,26 +1,61 @@
 @import "../../styles/tokens.wxss";
 
-.home-eyebrow {
-  color: var(--df-color-primary);
-  font-weight: 700;
+.home-page,
+.home-greeting,
+.home-create,
+.home-recent {
+  display: grid;
+  gap: var(--df-space-3);
 }
 
-.home-title {
-  margin-top: 12rpx;
-}
-
-.home-subtitle {
-  margin-top: 16rpx;
+.home-greeting__date,
+.home-greeting__copy,
+.home-create__copy,
+.home-record__meta {
   color: var(--df-color-muted);
 }
 
-.home-actions {
-  display: grid;
-  gap: 16rpx;
-  margin-top: 24rpx;
+.home-greeting__date,
+.home-record__meta {
+  font-size: var(--df-font-sm);
+}
+
+.home-create {
+  text-align: center;
+}
+
+.home-create__mark {
+  color: var(--df-color-primary);
+  font-size: 88rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.home-create__heading,
+.home-dogs__heading,
+.home-record__heading {
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 700;
+}
+
+.home-dogs__names {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-text-secondary);
+}
+
+.home-record {
+  min-height: 88rpx;
+}
+
+.home-record__meta {
+  margin-top: var(--df-space-1);
 }
 
 .section-action {
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
   color: var(--df-color-primary);
-  font-size: 26rpx;
+  font-size: var(--df-font-sm);
 }

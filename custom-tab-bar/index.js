@@ -1,7 +1,6 @@
 const items = [
   { value: 'home', label: '首页', iconPath: '/assets/tabbar/home.png', selectedIconPath: '/assets/tabbar/home-active.png', path: '/pages/home/index' },
-  { value: 'recipes', label: '食谱', iconPath: '/assets/tabbar/recipes.png', selectedIconPath: '/assets/tabbar/recipes-active.png', path: '/pages/recipes/list/index' },
-  { value: 'plan', label: '清单', iconPath: '/assets/tabbar/plan.png', selectedIconPath: '/assets/tabbar/plan-active.png', path: '/pages/plan/index/index' },
+  { value: 'records', label: '记录', iconPath: '/assets/tabbar/records.png', selectedIconPath: '/assets/tabbar/records-active.png', path: '/pages/records/index' },
   { value: 'profile', label: '我的', iconPath: '/assets/tabbar/profile.png', selectedIconPath: '/assets/tabbar/profile-active.png', path: '/pages/profile/index/index' }
 ]
 

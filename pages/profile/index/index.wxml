@@ -4,7 +4,7 @@
       <image class="profile-avatar" src="{{(user && user.avatarUrl) || defaultDogAvatar}}" mode="aspectFill" />
       <view class="profile-main">
         <view class="profile-title">{{authState === 'guest' ? '游客模式' : (user.nickname || '微信用户')}}</view>
-        <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案、历史清单和自定义食谱' : ('已创建 ' + dogs.length + ' 只狗狗档案')}}</view>
+        <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案和本餐记录' : ('已创建 ' + dogs.length + ' 只狗狗档案')}}</view>
       </view>
       <ui-tag variant="{{authState === 'guest' ? 'neutral' : 'good'}}" size="small">{{authState === 'guest' ? '未登录' : '已登录'}}</ui-tag>
     </view>
@@ -13,7 +13,7 @@
   <view wx:if="{{authState === 'guest'}}" class="section guest-panel">
     <ui-card>
       <view class="panel-title">登录后管理狗狗档案</view>
-      <view class="panel-desc">生成清单、保存历史和自定义食谱前，需要先登录并添加狗狗档案。</view>
+      <view class="panel-desc">开始记录本餐前，需要先登录并添加狗狗档案。</view>
       <view class="panel-action">
         <ui-button bind:tap="onLogin">微信登录并添加狗狗</ui-button>
       </view>
@@ -42,30 +42,4 @@
     <empty-state wx:else title="还没有狗狗档案" description="先添加一只狗狗，生成清单时会自动换算份量。" actionText="添加狗狗" image-url="{{defaultDogAvatar}}" bind:action="onAddDog" />
   </view>
 
-  <view class="menu">
-    <ui-card padding="small">
-      <view class="menu-item" bindtap="onHistory">
-        <text>历史清单</text>
-        <text class="chevron">›</text>
-      </view>
-    </ui-card>
-    <ui-card padding="small">
-      <view class="menu-item" bindtap="onCustomRecipes">
-        <text>我的自定义食谱</text>
-        <text class="chevron">›</text>
-      </view>
-    </ui-card>
-    <ui-card padding="small">
-      <view class="menu-item">
-        <text>饮食偏好</text>
-        <text class="chevron">›</text>
-      </view>
-    </ui-card>
-    <ui-card padding="small">
-      <view class="menu-item">
-        <text>过敏源管理</text>
-        <text class="chevron">›</text>
-      </view>
-    </ui-card>
-  </view>
 </view>

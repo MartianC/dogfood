@@ -1,0 +1,49 @@
+@import "../../../styles/tokens.wxss";
+
+.shared-meal-compose-page,
+.shared-meal-compose-section {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.shared-meal-compose-energy-label,
+.shared-meal-compose-source,
+.shared-meal-compose-ingredient__source {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.shared-meal-compose-energy-value {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-primary);
+  font-size: var(--df-font-xl);
+  font-weight: 700;
+}
+
+.shared-meal-compose-section__heading,
+.shared-meal-compose-menu-name,
+.shared-meal-compose-ingredient__name {
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 700;
+}
+
+.shared-meal-compose-source {
+  margin-top: var(--df-space-1);
+}
+
+.shared-meal-compose-ingredient-head,
+.shared-meal-compose-amount-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-3);
+}
+
+.shared-meal-compose-amount-input,
+.shared-meal-compose-note-input {
+  min-height: 88rpx;
+  flex: 1;
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+}

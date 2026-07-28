@@ -32,21 +32,37 @@ test('清单保存失败时进入本地待同步队列并可重试', async () =>
   assert.deepEqual(memory.get('pendingMealPlans'), [])
 })
 
-test('小程序配置包含四个 Tab 和关键分包路由', () => {
+test('小程序配置包含三个新主 Tab、记录页和旧兼容路由', () => {
   const appJsonPath = path.join(__dirname, '..', 'app.json')
   const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'))
 
   assert.deepEqual(
     appJson.tabBar.list.map((item) => item.text),
-    ['首页', '食谱', '清单', '我的']
+    ['首页', '记录', '我的']
   )
   assert.ok(appJson.pages.includes('pages/home/index'))
+  assert.ok(appJson.pages.includes('pages/records/index'))
   assert.ok(appJson.pages.includes('pages/recipes/list/index'))
   assert.ok(appJson.pages.includes('pages/plan/index/index'))
   assert.ok(appJson.pages.includes('pages/profile/index/index'))
 
   const roots = appJson.subpackages.map((item) => item.root)
-  assert.deepEqual(roots, ['subpackages/dog-profile', 'subpackages/plan-extra', 'subpackages/custom-recipe'])
+  assert.deepEqual(roots, [
+    'subpackages/dog-profile',
+    'subpackages/plan-extra',
+    'subpackages/custom-recipe',
+    'subpackages/shared-meal'
+  ])
+  const sharedMealPackage = appJson.subpackages.find(
+    (item) => item.root === 'subpackages/shared-meal'
+  )
+  assert.deepEqual(sharedMealPackage.pages, [
+    'menu-search/index',
+    'dog-select/index',
+    'dog-select/menu-search/index',
+    'compose/index',
+    'record-detail/index'
+  ])
 })
 
 test('TabBar 使用本地图标资源', () => {
@@ -66,7 +82,7 @@ test('TabBar 使用本地图标资源', () => {
   })
 })
 
-test('TabBar 通过 TDesign 自定义组件保留四个主路由', () => {
+test('TabBar 通过 TDesign 自定义组件保留三个主路由', () => {
   const appJsonPath = path.join(__dirname, '..', 'app.json')
   const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'))
   const tabBarRoot = path.join(__dirname, '..', 'custom-tab-bar')
@@ -93,11 +109,10 @@ test('TabBar 通过 TDesign 自定义组件保留四个主路由', () => {
   assert.deepEqual(routes, appJson.tabBar.list.map((item) => `/${item.pagePath}`))
 })
 
-test('四个 Tab 页面在显示时同步 TDesign 选中态', () => {
+test('三个 Tab 页面在显示时同步 TDesign 选中态', () => {
   const expected = {
     'pages/home/index.js': 'home',
-    'pages/recipes/list/index.js': 'recipes',
-    'pages/plan/index/index.js': 'plan',
+    'pages/records/index.js': 'records',
     'pages/profile/index/index.js': 'profile'
   }
 

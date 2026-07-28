@@ -1,0 +1,37 @@
+@import "../../../styles/tokens.wxss";
+
+.shared-meal-detail-page,
+.shared-meal-detail-section {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.shared-meal-detail-dog,
+.shared-meal-detail-section__heading,
+.shared-meal-detail-menu {
+  color: var(--df-color-text);
+  font-weight: 700;
+}
+
+.shared-meal-detail-dog {
+  font-size: var(--df-font-xl);
+}
+
+.shared-meal-detail-section__heading,
+.shared-meal-detail-menu {
+  font-size: var(--df-font-lg);
+}
+
+.shared-meal-detail-meta,
+.shared-meal-detail-loading {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.shared-meal-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-3);
+}

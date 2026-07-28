@@ -1,0 +1,11 @@
+{
+  "contract": "navigationMigrationGate/v1",
+  "requiredEvidence": [
+    "tests/shared-meal-draft.test.js",
+    "tests/shared-meal-assessment-flow.test.js",
+    "tests/shared-meal-record-service.test.js",
+    "tests/shared-meal-record-ui.test.js"
+  ],
+  "tabs": ["首页", "记录", "我的"],
+  "legacyCompatibility": "routes-retained-not-primary"
+}

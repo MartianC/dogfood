@@ -214,3 +214,39 @@ test('Slider 和档案选择项暴露无障碍名称、角色与当前状态', (
     assert.match(wxml, /class="dog-profile-choice"[^>]*aria-role="radio"[^>]*aria-checked=/)
   })
 })
+
+test('完整与快速建档显式采集三项特殊营养需求且默认未确认', () => {
+  profilePages.forEach((page) => {
+    const definition = loadPageDefinition(page)
+    const context = pageContext(definition)
+    const wxml = readPage(page, 'wxml')
+
+    assert.deepEqual(context.data.form.specialNutritionNeeds, {
+      hasDisease: null,
+      reproductiveStatus: null,
+      therapeuticWeightManagement: null
+    })
+    assert.match(wxml, /label="是否有已确诊疾病"/)
+    assert.match(wxml, /label="生殖状态"/)
+    assert.match(wxml, /label="治疗性体重管理"/)
+    assert.match(wxml, /aria-label="是否有已确诊疾病"/)
+    assert.match(wxml, /aria-label="生殖状态"/)
+    assert.match(wxml, /aria-label="治疗性体重管理"/)
+
+    definition.onSpecialNutritionNeed.call(context, {
+      currentTarget: { dataset: { key: 'hasDisease', value: false } }
+    })
+    definition.onSpecialNutritionNeed.call(context, {
+      currentTarget: { dataset: { key: 'reproductiveStatus', value: 'none' } }
+    })
+    definition.onSpecialNutritionNeed.call(context, {
+      currentTarget: { dataset: { key: 'therapeuticWeightManagement', value: 'loss' } }
+    })
+
+    assert.deepEqual(context.data.form.specialNutritionNeeds, {
+      hasDisease: false,
+      reproductiveStatus: 'none',
+      therapeuticWeightManagement: 'loss'
+    })
+  })
+})

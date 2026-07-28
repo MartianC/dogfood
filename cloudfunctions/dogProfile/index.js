@@ -10,6 +10,14 @@ exports.main = async (event) => {
   const collection = db.collection('dogs')
   const action = event.action || 'list'
 
+  if (action === 'contract') {
+    return {
+      contract: 'dogProfile/v3',
+      schemaVersion: 3,
+      supportsSpecialNutritionNeeds: true
+    }
+  }
+
   if (action === 'list') {
     const result = await collection.where({ _openid: wxContext.OPENID }).orderBy('updatedAt', 'desc').get()
     return result.data.map(normalizeProfileDocument)

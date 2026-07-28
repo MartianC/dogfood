@@ -99,6 +99,7 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
     'subpackages/custom-recipe/services/energyRequirementService.js',
     'subpackages/custom-recipe/services/mealEnergyService.js',
     'subpackages/custom-recipe/services/mealAssessmentService.js',
+    'subpackages/shared-meal/services/humanRecipeService.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
     'subpackages/plan-extra/services/planCalculatorService.js'
@@ -231,7 +232,7 @@ test('搜索食材是独立页面，默认、结果和无结果状态互斥', ()
   assert.match(js, /ingredientService\.searchIngredients/)
   assert.match(js, /ingredientService\.loadIngredientCatalog/)
   assert.match(js, /ingredientWorkbench\.addIngredient/)
-  assert.match(js, /customRecipeService\.saveDraft/)
+  assert.match(js, /draftAdapters\.saveIngredients/)
   assert.match(js, /getOpenerEventChannel/)
   assert.match(js, /wx\.navigateBack/)
   assert.match(wxss, /padding: 36rpx 32rpx 48rpx/)
@@ -290,7 +291,7 @@ test('营养评估组件提供双标准、档案切换、建议入口和进阶�
   const root = path.join(__dirname, '..', 'components', 'nutrition-assessment')
   const wxml = fs.readFileSync(path.join(root, 'index.wxml'), 'utf8')
   const wxss = fs.readFileSync(path.join(root, 'index.wxss'), 'utf8')
-  const service = fs.readFileSync(path.join(__dirname, '..', 'subpackages', 'custom-recipe', 'services', 'nutritionAssessmentService.js'), 'utf8')
+  const service = fs.readFileSync(path.join(__dirname, '..', 'services', 'meal-assessment', 'nutritionAssessmentService.js'), 'utf8')
   const config = JSON.parse(fs.readFileSync(path.join(root, 'index.json'), 'utf8'))
 
   assert.match(wxml, /国标评估/)

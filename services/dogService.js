@@ -5,10 +5,15 @@ const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./
 const { breedAdultWeightCatalog } = require('../data/breedAdultWeightCatalog')
 const { deriveActivityLevel, estimateExpectedAdultWeight } = require('./dogProfileDerivations')
 const { estimateLifeStage, decorateDog } = require('./lifeStageEstimator')
+const {
+  DOG_PROFILE_SCHEMA_VERSION,
+  DOGS_CACHE_SCHEMA_VERSION,
+  normalizeSpecialNutritionNeeds,
+  validateSpecialNutritionNeeds
+} = require('./dogProfileContract')
 
 const BREEDS = new Set(breedAdultWeightCatalog.map((item) => item.value))
 const BODY_CONDITIONS = new Set(['thin', 'ideal', 'overweight'])
-const DOGS_CACHE_SCHEMA_VERSION = 2
 
 function hasOwn(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key)
@@ -27,6 +32,7 @@ function normalizeActivityLevel(value) {
 
 function normalizeDog(payload = {}) {
   return {
+    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
     name: String(payload.name || '').trim(),
     birthDate: String(payload.birthDate || '').trim(),
     breed: String(payload.breed || '').trim(),
@@ -38,6 +44,7 @@ function normalizeDog(payload = {}) {
     avatarUrl: payload.avatarUrl || '',
     neutered: Boolean(payload.neutered),
     dietGoal: payload.dietGoal || 'daily',
+    specialNutritionNeeds: normalizeSpecialNutritionNeeds(payload.specialNutritionNeeds),
     ...(hasOwn(payload, 'allergens') ? { allergens: payload.allergens } : {}),
     ...(hasOwn(payload, 'avoidIngredients') ? { avoidIngredients: payload.avoidIngredients } : {}),
     healthNotes: payload.healthNotes || ''
@@ -59,6 +66,7 @@ function validateDog(dog, today) {
     || !Number.isInteger(dog.dailyActivityHours * 2)
   ) throw new Error('请选择 0–6 小时的日均活动时长')
   if (!BODY_CONDITIONS.has(dog.bodyCondition)) throw new Error('请选择体况')
+  validateSpecialNutritionNeeds(dog.specialNutritionNeeds)
   if (hasOwn(dog, 'allergens') && !Array.isArray(dog.allergens)) {
     throw new Error('过敏源数据格式不正确')
   }
@@ -72,9 +80,46 @@ function decorateSavedDog(dog, today) {
   const derivedLevel = deriveActivityLevel(dog && dog.dailyActivityHours)
   return decorateDog({
     ...(dog || {}),
+    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
+    specialNutritionNeeds: normalizeSpecialNutritionNeeds(dog && dog.specialNutritionNeeds),
     activityLevel: derivedLevel || normalizeActivityLevel(dog && dog.activityLevel),
     ...estimate
   }, today)
+}
+
+function assertSavedProfileContract(saved, expected = {}) {
+  if (
+    !saved
+    || saved.schemaVersion !== DOG_PROFILE_SCHEMA_VERSION
+    || !hasOwn(saved, 'specialNutritionNeeds')
+  ) {
+    throw new Error('档案服务版本过旧，请更新 dogProfile 云函数后重试')
+  }
+  const actualNeeds = validateSpecialNutritionNeeds(saved.specialNutritionNeeds)
+  const expectedNeeds = normalizeSpecialNutritionNeeds(expected.specialNutritionNeeds)
+  if (JSON.stringify(actualNeeds) !== JSON.stringify(expectedNeeds)) {
+    throw new Error('档案保存结果不一致，请重试')
+  }
+  return saved
+}
+
+function assertDogProfileServiceContract(contract) {
+  if (
+    !contract
+    || contract.contract !== 'dogProfile/v3'
+    || contract.schemaVersion !== DOG_PROFILE_SCHEMA_VERSION
+    || contract.supportsSpecialNutritionNeeds !== true
+  ) throw new Error('档案服务版本过旧，请更新 dogProfile 云函数后重试')
+  return contract
+}
+
+async function ensureDogProfileWriteCapability() {
+  try {
+    return assertDogProfileServiceContract(await adapter.getDogProfileContract())
+  } catch (error) {
+    if (/档案服务版本过旧/.test(String(error && error.message))) throw error
+    throw new Error('档案服务版本过旧，请更新 dogProfile 云函数后重试')
+  }
 }
 
 function readDogsCache() {
@@ -109,7 +154,9 @@ async function listDogs() {
 async function createDog(payload) {
   const dog = normalizeDog(payload)
   validateDog(dog)
+  await ensureDogProfileWriteCapability()
   const saved = await adapter.createDog(dog)
+  assertSavedProfileContract(saved, dog)
   const dogs = await listDogs()
   authService.refreshState(dogs)
   return decorateSavedDog(saved)
@@ -118,7 +165,9 @@ async function createDog(payload) {
 async function updateDog(id, payload) {
   const dog = normalizeDog(payload)
   validateDog(dog)
+  await ensureDogProfileWriteCapability()
   const saved = await adapter.updateDog(id, dog)
+  assertSavedProfileContract(saved, dog)
   const dogs = await listDogs()
   authService.refreshState(dogs)
   return decorateSavedDog(saved)
@@ -138,5 +187,7 @@ module.exports = {
   deleteDog,
   normalizeDog,
   validateDog,
-  decorateSavedDog
+  decorateSavedDog,
+  assertSavedProfileContract,
+  assertDogProfileServiceContract
 }

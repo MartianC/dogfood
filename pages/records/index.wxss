@@ -1,0 +1,35 @@
+@import "../../styles/tokens.wxss";
+
+.records-page,
+.records-list {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.records-loading,
+.records-entry__meta {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.records-entry {
+  min-height: 88rpx;
+}
+
+.records-entry__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-2);
+}
+
+.records-entry__dog,
+.records-entry__menu {
+  color: var(--df-color-text);
+  font-weight: 700;
+}
+
+.records-entry__menu,
+.records-entry__meta {
+  margin-top: var(--df-space-2);
+}

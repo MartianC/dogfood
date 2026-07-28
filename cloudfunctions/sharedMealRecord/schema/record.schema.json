@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sharedMealRecord/v1",
+  "type": "object",
+  "required": ["_openid", "targetDogId", "mealTime", "idempotencyKey", "requestFingerprint", "dogSnapshot", "humanMenu", "sourceIngredientSelections", "dogMealItems", "assessment", "versions"],
+  "properties": {
+    "_openid": { "type": "string", "minLength": 1 },
+    "targetDogId": { "type": "string", "minLength": 1 },
+    "mealTime": { "type": "string", "minLength": 1 },
+    "idempotencyKey": { "type": "string", "minLength": 1 },
+    "requestFingerprint": { "type": "string", "minLength": 1 },
+    "dogSnapshot": { "type": "object" },
+    "humanMenu": { "type": "array", "items": { "type": "object" } },
+    "sourceIngredientSelections": { "type": "array", "items": { "type": "object" } },
+    "dogMealItems": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "../../../contracts/shared-meal/shared-meal-ingredient-v1.schema.json" }
+    },
+    "assessment": { "type": "object" },
+    "note": { "type": "string", "maxLength": 200 },
+    "photoFileIds": { "type": "array", "items": { "type": "string" } },
+    "versions": { "type": "object" }
+  }
+}

@@ -1,0 +1,46 @@
+<view class="page shared-meal-dog-page">
+  <ui-notice variant="neutral">一次只为一只狗狗创建本餐；多狗家庭请明确选择。</ui-notice>
+  <ui-notice wx:if="{{blockedText}}" variant="warning">
+    <view class="shared-meal-dog-warning">适用范围提示：{{blockedText}}</view>
+    <view>当前不会生成狗饭创建结果，请咨询兽医或宠物营养专业人士。</view>
+  </ui-notice>
+  <ui-notice wx:if="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
+
+  <block wx:if="{{loading}}">
+    <view class="shared-meal-dog-loading">正在读取狗狗档案</view>
+  </block>
+  <block wx:elif="{{!dogs.length}}">
+    <ui-empty
+      title="还没有狗狗档案"
+      description="先建档，再开始记录这顿饭。"
+      actionText="创建狗狗档案"
+      bind:action="onCreateDog"
+    />
+  </block>
+  <block wx:else>
+    <view class="shared-meal-dog-list">
+      <view
+        wx:for="{{dogs}}"
+        wx:key="id"
+        class="shared-meal-dog-option"
+        data-id="{{item.id}}"
+        bindtap="onDogTap"
+        aria-role="radio"
+        aria-label="选择{{item.name}}"
+        aria-checked="false"
+      >
+        <ui-card>
+          <view class="shared-meal-dog-option__main">
+            <view>
+              <view class="shared-meal-dog-option__name">{{item.name}}</view>
+              <view class="shared-meal-dog-option__meta">{{item.lifeStageLabel}} · {{item.weightKg}} kg</view>
+            </view>
+            <ui-tag variant="{{item.eligibility.status === 'eligible' ? 'good' : 'warning'}}" size="small">
+              {{item.eligibility.status === 'eligible' ? '可开始' : (item.eligibility.status === 'incomplete' ? '待完善' : '不适用')}}
+            </ui-tag>
+          </view>
+        </ui-card>
+      </view>
+    </view>
+  </block>
+</view>

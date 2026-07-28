@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "check:main-package": "node scripts/check-main-package-unused-js.js",
-    "check:ui": "node scripts/check-ui-system.js"
+    "check:ui": "node scripts/check-ui-system.js",
+    "check:shared-meal-record": "node scripts/check-shared-meal-record-contract.js",
+    "check:shared-meal-navigation": "node scripts/check-shared-meal-navigation-gate.js"
   },
   "dependencies": {
     "tdesign-miniprogram": "1.15.3"

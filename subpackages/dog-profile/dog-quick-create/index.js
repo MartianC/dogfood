@@ -5,7 +5,10 @@ const {
   dietGoalOptions,
   breedOptions,
   activityDurationBands,
-  bodyConditionOptions
+  bodyConditionOptions,
+  diseaseStatusOptions,
+  reproductiveStatusOptions,
+  therapeuticWeightManagementOptions
 } = require('../data/options')
 const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
 const {
@@ -56,12 +59,20 @@ Page({
       neutered: false,
       avatarUrl: '',
       dietGoal: 'daily',
+      specialNutritionNeeds: {
+        hasDisease: null,
+        reproductiveStatus: null,
+        therapeuticWeightManagement: null
+      },
       allergens: [],
       avoidIngredients: []
     },
     breedOptions,
     dietGoalOptions,
     bodyConditionOptions,
+    diseaseStatusOptions,
+    reproductiveStatusOptions,
+    therapeuticWeightManagementOptions,
     breedIndex: 0,
     goalIndex: 0,
     lifeStageLabel: '阶段待完善',
@@ -137,6 +148,11 @@ Page({
     const goalIndex = Number(event.currentTarget.dataset.index)
     const option = this.data.dietGoalOptions[goalIndex]
     this.setData({ goalIndex, 'form.dietGoal': option.value })
+  },
+
+  onSpecialNutritionNeed(event) {
+    const { key, value } = event.currentTarget.dataset
+    this.setData({ [`form.specialNutritionNeeds.${key}`]: value })
   },
 
   async onChooseAvatar() {

@@ -1,12 +1,11 @@
 const ingredientService = require('../services/ingredientService')
-const customRecipeService = require('../services/customRecipeService')
 const ingredientWorkbench = require('../services/ingredientWorkbench')
 const nutrientIngredientService = require('../services/nutrientIngredientService')
+const draftAdapters = require('../../../services/draftAdapters')
+const { canAddIngredient } = require('../../../utils/ingredientOperationRules')
 
-function findRecipe(recipeId) {
-  const draft = customRecipeService.getDraft()
-  if (draft && (!recipeId || draft.id === recipeId)) return draft
-  return customRecipeService.listRecipes().find((recipe) => recipe.id === recipeId) || null
+function findRecipe(draftKind, recipeId) {
+  return draftAdapters.getDraft(draftKind, recipeId)
 }
 
 function isSameIngredient(item, ingredient) {
@@ -39,9 +38,54 @@ function nutrientGapText(options, nutrientName) {
   return `${nutrientName}缺口 ${value}${unit ? ` ${unit}` : ''} / 100g`
 }
 
+function addSharedMealIngredient(draft, ingredient, amount) {
+  const grams = Number(amount)
+  if (!draft || !ingredient || !(grams > 0) || !canAddIngredient(ingredient)) {
+    return draft && draft.ingredients || []
+  }
+  const foodId = String(ingredient.foodId || ingredient.ingredientId || ingredient.id || '')
+  const conceptId = String(ingredient.conceptId || '')
+  const variantId = String(ingredient.variantId || '')
+  if (!foodId || !conceptId || !variantId) throw new Error('该食材缺少已发布目录身份，暂时无法加入')
+  const existed = (draft.ingredients || []).find((item) => (
+    item.conceptId === conceptId && item.variantId === variantId
+  ))
+  if (existed) {
+    return draft.ingredients.map((item) => item === existed ? {
+      ...item,
+      perMealAmountGram: Number(item.perMealAmountGram || 0) + grams
+    } : item)
+  }
+  const versions = draft.dataVersions || {}
+  return (draft.ingredients || []).concat({
+    schemaVersion: 1,
+    ingredientId: foodId,
+    foodId,
+    conceptId,
+    variantId,
+    name: String(ingredient.name || ''),
+    category: String(ingredient.category || 'other'),
+    policyStatus: String(ingredient.policyStatus || 'unknown'),
+    perMealAmountGram: grams,
+    sourceRefs: [],
+    dataVersions: {
+      runtimeReleaseId: String(versions.runtimeReleaseId || ''),
+      recipeVersion: versions.recipeVersion === null ? null : String(versions.recipeVersion || ''),
+      mappingVersion: versions.mappingVersion === null ? null : String(versions.mappingVersion || ''),
+      catalogVersion: String(versions.catalogVersion || ingredient.catalogVersion || ''),
+      policyVersion: String(versions.policyVersion || ingredient.policyVersion || ''),
+      nutritionSourceReleaseId: String(
+        ingredient.sourceReleaseId || versions.nutritionSourceReleaseId || ''
+      )
+    }
+  })
+}
+
 Page({
   data: {
     recipe: null,
+    draftKind: 'customRecipe',
+    draftId: '',
     ingredients: [],
     mode: 'search',
     isNutrientMode: false,
@@ -70,7 +114,9 @@ Page({
       result[key] = decodeOption(rawOptions[key])
       return result
     }, {})
-    const recipe = findRecipe(String(options.id || ''))
+    const draftKind = options.draftKind === 'sharedMeal' ? 'sharedMeal' : 'customRecipe'
+    const draftId = String(options.draftId || options.id || '')
+    const recipe = findRecipe(draftKind, draftId)
     if (!recipe) {
       wx.showToast({ title: '未找到当前食谱', icon: 'none' })
       return
@@ -83,6 +129,8 @@ Page({
       : null
     this.setData({
       recipe,
+      draftKind,
+      draftId,
       ingredients,
       mode: isNutrientMode ? 'nutrient' : 'search',
       isNutrientMode,
@@ -276,20 +324,26 @@ Page({
   onPopupConfirm(event) {
     const ingredient = event.detail.ingredient
     const merged = this.data.ingredients.some((item) => isSameIngredient(item, ingredient))
-    const ingredients = ingredientWorkbench.addIngredient(
-      this.data.ingredients,
-      ingredient,
-      event.detail.amount
-    )
-    const recipe = customRecipeService.saveDraft({
-      ...this.data.recipe,
-      ingredients
-    })
-    ingredientService.recordRecentIngredient(ingredient)
-    if (this.openerEventChannel && typeof this.openerEventChannel.emit === 'function') {
-      this.openerEventChannel.emit('ingredientsUpdated', { ingredients, merged })
+    let ingredients
+    try {
+      ingredients = this.data.draftKind === 'sharedMeal'
+        ? addSharedMealIngredient(this.data.recipe, ingredient, event.detail.amount)
+        : ingredientWorkbench.addIngredient(this.data.ingredients, ingredient, event.detail.amount)
+      const recipe = draftAdapters.saveIngredients(
+        this.data.draftKind,
+        this.data.draftId,
+        ingredients
+      )
+      ingredientService.recordRecentIngredient(ingredient)
+      if (this.openerEventChannel && typeof this.openerEventChannel.emit === 'function') {
+        this.openerEventChannel.emit('ingredientsUpdated', { ingredients, merged })
+      }
+      this.setData({ recipe, ingredients, popupVisible: false, selectedIngredient: null })
+      wx.navigateBack()
+    } catch (error) {
+      wx.showToast({ title: error.message || '暂时无法加入食材', icon: 'none' })
     }
-    this.setData({ recipe, ingredients, popupVisible: false, selectedIngredient: null })
-    wx.navigateBack()
   }
 })
+
+module.exports = { addSharedMealIngredient }

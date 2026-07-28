@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "选择人饭菜单",
+  "usingComponents": {
+    "recipe-ingredient-search": "../../../../components/vendor/recipe-ingredient-search/index",
+    "ui-button": "../../../../components/ui/ui-button/index",
+    "ui-card": "../../../../components/ui/ui-card/index",
+    "ui-empty": "../../../../components/ui/ui-empty/index",
+    "ui-notice": "../../../../components/ui/ui-notice/index",
+    "ui-tag": "../../../../components/ui/ui-tag/index"
+  }
+}

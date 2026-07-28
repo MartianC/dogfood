@@ -1,6 +1,6 @@
 # 数据库结构总览
 
-更新时间：2026-07-23
+更新时间：2026-07-27
 
 这份文档以当前代码、导出脚本和项目设计文档为准，区分三类数据：用户业务数据、公共营养运行时投影、离线审核主库。CloudBase 是文档数据库，下面的“表”统一指集合；离线部分明确写作 SQLite 表。
 
@@ -11,7 +11,8 @@
   └─ users
        └─ dogs
             ├─ customRecipes
-            └─ mealPlans
+            ├─ mealPlans
+            └─ shared_meal_records
 
 离线 SQLite 主库
   ├─ USDA / SR Legacy 原始数据
@@ -110,6 +111,27 @@ CloudBase 公共只读投影
 | `shareImageFileId` | string | 云存储文件 ID |
 | `createdAt` / `updatedAt` | Date | 审计时间；当前只新增不更新 |
 
+### `shared_meal_records`
+
+用途：保存“和狗狗一起吃”的单餐不可变快照。唯一写入/列表/详情入口为 `sharedMealRecord` 云函数的 `save | list | get` action；客户端不得直读或修改集合。
+
+| 字段 | 类型/约束 | 说明 |
+|---|---|---|
+| `_id` / `_openid` | string | 主键 / 用户归属；`_openid` 只取云函数上下文 |
+| `targetDogId` | string | 当前用户拥有的狗狗 ID |
+| `mealTime` | ISO datetime string | 用餐时间和稳定分页第一排序键 |
+| `idempotencyKey` | string | 与 `_openid` 组成唯一索引，保证重试只创建一条 |
+| `requestFingerprint` | string | 对 canonical 单餐候选快照的确定性指纹；同 key 异指纹拒绝 |
+| `dogSnapshot` | object | 保存时档案快照 |
+| `humanMenu` / `sourceIngredientSelections` | object[] | 人饭菜单、全部来源原料及选择决定快照 |
+| `dogMealItems` | object[] | 引用 `sharedMealIngredient/v1` 的最终食材和克重 |
+| `assessment` | object | 保存时能量、营养密度、数据覆盖和算法版本快照 |
+| `note` / `photoFileIds` | string / string[] | 可选备注与云文件引用 |
+| `versions` | object | recipe、mapping、catalog、policy、standard、nutrition source 与 assessment algorithm 版本 |
+| `createdAt` | Date | 服务端创建时间；没有更新 action |
+
+索引机器契约位于 `cloudfunctions/sharedMealRecord/schema/indexes.json`：唯一索引为 `(_openid ASC, idempotencyKey ASC)`；列表索引为 `(_openid ASC, targetDogId ASC, mealTime DESC, _id DESC)`。生产集合和索引需另行人工部署，本轮只交付代码与契约。
+
 ## 3. CloudBase 公共营养集合
 
 这些集合禁止小程序端写入，数据源是 SQLite 或受控种子文件。
@@ -123,12 +145,12 @@ CloudBase 公共只读投影
 
 ### 食材知识运行时投影
 
-- `data_releases`：发布指针和计数。字段：`release_id`、`schema_version`、`status`（当前固定 `staging`）、`catalog_version`、`policy_version`、`ranking_version`、`generated_at`、`sources[]`、`collections` 计数。
+- `data_releases`：发布指针和计数。字段：`release_id`、`base_release_id`、`schema_version`、`status`（当前固定 `staging`）、`catalog_version`、`policy_version`、`ranking_version`、独立 `recipe_version`、输入 `mapping_version`、`rollback_candidate`、`generated_at`、`sources[]`、`collections` 计数。
 - `food_nutrition_profiles`：一条 `source_release_id + fdc_id` 一份聚合快照。字段：`release_id`、`food_id`、`fdc_id`、食物描述/来源版本、`nutrient_count`、`known_nutrient_count`、`nutrients` 对象。`nutrients[nutrient_id]` 含 `name`、`unit`、`amount`、`value_status`。
-- `ingredient_catalog`：搜索和选择目录项。字段：`release_id`、`catalog_version`、`policy_version`、`concept_id`、`variant_id`、中文名/别名、分类、制备/部位/皮骨状态、`food_id`/`fdc_id`、来源版本、`policy_status`、`is_searchable`、`is_selectable`。
+- `ingredient_catalog`：搜索和选择目录项。字段：`release_id`、`catalog_version`、`policy_version`、`concept_id`、`variant_id`、中文名/别名、分类、制备/部位/皮骨状态、`food_id`/`fdc_id`、来源版本、`policy_status`；新生成物不保存权限布尔字段。
 - `canine_ingredient_policies`：安全策略快照。字段：`policy_id`、`policy_version`、兼容目录版本、`subject_key`、`concept_id`、可选 `variant_id`、`decision`、`hazard_type`、`conditions`、`evidence`、`rationale`、审核人/时间和下次复核时间。
 - `nutrient_rankings`：版本化营养素排行。字段：`ranking_version`、兼容目录/策略版本、`nutrient_code`、中文名、单位、basis、`formula`、候选/入榜数量、生成时间、`items[]`。排行项含 rank、概念/形态/food ID、每 100g 数值和组成值。
-- `human_recipes`：已发布到 staging 的授权菜谱运行时投影。当前 `recipe_version=2026-07-23-v1` 共6,082条；每条内嵌来源原料、映射组件、策略状态和可选择状态，人饭分量只作参考。
+- `human_recipes`：授权菜谱运行时投影。历史 `recipe_version=2026-07-23-v1` 共6,082条且保持不变；v2 使用 `human-recipe-runtime-v2-<mapping_version>` 独立版本和新 `_id/release_id` 键空间，每条内嵌全部来源有序原料、映射组件、四态策略、阻断原因和版本快照，人饭分量只作参考。
 
 ## 4. 离线 SQLite 主库表
 
@@ -148,11 +170,11 @@ CloudBase 公共只读投影
 
 ## 5. 关系、版本和权限
 
-1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱和清单以 ID 引用，同时保存 snapshots。
+1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱、清单和共享本餐记录以 ID 引用，同时保存 snapshots。
 2. 营养关系：`foods` → `food_nutrients` / `food_localized_name`；`food_nutrition_profiles` 将同一食物的营养明细聚合成一次读取；`ingredient_catalog.variant_id` → `food_id`。
 3. 审核关系：`ingredient_concept` → `ingredient_alias` / `ingredient_variant`；策略优先匹配 variant，缺失时回退 concept；排行必须同时兼容 catalog 和 policy 版本。
 4. 发布关系：一个 `release_id` 绑定一组 `catalog_version`、`policy_version`、`ranking_version` 和各集合计数。旧快照不可修改，生产切换应通过活动版本指针完成。
-5. 权限：`users`、`dogs`、`customRecipes`、`mealPlans` 仅云函数访问；公共营养集合客户端可读不可写；策略集合按当前设计由云函数读取，不能直接暴露原始审核字段。
+5. 权限：`users`、`dogs`、`customRecipes`、`mealPlans`、`shared_meal_records` 仅云函数访问；共享本餐保存还会复核狗狗归属、活动数据版本和当前食材策略。公共营养集合客户端可读不可写；策略集合按当前设计由云函数读取，不能直接暴露原始审核字段。
 
 ## 6. 当前需要优先收口的地方
 

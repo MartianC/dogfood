@@ -1,0 +1,16 @@
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const fs = require('node:fs')
+const path = require('node:path')
+
+test('主导航仅首页、记录、我的且旧路由只保留兼容读取', () => {
+  const root = path.resolve(__dirname, '..')
+  const config = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
+  assert.deepEqual(config.tabBar.list.map((item) => item.text), ['首页', '记录', '我的'])
+  assert.ok(config.pages.includes('pages/recipes/list/index'))
+  assert.ok(config.pages.includes('pages/plan/index/index'))
+  assert.ok(config.tabBar.list.every((item) => !/recipes|plan/.test(item.pagePath)))
+  const home = fs.readFileSync(path.join(root, 'pages/home/index.js'), 'utf8')
+  assert.match(home, /shared-meal\/dog-select/)
+  assert.doesNotMatch(home, /pages\/recipes|pages\/plan/)
+})

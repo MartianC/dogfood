@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/index",
+    "pages/records/index",
     "pages/recipes/list/index",
     "pages/recipes/detail/index",
     "pages/plan/index/index",
@@ -28,6 +29,16 @@
         "ingredient-search/index",
         "advice/index"
       ]
+    },
+    {
+      "root": "subpackages/shared-meal",
+      "pages": [
+        "menu-search/index",
+        "dog-select/index",
+        "dog-select/menu-search/index",
+        "compose/index",
+        "record-detail/index"
+      ]
     }
   ],
   "window": {
@@ -50,16 +61,10 @@
         "selectedIconPath": "assets/tabbar/home-active.png"
       },
       {
-        "pagePath": "pages/recipes/list/index",
-        "text": "食谱",
-        "iconPath": "assets/tabbar/recipes.png",
-        "selectedIconPath": "assets/tabbar/recipes-active.png"
-      },
-      {
-        "pagePath": "pages/plan/index/index",
-        "text": "清单",
-        "iconPath": "assets/tabbar/plan.png",
-        "selectedIconPath": "assets/tabbar/plan-active.png"
+        "pagePath": "pages/records/index",
+        "text": "记录",
+        "iconPath": "assets/tabbar/records.png",
+        "selectedIconPath": "assets/tabbar/records-active.png"
       },
       {
         "pagePath": "pages/profile/index/index",

@@ -7,6 +7,9 @@ const BREEDS = new Set(SUPPORTED_BREEDS)
 const BODY_CONDITIONS = new Set(['thin', 'ideal', 'overweight'])
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 const SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000
+const DOG_PROFILE_SCHEMA_VERSION = 3
+const REPRODUCTIVE_STATUSES = new Set(['none', 'pregnant', 'lactating', null])
+const THERAPEUTIC_WEIGHT_MANAGEMENT_STATUSES = new Set(['none', 'loss', 'gain', null])
 
 function hasOwn(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key)
@@ -48,6 +51,29 @@ function deriveActivityLevel(hours) {
   return 'high'
 }
 
+function normalizeSpecialNutritionNeeds(value) {
+  const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {}
+  return {
+    hasDisease: hasOwn(source, 'hasDisease') ? source.hasDisease : null,
+    reproductiveStatus: hasOwn(source, 'reproductiveStatus')
+      ? source.reproductiveStatus
+      : null,
+    therapeuticWeightManagement: hasOwn(source, 'therapeuticWeightManagement')
+      ? source.therapeuticWeightManagement
+      : null
+  }
+}
+
+function validateSpecialNutritionNeeds(value) {
+  const needs = normalizeSpecialNutritionNeeds(value)
+  if (
+    ![true, false, null].includes(needs.hasDisease)
+    || !REPRODUCTIVE_STATUSES.has(needs.reproductiveStatus)
+    || !THERAPEUTIC_WEIGHT_MANAGEMENT_STATUSES.has(needs.therapeuticWeightManagement)
+  ) throw new Error('特殊营养需求数据格式不正确')
+  return needs
+}
+
 function normalizedFields(payload = {}) {
   const hasActivityHours = payload.dailyActivityHours !== ''
     && payload.dailyActivityHours !== null
@@ -55,6 +81,7 @@ function normalizedFields(payload = {}) {
   const dailyActivityHours = hasActivityHours ? Number(payload.dailyActivityHours) : null
 
   return {
+    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
     name: String(payload.name || '').trim(),
     birthDate: String(payload.birthDate || '').trim(),
     breed: String(payload.breed || '').trim(),
@@ -66,12 +93,14 @@ function normalizedFields(payload = {}) {
     avatarUrl: payload.avatarUrl || '',
     neutered: Boolean(payload.neutered),
     dietGoal: payload.dietGoal || 'daily',
+    specialNutritionNeeds: normalizeSpecialNutritionNeeds(payload.specialNutritionNeeds),
     healthNotes: payload.healthNotes || ''
   }
 }
 
 function normalizeProfileDocument(doc = {}) {
   return {
+    schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
     id: doc._id,
     userId: doc._openid,
     name: doc.name,
@@ -86,6 +115,7 @@ function normalizeProfileDocument(doc = {}) {
     ...(hasOwn(doc, 'activityLevel') ? { activityLevel: doc.activityLevel } : {}),
     bodyCondition: doc.bodyCondition || '',
     dietGoal: doc.dietGoal || 'daily',
+    specialNutritionNeeds: normalizeSpecialNutritionNeeds(doc.specialNutritionNeeds),
     allergens: doc.allergens || [],
     avoidIngredients: doc.avoidIngredients || [],
     healthNotes: doc.healthNotes || '',
@@ -112,6 +142,7 @@ function validateProfilePayload(profile, { today, now } = {}) {
     || !Number.isInteger(profile.dailyActivityHours * 2)
   ) throw new Error('请选择 0–6 小时的日均活动时长')
   if (!BODY_CONDITIONS.has(profile.bodyCondition)) throw new Error('请选择体况')
+  validateSpecialNutritionNeeds(profile.specialNutritionNeeds)
 }
 
 function fieldsForWrite(payload = {}, options = {}) {

@@ -1,0 +1,67 @@
+<view class="page with-bottom-action shared-meal-compose-page">
+  <ui-notice wx:if="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
+  <ui-button wx:if="{{errorText}}" variant="ghost" bind:tap="onRestart">明确重新开始</ui-button>
+
+  <block wx:if="{{dog && !errorText}}">
+    <ui-card variant="primary">
+      <view class="shared-meal-compose-energy-label">{{dog.name}}的本餐能量目标</view>
+      <view class="shared-meal-compose-energy-value">{{energyTargetText}}</view>
+    </ui-card>
+
+    <ui-notice variant="neutral">所有食材请独立称量、无调味烹饪。系统不会自动生成单项克重或比例。</ui-notice>
+
+    <view class="shared-meal-compose-section">
+      <view class="shared-meal-compose-section__heading">今天的人饭</view>
+      <ui-card wx:for="{{humanMenus}}" wx:key="id" padding="small">
+        <view class="shared-meal-compose-menu-name">{{item.title}}</view>
+        <view wx:for="{{item.ingredients}}" wx:for-item="source" wx:key="position" class="shared-meal-compose-source">
+          {{source.sourceText}}{{source.amountText ? ' · ' + source.amountText : ''}}
+        </view>
+      </ui-card>
+    </view>
+
+    <view class="shared-meal-compose-section">
+      <view class="shared-meal-compose-section__heading">狗狗这顿吃什么</view>
+      <ui-card wx:for="{{ingredients}}" wx:key="variantId" padding="small">
+        <view class="shared-meal-compose-ingredient-head">
+          <view>
+            <view class="shared-meal-compose-ingredient__name">{{item.name}}</view>
+            <view class="shared-meal-compose-ingredient__source">{{item.sourceText}} · 按当前营养形态称量</view>
+          </view>
+          <ui-button variant="ghost" size="small" block="{{false}}" data-index="{{item.index}}" bind:tap="onRemoveIngredient">移除</ui-button>
+        </view>
+        <ui-field label="本餐克重" helpText="首次克重由你填写；填写完整后可按目标等比例调整。">
+          <view class="shared-meal-compose-amount-control">
+            <input class="shared-meal-compose-amount-input" type="digit" value="{{item.amountInput}}" placeholder="待填写" data-index="{{item.index}}" bindblur="onIngredientAmountInput" />
+            <text>g</text>
+          </view>
+        </ui-field>
+      </ui-card>
+      <ui-empty wx:if="{{!ingredients.length}}" title="还没有狗饭食材" description="请从已选菜单或食材目录中添加。" />
+      <ui-button variant="secondary" bind:tap="onAddIngredient">额外添加食材</ui-button>
+    </view>
+
+    <view class="shared-meal-compose-section">
+      <view class="shared-meal-compose-section__heading">本餐评估</view>
+      <nutrition-assessment
+        assessment="{{mealAssessment}}"
+        loading="{{nutritionLoading}}"
+        expanded="{{nutritionExpanded}}"
+        bind:toggle="onNutritionToggle"
+        bind:nutrientselect="onNutritionNutrientSelect"
+        bind:scaleconfirm="onMealScaleConfirm"
+      />
+    </view>
+
+    <ui-field label="备注（可选）" helpText="最多 200 字，只随这条本餐记录保存。">
+      <input class="shared-meal-compose-note-input" value="{{note}}" maxlength="200" placeholder="例如：今天单独清蒸" bindinput="onNoteInput" />
+    </ui-field>
+
+    <ui-notice variant="warning">保存是记录本餐，不代表本餐营养完整或适合长期重复喂养。若家庭自制餐长期占主要饮食，请咨询兽医或宠物营养专业人士。</ui-notice>
+    <ui-button variant="ghost" bind:tap="onRestart">明确重新开始</ui-button>
+  </block>
+
+  <view wx:if="{{dog && !errorText}}" class="bottom-action">
+    <ui-button loading="{{saving}}" bind:tap="onSave">保存这顿记录</ui-button>
+  </view>
+</view>
