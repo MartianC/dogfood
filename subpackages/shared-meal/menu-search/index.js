@@ -1,4 +1,25 @@
 const humanRecipeService = require('../services/humanRecipeService')
+const {
+  canSearchIngredient,
+  canAddIngredient
+} = require('../../../utils/ingredientOperationRules')
+
+function prepareRecipeForSearchDisplay(recipe = {}) {
+  return {
+    ...recipe,
+    ingredients: Array.isArray(recipe.ingredients)
+      ? recipe.ingredients.map((ingredient) => ({
+        ...ingredient,
+        components: Array.isArray(ingredient.components)
+          ? ingredient.components.map((component) => ({
+            ...component,
+            canSelect: canSearchIngredient(component)
+          }))
+          : []
+      }))
+      : []
+  }
+}
 
 Page({
   data: {
@@ -50,7 +71,9 @@ Page({
     if (!recipe) return
     this.setData({ loading: true, errorText: '' })
     try {
-      const selectedRecipe = await humanRecipeService.getHumanRecipe(recipe.id)
+      const selectedRecipe = prepareRecipeForSearchDisplay(
+        await humanRecipeService.getHumanRecipe(recipe.id)
+      )
       this.setData({ selectedRecipe, loading: false })
     } catch (error) {
       this.setData({
@@ -67,10 +90,14 @@ Page({
     const selectedRecipe = this.data.selectedRecipe
     const ingredient = selectedRecipe && selectedRecipe.ingredients[ingredientIndex]
     const component = ingredient && ingredient.components[componentIndex]
-    if (!component || !component.canSelect) return
+    if (!component || !canAddIngredient(component)) return
     this.setData({
       [`selectedRecipe.ingredients[${ingredientIndex}].components[${componentIndex}].selected`]:
         !component.selected
     })
   }
 })
+
+module.exports = {
+  prepareRecipeForSearchDisplay
+}

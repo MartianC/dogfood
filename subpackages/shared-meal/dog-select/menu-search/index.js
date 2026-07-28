@@ -9,6 +9,29 @@ const {
   saveDraft,
   normalizeHumanRecipeDetail
 } = require('../../../../services/sharedMealDraftService')
+const {
+  canSearchIngredient,
+  canAddIngredient,
+  canAutoIncludeIngredient
+} = require('../../../../utils/ingredientOperationRules')
+
+function prepareRecipeForSourceSelection(recipe = {}) {
+  return {
+    ...recipe,
+    ingredients: Array.isArray(recipe.ingredients)
+      ? recipe.ingredients.map((ingredient) => ({
+        ...ingredient,
+        components: Array.isArray(ingredient.components)
+          ? ingredient.components.map((component) => ({
+            ...component,
+            canSelect: canSearchIngredient(component),
+            selected: canAutoIncludeIngredient(component)
+          }))
+          : []
+      }))
+      : []
+  }
+}
 
 Page({
   data: {
@@ -60,7 +83,9 @@ Page({
     if (!recipe) return
     this.setData({ loading: true, errorText: '' })
     try {
-      const selectedRecipe = normalizeHumanRecipeDetail(await rawAdapter.getHumanRecipe(recipe.id))
+      const selectedRecipe = prepareRecipeForSourceSelection(
+        normalizeHumanRecipeDetail(await rawAdapter.getHumanRecipe(recipe.id))
+      )
       const selectedCount = selectedRecipe.ingredients.reduce((count, ingredient) => (
         count + ingredient.components.filter((component) => component.selected).length
       ), 0)
@@ -81,7 +106,7 @@ Page({
     const ingredient = this.data.selectedRecipe
       && this.data.selectedRecipe.ingredients[ingredientIndex]
     const component = ingredient && ingredient.components[componentIndex]
-    if (!component || !component.canSelect || component.policyStatus === 'blocked') return
+    if (!component || !canAddIngredient(component)) return
     const selected = !component.selected
     this.setData({
       [`selectedRecipe.ingredients[${ingredientIndex}].components[${componentIndex}].selected`]: selected,
@@ -99,7 +124,7 @@ Page({
     let dataVersions = null
     this.data.selectedRecipe.ingredients.forEach((ingredient) => {
       ingredient.components.forEach((component) => {
-        if (!(component.selected && component.policyStatus !== 'blocked')) return
+        if (!(component.selected && canAddIngredient(component))) return
         if (!dataVersions) dataVersions = component.dataVersions
         sourceIngredientSelections.push({
           humanMenuId: this.data.selectedRecipe.id,
@@ -135,5 +160,6 @@ Page({
 })
 
 module.exports = {
-  normalizeRecipeDetail: normalizeHumanRecipeDetail
+  normalizeRecipeDetail: normalizeHumanRecipeDetail,
+  prepareRecipeForSourceSelection
 }

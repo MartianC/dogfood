@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 const root = path.resolve(__dirname, '..')
+const { canAddIngredient } = require('../utils/ingredientOperationRules')
 
 function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8')
@@ -77,7 +78,10 @@ test('菜单页只把已发布非 blocked 映射项写入草稿并展示来源�
   const source = read('subpackages/shared-meal/dog-select/menu-search/index.js')
   const template = read('subpackages/shared-meal/dog-select/menu-search/index.wxml')
 
-  assert.match(source, /component\.policyStatus !== 'blocked'/)
+  assert.match(source, /canSearchIngredient\(component\)/)
+  assert.match(source, /canAutoIncludeIngredient\(component\)/)
+  assert.match(source, /canAddIngredient\(component\)/)
+  assert.doesNotMatch(source, /component\.policyStatus\s*(?:===|!==)\s*['"]blocked['"]/)
   assert.match(source, /sourceIngredientSelections/)
   assert.match(source, /saveDraft/)
   assert.match(template, /item\.sourceText/)
@@ -141,7 +145,7 @@ test('compose 对 eligible 菜谱草稿显示能量目标且不填入食材克�
   )
   const sourceIngredientSelections = normalizedMenu.ingredients.flatMap((ingredient) => (
     ingredient.components
-      .filter((component) => component.selected && component.policyStatus !== 'blocked')
+      .filter((component) => component.selected && canAddIngredient(component))
       .map((component) => ({
         humanMenuId: normalizedMenu.id,
         ingredientPosition: ingredient.position,

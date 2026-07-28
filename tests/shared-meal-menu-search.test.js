@@ -8,6 +8,17 @@ const cloudbase = require('../services/adapters/cloudbase')
 const mock = require('../services/adapters/mock')
 const humanRecipeService = require('../subpackages/shared-meal/services/humanRecipeService')
 
+function loadPageModule(relativePath) {
+  const file = path.join(root, relativePath)
+  const previousPage = global.Page
+  let definition
+  global.Page = (value) => { definition = value }
+  delete require.cache[require.resolve(file)]
+  const moduleExports = require(file)
+  global.Page = previousPage
+  return { definition, moduleExports }
+}
+
 function assertNoOrphanConditionalBranches(template) {
   const frames = [{ lastConditional: null }]
   const tagPattern = /<(\/?)([a-z][\w-]*)([^>]*?)(\/?)>/gi
@@ -171,4 +182,65 @@ test('菜单页条件分支保持编译器可识别的连续 wx:if 链', () => {
     /wx:else 前没有/
   )
   assert.doesNotThrow(() => assertNoOrphanConditionalBranches(template))
+})
+
+test('两个菜单页面按四态分别使用搜索展示、自动来源加入和用户添加规则', () => {
+  const canonical = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+  const legacy = loadPageModule('subpackages/shared-meal/dog-select/menu-search/index.js')
+  const expected = {
+    allowed: true,
+    conditional: true,
+    unknown: true,
+    blocked: false
+  }
+
+  Object.entries(expected).forEach(([policyStatus, allowed]) => {
+    const recipe = {
+      id: `recipe-${policyStatus}`,
+      ingredients: [{
+        position: 0,
+        components: [{ policyStatus, selected: false }]
+      }]
+    }
+    const searchComponent = canonical.moduleExports
+      .prepareRecipeForSearchDisplay(recipe)
+      .ingredients[0].components[0]
+    const sourceComponent = legacy.moduleExports
+      .prepareRecipeForSourceSelection(recipe)
+      .ingredients[0].components[0]
+
+    assert.equal(searchComponent.canSelect, allowed, `${policyStatus} 搜索展示资格`)
+    assert.equal(sourceComponent.canSelect, allowed, `${policyStatus} 来源展示资格`)
+    assert.equal(sourceComponent.selected, allowed, `${policyStatus} 自动来源加入资格`)
+
+    let canonicalPatch = null
+    canonical.definition.onToggleComponent.call({
+      data: { selectedRecipe: recipe },
+      setData(patch) { canonicalPatch = patch }
+    }, { currentTarget: { dataset: { ingredientIndex: 0, componentIndex: 0 } } })
+    assert.equal(Boolean(canonicalPatch), allowed, `${policyStatus} 用户添加资格`)
+
+    let sourcePatch = null
+    legacy.definition.onToggleComponent.call({
+      data: { selectedRecipe: recipe, selectedCount: 0 },
+      setData(patch) { sourcePatch = patch }
+    }, { currentTarget: { dataset: { ingredientIndex: 0, componentIndex: 0 } } })
+    assert.equal(Boolean(sourcePatch), allowed, `${policyStatus} 来源页用户添加资格`)
+  })
+})
+
+test('菜单页面不直接比较 blocked 且保留三个具名业务规则', () => {
+  const sources = [
+    fs.readFileSync(path.join(root, 'subpackages/shared-meal/menu-search/index.js'), 'utf8'),
+    fs.readFileSync(path.join(root, 'subpackages/shared-meal/dog-select/menu-search/index.js'), 'utf8')
+  ]
+  const combined = sources.join('\n')
+
+  assert.match(combined, /canSearchIngredient\(component\)/)
+  assert.match(combined, /canAutoIncludeIngredient\(component\)/)
+  assert.match(combined, /canAddIngredient\(component\)/)
+  assert.doesNotMatch(
+    combined,
+    /component\.policyStatus\s*(?:===|!==)\s*['"]blocked['"]/
+  )
 })
