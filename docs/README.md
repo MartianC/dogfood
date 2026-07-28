@@ -9,9 +9,11 @@
 
 ## 当前方向与实施计划
 
-- `docs/superpowers/plans/2026-07-26-shared-meal-checkin.md`：将产品转向“和狗狗一起吃”的本餐菜单选择、狗饭初稿生成、本餐评估和记录打卡的实施计划。
+- 当前共享本餐主线按以下顺序阅读，发生冲突时以前一项为准：
+  1. `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.md`：已批准的产品事实来源。
+  2. `docs/superpowers/plans/2026-07-28-shared-meal-deviation-closure.md`：相对当前实现基线的偏差收敛任务与验收状态。
+  3. `docs/superpowers/plans/2026-07-26-shared-meal-checkin.md`：方向转型历史计划，仅用于追溯；其中自动克重和比例优化要求已被 PRD 替代。
 - `docs/superpowers/specs/2026-07-26-shared-meal-checkin-design-concept.md`：记录方向转型的用户事实、产品澄清、Research、Prototype 证据和已选方案。
-- `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.md`：每日共享本餐的人工评审版 PRD Destination。
 - `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.json`：供 AFK Flow 校验和后续切片使用的机器契约。
 - `docs/superpowers/specs/2026-07-26-shared-meal-issue-dag.json`：共享本餐的 5 节点纵向 Issue DAG 机器契约，已整体批准并进入 `afk-ready`。
 - `docs/superpowers/specs/2026-07-26-shared-meal-issue-dag-review.md`：DAG 的自动审查轮次、阻断关闭证据、最少充分形状和人工批准门说明。
