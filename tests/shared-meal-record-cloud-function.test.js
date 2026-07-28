@@ -2,6 +2,9 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const { fingerprint } = require('../services/sharedMealContract')
+const operationContract = require('../contracts/shared-meal/ingredient-operation-rules-v1.json')
+const rootRules = require('../utils/ingredientOperationRules')
+const cloudRules = require('../cloudfunctions/sharedMealRecord/ingredientOperationRules')
 const { validateSaveIntent, createSharedMealRecordGateway } = require('../cloudfunctions/sharedMealRecord')
 
 function makeIntent(ingredient = { ...fixture, perMealAmountGram: 100 }) {
@@ -30,6 +33,17 @@ test('云端逐字段消费 canonical 食材并与客户端指纹一致', () => 
   assert.equal(validateSaveIntent(saveIntent).saveIntent.requestFingerprint, saveIntent.requestFingerprint)
   assert.throws(() => validateSaveIntent(makeIntent({ ...fixture, perMealAmountGram: 100, foodId: 'split' })), /食材营养身份无效/)
   assert.throws(() => validateSaveIntent(makeIntent({ ...fixture, perMealAmountGram: 100, policyStatus: 'blocked' })), /被阻止食材不可保存/)
+})
+
+test('云函数包内规则与根运行时规则对四态保持契约一致', () => {
+  assert.deepEqual(cloudRules.KNOWN_POLICY_STATUSES, operationContract.knownStatuses)
+  operationContract.knownStatuses.forEach((policyStatus) => {
+    assert.equal(
+      cloudRules.canAddIngredient({ policy_status: policyStatus }),
+      rootRules.canAddIngredient({ policyStatus }),
+      policyStatus
+    )
+  })
 })
 
 function fakeDatabase() {
@@ -115,4 +129,16 @@ test('隔离数据库验证原子幂等、归属隔离和单记录回看', async
   outsiderIntent.idempotencyKey = 'owner-2-key'
   await assert.rejects(() => outsider({ action: 'save', payload: outsiderIntent }), /无权使用该狗狗档案/)
   await assert.rejects(() => outsider({ action: 'get', recordId: first.id }), /未找到本餐记录/)
+})
+
+test('云端活动目录复核拒绝伪造为 blocked 的保存请求', async () => {
+  const database = fakeDatabase()
+  database.collections.ingredient_catalog[0].policy_status = 'blocked'
+  const gateway = createSharedMealRecordGateway({ database, openId: 'owner-1' })
+
+  await assert.rejects(
+    () => gateway({ action: 'save', payload: makeIntent() }),
+    /被阻止食材不可保存/
+  )
+  assert.equal(database.collections.shared_meal_records.length, 0)
 })

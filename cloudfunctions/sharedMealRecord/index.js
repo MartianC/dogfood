@@ -2,6 +2,7 @@ const {
   canonicalizeIngredients,
   fingerprint
 } = require('./sharedMealContract')
+const { canAddIngredient } = require('./ingredientOperationRules')
 
 const MAX_PAGE_SIZE = 20
 
@@ -47,7 +48,7 @@ function validateSaveIntent(saveIntent) {
     if (!ingredient.conceptId || !ingredient.variantId || !(ingredient.perMealAmountGram > 0)) {
       fail('INVALID_INGREDIENT', '食材目录身份或克重无效')
     }
-    if (ingredient.policyStatus === 'blocked') fail('BLOCKED_INGREDIENT', '被阻止食材不可保存')
+    if (!canAddIngredient(ingredient)) fail('BLOCKED_INGREDIENT', '被阻止食材不可保存')
     const versions = ingredient.dataVersions
     if (!versions.runtimeReleaseId || !versions.catalogVersion || !versions.policyVersion || !versions.nutritionSourceReleaseId) {
       fail('INVALID_VERSION', '食材版本字段不完整')
@@ -105,7 +106,7 @@ async function validateOwnershipAndCatalog(database, openId, validated) {
     if (!current || String(current.food_id || '') !== ingredient.foodId) {
       fail('INGREDIENT_NOT_FOUND', '食材目录身份已失效')
     }
-    if (String(current.policy_status || 'unknown') === 'blocked') {
+    if (!canAddIngredient(current)) {
       fail('BLOCKED_INGREDIENT', '被阻止食材不可保存')
     }
   }))

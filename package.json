@@ -9,7 +9,8 @@
     "check:ui": "node scripts/check-ui-system.js",
     "check:shared-meal-record": "node scripts/check-shared-meal-record-contract.js",
     "check:shared-meal-navigation": "node scripts/check-shared-meal-navigation-gate.js",
-    "check:shared-meal-deviation": "node scripts/check-shared-meal-deviation-baseline.js"
+    "check:shared-meal-deviation": "node scripts/check-shared-meal-deviation-baseline.js",
+    "check:ingredient-policy-usage": "node scripts/check-ingredient-policy-usage.js"
   },
   "dependencies": {
     "tdesign-miniprogram": "1.15.3"
