@@ -56,6 +56,7 @@ test('偏差基线拒绝开启照片能力', () => {
 test('偏差基线拒绝在 Figma 设计未完成时勾选 UI 实现', () => {
   const contract = require(contractPath)
   const plan = fs.readFileSync(planPath, 'utf8')
+    .replace('- [x] `D1.1` 冻结多菜搜索交互规格（Figma）', '- [ ] `D1.1` 冻结多菜搜索交互规格（Figma）')
     .replace('- [ ] `F1.2` 接入搜索分页', '- [x] `F1.2` 接入搜索分页')
   const result = runCheck(contract, plan)
   assert.notEqual(result.status, 0)
