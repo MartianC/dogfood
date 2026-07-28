@@ -1,17 +1,22 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
+const fs = require('node:fs')
+const path = require('node:path')
 
 const storage = require('../utils/storage')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const {
   SHARED_MEAL_DRAFT_STORAGE_KEY,
   createDraftFromMenus,
+  normalizeHumanRecipeDetail,
   saveDraft,
   restoreDraft,
   restoreTrustedDraft,
-  resetDraft
+  resetDraft,
+  updateDraftIngredients
 } = require('../services/sharedMealDraftService')
 
+const root = path.resolve(__dirname, '..')
 const dog = { id: 'dog-1', name: '布丁' }
 const dataVersions = fixture.dataVersions
 
@@ -268,4 +273,91 @@ test('ingredientPosition 必须是大于等于 0 的整数', () => {
     }],
     dataVersions
   }), /来源选择字段无效/)
+})
+
+test('草稿服务对四态分别执行自动带入、来源选择和后续更新规则', () => {
+  const expected = {
+    allowed: true,
+    conditional: true,
+    unknown: true,
+    blocked: false
+  }
+
+  Object.entries(expected).forEach(([policyStatus, canOperate]) => {
+    const normalized = normalizeHumanRecipeDetail({
+      recipeVersion: dataVersions.recipeVersion,
+      recipe: {
+        id: `recipe-${policyStatus}`,
+        release_id: dataVersions.runtimeReleaseId,
+        recipe_version: dataVersions.recipeVersion,
+        mapping_version: dataVersions.mappingVersion,
+        compatible_catalog_version: dataVersions.catalogVersion,
+        compatible_policy_version: dataVersions.policyVersion,
+        base_release_id: dataVersions.nutritionSourceReleaseId,
+        ingredients: [{
+          position: 0,
+          raw_name: '鸡胸肉',
+          components: [{
+            concept_id: fixture.conceptId,
+            variant_id: fixture.variantId,
+            food_id: fixture.foodId,
+            display_name_zh: fixture.name,
+            category_code: fixture.category,
+            policy_status: policyStatus
+          }]
+        }]
+      }
+    })
+    const component = normalized.ingredients[0].components[0]
+    assert.equal(component.canSelect, canOperate, `${policyStatus} 自动带入资格`)
+    assert.equal(component.selected, canOperate, `${policyStatus} 初始来源选择`)
+
+    const create = () => createDraftFromMenus({
+      id: `draft-create-${policyStatus}`,
+      dog,
+      humanMenus: [menu({ policyStatus })],
+      sourceIngredientSelections: [{
+        humanMenuId: 'human_recipe_chicken',
+        ingredientPosition: 0,
+        conceptId: fixture.conceptId,
+        variantId: fixture.variantId
+      }],
+      dataVersions
+    })
+    if (canOperate) assert.doesNotThrow(create, `${policyStatus} 来源选择应通过`)
+    else assert.throws(create, /不可加入/)
+
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+    saveDraft(createDraftFromMenus({
+      id: `draft-update-${policyStatus}`,
+      dog,
+      humanMenus: [menu()],
+      sourceIngredientSelections: [{
+        humanMenuId: 'human_recipe_chicken',
+        ingredientPosition: 0,
+        conceptId: fixture.conceptId,
+        variantId: fixture.variantId
+      }],
+      dataVersions
+    }))
+    const update = () => updateDraftIngredients(
+      `draft-update-${policyStatus}`,
+      [{ ...fixture, policyStatus }]
+    )
+    if (canOperate) assert.doesNotThrow(update, `${policyStatus} 草稿更新应通过`)
+    else assert.throws(update, /不可加入/)
+  })
+})
+
+test('草稿服务不直接比较 blocked 且保留自动带入与用户添加语义', () => {
+  const source = fs.readFileSync(
+    path.join(root, 'services/sharedMealDraftService.js'),
+    'utf8'
+  )
+
+  assert.match(source, /canAutoIncludeIngredient\(policyStatus\)/)
+  assert.match(source, /canAddIngredient\(component\)/)
+  assert.match(source, /canAddIngredient\(ingredient\)/)
+  assert.doesNotMatch(source, /component\.policyStatus\s*(?:===|!==)\s*['"]blocked['"]/)
+  assert.doesNotMatch(source, /policyStatus\s*(?:===|!==)\s*['"]blocked['"]/)
 })

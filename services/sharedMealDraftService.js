@@ -1,5 +1,8 @@
 const storage = require('../utils/storage')
-const { canAddIngredient } = require('../utils/ingredientOperationRules')
+const {
+  canAddIngredient,
+  canAutoIncludeIngredient
+} = require('../utils/ingredientOperationRules')
 const {
   INGREDIENT_CONTRACT_VERSION,
   canonicalizeIngredients,
@@ -124,7 +127,7 @@ function findSelectedComponent(humanMenus, selection) {
     ))
     : null
   if (!component) throw new Error('来源选择无效，无法建立共享本餐食材')
-  if (component.policyStatus === 'blocked') throw new Error('该来源食材不可加入共享本餐')
+  if (!canAddIngredient(component)) throw new Error('该来源食材不可加入共享本餐')
   return component
 }
 
@@ -207,7 +210,7 @@ function normalizeHumanRecipeDetail(result = {}) {
         components: (Array.isArray(ingredient.components) ? ingredient.components : [])
           .map((component) => {
             const policyStatus = String(component.policy_status || 'unknown')
-            const canSelect = policyStatus !== 'blocked'
+            const canAutoInclude = canAutoIncludeIngredient(policyStatus)
             return {
               conceptId: String(component.concept_id || ''),
               variantId: String(component.variant_id || ''),
@@ -217,11 +220,11 @@ function normalizeHumanRecipeDetail(result = {}) {
               ),
               category: String(component.category_code || 'other'),
               policyStatus,
-              blockedReason: canSelect ? '' : String(
+              blockedReason: canAutoInclude ? '' : String(
                 component.blockedReason || '当前策略不允许加入狗饭。'
               ),
-              canSelect,
-              selected: canSelect,
+              canSelect: canAutoInclude,
+              selected: canAutoInclude,
               dataVersions: componentDataVersions(recipe, component, result.recipeVersion)
             }
           })
