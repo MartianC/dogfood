@@ -11,6 +11,8 @@ const storage = require('../utils/storage')
 const {
   SHARED_MEAL_DRAFT_STORAGE_KEY,
   restoreDraft,
+  resetDraft,
+  saveDraft,
   saveDogSelectionDraft
 } = require('../services/sharedMealDraftService')
 const {
@@ -771,4 +773,141 @@ test('展开详情只有可吃与不能吃分组，blocked 和未映射原料没
   assert.match(template, /狗狗不能吃/)
   assert.doesNotMatch(template, /未映射，仅保留来源文字|component\.blockedReason/)
   assert.doesNotMatch(template, /data-component-index|onToggleComponent/)
+})
+
+test('从 compose 返回后恢复关键词、已加载页、展开项和已选菜单且不重复搜索', async () => {
+  const draftId = 'draft-f1-5-return'
+  const calls = []
+  const recipes = [
+    { id: 'recipe-1', title: '清蒸鲈鱼' },
+    { id: 'recipe-2', title: '香煎鲈鱼' }
+  ].map((recipe) => ({
+    ...recipe,
+    ingredientPreviewVersion: 1,
+    ingredients: [{
+      position: 0,
+      raw_name: '鲈鱼',
+      mapping_status: 'matched',
+      components: [{ display_name_zh: '鲈鱼', policy_status: 'allowed' }]
+    }]
+  }))
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes(options) {
+      calls.push(options)
+      if (!options.cursor) return { items: [recipes[0]], nextCursor: 'cursor-2' }
+      return { items: [recipes[1]], nextCursor: null }
+    }
+  })
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  saveDogSelectionDraft({ id: 'dog-f1-5', name: '布丁' }, draftId)
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const firstPage = createPageInstance(definition)
+    await firstPage.onLoad({ draftId })
+    firstPage.setData({ searchValue: '鲈鱼' })
+    await firstPage.searchRecipes('鲈鱼')
+    await firstPage.onReachBottom()
+    firstPage.onToggleRecipeSelection({
+      currentTarget: { dataset: { recipeId: 'recipe-1' } }
+    })
+    firstPage.onToggleRecipeSelection({
+      currentTarget: { dataset: { recipeId: 'recipe-2' } }
+    })
+    await firstPage.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-2' } }
+    })
+    firstPage.onHide()
+
+    const callsBeforeRestore = calls.length
+    const restoredPage = createPageInstance(definition)
+    await restoredPage.onLoad({ draftId })
+
+    assert.equal(calls.length, callsBeforeRestore)
+    assert.equal(restoredPage.data.searchValue, '鲈鱼')
+    assert.deepEqual(restoredPage.data.recipes.map((item) => item.id), [
+      'recipe-1',
+      'recipe-2'
+    ])
+    assert.equal(restoredPage.data.nextCursor, null)
+    assert.equal(restoredPage.data.expandedRecipeId, 'recipe-2')
+    assert.deepEqual(restoredPage.data.selectedRecipes, [
+      { id: 'recipe-1', title: '清蒸鲈鱼' },
+      { id: 'recipe-2', title: '香煎鲈鱼' }
+    ])
+  } finally {
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('中途退出保留菜单会话，只有明确 reset 草稿才一起清除', async () => {
+  const draftId = 'draft-f1-5-exit'
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes() {
+      return {
+        items: [{ id: 'recipe-exit', title: '番茄炒蛋', ingredients: [] }],
+        nextCursor: null
+      }
+    }
+  })
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  saveDogSelectionDraft({ id: 'dog-f1-5', name: '布丁' }, draftId)
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad({ draftId })
+    page.onToggleRecipeSelection({
+      currentTarget: { dataset: { recipeId: 'recipe-exit' } }
+    })
+    page.onUnload()
+
+    const stored = restoreDraft(draftId)
+    assert.equal(stored.status, 'restored')
+    assert.ok(stored.draft.menuSearchState)
+    assert.equal(resetDraft(draftId), true)
+    assert.equal(restoreDraft(draftId).status, 'empty')
+  } finally {
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('损坏的菜单会话安全降级为重新搜索且不影响有效草稿', async () => {
+  const draftId = 'draft-f1-5-corrupt'
+  let searchCalls = 0
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes() {
+      searchCalls += 1
+      return {
+        items: [{ id: 'recipe-fresh', title: '新鲜结果', ingredients: [] }],
+        nextCursor: null
+      }
+    }
+  })
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  const draft = saveDogSelectionDraft({ id: 'dog-f1-5', name: '布丁' }, draftId)
+  saveDraft({
+    ...draft,
+    menuSearchState: {
+      version: 1,
+      session: '{broken-json',
+      selectedRecipes: [{ id: 'forged', title: '损坏状态' }]
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad({ draftId })
+
+    assert.equal(searchCalls, 1)
+    assert.equal(page.data.searchValue, '')
+    assert.deepEqual(page.data.recipes.map((item) => item.id), ['recipe-fresh'])
+    assert.equal(restoreDraft(draftId).status, 'restored')
+  } finally {
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+    humanRecipeService.__setAdapterForTest(mock)
+  }
 })

@@ -10,14 +10,18 @@ const {
   saveDraft
 } = require('../../../services/sharedMealDraftService')
 const {
+  MENU_SEARCH_SESSION_VERSION,
   createMenuSearchSession,
   mergeMenuSearchPage,
   selectMenuRecipe,
   deselectMenuRecipe,
-  toggleExpandedMenuRecipe
+  toggleExpandedMenuRecipe,
+  serializeMenuSearchSession,
+  restoreMenuSearchSession
 } = require('../services/menuSearchSessionService')
 
 const SEARCH_PAGE_LIMIT = 20
+const MENU_SEARCH_STATE_VERSION = 1
 
 function prepareRecipeForSearchDisplay(recipe = {}) {
   return {
@@ -113,6 +117,46 @@ function collectMenuSourceSelections(humanMenus) {
   return { sourceIngredientSelections, dataVersions }
 }
 
+function normalizeStoredSelectedRecipes(values, selectedRecipeIds) {
+  const selectedIds = new Set(selectedRecipeIds)
+  const seen = new Set()
+  return (Array.isArray(values) ? values : []).reduce((recipes, item) => {
+    const id = String(item && item.id || '').trim()
+    const title = String(item && item.title || '').trim()
+    if (!id || !title || !selectedIds.has(id) || seen.has(id)) return recipes
+    seen.add(id)
+    recipes.push({ id, title })
+    return recipes
+  }, [])
+}
+
+function restoreStoredMenuSearchState(draft) {
+  const stored = draft && draft.menuSearchState
+  if (
+    !stored
+    || typeof stored !== 'object'
+    || stored.version !== MENU_SEARCH_STATE_VERSION
+    || typeof stored.session !== 'string'
+  ) return null
+
+  try {
+    const rawSession = JSON.parse(stored.session)
+    if (!rawSession || rawSession.version !== MENU_SEARCH_SESSION_VERSION) return null
+  } catch (error) {
+    return null
+  }
+
+  const session = restoreMenuSearchSession(stored.session)
+  return {
+    session,
+    selectedRecipes: normalizeStoredSelectedRecipes(
+      stored.selectedRecipes,
+      session.selectedRecipeIds
+    ),
+    needsRefresh: Boolean(stored.needsRefresh)
+  }
+}
+
 Page({
   data: {
     draftId: '',
@@ -130,8 +174,67 @@ Page({
   },
 
   onLoad(options = {}) {
-    this.setData({ draftId: String(options.draftId || '') })
+    const draftId = String(options.draftId || '')
+    this.setData({ draftId })
+    const restored = restoreDraft(draftId)
+    const storedState = restored.status === 'restored'
+      ? restoreStoredMenuSearchState(restored.draft)
+      : null
+    if (storedState) {
+      this.selectedRecipeSummariesById = storedState.selectedRecipes.reduce((summaries, recipe) => {
+        summaries[recipe.id] = recipe
+        return summaries
+      }, Object.create(null))
+      this.activeSearchToken = {}
+      this.consumedPageCursors = new Set()
+      this.pendingPageRequest = null
+      this.applyMenuSearchSession(storedState.session, {
+        searchValue: storedState.session.keyword,
+        loading: false,
+        loadingMore: false,
+        errorText: '',
+        errorScope: ''
+      })
+      if (storedState.needsRefresh) {
+        return this.searchRecipes(storedState.session.keyword)
+      }
+      const expandedRecipe = storedState.session.recipes.find((recipe) => (
+        recipe.id === storedState.session.expandedRecipeId
+      ))
+      if (expandedRecipe && !expandedRecipe.hasIngredientPreview) {
+        return this.loadRecipeDetail(expandedRecipe.id)
+      }
+      return Promise.resolve(true)
+    }
     return this.searchRecipes('')
+  },
+
+  buildStoredMenuSearchState() {
+    const session = this.ensureMenuSearchSession()
+    return {
+      version: MENU_SEARCH_STATE_VERSION,
+      session: serializeMenuSearchSession(session),
+      selectedRecipes: this.buildSelectedRecipeSummaries(session),
+      needsRefresh: Boolean(this.data.loading || this.data.errorScope === 'initial')
+    }
+  },
+
+  persistMenuSearchState() {
+    const restored = restoreDraft(this.data.draftId)
+    if (restored.status !== 'restored') return false
+    saveDraft({
+      ...restored.draft,
+      menuSearchState: this.buildStoredMenuSearchState()
+    })
+    return true
+  },
+
+  onHide() {
+    this.persistMenuSearchState()
+  },
+
+  onUnload() {
+    this.persistMenuSearchState()
   },
 
   ensureSelectedRecipeSummaries() {
