@@ -1,7 +1,6 @@
 const humanRecipeService = require('../services/humanRecipeService')
 const {
   canSearchIngredient,
-  canAddIngredient,
   canAutoIncludeIngredient
 } = require('../../../utils/ingredientOperationRules')
 const {
@@ -553,19 +552,6 @@ Page({
     } finally {
       this.setData({ confirming: false })
     }
-  },
-
-  onToggleComponent(event) {
-    const ingredientIndex = Number(event.currentTarget.dataset.ingredientIndex)
-    const componentIndex = Number(event.currentTarget.dataset.componentIndex)
-    const selectedRecipe = this.data.selectedRecipe
-    const ingredient = selectedRecipe && selectedRecipe.ingredients[ingredientIndex]
-    const component = ingredient && ingredient.components[componentIndex]
-    if (!component || !canAddIngredient(component)) return
-    this.setData({
-      [`selectedRecipe.ingredients[${ingredientIndex}].components[${componentIndex}].selected`]:
-        !component.selected
-    })
   }
 })
 

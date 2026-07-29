@@ -5,6 +5,7 @@ const path = require('node:path')
 
 const root = path.resolve(__dirname, '..')
 const { canAddIngredient } = require('../utils/ingredientOperationRules')
+const humanRecipeService = require('../subpackages/shared-meal/services/humanRecipeService')
 
 function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8')
@@ -69,6 +70,39 @@ test('选狗主路径进入带独立选择、展开和确认操作的规范菜�
   assert.match(menuSearch, /compose\/index\?draftId=/)
 })
 
+test('旧菜单路由只兼容跳转到 canonical 页面并保留草稿 ID', () => {
+  const source = read('subpackages/shared-meal/dog-select/menu-search/index.js')
+  const template = read('subpackages/shared-meal/dog-select/menu-search/index.wxml')
+  const { definition, moduleExports } = loadPageModule(
+    'subpackages/shared-meal/dog-select/menu-search/index.js'
+  )
+  const originalWx = global.wx
+  let redirectedUrl = ''
+  global.wx = {
+    redirectTo({ url }) { redirectedUrl = url }
+  }
+
+  try {
+    definition.onLoad({ draftId: 'draft/legacy' })
+  } finally {
+    global.wx = originalWx
+  }
+
+  assert.equal(
+    redirectedUrl,
+    '/subpackages/shared-meal/menu-search/index?draftId=draft%2Flegacy'
+  )
+  assert.equal(
+    moduleExports.canonicalMenuSearchUrl({}),
+    '/subpackages/shared-meal/menu-search/index'
+  )
+  assert.doesNotMatch(
+    source,
+    /humanRecipeService|createDraftFromMenus|onToggleComponent|onConfirm/
+  )
+  assert.doesNotMatch(template, /这顿就吃这些吧|selectedRecipe|sourceIngredientSelections/)
+})
+
 test('选狗页保留单狗自动、多狗显式单选和 incomplete/blocked 分支', () => {
   const source = read('subpackages/shared-meal/dog-select/index.js')
   const template = read('subpackages/shared-meal/dog-select/index.wxml')
@@ -88,19 +122,21 @@ test('选狗页保留单狗自动、多狗显式单选和 incomplete/blocked 分
   assert.match(dogEdit, /wx\.redirectTo\(\{ url: this\.data\.redirect \}\)/)
 })
 
-test('菜单页只把已发布非 blocked 映射项写入草稿并展示来源原料', () => {
-  const source = read('subpackages/shared-meal/dog-select/menu-search/index.js')
-  const template = read('subpackages/shared-meal/dog-select/menu-search/index.wxml')
+test('canonical 菜单页只把已发布非 blocked 映射项写入草稿并展示安全分组', () => {
+  const source = read('subpackages/shared-meal/menu-search/index.js')
+  const template = read('subpackages/shared-meal/menu-search/index.wxml')
 
   assert.match(source, /canSearchIngredient\(component\)/)
   assert.match(source, /canAutoIncludeIngredient\(component\)/)
-  assert.match(source, /canAddIngredient\(component\)/)
-  assert.doesNotMatch(source, /component\.policyStatus\s*(?:===|!==)\s*['"]blocked['"]/)
+  assert.doesNotMatch(
+    source,
+    /component\.policyStatus\s*(?:===|!==)\s*['"]blocked['"]/
+  )
   assert.match(source, /sourceIngredientSelections/)
   assert.match(source, /saveDraft/)
-  assert.match(template, /item\.sourceText/)
-  assert.match(template, /component\.blockedReason/)
-  assert.match(template, /这顿就吃这些吧/)
+  assert.match(template, /item\.allowedIngredientText/)
+  assert.match(template, /item\.blockedIngredientText/)
+  assert.match(template, /选好菜单，继续/)
   assert.doesNotMatch(template, /<button\b/)
 })
 
@@ -151,10 +187,7 @@ test('compose 对 eligible 菜谱草稿显示能量目标且不填入食材克�
   storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
   saveDogSelectionDraft(dog, 'draft-compose')
 
-  const menuModule = loadPageModule(
-    'subpackages/shared-meal/dog-select/menu-search/index.js'
-  )
-  const normalizedMenu = menuModule.moduleExports.normalizeRecipeDetail(
+  const normalizedMenu = humanRecipeService.normalizeRecipeDetail(
     await mock.getHumanRecipe('mock_human_tomato_egg')
   )
   const sourceIngredientSelections = normalizedMenu.ingredients.flatMap((ingredient) => (
