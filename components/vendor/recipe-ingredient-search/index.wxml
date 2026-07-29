@@ -4,7 +4,7 @@
   t-class-input="recipe-ingredient-search__input"
   t-class-input-container="recipe-ingredient-search__input-container"
   value="{{value}}"
-  placeholder="搜索食材，如“鸡胸肉”"
+  placeholder="{{placeholder}}"
   action="{{actionText}}"
   clearable
   shape="round"

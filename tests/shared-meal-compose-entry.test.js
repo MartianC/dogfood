@@ -40,12 +40,12 @@ test('sharedMealCreateRoute/v1 注册选狗、菜单搜索和 compose 连续路�
   ])
 
   const dogSelect = read('subpackages/shared-meal/dog-select/index.js')
-  const menuSearch = read('subpackages/shared-meal/dog-select/menu-search/index.js')
+  const menuSearch = read('subpackages/shared-meal/menu-search/index.js')
   const compose = read('subpackages/shared-meal/compose/index.js')
   assert.match(dogSelect, /sharedMealDogEligibility/)
   assert.match(dogSelect, /sharedMealDraftService/)
   assert.match(dogSelect, /authService\.login/)
-  assert.match(dogSelect, /dog-select\/menu-search\/index\?draftId=/)
+  assert.match(dogSelect, /shared-meal\/menu-search\/index\?draftId=/)
   assert.match(menuSearch, /humanRecipeService\.searchHumanRecipes/)
   assert.match(menuSearch, /createDraftFromMenus/)
   assert.match(menuSearch, /compose\/index\?draftId=/)
@@ -53,6 +53,20 @@ test('sharedMealCreateRoute/v1 注册选狗、菜单搜索和 compose 连续路�
   assert.match(compose, /restoreTrustedDraft\(this\.data\.draftId/)
   assert.match(compose, /getHumanRecipe\(humanMenuId\)/)
   assert.doesNotMatch(compose, /options\.(ingredients|foodId|conceptId|variantId)/)
+})
+
+test('选狗主路径进入带独立选择、展开和确认操作的规范菜单页', () => {
+  const dogSelect = read('subpackages/shared-meal/dog-select/index.js')
+  const menuSearch = read('subpackages/shared-meal/menu-search/index.js')
+  const template = read('subpackages/shared-meal/menu-search/index.wxml')
+
+  assert.match(dogSelect, /shared-meal\/menu-search\/index\?draftId=/)
+  assert.doesNotMatch(dogSelect, /dog-select\/menu-search\/index\?draftId=/)
+  assert.match(template, /kind="checkbox"/)
+  assert.match(template, /bindtap="onToggleRecipeExpansion"/)
+  assert.match(template, /选好菜单，继续/)
+  assert.match(menuSearch, /createDraftFromMenus/)
+  assert.match(menuSearch, /compose\/index\?draftId=/)
 })
 
 test('选狗页保留单狗自动、多狗显式单选和 incomplete/blocked 分支', () => {

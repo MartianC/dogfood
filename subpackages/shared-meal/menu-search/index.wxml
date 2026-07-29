@@ -2,95 +2,192 @@
   <recipe-ingredient-search
     value="{{searchValue}}"
     loading="{{loading}}"
-    action-text="清空"
+    placeholder="搜索已经决定的菜，如“番茄炖牛肉”"
+    action-text="取消"
     bind:change="onSearchChange"
     bind:action="onSearchAction"
   />
 
-  <ui-notice wx:if="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
-
-  <block wx:if="{{!selectedRecipe}}">
-    <view class="shared-meal-menu-results">
-      <block wx:if="{{loading}}">
-        <view class="shared-meal-menu-loading">正在读取已发布菜谱</view>
-      </block>
-      <block wx:elif="{{!recipes.length}}">
-        <ui-empty
-          title="没有找到菜谱"
-          description="试试菜名或原料关键词"
-        />
-      </block>
-      <block wx:else>
-        <view
-          wx:for="{{recipes}}"
-          wx:key="id"
-          class="shared-meal-menu-result"
-          data-index="{{index}}"
-          bindtap="onSelectRecipe"
-          aria-role="button"
-          aria-label="选择{{item.title}}"
-        >
-          <ui-card>
-            <view class="shared-meal-menu-result__name">{{item.title}}</view>
-            <view class="shared-meal-menu-result__meta">
-              {{item.ingredients.length}} 项来源原料
-            </view>
-          </ui-card>
-        </view>
-      </block>
+  <ui-notice wx:if="{{errorText && errorScope === 'initial'}}" variant="warning">
+    <view class="shared-meal-menu-initial-error">
+      <text>{{errorText}}</text>
+      <ui-button
+        variant="ghost"
+        size="small"
+        block="{{false}}"
+        bind:tap="retryInitialSearch"
+      >重新加载</ui-button>
     </view>
-  </block>
+  </ui-notice>
 
-  <block wx:else>
-    <view class="shared-meal-menu-detail">
-      <view class="shared-meal-menu-detail__name">{{selectedRecipe.title}}</view>
-      <view class="shared-meal-menu-detail__hint">
-        原料按菜谱来源顺序展示；可共用项可点选。
+  <view class="shared-meal-menu-results">
+    <block wx:if="{{loading}}">
+      <recipe-menu-indicator
+        kind="loading"
+        text="正在读取已发布菜谱"
+      />
+    </block>
+
+    <block wx:elif="{{!recipes.length && !errorText}}">
+      <ui-empty
+        title="没有找到菜谱"
+        description="换个菜名或原料关键词试试"
+      />
+    </block>
+
+    <block wx:else>
+      <view wx:if="{{recipes.length}}" class="shared-meal-menu-results__heading">
+        <text>搜索结果</text>
+        <text wx:if="{{expandedRecipeId}}"> · 已展开 1 道</text>
+        <text wx:else> · {{recipes.length}} 道菜</text>
       </view>
 
       <view
-        wx:for="{{selectedRecipe.ingredients}}"
-        wx:key="position"
-        wx:for-item="item"
-        class="shared-meal-menu-ingredient"
+        wx:for="{{recipes}}"
+        wx:key="id"
+        class="shared-meal-menu-result"
       >
-        <ui-card padding="small">
-          <view class="shared-meal-menu-ingredient__source">
-            <text>{{item.sourceText}}</text>
-            <text wx:if="{{item.amountText}}" class="shared-meal-menu-ingredient__amount">
-              {{item.amountText}}
-            </text>
-          </view>
+        <ui-card padding="medium">
+          <view class="shared-meal-menu-result__top">
+            <recipe-menu-indicator
+              kind="checkbox"
+              checked="{{item.isSelected}}"
+              data-recipe-id="{{item.id}}"
+              bind:change="onToggleRecipeSelection"
+            />
 
-          <view wx:if="{{!item.components.length}}" class="shared-meal-menu-ingredient__unmapped">
-            未映射，仅保留来源文字
-          </view>
-
-          <view
-            wx:for="{{item.components}}"
-            wx:key="variantId"
-            wx:for-item="component"
-            wx:for-index="componentIndex"
-            class="shared-meal-menu-component shared-meal-menu-component--{{component.canSelect ? 'open' : 'blocked'}}"
-            data-ingredient-index="{{index}}"
-            data-component-index="{{componentIndex}}"
-            bindtap="onToggleComponent"
-            aria-role="{{component.canSelect ? 'button' : 'text'}}"
-            aria-disabled="{{!component.canSelect}}"
-          >
-            <view class="shared-meal-menu-component__main">
-              <text>{{component.displayName}}</text>
-              <ui-tag variant="{{component.canSelect ? 'good' : 'warning'}}" size="small">
-                {{component.canSelect ? (component.selected ? '已选择' : '可共用') : '不可共用'}}
-              </ui-tag>
+            <view class="shared-meal-menu-result__content">
+              <view class="shared-meal-menu-result__name">{{item.title}}</view>
+              <view
+                class="shared-meal-menu-result__summary"
+                data-recipe-id="{{item.id}}"
+                bindtap="onToggleRecipeExpansion"
+                aria-role="button"
+                aria-expanded="{{item.isExpanded}}"
+                aria-label="{{item.isExpanded ? '收起' : '展开'}}{{item.title}}原料"
+              >
+                <text class="shared-meal-menu-result__meta">{{item.mappingSummary}}</text>
+                <recipe-menu-indicator
+                  kind="icon"
+                  icon="{{item.isExpanded ? 'chevron-down' : 'chevron-right'}}"
+                />
+              </view>
             </view>
-            <view
-              wx:if="{{!component.canSelect}}"
-              class="shared-meal-menu-component__reason"
-            >{{component.blockedReason}}</view>
+          </view>
+
+          <view wx:if="{{item.isExpanded}}" class="shared-meal-menu-result__detail">
+            <block wx:if="{{item.detailLoading}}">
+              <recipe-menu-indicator kind="loading" text="正在读取原料" />
+            </block>
+
+            <block wx:elif="{{item.detailError}}">
+              <view class="shared-meal-menu-detail-error">
+                <text>原料详情暂时没加载出来</text>
+                <ui-button
+                  variant="ghost"
+                  size="small"
+                  block="{{false}}"
+                  data-recipe-id="{{item.id}}"
+                  bind:tap="onRetryRecipeDetail"
+                >重试</ui-button>
+              </view>
+            </block>
+
+            <block wx:else>
+              <view class="shared-meal-menu-detail-groups">
+                <view class="shared-meal-menu-detail-group">
+                  <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--allowed">
+                    狗狗可以吃
+                  </text>
+                  <text class="shared-meal-menu-detail-group__value">
+                    {{item.allowedIngredientText}}
+                  </text>
+                </view>
+                <view class="shared-meal-menu-detail-group">
+                  <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--blocked">
+                    狗狗不能吃
+                  </text>
+                  <text class="shared-meal-menu-detail-group__value">
+                    {{item.blockedIngredientText}}
+                  </text>
+                </view>
+              </view>
+            </block>
           </view>
         </ui-card>
       </view>
+
+      <view wx:if="{{loadingMore}}" class="shared-meal-menu-pagination">
+        <recipe-menu-indicator kind="loading" text="正在加载更多菜谱" />
+      </view>
+
+      <view
+        wx:if="{{errorText && errorScope === 'more'}}"
+        class="shared-meal-menu-pagination-error"
+      >
+        <view class="shared-meal-menu-pagination-error__copy">
+          <text class="shared-meal-menu-pagination-error__title">
+            后面的菜单暂时没加载出来
+          </text>
+          <text class="shared-meal-menu-pagination-error__description">
+            已加载结果和已选菜单已保留
+          </text>
+        </view>
+        <ui-button
+          variant="ghost"
+          size="medium"
+          block="{{false}}"
+          bind:tap="retryLoadMore"
+        >重试</ui-button>
+      </view>
+    </block>
+  </view>
+
+  <view class="shared-meal-menu-selection-summary">
+    <view class="shared-meal-menu-selection-summary__title">
+      {{selectedRecipes.length ? '已选 ' + selectedRecipes.length + ' 道菜' : '还没有选择菜单'}}
     </view>
-  </block>
+
+    <block wx:if="{{selectedRecipes.length}}">
+      <scroll-view
+        class="shared-meal-menu-selection-summary__tags"
+        scroll-x
+        enable-flex
+        enhanced
+        show-scrollbar="{{false}}"
+      >
+        <view
+          wx:for="{{selectedRecipes}}"
+          wx:key="id"
+          class="shared-meal-menu-selection-summary__tag"
+        >
+          <ui-tag
+            variant="good"
+            size="large"
+            removable
+            event-value="{{item.id}}"
+            bind:remove="onRemoveSelectedRecipe"
+          >{{item.title}}</ui-tag>
+        </view>
+      </scroll-view>
+    </block>
+    <block wx:else>
+      <view class="shared-meal-menu-selection-summary__hint">
+        至少选择 1 道菜后才能继续
+      </view>
+    </block>
+
+    <view wx:if="{{errorText && errorScope === 'confirm'}}" class="shared-meal-menu-selection-summary__error">
+      {{errorText}}
+    </view>
+
+    <view class="shared-meal-menu-selection-summary__confirm">
+      <ui-button
+        size="medium"
+        disabled="{{!selectedRecipes.length || loading || confirming}}"
+        loading="{{confirming}}"
+        bind:tap="onConfirm"
+      >选好菜单，继续</ui-button>
+    </view>
+  </view>
 </view>

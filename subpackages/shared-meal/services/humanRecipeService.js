@@ -2,6 +2,9 @@ const env = require('../../../config/env')
 const {
   canAddIngredient
 } = require('../../../utils/ingredientOperationRules')
+const {
+  normalizeHumanRecipeDetail
+} = require('../../../services/sharedMealDraftService')
 
 let adapter = env.useCloudBase
   ? require('../../../services/adapters/cloudbase')
@@ -45,12 +48,35 @@ function normalizeRecipe(recipe = {}) {
   return {
     id: String(recipe.id || recipe._id || ''),
     title: String(recipe.title || ''),
+    hasIngredientPreview: Number(recipe.ingredientPreviewVersion) === 1,
     ingredients: Array.isArray(recipe.ingredients)
       ? recipe.ingredients
         .slice()
         .sort((left, right) => Number(left.position || 0) - Number(right.position || 0))
         .map(normalizeIngredient)
       : []
+  }
+}
+
+function normalizeRecipeDetail(result = {}) {
+  const normalized = normalizeHumanRecipeDetail(result)
+  const rawIngredients = Array.isArray(result.recipe && result.recipe.ingredients)
+    ? result.recipe.ingredients
+    : []
+  return {
+    ...normalized,
+    ingredients: normalized.ingredients.map((ingredient) => {
+      const rawIngredient = rawIngredients.find((item) => (
+        Number(item.position || 0) === ingredient.position
+      ))
+      return {
+        ...ingredient,
+        mappingStatus: String(
+          (rawIngredient && (rawIngredient.mapping_status || rawIngredient.mappingStatus))
+          || 'unmatched'
+        )
+      }
+    })
   }
 }
 
@@ -64,7 +90,7 @@ async function searchHumanRecipes(options = {}) {
 
 async function getHumanRecipe(recipeId) {
   const result = await adapter.getHumanRecipe(recipeId)
-  return normalizeRecipe(result.recipe)
+  return normalizeRecipeDetail(result)
 }
 
 function __setAdapterForTest(nextAdapter) {
@@ -75,5 +101,6 @@ module.exports = {
   searchHumanRecipes,
   getHumanRecipe,
   normalizeRecipe,
+  normalizeRecipeDetail,
   __setAdapterForTest
 }

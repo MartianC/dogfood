@@ -1,0 +1,54 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-component-border: var(--df-color-line);
+  --td-bg-color-container: transparent;
+  --td-checkbox-bg-color: transparent;
+  --td-checkbox-icon-size: 48rpx;
+  --td-checkbox-icon-color: var(--df-color-line-strong);
+  --td-checkbox-icon-checked-color: var(--df-color-primary);
+  --td-loading-color: var(--df-color-primary);
+  --td-loading-text-color: var(--df-color-muted);
+  display: inline-block;
+}
+
+.recipe-menu-indicator {
+  box-sizing: border-box;
+  color: var(--df-color-text);
+}
+
+.recipe-menu-indicator__checkbox {
+  display: flex !important;
+  width: var(--df-touch-min);
+  height: var(--df-touch-min);
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background: transparent;
+}
+
+.recipe-menu-indicator--icon {
+  display: flex;
+  width: 32rpx;
+  height: 32rpx;
+  align-items: center;
+  justify-content: center;
+}
+
+.recipe-menu-indicator__icon {
+  color: var(--df-color-text);
+}
+
+.recipe-menu-indicator--loading {
+  display: flex;
+  min-height: var(--df-touch-min);
+  align-items: center;
+  justify-content: center;
+  color: var(--df-color-muted);
+}
+
+.recipe-menu-indicator__loading {
+  color: var(--df-color-muted);
+}

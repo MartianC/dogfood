@@ -1,3 +1,16 @@
-<text class="ui-tag ui-tag--{{variant}} ui-tag--{{size}}">
+<view
+  wx:if="{{removable}}"
+  class="ui-tag-remove-target"
+  bindtap="handleRemove"
+  aria-role="button"
+  aria-label="移除已选菜单"
+>
+  <view class="ui-tag ui-tag--{{variant}} ui-tag--{{size}} ui-tag--removable-pill">
+    <slot />
+    <t-icon t-class="ui-tag__remove-icon" name="close" size="32rpx" />
+  </view>
+</view>
+
+<view wx:else class="ui-tag ui-tag--{{variant}} ui-tag--{{size}}">
   <slot />
-</text>
+</view>

@@ -1,11 +1,20 @@
 const humanRecipeService = require('../services/humanRecipeService')
 const {
   canSearchIngredient,
-  canAddIngredient
+  canAddIngredient,
+  canAutoIncludeIngredient
 } = require('../../../utils/ingredientOperationRules')
 const {
+  restoreDraft,
+  createDraftFromMenus,
+  saveDraft
+} = require('../../../services/sharedMealDraftService')
+const {
   createMenuSearchSession,
-  mergeMenuSearchPage
+  mergeMenuSearchPage,
+  selectMenuRecipe,
+  deselectMenuRecipe,
+  toggleExpandedMenuRecipe
 } = require('../services/menuSearchSessionService')
 
 const SEARCH_PAGE_LIMIT = 20
@@ -27,20 +36,121 @@ function prepareRecipeForSearchDisplay(recipe = {}) {
   }
 }
 
+function uniqueNames(values) {
+  return Array.from(new Set(values.filter(Boolean)))
+}
+
+function buildRecipeDetailDisplay(recipe = {}) {
+  const prepared = prepareRecipeForSearchDisplay(recipe)
+  const allowedNames = []
+  const blockedNames = []
+  let allowedCount = 0
+  let blockedCount = 0
+
+  prepared.ingredients.forEach((ingredient) => {
+    const components = Array.isArray(ingredient.components) ? ingredient.components : []
+    const hasAllowed = components.some((component) => component.canSelect)
+    const hasBlocked = components.some((component) => !component.canSelect)
+    if (hasAllowed) allowedCount += 1
+    if (hasBlocked) blockedCount += 1
+    components.forEach((component) => {
+      const name = String(component.displayName || '').trim()
+      if (component.canSelect) allowedNames.push(name)
+      else blockedNames.push(name)
+    })
+  })
+
+  const summaryParts = [`${prepared.ingredients.length} 项原料`]
+  if (allowedCount) summaryParts.push(`${allowedCount} 项可共用`)
+  if (blockedCount) summaryParts.push(`${blockedCount} 项需避开`)
+
+  return {
+    ...prepared,
+    mappingSummary: summaryParts.join(' · '),
+    allowedIngredientText: uniqueNames(allowedNames).join('、') || '暂无',
+    blockedIngredientText: uniqueNames(blockedNames).join('、') || '暂无'
+  }
+}
+
+function buildRecipeViewModels(session, options = {}) {
+  const details = options.details || {}
+  const loadingIds = options.loadingIds || new Set()
+  const errorIds = options.errorIds || new Set()
+  return session.recipes.map((recipe) => {
+    const detail = details[recipe.id]
+      || (recipe.hasIngredientPreview ? buildRecipeDetailDisplay(recipe) : null)
+    const ingredientCount = Array.isArray(recipe.ingredients) ? recipe.ingredients.length : 0
+    return {
+      ...recipe,
+      isSelected: session.selectedRecipeIds.includes(recipe.id),
+      isExpanded: session.expandedRecipeId === recipe.id,
+      detailLoading: loadingIds.has(recipe.id),
+      detailError: errorIds.has(recipe.id),
+      mappingSummary: detail ? detail.mappingSummary : `${ingredientCount} 项原料`,
+      allowedIngredientText: detail ? detail.allowedIngredientText : '',
+      blockedIngredientText: detail ? detail.blockedIngredientText : ''
+    }
+  })
+}
+
+function collectMenuSourceSelections(humanMenus) {
+  const sourceIngredientSelections = []
+  let dataVersions = null
+  humanMenus.forEach((menu) => {
+    menu.ingredients.forEach((ingredient) => {
+      ingredient.components.forEach((component) => {
+        if (!canAutoIncludeIngredient(component)) return
+        if (!dataVersions) dataVersions = component.dataVersions
+        sourceIngredientSelections.push({
+          humanMenuId: menu.id,
+          ingredientPosition: ingredient.position,
+          conceptId: component.conceptId,
+          variantId: component.variantId
+        })
+      })
+    })
+  })
+  return { sourceIngredientSelections, dataVersions }
+}
+
 Page({
   data: {
+    draftId: '',
     searchValue: '',
     recipes: [],
     nextCursor: null,
     selectedRecipeIds: [],
-    selectedRecipe: null,
+    selectedRecipes: [],
+    expandedRecipeId: null,
     loading: false,
     loadingMore: false,
-    errorText: ''
+    confirming: false,
+    errorText: '',
+    errorScope: ''
   },
 
-  onLoad() {
+  onLoad(options = {}) {
+    this.setData({ draftId: String(options.draftId || '') })
     return this.searchRecipes('')
+  },
+
+  ensureSelectedRecipeSummaries() {
+    if (!this.selectedRecipeSummariesById) {
+      this.selectedRecipeSummariesById = Object.create(null)
+    }
+    return this.selectedRecipeSummariesById
+  },
+
+  buildSelectedRecipeSummaries(session) {
+    const summaries = this.ensureSelectedRecipeSummaries()
+    session.recipes.forEach((recipe) => {
+      if (session.selectedRecipeIds.includes(recipe.id)) {
+        summaries[recipe.id] = { id: recipe.id, title: recipe.title }
+      }
+    })
+    return session.selectedRecipeIds.map((recipeId) => (
+      summaries[recipeId] || { id: recipeId, title: '已选菜单' }
+    ))
   },
 
   ensureMenuSearchSession() {
@@ -56,11 +166,20 @@ Page({
   },
 
   applyMenuSearchSession(session, patch = {}) {
+    this.recipeDetailsById = this.recipeDetailsById || Object.create(null)
+    this.recipeDetailLoadingIds = this.recipeDetailLoadingIds || new Set()
+    this.recipeDetailErrorIds = this.recipeDetailErrorIds || new Set()
     this.menuSearchSession = session
     this.setData({
-      recipes: session.recipes,
+      recipes: buildRecipeViewModels(session, {
+        details: this.recipeDetailsById,
+        loadingIds: this.recipeDetailLoadingIds,
+        errorIds: this.recipeDetailErrorIds
+      }),
       nextCursor: session.nextCursor,
       selectedRecipeIds: session.selectedRecipeIds,
+      selectedRecipes: this.buildSelectedRecipeSummaries(session),
+      expandedRecipeId: session.expandedRecipeId,
       ...patch
     })
   },
@@ -84,7 +203,7 @@ Page({
       loading: true,
       loadingMore: false,
       errorText: '',
-      selectedRecipe: null
+      errorScope: ''
     })
 
     const request = humanRecipeService.searchHumanRecipes({
@@ -105,7 +224,8 @@ Page({
       if (searchToken !== this.activeSearchToken) return false
       this.setData({
         loading: false,
-        errorText: '菜谱加载失败，请稍后重试。'
+        errorText: '菜谱加载失败，请稍后重试。',
+        errorScope: 'initial'
       })
       return false
     } finally {
@@ -119,7 +239,7 @@ Page({
   loadNextPage() {
     const session = this.ensureMenuSearchSession()
     const cursor = session.nextCursor
-    if (!cursor || this.data.selectedRecipe) return Promise.resolve(false)
+    if (!cursor) return Promise.resolve(false)
 
     const pending = this.pendingPageRequest
     if (
@@ -140,7 +260,7 @@ Page({
   },
 
   async requestNextPage(searchToken, keyword, cursor) {
-    this.setData({ loadingMore: true, errorText: '' })
+    this.setData({ loadingMore: true, errorText: '', errorScope: '' })
     try {
       const result = await humanRecipeService.searchHumanRecipes({
         query: keyword,
@@ -159,7 +279,8 @@ Page({
       if (searchToken !== this.activeSearchToken) return false
       this.setData({
         loadingMore: false,
-        errorText: '更多菜谱加载失败，请稍后重试。'
+        errorText: '更多菜谱加载失败，请稍后重试。',
+        errorScope: 'more'
       })
       return false
     } finally {
@@ -182,6 +303,10 @@ Page({
     return this.loadNextPage()
   },
 
+  retryInitialSearch() {
+    return this.searchRecipes(this.ensureMenuSearchSession().keyword)
+  },
+
   onSearchChange(event) {
     const searchValue = String(event.detail.value || '')
     this.setData({ searchValue })
@@ -193,21 +318,137 @@ Page({
     this.searchRecipes('')
   },
 
-  async onSelectRecipe(event) {
-    const recipe = this.data.recipes[Number(event.currentTarget.dataset.index)]
-    if (!recipe) return
-    this.setData({ loading: true, errorText: '' })
+  onToggleRecipeSelection(event) {
+    const recipeId = String(event.currentTarget.dataset.recipeId || '')
+    const session = this.ensureMenuSearchSession()
+    const recipe = session.recipes.find((item) => item.id === recipeId)
+    if (!recipe) return false
+    const summaries = this.ensureSelectedRecipeSummaries()
+    const wasSelected = session.selectedRecipeIds.includes(recipeId)
+    if (wasSelected) delete summaries[recipeId]
+    else summaries[recipeId] = { id: recipe.id, title: recipe.title }
+    const nextSession = wasSelected
+      ? deselectMenuRecipe(session, recipeId)
+      : selectMenuRecipe(session, recipeId)
+    this.applyMenuSearchSession(nextSession)
+    return true
+  },
+
+  onRemoveSelectedRecipe(event) {
+    const recipeId = String(event.detail.eventValue || '')
+    if (!recipeId) return false
+    delete this.ensureSelectedRecipeSummaries()[recipeId]
+    this.applyMenuSearchSession(deselectMenuRecipe(this.ensureMenuSearchSession(), recipeId))
+    return true
+  },
+
+  onToggleRecipeExpansion(event) {
+    const recipeId = String(event.currentTarget.dataset.recipeId || '')
+    const nextSession = toggleExpandedMenuRecipe(this.ensureMenuSearchSession(), recipeId)
+    this.applyMenuSearchSession(nextSession)
+    if (nextSession.expandedRecipeId !== recipeId) return Promise.resolve(false)
+    const recipe = nextSession.recipes.find((item) => item.id === recipeId)
+    if (recipe && recipe.hasIngredientPreview) return Promise.resolve(true)
+    return this.loadRecipeDetail(recipeId)
+  },
+
+  onRetryRecipeDetail(event) {
+    const recipeId = String(event.currentTarget.dataset.recipeId || '')
+    return this.loadRecipeDetail(recipeId)
+  },
+
+  loadRecipeDetail(recipeId) {
+    this.recipeDetailsById = this.recipeDetailsById || Object.create(null)
+    this.recipeDetailRequests = this.recipeDetailRequests || Object.create(null)
+    this.recipeDetailLoadingIds = this.recipeDetailLoadingIds || new Set()
+    this.recipeDetailErrorIds = this.recipeDetailErrorIds || new Set()
+    if (this.recipeDetailsById[recipeId]) {
+      return Promise.resolve(this.recipeDetailsById[recipeId])
+    }
+    if (this.recipeDetailRequests[recipeId]) return this.recipeDetailRequests[recipeId]
+
+    this.recipeDetailLoadingIds.add(recipeId)
+    this.recipeDetailErrorIds.delete(recipeId)
+    this.applyMenuSearchSession(this.ensureMenuSearchSession())
+    const request = this.fetchRecipeDetail(recipeId)
+    this.recipeDetailRequests[recipeId] = request
+    return request
+  },
+
+  async fetchRecipeDetail(recipeId) {
     try {
-      const selectedRecipe = prepareRecipeForSearchDisplay(
-        await humanRecipeService.getHumanRecipe(recipe.id)
+      const recipe = await humanRecipeService.getHumanRecipe(recipeId)
+      const detail = buildRecipeDetailDisplay(recipe)
+      this.recipeDetailsById[recipeId] = detail
+      return detail
+    } catch (error) {
+      this.recipeDetailErrorIds.add(recipeId)
+      return null
+    } finally {
+      this.recipeDetailLoadingIds.delete(recipeId)
+      delete this.recipeDetailRequests[recipeId]
+      this.applyMenuSearchSession(this.ensureMenuSearchSession())
+    }
+  },
+
+  async onConfirm() {
+    const session = this.ensureMenuSearchSession()
+    if (!session.selectedRecipeIds.length || this.data.confirming) return false
+    const restored = restoreDraft(this.data.draftId)
+    if (restored.status !== 'restored') {
+      this.setData({
+        errorText: '草稿已失效，请返回后重新开始。',
+        errorScope: 'confirm'
+      })
+      return false
+    }
+
+    this.setData({ confirming: true, errorText: '', errorScope: '' })
+    try {
+      const humanMenus = await Promise.all(
+        session.selectedRecipeIds.map((recipeId) => this.loadRecipeDetail(recipeId))
       )
-      this.setData({ selectedRecipe, loading: false })
+      if (humanMenus.some((menu) => !menu)) {
+        this.setData({
+          errorText: '已选菜单详情暂时没加载出来，请重试。',
+          errorScope: 'confirm'
+        })
+        return false
+      }
+      const { sourceIngredientSelections, dataVersions } = collectMenuSourceSelections(humanMenus)
+      if (!sourceIngredientSelections.length || !dataVersions) {
+        this.setData({
+          errorText: '已选菜单没有可加入的食材，请重新选择。',
+          errorScope: 'confirm'
+        })
+        return false
+      }
+
+      const draft = createDraftFromMenus({
+        id: restored.draft.id,
+        dog: restored.draft.dog,
+        humanMenus,
+        sourceIngredientSelections,
+        latestAssessment: restored.draft.latestAssessment,
+        saveIntent: restored.draft.saveIntent,
+        mealTime: restored.draft.mealTime,
+        note: restored.draft.note,
+        photoFileIds: restored.draft.photoFileIds,
+        dataVersions
+      })
+      saveDraft(draft)
+      wx.navigateTo({
+        url: `/subpackages/shared-meal/compose/index?draftId=${encodeURIComponent(draft.id)}`
+      })
+      return true
     } catch (error) {
       this.setData({
-        selectedRecipe: null,
-        loading: false,
-        errorText: '菜谱详情加载失败，请稍后重试。'
+        errorText: '菜单版本信息不一致，请刷新后重试。',
+        errorScope: 'confirm'
       })
+      return false
+    } finally {
+      this.setData({ confirming: false })
     }
   },
 
@@ -226,5 +467,8 @@ Page({
 })
 
 module.exports = {
-  prepareRecipeForSearchDisplay
+  prepareRecipeForSearchDisplay,
+  buildRecipeDetailDisplay,
+  buildRecipeViewModels,
+  collectMenuSourceSelections
 }

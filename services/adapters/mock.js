@@ -220,13 +220,24 @@ async function searchHumanRecipes(options = {}) {
     .map((recipe) => ({
       id: recipe._id,
       title: recipe.title,
+      ingredientPreviewVersion: 1,
       ingredients: recipe.ingredients.map((ingredient) => ({
         position: Number(ingredient.position || 0),
         raw_name: String(ingredient.raw_name || ''),
         amount_raw: ingredient.amount_raw == null
           ? null
           : String(ingredient.amount_raw),
-        mapping_status: String(ingredient.mapping_status || 'unmatched')
+        mapping_status: String(ingredient.mapping_status || 'unmatched'),
+        components: Array.isArray(ingredient.components)
+          ? ingredient.components.map((component) => ({
+            display_name_zh: String(
+              component.display_name_zh
+              || component.canonical_name_zh
+              || ''
+            ),
+            policy_status: String(component.policy_status || 'unknown')
+          }))
+          : []
       }))
     }))
   return {

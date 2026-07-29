@@ -1,0 +1,31 @@
+<t-checkbox
+  wx:if="{{kind === 'checkbox'}}"
+  t-class="recipe-menu-indicator__checkbox"
+  checked="{{checked}}"
+  disabled="{{disabled}}"
+  icon="circle"
+  block="{{false}}"
+  borderless
+  bind:change="onCheckboxChange"
+/>
+
+<view
+  wx:elif="{{kind === 'icon'}}"
+  class="recipe-menu-indicator recipe-menu-indicator--icon"
+  aria-hidden="true"
+>
+  <t-icon
+    t-class="recipe-menu-indicator__icon"
+    name="{{icon}}"
+    size="32rpx"
+  />
+</view>
+
+<view wx:else class="recipe-menu-indicator recipe-menu-indicator--loading">
+  <t-loading
+    t-class="recipe-menu-indicator__loading"
+    theme="circular"
+    size="40rpx"
+    text="{{text}}"
+  />
+</view>

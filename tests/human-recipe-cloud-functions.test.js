@@ -102,7 +102,11 @@ const fixtures = {
         mapping_status: 'matched',
         mapping_rule: 'internal-rule',
         internalOnly: '不得泄漏',
-        components: [{ internalOnly: '不得泄漏' }]
+        components: [{
+          display_name_zh: '番茄（生）',
+          policy_status: 'allowed',
+          internalOnly: '不得泄漏'
+        }]
       }]
     },
     {
@@ -145,12 +149,20 @@ test('搜索只解析 active recipe_version，并以 sortKey + _id 稳定游标�
   assert.equal(first.contract, 'searchHumanRecipes/v1')
   assert.equal(first.recipeVersion, 'recipe-v2')
   assert.deepEqual(first.items.map((item) => item.id), ['recipe-a', 'recipe-b'])
-  assert.deepEqual(Object.keys(first.items[0]).sort(), ['id', 'ingredients', 'title'])
+  assert.deepEqual(
+    Object.keys(first.items[0]).sort(),
+    ['id', 'ingredientPreviewVersion', 'ingredients', 'title']
+  )
+  assert.equal(first.items[0].ingredientPreviewVersion, 1)
   assert.deepEqual(first.items[0].ingredients, [{
     position: 0,
     raw_name: '番茄',
     amount_raw: '2 个',
-    mapping_status: 'matched'
+    mapping_status: 'matched',
+    components: [{
+      display_name_zh: '番茄（生）',
+      policy_status: 'allowed'
+    }]
   }])
   assert.doesNotMatch(JSON.stringify(first), /internalOnly|search_text|mapping_rule/)
   assert.deepEqual(second.items.map((item) => item.id), ['recipe-c'])

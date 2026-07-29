@@ -7,6 +7,12 @@ const root = path.resolve(__dirname, '..')
 const cloudbase = require('../services/adapters/cloudbase')
 const mock = require('../services/adapters/mock')
 const humanRecipeService = require('../subpackages/shared-meal/services/humanRecipeService')
+const storage = require('../utils/storage')
+const {
+  SHARED_MEAL_DRAFT_STORAGE_KEY,
+  restoreDraft,
+  saveDogSelectionDraft
+} = require('../services/sharedMealDraftService')
 const {
   selectMenuRecipe
 } = require('../subpackages/shared-meal/services/menuSearchSessionService')
@@ -174,7 +180,7 @@ test('Mock adapter 提供与云端一致的搜索和详情契约', async () => {
   assert.ok(detail.recipe.ingredients.length > 0)
 })
 
-test('菜单页只走受控服务查询已发布菜谱并展示全部来源原料', () => {
+test('菜单页只走受控服务查询已发布菜谱并按安全状态展示原料分组', () => {
   const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
   const sharedMealPackage = appConfig.subpackages.find(
     (item) => item.root === 'subpackages/shared-meal'
@@ -193,10 +199,11 @@ test('菜单页只走受控服务查询已发布菜谱并展示全部来源原�
   assert.match(source, /humanRecipeService\.searchHumanRecipes/)
   assert.match(source, /humanRecipeService\.getHumanRecipe/)
   assert.doesNotMatch(clientSources, /wx\.cloud\.database|collection\(['"]human_recipes|canine_ingredient_policies/)
-  assert.match(template, /wx:for="{{selectedRecipe\.ingredients}}"/)
-  assert.match(template, /item\.sourceText/)
-  assert.match(template, /component\.blockedReason/)
-  assert.match(template, /component\.canSelect/)
+  assert.match(template, /wx:for="{{recipes}}"/)
+  assert.match(template, /item\.allowedIngredientText/)
+  assert.match(template, /item\.blockedIngredientText/)
+  assert.match(source, /canSearchIngredient\(component\)/)
+  assert.doesNotMatch(template, /item\.sourceText|component\.blockedReason|component\.canSelect/)
   assert.doesNotMatch([source, template].join('\n'), /自定义菜名|自定义原料|狗狗需求推荐|为狗推荐/)
   assert.doesNotMatch(template, /<button\b/)
 })
@@ -491,4 +498,277 @@ test('下一页失败保留已有结果和选择，并允许原游标重试', as
   } finally {
     humanRecipeService.__setAdapterForTest(mock)
   }
+})
+
+test('菜单卡的选择与展开目标独立，详情按菜谱缓存且多选不收起展开项', async () => {
+  const detailDeferred = createDeferred()
+  let detailCalls = 0
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes() {
+      return {
+        items: [
+          { id: 'recipe-1', title: '番茄土豆炖牛肉', ingredients: [{ position: 0 }] },
+          { id: 'recipe-2', title: '清蒸鲈鱼', ingredients: [{ position: 0 }] }
+        ],
+        nextCursor: null
+      }
+    },
+    async getHumanRecipe(recipeId) {
+      detailCalls += 1
+      const recipe = await detailDeferred.promise
+      return { recipe: { ...recipe, id: recipeId } }
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad()
+
+    await page.onToggleRecipeSelection({
+      currentTarget: { dataset: { recipeId: 'recipe-1' } }
+    })
+    assert.deepEqual(page.data.selectedRecipeIds, ['recipe-1'])
+    assert.equal(page.data.expandedRecipeId, null)
+    assert.equal(detailCalls, 0)
+
+    const firstExpansion = page.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-1' } }
+    })
+    page.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-1' } }
+    })
+    const repeatedExpansion = page.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-1' } }
+    })
+
+    assert.equal(detailCalls, 1)
+    detailDeferred.resolve({
+      title: '番茄土豆炖牛肉',
+      ingredients: [
+        {
+          position: 0,
+          raw_name: '牛肉',
+          mapping_status: 'matched',
+          components: [{ display_name_zh: '牛肉', policy_status: 'allowed' }]
+        },
+        {
+          position: 1,
+          raw_name: '洋葱',
+          mapping_status: 'matched',
+          components: [{ display_name_zh: '洋葱', policy_status: 'blocked' }]
+        },
+        {
+          position: 2,
+          raw_name: '一撮盐',
+          mapping_status: 'unmatched',
+          components: []
+        }
+      ]
+    })
+    await Promise.all([firstExpansion, repeatedExpansion])
+
+    const expandedRecipe = page.data.recipes.find((recipe) => recipe.id === 'recipe-1')
+    assert.equal(page.data.expandedRecipeId, 'recipe-1')
+    assert.equal(expandedRecipe.isExpanded, true)
+    assert.equal(expandedRecipe.allowedIngredientText, '牛肉')
+    assert.equal(expandedRecipe.blockedIngredientText, '洋葱')
+    assert.doesNotMatch(
+      `${expandedRecipe.allowedIngredientText}${expandedRecipe.blockedIngredientText}`,
+      /一撮盐/
+    )
+
+    await page.onToggleRecipeSelection({
+      currentTarget: { dataset: { recipeId: 'recipe-2' } }
+    })
+    assert.deepEqual(page.data.selectedRecipeIds, ['recipe-1', 'recipe-2'])
+    assert.equal(page.data.expandedRecipeId, 'recipe-1')
+
+    page.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-1' } }
+    })
+    await page.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-1' } }
+    })
+    assert.equal(detailCalls, 1)
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('搜索结果携带原料预览时展开立即显示且不再请求详情', async () => {
+  let detailCalls = 0
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes() {
+      return {
+        items: [{
+          id: 'recipe-preview',
+          title: '素炒三丝',
+          ingredientPreviewVersion: 1,
+          ingredients: [
+            {
+              position: 0,
+              raw_name: '胡萝卜',
+              mapping_status: 'matched',
+              components: [{ display_name_zh: '胡萝卜（生）', policy_status: 'allowed' }]
+            },
+            {
+              position: 1,
+              raw_name: '洋葱',
+              mapping_status: 'matched',
+              components: [{ display_name_zh: '洋葱', policy_status: 'blocked' }]
+            }
+          ]
+        }],
+        nextCursor: null
+      }
+    },
+    async getHumanRecipe() {
+      detailCalls += 1
+      throw new Error('展开不应再请求完整详情')
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad()
+
+    await page.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-preview' } }
+    })
+
+    const expandedRecipe = page.data.recipes[0]
+    assert.equal(detailCalls, 0)
+    assert.equal(expandedRecipe.detailLoading, false)
+    assert.equal(expandedRecipe.allowedIngredientText, '胡萝卜（生）')
+    assert.equal(expandedRecipe.blockedIngredientText, '洋葱')
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('选择 1 至 3 道菜时摘要同步更新，确认后全部菜单写入草稿并合并跨菜来源', async () => {
+  const recipes = ['recipe-1', 'recipe-2', 'recipe-3'].map((id, index) => ({
+    id,
+    title: `测试菜单${index + 1}`,
+    ingredients: [{ position: 0, raw_name: '鸡胸肉' }]
+  }))
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes() {
+      return { items: recipes, nextCursor: null }
+    },
+    async getHumanRecipe(recipeId) {
+      const recipe = recipes.find((item) => item.id === recipeId)
+      return {
+        recipeVersion: 'recipe-v1',
+        recipe: {
+          ...recipe,
+          release_id: 'runtime-v1',
+          recipe_version: 'recipe-v1',
+          mapping_version: 'mapping-v1',
+          compatible_catalog_version: 'catalog-v1',
+          compatible_policy_version: 'policy-v1',
+          base_release_id: 'nutrition-v1',
+          ingredients: [{
+            position: 0,
+            raw_name: '鸡胸肉',
+            mapping_status: 'matched',
+            components: [{
+              concept_id: 'concept-chicken',
+              variant_id: 'variant-chicken',
+              food_id: 'food-chicken',
+              display_name_zh: '鸡胸肉',
+              category_code: 'meat',
+              policy_status: 'allowed'
+            }]
+          }]
+        }
+      }
+    }
+  })
+
+  const originalWx = global.wx
+  let navigatedUrl = ''
+  global.wx = {
+    navigateTo({ url }) { navigatedUrl = url }
+  }
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  saveDogSelectionDraft({ id: 'dog-f1-4', name: '布丁' }, 'draft-f1-4')
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad({ draftId: 'draft-f1-4' })
+
+    for (let index = 0; index < recipes.length; index += 1) {
+      page.onToggleRecipeSelection({
+        currentTarget: { dataset: { recipeId: recipes[index].id } }
+      })
+      assert.equal(page.data.selectedRecipes.length, index + 1)
+    }
+
+    page.onRemoveSelectedRecipe({ detail: { eventValue: 'recipe-3' } })
+    assert.deepEqual(page.data.selectedRecipeIds, ['recipe-1', 'recipe-2'])
+    page.onToggleRecipeSelection({
+      currentTarget: { dataset: { recipeId: 'recipe-3' } }
+    })
+
+    await page.onConfirm()
+
+    const restored = restoreDraft('draft-f1-4')
+    assert.equal(restored.status, 'restored')
+    assert.deepEqual(restored.draft.humanMenus.map((item) => item.id), [
+      'recipe-1',
+      'recipe-2',
+      'recipe-3'
+    ])
+    assert.equal(restored.draft.ingredients.length, 1)
+    assert.equal(restored.draft.ingredients[0].sourceRefs.length, 3)
+    assert.equal(
+      navigatedUrl,
+      '/subpackages/shared-meal/compose/index?draftId=draft-f1-4'
+    )
+  } finally {
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+    global.wx = originalWx
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('菜单页按 Figma 拆分 Checkbox 与 Chevron，并只在 vendor 适配层使用 TDesign', () => {
+  const pageRoot = path.join(root, 'subpackages/shared-meal/menu-search')
+  const template = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const config = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
+  const vendorRoot = path.join(root, 'components/vendor/recipe-menu-indicator')
+  const vendorTemplate = fs.readFileSync(path.join(vendorRoot, 'index.wxml'), 'utf8')
+  const vendorConfig = JSON.parse(fs.readFileSync(path.join(vendorRoot, 'index.json'), 'utf8'))
+
+  assert.match(template, /bind:change="onToggleRecipeSelection"/)
+  assert.match(template, /bindtap="onToggleRecipeExpansion"/)
+  assert.doesNotMatch(template, /bindtap="onSelectRecipe"|onToggleComponent/)
+  assert.doesNotMatch(template, /<t-[a-z-]+/)
+  assert.equal(
+    config.usingComponents['recipe-menu-indicator'],
+    '../../../components/vendor/recipe-menu-indicator/index'
+  )
+
+  assert.match(vendorTemplate, /<t-checkbox\b/)
+  assert.match(vendorTemplate, /<t-icon\b/)
+  assert.match(vendorTemplate, /<t-loading\b/)
+  assert.equal(vendorConfig.usingComponents['t-checkbox'], 'tdesign-miniprogram/checkbox/checkbox')
+  assert.equal(vendorConfig.usingComponents['t-icon'], 'tdesign-miniprogram/icon/icon')
+  assert.equal(vendorConfig.usingComponents['t-loading'], 'tdesign-miniprogram/loading/loading')
+})
+
+test('展开详情只有可吃与不能吃分组，blocked 和未映射原料没有操作入口', () => {
+  const template = fs.readFileSync(
+    path.join(root, 'subpackages/shared-meal/menu-search/index.wxml'),
+    'utf8'
+  )
+
+  assert.match(template, /狗狗可以吃/)
+  assert.match(template, /狗狗不能吃/)
+  assert.doesNotMatch(template, /未映射，仅保留来源文字|component\.blockedReason/)
+  assert.doesNotMatch(template, /data-component-index|onToggleComponent/)
 })

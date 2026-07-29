@@ -116,7 +116,7 @@ Page({
       return
     }
     wx.navigateTo({
-      url: `/subpackages/shared-meal/dog-select/menu-search/index?draftId=${encodeURIComponent(draft.id)}`
+      url: `/subpackages/shared-meal/menu-search/index?draftId=${encodeURIComponent(draft.id)}`
     })
   },
 
