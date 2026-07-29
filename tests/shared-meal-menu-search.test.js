@@ -7,6 +7,9 @@ const root = path.resolve(__dirname, '..')
 const cloudbase = require('../services/adapters/cloudbase')
 const mock = require('../services/adapters/mock')
 const humanRecipeService = require('../subpackages/shared-meal/services/humanRecipeService')
+const {
+  selectMenuRecipe
+} = require('../subpackages/shared-meal/services/menuSearchSessionService')
 
 function loadPageModule(relativePath) {
   const file = path.join(root, relativePath)
@@ -17,6 +20,33 @@ function loadPageModule(relativePath) {
   const moduleExports = require(file)
   global.Page = previousPage
   return { definition, moduleExports }
+}
+
+function createPageInstance(definition) {
+  const instance = {
+    data: JSON.parse(JSON.stringify(definition.data)),
+    setData(patch) {
+      Object.entries(patch).forEach(([key, value]) => {
+        this.data[key] = value
+      })
+    }
+  }
+  Object.entries(definition).forEach(([key, value]) => {
+    if (typeof value === 'function') {
+      instance[key] = (...args) => value.apply(instance, args)
+    }
+  })
+  return instance
+}
+
+function createDeferred() {
+  let resolve
+  let reject
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise
+    reject = rejectPromise
+  })
+  return { promise, resolve, reject }
 }
 
 function assertNoOrphanConditionalBranches(template) {
@@ -243,4 +273,222 @@ test('菜单页面不直接比较 blocked 且保留三个具名业务规则', ()
     combined,
     /component\.policyStatus\s*(?:===|!==)\s*['"]blocked['"]/
   )
+})
+
+test('菜单页消费 nextCursor 合并两页并在空游标时停止请求', async () => {
+  const calls = []
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes(options) {
+      calls.push(options)
+      if (!options.cursor) {
+        return {
+          items: [
+            { id: 'recipe-1', title: '清蒸鲈鱼' },
+            { id: 'recipe-2', title: '番茄炒蛋' }
+          ],
+          nextCursor: 'cursor-2'
+        }
+      }
+      return {
+        items: [
+          { id: 'recipe-2', title: '重复的番茄炒蛋' },
+          { id: 'recipe-3', title: '蒜蓉西兰花' }
+        ],
+        nextCursor: null
+      }
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+
+    await page.onLoad()
+    await page.onReachBottom()
+    await page.onReachBottom()
+
+    assert.deepEqual(calls, [
+      { query: '', limit: 20, cursor: null },
+      { query: '', limit: 20, cursor: 'cursor-2' }
+    ])
+    assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), [
+      'recipe-1',
+      'recipe-2',
+      'recipe-3'
+    ])
+    assert.equal(page.data.nextCursor, null)
+    assert.equal(page.data.loading, false)
+    assert.equal(page.data.loadingMore, false)
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('菜单页合并同关键词进行中的重复首屏请求', async () => {
+  const firstPage = createDeferred()
+  const calls = []
+  humanRecipeService.__setAdapterForTest({
+    searchHumanRecipes(options) {
+      calls.push(options)
+      return firstPage.promise
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+
+    const firstRequest = page.searchRecipes('番茄')
+    const duplicateRequest = page.searchRecipes('番茄')
+
+    assert.equal(calls.length, 1)
+    firstPage.resolve({
+      items: [{ id: 'recipe-1', title: '番茄炒蛋' }],
+      nextCursor: null
+    })
+    await Promise.all([firstRequest, duplicateRequest])
+
+    assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), ['recipe-1'])
+    assert.equal(page.data.loading, false)
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('菜单页合并进行中的重复翻页请求', async () => {
+  const nextPage = createDeferred()
+  const calls = []
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes(options) {
+      calls.push(options)
+      if (!options.cursor) {
+        return {
+          items: [{ id: 'recipe-1', title: '清蒸鲈鱼' }],
+          nextCursor: 'cursor-2'
+        }
+      }
+      return nextPage.promise
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad()
+
+    const firstRequest = page.onReachBottom()
+    const duplicateRequest = page.onReachBottom()
+
+    assert.equal(calls.length, 2)
+    nextPage.resolve({
+      items: [{ id: 'recipe-2', title: '番茄炒蛋' }],
+      nextCursor: null
+    })
+    await Promise.all([firstRequest, duplicateRequest])
+
+    assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), [
+      'recipe-1',
+      'recipe-2'
+    ])
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('菜单页忽略旧关键词和旧分页的迟到响应', async () => {
+  const oldFirstPage = createDeferred()
+  const oldNextPage = createDeferred()
+  humanRecipeService.__setAdapterForTest({
+    searchHumanRecipes(options) {
+      if (options.query === '旧关键词' && !options.cursor) return oldFirstPage.promise
+      if (options.query === '已有结果' && options.cursor) return oldNextPage.promise
+      if (options.query === '已有结果') {
+        return Promise.resolve({
+          items: [{ id: 'recipe-old', title: '旧页菜谱' }],
+          nextCursor: 'old-cursor'
+        })
+      }
+      return Promise.resolve({
+        items: [{ id: 'recipe-new', title: '新页菜谱' }],
+        nextCursor: null
+      })
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+
+    const staleFirstRequest = page.searchRecipes('旧关键词')
+    await page.searchRecipes('新关键词')
+    oldFirstPage.resolve({
+      items: [{ id: 'recipe-stale', title: '迟到首屏' }],
+      nextCursor: null
+    })
+    await staleFirstRequest
+    assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), ['recipe-new'])
+
+    await page.searchRecipes('已有结果')
+    const staleNextRequest = page.onReachBottom()
+    await page.searchRecipes('最终关键词')
+    oldNextPage.resolve({
+      items: [{ id: 'recipe-stale-next', title: '迟到下一页' }],
+      nextCursor: null
+    })
+    await staleNextRequest
+
+    assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), ['recipe-new'])
+    assert.equal(page.data.searchValue, '')
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('下一页失败保留已有结果和选择，并允许原游标重试', async () => {
+  let nextPageAttempts = 0
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes(options) {
+      if (!options.cursor) {
+        return {
+          items: [{ id: 'recipe-1', title: '清蒸鲈鱼' }],
+          nextCursor: 'cursor-2'
+        }
+      }
+      nextPageAttempts += 1
+      if (nextPageAttempts === 1) throw new Error('临时网络失败')
+      return {
+        items: [{ id: 'recipe-2', title: '番茄炒蛋' }],
+        nextCursor: null
+      }
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad()
+    page.menuSearchSession = selectMenuRecipe(page.menuSearchSession, 'recipe-1')
+    page.data.selectedRecipeIds = page.menuSearchSession.selectedRecipeIds
+
+    await page.onReachBottom()
+
+    assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), ['recipe-1'])
+    assert.deepEqual(page.data.selectedRecipeIds, ['recipe-1'])
+    assert.equal(page.data.nextCursor, 'cursor-2')
+    assert.match(page.data.errorText, /更多菜谱加载失败/)
+    assert.equal(page.data.loadingMore, false)
+
+    await page.retryLoadMore()
+
+    assert.equal(nextPageAttempts, 2)
+    assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), [
+      'recipe-1',
+      'recipe-2'
+    ])
+    assert.deepEqual(page.data.selectedRecipeIds, ['recipe-1'])
+    assert.equal(page.data.errorText, '')
+    assert.equal(page.data.nextCursor, null)
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
 })
