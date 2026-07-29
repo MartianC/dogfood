@@ -13,6 +13,9 @@ const {
   restoreDraft,
   restoreTrustedDraft,
   resetDraft,
+  includeSourceIngredient,
+  removeSourceIngredient,
+  reincludeSourceIngredient,
   updateDraftIngredients
 } = require('../services/sharedMealDraftService')
 
@@ -40,6 +43,123 @@ function menu(componentOverrides = {}) {
     }]
   }
 }
+
+function sourceSelection(humanMenuId = 'human_recipe_chicken') {
+  return {
+    humanMenuId,
+    ingredientPosition: 0,
+    conceptId: fixture.conceptId,
+    variantId: fixture.variantId
+  }
+}
+
+function draftWithSources(humanMenus, sourceIngredientSelections) {
+  return createDraftFromMenus({
+    id: 'draft-source-transition',
+    dog,
+    humanMenus,
+    sourceIngredientSelections,
+    dataVersions
+  })
+}
+
+test('include 将单个允许来源加入草稿且不修改输入状态', () => {
+  const draft = draftWithSources([menu()], [])
+
+  const next = includeSourceIngredient(draft, sourceSelection())
+
+  assert.deepEqual(draft.sourceIngredientSelections, [])
+  assert.deepEqual(draft.ingredients, [])
+  assert.deepEqual(next.sourceIngredientSelections, [sourceSelection()])
+  assert.equal(next.ingredients.length, 1)
+  assert.equal(next.ingredients[0].perMealAmountGram, null)
+  assert.deepEqual(next.ingredients[0].sourceRefs, [
+    { humanMenuId: 'human_recipe_chicken', ingredientPosition: 0 }
+  ])
+})
+
+test('remove 移除单一来源后完全删除对应狗饭条目', () => {
+  const draft = draftWithSources([menu()], [sourceSelection()])
+  draft.ingredients[0].perMealAmountGram = 80
+
+  const next = removeSourceIngredient(draft, sourceSelection())
+
+  assert.equal(draft.ingredients[0].perMealAmountGram, 80)
+  assert.deepEqual(next.sourceIngredientSelections, [])
+  assert.deepEqual(next.ingredients, [])
+})
+
+test('remove 只移除一个来源时保留其他来源和已有合法克重', () => {
+  const secondMenu = {
+    ...menu(),
+    id: 'human_recipe_chicken_soup',
+    title: '鸡汤'
+  }
+  const secondSelection = sourceSelection('human_recipe_chicken_soup')
+  const draft = draftWithSources(
+    [menu(), secondMenu],
+    [sourceSelection(), secondSelection]
+  )
+  draft.ingredients[0].perMealAmountGram = 80
+
+  const next = removeSourceIngredient(draft, sourceSelection())
+
+  assert.deepEqual(next.sourceIngredientSelections, [secondSelection])
+  assert.equal(next.ingredients.length, 1)
+  assert.equal(next.ingredients[0].perMealAmountGram, 80)
+  assert.deepEqual(next.ingredients[0].sourceRefs, [
+    { humanMenuId: 'human_recipe_chicken_soup', ingredientPosition: 0 }
+  ])
+})
+
+test('reinclude 在条目仍存在时恢复来源并保留已有合法克重', () => {
+  const secondMenu = {
+    ...menu(),
+    id: 'human_recipe_chicken_soup',
+    title: '鸡汤'
+  }
+  const secondSelection = sourceSelection('human_recipe_chicken_soup')
+  const draft = draftWithSources([menu(), secondMenu], [secondSelection])
+  draft.ingredients[0].perMealAmountGram = 80
+
+  const next = reincludeSourceIngredient(draft, sourceSelection())
+
+  assert.equal(next.ingredients.length, 1)
+  assert.equal(next.ingredients[0].perMealAmountGram, 80)
+  assert.deepEqual(next.ingredients[0].sourceRefs, [
+    { humanMenuId: 'human_recipe_chicken_soup', ingredientPosition: 0 },
+    { humanMenuId: 'human_recipe_chicken', ingredientPosition: 0 }
+  ])
+})
+
+test('reinclude 在条目已完全删除时恢复条目并将克重设为 null', () => {
+  const included = draftWithSources([menu()], [sourceSelection()])
+  included.ingredients[0].perMealAmountGram = 80
+  const removed = removeSourceIngredient(included, sourceSelection())
+
+  const reIncluded = reincludeSourceIngredient(removed, sourceSelection())
+
+  assert.equal(reIncluded.ingredients.length, 1)
+  assert.equal(reIncluded.ingredients[0].perMealAmountGram, null)
+})
+
+test('include 和 reinclude 都拒绝 blocked 与未映射来源', () => {
+  const blockedDraft = draftWithSources([menu({ policyStatus: 'blocked' })], [])
+  const unmappedMenu = menu()
+  unmappedMenu.ingredients[0].components = []
+  const unmappedDraft = draftWithSources([unmappedMenu], [])
+
+  ;[includeSourceIngredient, reincludeSourceIngredient].forEach((transition) => {
+    assert.throws(
+      () => transition(blockedDraft, sourceSelection()),
+      /不可加入/
+    )
+    assert.throws(
+      () => transition(unmappedDraft, sourceSelection()),
+      /来源选择无效/
+    )
+  })
+})
 
 test('同一已发布食材按来源合并，初始克重保持 null', () => {
   const secondMenu = {

@@ -170,6 +170,84 @@ function buildIngredients(humanMenus, sourceIngredientSelections) {
   return [...byIdentity.values()].map(validateSharedMealIngredient)
 }
 
+function hasSameSourceSelection(left, right) {
+  return left.humanMenuId === right.humanMenuId
+    && left.ingredientPosition === right.ingredientPosition
+    && left.conceptId === right.conceptId
+    && left.variantId === right.variantId
+}
+
+function ingredientIdentity(ingredient) {
+  return `${ingredient.conceptId}\u0000${ingredient.variantId}`
+}
+
+function rebuildIngredientsForSourceSelections(draft, sourceIngredientSelections) {
+  const sourceIngredients = buildIngredients(draft.humanMenus, sourceIngredientSelections)
+  const sourceByIdentity = new Map(sourceIngredients.map((ingredient) => (
+    [ingredientIdentity(ingredient), ingredient]
+  )))
+  const ingredients = []
+
+  draft.ingredients.forEach((ingredient) => {
+    const identity = ingredientIdentity(ingredient)
+    const sourceIngredient = sourceByIdentity.get(identity)
+    if (sourceIngredient) {
+      ingredients.push({
+        ...sourceIngredient,
+        perMealAmountGram: ingredient.perMealAmountGram
+      })
+      sourceByIdentity.delete(identity)
+      return
+    }
+    if (ingredient.sourceRefs.length === 0) ingredients.push({ ...ingredient })
+  })
+
+  sourceByIdentity.forEach((ingredient) => ingredients.push(ingredient))
+  return ingredients
+}
+
+function transitionSourceIngredient(draft, selection, shouldInclude) {
+  validateDraft(draft)
+  validateSourceSelection(selection)
+  const isIncluded = draft.sourceIngredientSelections.some((item) => (
+    hasSameSourceSelection(item, selection)
+  ))
+
+  if (shouldInclude) {
+    findSelectedComponent(draft.humanMenus, selection)
+    if (isIncluded) return draft
+  } else if (!isIncluded) {
+    return draft
+  }
+
+  const sourceIngredientSelections = shouldInclude
+    ? draft.sourceIngredientSelections.concat({ ...selection })
+    : draft.sourceIngredientSelections.filter((item) => (
+        !hasSameSourceSelection(item, selection)
+      ))
+  const next = {
+    ...draft,
+    sourceIngredientSelections,
+    ingredients: rebuildIngredientsForSourceSelections(draft, sourceIngredientSelections),
+    latestAssessment: null,
+    saveIntent: 'editing'
+  }
+  return validateDraft(next)
+}
+
+function includeSourceIngredient(draft, selection) {
+  return transitionSourceIngredient(draft, selection, true)
+}
+
+function removeSourceIngredient(draft, selection) {
+  return transitionSourceIngredient(draft, selection, false)
+}
+
+// 重新加入与首次加入共享同一安全规则，保留独立业务命名供页面表达用户意图。
+function reincludeSourceIngredient(draft, selection) {
+  return transitionSourceIngredient(draft, selection, true)
+}
+
 function hasSameSharedReleaseVersions(left, right) {
   return SHARED_RELEASE_VERSION_KEYS.every((key) => left[key] === right[key])
 }
@@ -525,6 +603,9 @@ module.exports = {
   validateDraftAgainstTrustedMenus,
   normalizeHumanRecipeDetail,
   createDraftFromMenus,
+  includeSourceIngredient,
+  removeSourceIngredient,
+  reincludeSourceIngredient,
   saveDraft,
   restoreDraft,
   restoreTrustedDraft,
