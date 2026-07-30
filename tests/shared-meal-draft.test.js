@@ -12,6 +12,9 @@ const {
   saveDraft,
   restoreDraft,
   restoreTrustedDraft,
+  getDraftRecoveryDecision,
+  continueDraftRecovery,
+  restartDraftRecovery,
   resetDraft,
   includeSourceIngredient,
   removeSourceIngredient,
@@ -269,6 +272,77 @@ test('旧版或损坏草稿显式失效，只有明确 reset 才清除', () => {
   assert.equal(resetDraft('different'), false)
   assert.notEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
   assert.equal(resetDraft('broken'), true)
+  assert.equal(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
+})
+
+test('恢复决策区分无草稿、有效草稿、空菜单草稿、旧版本和损坏内容', () => {
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  assert.deepEqual(getDraftRecoveryDecision(), {
+    status: 'none',
+    draft: null
+  })
+
+  const resumable = createDraftFromMenus({
+    id: 'draft-recovery-resumable',
+    dog,
+    humanMenus: [menu()],
+    sourceIngredientSelections: [sourceSelection()],
+    dataVersions
+  })
+  saveDraft(resumable)
+  assert.deepEqual(getDraftRecoveryDecision(), {
+    status: 'resumable',
+    draft: resumable
+  })
+
+  const emptyMenu = createDraftFromMenus({
+    id: 'draft-recovery-empty-menu',
+    dog,
+    humanMenus: [],
+    sourceIngredientSelections: [],
+    dataVersions: null
+  })
+  saveDraft(emptyMenu)
+  assert.deepEqual(getDraftRecoveryDecision(), {
+    status: 'none',
+    draft: null
+  })
+  assert.deepEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), emptyMenu)
+
+  storage.setSync(SHARED_MEAL_DRAFT_STORAGE_KEY, { schemaVersion: 0, id: 'old' })
+  assert.deepEqual(getDraftRecoveryDecision(), {
+    status: 'invalid',
+    reason: 'unsupported_schema_version',
+    draft: null
+  })
+  assert.notEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
+
+  storage.setSync(SHARED_MEAL_DRAFT_STORAGE_KEY, { schemaVersion: 1, id: 'broken' })
+  assert.deepEqual(getDraftRecoveryDecision(), {
+    status: 'invalid',
+    reason: 'corrupt_draft',
+    draft: null
+  })
+  assert.notEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
+})
+
+test('继续与重新开始只有显式调用时才读取或清理当前草稿', () => {
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  const draft = createDraftFromMenus({
+    id: 'draft-recovery-action',
+    dog,
+    humanMenus: [menu()],
+    sourceIngredientSelections: [sourceSelection()],
+    dataVersions
+  })
+  saveDraft(draft)
+
+  assert.deepEqual(continueDraftRecovery(draft.id), draft)
+  assert.deepEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), draft)
+  assert.equal(continueDraftRecovery('different'), null)
+  assert.equal(restartDraftRecovery('different'), false)
+  assert.deepEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), draft)
+  assert.equal(restartDraftRecovery(draft.id), true)
   assert.equal(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
 })
 

@@ -893,4 +893,15 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
   裁切，R03 只有一个主操作，R04 Loading 与说明居中，R05 无遮罩和弹层。
 - 已检查组件集、R01–R05 单屏和状态联系表；Resumable 次要按钮首次出现 Auto Layout
   缓存未刷新，已通过重建布局模式恢复水平垂直居中后复查。
-- D3.1 当前等待用户确认；确认前不勾选偏差计划，也不开始 F3 实现。
+- 2026-07-30 用户确认 D3.1 通过；偏差收敛计划已标记完成，F3 系列可以按前置关系开始实施。
+
+### F3.1 恢复决策服务实施记录
+
+- `getDraftRecoveryDecision` 将底层 `empty / restored / invalid` 收敛为页面可消费的
+  `none / resumable / invalid`。有效草稿返回原草稿供 F3.2 展示狗狗、菜单数和时间摘要；
+  无草稿与空菜单草稿均为 `none`，且不会自动清理。
+- `continueDraftRecovery` 只读取并返回匹配的可恢复草稿；`restartDraftRecovery` 只在显式
+  调用时清理匹配草稿。三个函数均不依赖 `wx`、不执行导航、不修改 dog-select。
+- 实现位于 `shared-src/subpackage-services/shared-meal/sharedMealDraftService.js` 唯一源码，
+  通过同步脚本生成到 custom-recipe 与 shared-meal 两个分包，生成副本检查通过。
+- 无草稿、有效草稿、空菜单、旧版本、损坏内容和显式继续/重置测试通过；F3.2 尚未开始。

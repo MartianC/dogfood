@@ -437,6 +437,36 @@ function restoreDraft(expectedId) {
   }
 }
 
+function getDraftRecoveryDecision(expectedId) {
+  const restored = restoreDraft(expectedId)
+  if (restored.status === 'empty') {
+    return { status: 'none', draft: null }
+  }
+  if (restored.status === 'invalid') {
+    return {
+      status: 'invalid',
+      reason: restored.reason,
+      draft: null
+    }
+  }
+  if (restored.draft.humanMenus.length === 0) {
+    return { status: 'none', draft: null }
+  }
+  return {
+    status: 'resumable',
+    draft: restored.draft
+  }
+}
+
+function continueDraftRecovery(expectedId) {
+  const decision = getDraftRecoveryDecision(expectedId)
+  return decision.status === 'resumable' ? decision.draft : null
+}
+
+function restartDraftRecovery(expectedId) {
+  return resetDraft(expectedId)
+}
+
 async function restoreTrustedDraft(expectedId, loadTrustedHumanMenu) {
   const restored = restoreDraft(expectedId)
   if (restored.status !== 'restored' || restored.draft.humanMenus.length === 0) {
@@ -610,6 +640,9 @@ module.exports = {
   reincludeSourceIngredient,
   saveDraft,
   restoreDraft,
+  getDraftRecoveryDecision,
+  continueDraftRecovery,
+  restartDraftRecovery,
   restoreTrustedDraft,
   resetDraft,
   refreshDraftDog,
