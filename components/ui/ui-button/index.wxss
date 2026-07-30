@@ -57,6 +57,12 @@
   border-color: var(--df-color-line-strong);
 }
 
+.ui-button--outline {
+  color: var(--df-color-primary);
+  background: var(--df-color-surface);
+  border-color: var(--df-color-primary);
+}
+
 .ui-button--warning {
   color: var(--df-color-on-primary);
   background: var(--df-color-warning);
@@ -77,6 +83,11 @@
 .ui-button--pressed.ui-button--secondary {
   background: var(--df-color-surface-pressed);
   border-color: var(--df-color-line-strong);
+}
+
+.ui-button--pressed.ui-button--outline {
+  background: var(--df-color-primary-soft);
+  border-color: var(--df-color-primary-pressed);
 }
 
 .ui-button--pressed.ui-button--warning {

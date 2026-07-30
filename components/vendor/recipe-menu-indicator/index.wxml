@@ -11,13 +11,14 @@
 
 <view
   wx:elif="{{kind === 'icon'}}"
-  class="recipe-menu-indicator recipe-menu-indicator--icon"
+  class="recipe-menu-indicator recipe-menu-indicator--icon recipe-menu-indicator--{{tone}}"
+  style="width: {{iconSize}}; height: {{iconSize}};"
   aria-hidden="true"
 >
   <t-icon
     t-class="recipe-menu-indicator__icon"
     name="{{icon}}"
-    size="32rpx"
+    size="{{iconSize}}"
   />
 </view>
 

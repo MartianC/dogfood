@@ -1,49 +1,270 @@
 @import "../../../styles/tokens.wxss";
 
-.shared-meal-compose-page,
-.shared-meal-compose-section {
-  display: grid;
-  gap: var(--df-space-3);
+.page.shared-meal-compose-page {
+  height: 100vh;
+  min-height: 0;
+  padding-bottom: 0;
+  overflow: hidden;
 }
 
-.shared-meal-compose-energy-label,
-.shared-meal-compose-source,
-.shared-meal-compose-ingredient__source {
+.shared-meal-compose-scroll {
+  height: 100%;
+}
+
+.shared-meal-compose-scroll__content {
+  box-sizing: border-box;
+  padding-bottom: calc(476rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(476rpx + env(safe-area-inset-bottom));
+}
+
+.shared-meal-compose-section {
+  display: grid;
+  gap: var(--df-space-6);
+}
+
+.shared-meal-compose-section__heading {
+  color: var(--df-color-text);
+  font-size: 36rpx;
+  font-weight: 800;
+  line-height: 48rpx;
+}
+
+.shared-meal-compose-ingredient-row {
+  min-height: 148rpx;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64rpx 122rpx 88rpx;
+  align-items: center;
+  gap: var(--df-space-1);
+  padding-left: var(--df-space-5);
+  border-bottom: 1rpx solid var(--df-color-line);
+}
+
+.shared-meal-compose-ingredient-row:last-child {
+  border-bottom: 0;
+}
+
+.shared-meal-compose-ingredient-copy {
+  min-width: 0;
+}
+
+.shared-meal-compose-ingredient__name {
+  color: var(--df-color-text);
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 40rpx;
+  overflow-wrap: anywhere;
+}
+
+.shared-meal-compose-ingredient__energy,
+.shared-meal-compose-ingredient__ratio {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 34rpx;
+}
+
+.shared-meal-compose-ingredient__energy {
+  margin-top: var(--df-space-1);
+}
+
+.shared-meal-compose-ingredient__ratio {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.shared-meal-compose-amount-control {
+  min-width: 0;
+  height: 72rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--df-space-1);
+  padding: 0 var(--df-space-2);
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-md);
+  background: var(--df-color-bg);
+}
+
+.shared-meal-compose-amount-input {
+  min-width: 0;
+  height: 72rpx;
+  flex: 1;
+  color: var(--df-color-text);
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 72rpx;
+  text-align: right;
+}
+
+.shared-meal-compose-amount-unit {
+  flex: 0 0 auto;
   color: var(--df-color-muted);
   font-size: var(--df-font-sm);
 }
 
-.shared-meal-compose-energy-value {
-  margin-top: var(--df-space-1);
-  color: var(--df-color-primary);
-  font-size: var(--df-font-xl);
-  font-weight: 700;
+.shared-meal-compose-ingredient-remove {
+  display: flex;
+  width: var(--df-touch-min);
+  height: var(--df-touch-min);
+  align-items: center;
+  justify-content: center;
 }
 
-.shared-meal-compose-section__heading,
-.shared-meal-compose-menu-name,
-.shared-meal-compose-ingredient__name {
+.shared-meal-compose-auxiliary {
+  display: grid;
+  gap: var(--df-space-3);
+  margin-top: 320rpx;
+}
+
+.shared-meal-compose-note-input {
+  min-height: var(--df-touch-min);
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+}
+
+.shared-meal-compose-assessment-dock {
+  position: fixed;
+  z-index: 15;
+  right: 32rpx;
+  bottom: calc(156rpx + constant(safe-area-inset-bottom));
+  bottom: calc(156rpx + env(safe-area-inset-bottom));
+  left: 32rpx;
+}
+
+.shared-meal-compose-assessment-dock--expanded {
+  z-index: 40;
+}
+
+.shared-meal-compose-source-mask {
+  position: fixed;
+  z-index: 25;
+  inset: 0;
+}
+
+.shared-meal-compose-source-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--df-color-mask);
+}
+
+.shared-meal-compose-source-panel {
+  position: absolute;
+  right: 32rpx;
+  bottom: calc(192rpx + constant(safe-area-inset-bottom));
+  bottom: calc(192rpx + env(safe-area-inset-bottom));
+  left: 32rpx;
+  height: 582rpx;
+  box-sizing: border-box;
+  padding: var(--df-space-5);
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-xl);
+  background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-sheet);
+}
+
+.shared-meal-compose-source-panel__heading {
   color: var(--df-color-text);
   font-size: var(--df-font-lg);
   font-weight: 700;
+  line-height: 48rpx;
 }
 
-.shared-meal-compose-source {
-  margin-top: var(--df-space-1);
+.shared-meal-compose-source-group {
+  margin-top: var(--df-space-5);
 }
 
-.shared-meal-compose-ingredient-head,
-.shared-meal-compose-amount-control {
+.shared-meal-compose-source-group__name {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  font-weight: 600;
+  line-height: 36rpx;
+}
+
+.shared-meal-compose-source-row {
   display: flex;
+  min-height: var(--df-touch-min);
+  box-sizing: border-box;
   align-items: center;
   justify-content: space-between;
   gap: var(--df-space-3);
+  border-bottom: 1rpx solid var(--df-color-line);
 }
 
-.shared-meal-compose-amount-input,
-.shared-meal-compose-note-input {
-  min-height: 88rpx;
+.shared-meal-compose-source-row__copy {
+  min-width: 0;
   flex: 1;
+  padding: var(--df-space-3) 0;
+}
+
+.shared-meal-compose-source-row__name {
   color: var(--df-color-text);
   font-size: var(--df-font-md);
+  font-weight: 600;
+  line-height: 40rpx;
+  overflow-wrap: anywhere;
+}
+
+.shared-meal-compose-source-row__detail {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  line-height: 32rpx;
+  overflow-wrap: anywhere;
+}
+
+.shared-meal-compose-source-row--blocked .shared-meal-compose-source-row__detail {
+  color: var(--df-color-warning);
+}
+
+.shared-meal-compose-source-row__action {
+  display: flex;
+  width: var(--df-touch-min);
+  height: var(--df-touch-min);
+  flex: 0 0 var(--df-touch-min);
+  align-items: center;
+  justify-content: center;
+}
+
+.shared-meal-compose-bottom-action {
+  z-index: 30;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  grid-template-columns: 208rpx minmax(0, 1fr);
+  box-sizing: border-box;
+  gap: var(--df-space-3);
+  padding: var(--df-space-3) 32rpx;
+  padding-bottom: calc(var(--df-space-3) + constant(safe-area-inset-bottom));
+  padding-bottom: calc(var(--df-space-3) + env(safe-area-inset-bottom));
+  border-top: 1rpx solid var(--df-color-line);
+  background: var(--df-color-surface);
+}
+
+.shared-meal-compose-human-menu-trigger {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--df-space-1);
+  white-space: nowrap;
+}
+
+.shared-meal-compose-human-menu-button {
+  min-height: var(--df-touch-min);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20rpx;
+  border: 1rpx solid var(--df-color-line-strong);
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface);
+  color: var(--df-color-text-secondary);
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.shared-meal-compose-human-menu-button--pressed {
+  background: var(--df-color-surface-pressed);
 }

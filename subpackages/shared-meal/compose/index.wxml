@@ -1,67 +1,167 @@
 <view class="page with-bottom-action shared-meal-compose-page">
   <ui-notice wx:if="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
-  <ui-button wx:if="{{errorText}}" variant="ghost" bind:tap="onRestart">明确重新开始</ui-button>
 
-  <block wx:if="{{dog && !errorText}}">
-    <ui-card variant="primary">
-      <view class="shared-meal-compose-energy-label">{{dog.name}}的本餐能量目标</view>
-      <view class="shared-meal-compose-energy-value">{{energyTargetText}}</view>
-    </ui-card>
-
-    <ui-notice variant="neutral">所有食材请独立称量、无调味烹饪。系统不会自动生成单项克重或比例。</ui-notice>
-
-    <view class="shared-meal-compose-section">
-      <view class="shared-meal-compose-section__heading">今天的人饭</view>
-      <ui-card wx:for="{{humanMenus}}" wx:key="id" padding="small">
-        <view class="shared-meal-compose-menu-name">{{item.title}}</view>
-        <view wx:for="{{item.ingredients}}" wx:for-item="source" wx:key="position" class="shared-meal-compose-source">
-          {{source.sourceText}}{{source.amountText ? ' · ' + source.amountText : ''}}
-        </view>
-      </ui-card>
-    </view>
-
-    <view class="shared-meal-compose-section">
-      <view class="shared-meal-compose-section__heading">狗狗这顿吃什么</view>
-      <ui-card wx:for="{{ingredients}}" wx:key="variantId" padding="small">
-        <view class="shared-meal-compose-ingredient-head">
-          <view>
-            <view class="shared-meal-compose-ingredient__name">{{item.name}}</view>
-            <view class="shared-meal-compose-ingredient__source">{{item.sourceText}} · 按当前营养形态称量</view>
+  <scroll-view
+    wx:if="{{dog && !errorText}}"
+    class="shared-meal-compose-scroll"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+  >
+    <view class="shared-meal-compose-scroll__content">
+      <view class="shared-meal-compose-section">
+        <view class="shared-meal-compose-section__heading">狗饭食材</view>
+        <ui-card wx:if="{{ingredients.length}}" padding="none">
+          <view
+            wx:for="{{ingredients}}"
+            wx:key="variantId"
+            class="shared-meal-compose-ingredient-row"
+          >
+            <view class="shared-meal-compose-ingredient-copy">
+              <view class="shared-meal-compose-ingredient__name">{{item.name}}</view>
+              <view class="shared-meal-compose-ingredient__energy">{{item.energyText}}</view>
+            </view>
+            <view class="shared-meal-compose-ingredient__ratio">{{item.ratioText}}</view>
+            <view class="shared-meal-compose-amount-control">
+              <input
+                class="shared-meal-compose-amount-input"
+                type="digit"
+                value="{{item.amountInput}}"
+                placeholder="—"
+                data-index="{{item.index}}"
+                bindblur="onIngredientAmountInput"
+                aria-label="{{item.name}}本餐克重"
+              />
+              <text class="shared-meal-compose-amount-unit">g</text>
+            </view>
+            <view
+              class="shared-meal-compose-ingredient-remove"
+              data-index="{{item.index}}"
+              catchtap="onRemoveIngredient"
+              aria-role="button"
+              aria-label="从狗饭移除{{item.name}}"
+            >
+              <recipe-menu-indicator
+                kind="icon"
+                icon="minus-circle"
+                icon-size="56rpx"
+                tone="warning"
+              />
+            </view>
           </view>
-          <ui-button variant="ghost" size="small" block="{{false}}" data-index="{{item.index}}" bind:tap="onRemoveIngredient">移除</ui-button>
-        </view>
-        <ui-field label="本餐克重" helpText="首次克重由你填写；填写完整后可按目标等比例调整。">
-          <view class="shared-meal-compose-amount-control">
-            <input class="shared-meal-compose-amount-input" type="digit" value="{{item.amountInput}}" placeholder="待填写" data-index="{{item.index}}" bindblur="onIngredientAmountInput" />
-            <text>g</text>
-          </view>
+        </ui-card>
+        <ui-empty wx:if="{{!ingredients.length}}" title="还没有狗饭食材" description="请从已选菜单或食材目录中添加。" />
+        <ui-button variant="outline" bind:tap="onAddIngredient">＋ 额外添加食材</ui-button>
+      </view>
+
+      <view class="shared-meal-compose-auxiliary">
+        <ui-field label="备注（可选）" helpText="最多 200 字，只随这条本餐记录保存。">
+          <input class="shared-meal-compose-note-input" value="{{note}}" maxlength="200" placeholder="例如：今天单独清蒸" bindinput="onNoteInput" />
         </ui-field>
-      </ui-card>
-      <ui-empty wx:if="{{!ingredients.length}}" title="还没有狗饭食材" description="请从已选菜单或食材目录中添加。" />
-      <ui-button variant="secondary" bind:tap="onAddIngredient">额外添加食材</ui-button>
+        <ui-notice variant="warning">保存是记录本餐，不代表本餐营养完整或适合长期重复喂养。若家庭自制餐长期占主要饮食，请咨询兽医或宠物营养专业人士。</ui-notice>
+      </view>
     </view>
+  </scroll-view>
 
-    <view class="shared-meal-compose-section">
-      <view class="shared-meal-compose-section__heading">本餐评估</view>
-      <nutrition-assessment
-        assessment="{{mealAssessment}}"
-        loading="{{nutritionLoading}}"
-        expanded="{{nutritionExpanded}}"
-        bind:toggle="onNutritionToggle"
-        bind:nutrientselect="onNutritionNutrientSelect"
-        bind:scaleconfirm="onMealScaleConfirm"
-      />
+  <view
+    wx:if="{{dog && !errorText && sourcePickerExpanded}}"
+    class="shared-meal-compose-source-mask"
+  >
+    <view class="shared-meal-compose-source-backdrop" catchtap="onDismissHumanMealPicker"></view>
+    <scroll-view
+      class="shared-meal-compose-source-panel"
+      scroll-y
+      enhanced
+      show-scrollbar="{{false}}"
+      catchtap="onSourcePickerContentTap"
+    >
+      <view class="shared-meal-compose-source-panel__heading">今天的人饭</view>
+      <view
+        wx:for="{{humanMenuGroups}}"
+        wx:key="id"
+        wx:for-item="menu"
+        class="shared-meal-compose-source-group"
+      >
+        <view class="shared-meal-compose-source-group__name">{{menu.title}}</view>
+        <view
+          wx:for="{{menu.rows}}"
+          wx:key="key"
+          wx:for-item="source"
+          class="shared-meal-compose-source-row shared-meal-compose-source-row--{{source.state}}"
+        >
+          <view class="shared-meal-compose-source-row__copy">
+            <view class="shared-meal-compose-source-row__name">{{source.name}}</view>
+            <view class="shared-meal-compose-source-row__detail">{{source.detailText}}</view>
+          </view>
+
+          <view
+            wx:if="{{!source.actionDisabled}}"
+            class="shared-meal-compose-source-row__action"
+            data-human-menu-id="{{source.humanMenuId}}"
+            data-ingredient-position="{{source.ingredientPosition}}"
+            data-concept-id="{{source.conceptId}}"
+            data-variant-id="{{source.variantId}}"
+            catchtap="onToggleSourceIngredient"
+            aria-role="button"
+            aria-label="{{source.actionLabel}}"
+          >
+            <recipe-menu-indicator
+              kind="icon"
+              icon="{{source.actionIcon}}"
+              icon-size="44rpx"
+              tone="{{source.actionTone}}"
+            />
+          </view>
+          <view
+            wx:elif="{{source.state === 'blocked'}}"
+            class="shared-meal-compose-source-row__action"
+            aria-role="button"
+            aria-disabled="true"
+            aria-label="{{source.actionLabel}}"
+          >
+            <recipe-menu-indicator
+              kind="icon"
+              icon="{{source.actionIcon}}"
+              icon-size="44rpx"
+              tone="{{source.actionTone}}"
+            />
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view
+    wx:if="{{dog && !errorText}}"
+    class="shared-meal-compose-assessment-dock {{nutritionExpanded ? 'shared-meal-compose-assessment-dock--expanded' : ''}}"
+  >
+    <nutrition-assessment
+      assessment="{{mealAssessment}}"
+      loading="{{nutritionLoading}}"
+      expanded="{{nutritionExpanded}}"
+      compact="{{true}}"
+      bind:toggle="onNutritionToggle"
+      bind:nutrientselect="onNutritionNutrientSelect"
+      bind:scaleconfirm="onMealScaleConfirm"
+    />
+  </view>
+
+  <view wx:if="{{dog && !errorText}}" class="bottom-action shared-meal-compose-bottom-action">
+    <view
+      class="shared-meal-compose-human-menu-button"
+      hover-class="shared-meal-compose-human-menu-button--pressed"
+      catchtap="onToggleHumanMealPicker"
+      aria-role="button"
+      aria-label="{{sourcePickerExpanded ? '收起' : '展开'}}{{humanMealSummary}}"
+    >
+      <view class="shared-meal-compose-human-menu-trigger">
+        <text>{{humanMealSummary}}</text>
+        <recipe-menu-indicator
+          kind="icon"
+          icon="{{sourcePickerExpanded ? 'chevron-down' : 'chevron-up'}}"
+        />
+      </view>
     </view>
-
-    <ui-field label="备注（可选）" helpText="最多 200 字，只随这条本餐记录保存。">
-      <input class="shared-meal-compose-note-input" value="{{note}}" maxlength="200" placeholder="例如：今天单独清蒸" bindinput="onNoteInput" />
-    </ui-field>
-
-    <ui-notice variant="warning">保存是记录本餐，不代表本餐营养完整或适合长期重复喂养。若家庭自制餐长期占主要饮食，请咨询兽医或宠物营养专业人士。</ui-notice>
-    <ui-button variant="ghost" bind:tap="onRestart">明确重新开始</ui-button>
-  </block>
-
-  <view wx:if="{{dog && !errorText}}" class="bottom-action">
-    <ui-button loading="{{saving}}" bind:tap="onSave">保存这顿记录</ui-button>
+    <ui-button disabled="{{!ingredients.length}}" loading="{{saving}}" bind:tap="onSave">保存这顿</ui-button>
   </view>
 </view>

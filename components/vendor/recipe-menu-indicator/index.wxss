@@ -41,6 +41,18 @@
   color: var(--df-color-text);
 }
 
+.recipe-menu-indicator--primary .recipe-menu-indicator__icon {
+  color: var(--df-color-primary);
+}
+
+.recipe-menu-indicator--warning .recipe-menu-indicator__icon {
+  color: var(--df-color-warning);
+}
+
+.recipe-menu-indicator--muted .recipe-menu-indicator__icon {
+  color: var(--df-color-muted);
+}
+
 .recipe-menu-indicator--loading {
   display: flex;
   min-height: var(--df-touch-min);

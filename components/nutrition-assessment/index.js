@@ -112,7 +112,8 @@ Component({
   properties: {
     assessment: { type: Object, value: null },
     expanded: { type: Boolean, value: false },
-    loading: { type: Boolean, value: false }
+    loading: { type: Boolean, value: false },
+    compact: { type: Boolean, value: false }
   },
 
   data: {

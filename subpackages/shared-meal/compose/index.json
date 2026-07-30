@@ -6,6 +6,7 @@
     "ui-empty": "../../../components/ui/ui-empty/index",
     "ui-field": "../../../components/ui/ui-field/index",
     "ui-notice": "../../../components/ui/ui-notice/index",
+    "recipe-menu-indicator": "../../../components/vendor/recipe-menu-indicator/index",
     "nutrition-assessment": "../../../components/nutrition-assessment/index"
   }
 }

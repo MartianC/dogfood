@@ -22,7 +22,7 @@
 | `components/vendor/recipe-ingredient-search` | `Search` | props `value/loading/placeholder/actionText`；events `change/action`；页面负责决定默认、结果和无结果状态 |
 | `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input`、`Icon` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
 | `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
-| `components/vendor/recipe-menu-indicator` | `Checkbox`、`Icon`、`Loading` | props `kind/checked/disabled/icon/text`；Checkbox 受控并透出 `change`，Icon 和 Loading 仅展示；不读取菜谱服务 |
+| `components/vendor/recipe-menu-indicator` | `Checkbox`、`Icon`、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，Icon 和 Loading 仅展示；不读取菜谱服务 |
 
 vendor 适配层只负责第三方 API、主题和基础状态转换，不读取业务服务，不执行页面跳转，不保存食谱数据。
 
@@ -32,7 +32,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
-| prop | `variant` | `primary | secondary | warning | ghost`，默认 `primary` |
+| prop | `variant` | `primary | secondary | outline | warning | ghost`，默认 `primary`；`outline` 为主题色描边操作 |
 | prop | `size` | `small | medium | large`，默认 `large` |
 | prop | `disabled` | 禁用态，默认 `false` |
 | prop | `loading` | 加载态，默认 `false` |
@@ -55,6 +55,22 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 | slot | 默认 | 卡片内容 |
 
 `ui-card` 只提供容器视觉，不承担列表间距、页面分区或点击业务语义。列表间距由页面或业务组件自己的布局类控制。
+
+## nutrition-assessment
+
+路径：`components/nutrition-assessment`
+
+| 类型 | 名称 | 取值/说明 |
+| --- | --- | --- |
+| prop | `assessment` | 双轴本餐评估结果 |
+| prop | `expanded` | 是否展示全屏详情，默认 `false` |
+| prop | `loading` | 是否正在读取评估数据，默认 `false` |
+| prop | `compact` | 是否使用 `280rpx` 起始高度的紧凑收起态，默认 `false`；共享本餐创建页使用 |
+| event | `toggle` | 切换收起/展开态 |
+| event | `nutrientselect` | 选择需要补充的营养项 |
+| event | `scaleconfirm` | 确认按目标等比例调整整餐 |
+
+`compact` 只收紧摘要的间距和点击行，不删减能量、营养密度两轴内容；默认形态继续供自定义食谱页使用。
 
 ## ui-tag
 

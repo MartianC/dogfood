@@ -37,6 +37,16 @@ test('本餐评估模板独立展示能量与营养密度两轴', () => {
   assert.doesNotMatch(wxml, /总体状态|综合评分/)
 })
 
+test('本餐评估支持创建页专用紧凑收起态且不改变默认态', () => {
+  const definition = loadComponentDefinition()
+  const wxml = read('components/nutrition-assessment/index.wxml')
+  const wxss = read('components/nutrition-assessment/index.wxss')
+
+  assert.deepEqual(definition.properties.compact, { type: Boolean, value: false })
+  assert.match(wxml, /nutrition-assessment__summary--compact/)
+  assert.match(wxss, /\.nutrition-assessment__summary--compact/)
+})
+
 test('品种估重缺失和高活动范围使用已确认的恢复与起始参考文案', () => {
   const definition = loadComponentDefinition()
   const context = {

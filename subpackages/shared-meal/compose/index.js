@@ -8,14 +8,18 @@ const {
   resetDraft,
   normalizeHumanRecipeDetail,
   saveDraft,
+  removeSourceIngredient,
+  reincludeSourceIngredient,
   updateDraftIngredients,
   updateDraftAssessment,
   buildAssessmentSnapshot,
   buildSaveIntent,
   confirmSaveIntent
 } = require('../../../services/sharedMealDraftService')
+const { canAddIngredient } = require('../../../utils/ingredientOperationRules')
 const { evaluateSharedMealDogEligibility } = require('../../../services/sharedMealDogEligibility')
 const { calculateEnergyRequirement } = require('../../../services/meal-assessment/energyRequirementService')
+const mealEnergyService = require('../../../services/meal-assessment/mealEnergyService')
 const mealAssessmentService = require('../../../services/meal-assessment/mealAssessmentService')
 const nutritionDataService = require('../../../services/meal-assessment/nutritionDataService')
 const sharedMealRecordService = require('../../../services/sharedMealRecordService')
@@ -28,17 +32,111 @@ function energyTargetText(result) {
   return min === max ? `约 ${min} 千卡` : `约 ${min}–${max} 千卡`
 }
 
-function ingredientRows(ingredients = []) {
+function formatEnergyValue(value) {
+  if (!Number.isFinite(value)) return ''
+  return Number.isInteger(value) ? String(value) : String(Math.round(value * 10) / 10)
+}
+
+function ingredientRows(ingredients = [], nutrientRecords = []) {
+  const totalGram = ingredients.reduce((sum, ingredient) => {
+    const amount = Number(ingredient.perMealAmountGram)
+    return Number.isFinite(amount) && amount > 0 ? sum + amount : sum
+  }, 0)
   return ingredients.map((ingredient, index) => ({
     ...ingredient,
     index,
     amountInput: ingredient.perMealAmountGram === null
       ? ''
       : String(ingredient.perMealAmountGram),
-    sourceText: ingredient.sourceRefs.length
-      ? `来自 ${ingredient.sourceRefs.length} 项人饭原料`
-      : '额外添加'
+    energyText: (() => {
+      const result = mealEnergyService.calculateMealEnergy({
+        ingredients: [{ ...ingredient, perMealAmountGram: 100 }],
+        nutrientRecords
+      })
+      const energy = result.ingredientEnergies[0]
+      return energy
+        ? `每 100g ${formatEnergyValue(energy.kcal)} kcal`
+        : '每 100g 能量待完善'
+    })(),
+    ratioText: Number(ingredient.perMealAmountGram) > 0 && totalGram > 0
+      ? `${Math.round(Number(ingredient.perMealAmountGram) / totalGram * 100)}%`
+      : '—'
   }))
+}
+
+function hasSameSourceSelection(left, right) {
+  return left.humanMenuId === right.humanMenuId
+    && left.ingredientPosition === right.ingredientPosition
+    && left.conceptId === right.conceptId
+    && left.variantId === right.variantId
+}
+
+function humanMealGroups(humanMenus = [], sourceIngredientSelections = []) {
+  return humanMenus.map((menu) => ({
+    id: menu.id,
+    title: menu.title,
+    rows: (Array.isArray(menu.ingredients) ? menu.ingredients : []).flatMap((ingredient) => {
+      const components = Array.isArray(ingredient.components) ? ingredient.components : []
+      if (!components.length) {
+        return [{
+          key: `${menu.id}:${ingredient.position}:unmapped`,
+          name: ingredient.sourceText || '未识别原料',
+          detailText: '暂未识别，不能加入狗饭',
+          state: 'unmapped',
+          actionIcon: '',
+          actionTone: 'default',
+          actionLabel: '',
+          actionDisabled: true
+        }]
+      }
+      return components.map((component) => {
+        const selection = {
+          humanMenuId: menu.id,
+          ingredientPosition: ingredient.position,
+          conceptId: component.conceptId,
+          variantId: component.variantId
+        }
+        const canAdd = canAddIngredient(component)
+        const included = canAdd && sourceIngredientSelections.some((item) => (
+          hasSameSourceSelection(item, selection)
+        ))
+        const name = component.displayName || ingredient.sourceText || '未命名原料'
+        const state = canAdd ? (included ? 'included' : 'removed') : 'blocked'
+        return {
+          ...selection,
+          key: `${menu.id}:${ingredient.position}:${component.conceptId}:${component.variantId}`,
+          name,
+          detailText: state === 'blocked'
+            ? (component.blockedReason || '当前策略不允许加入狗饭。')
+            : (included ? '已加入狗饭' : '已移除，可重新加入'),
+          state,
+          included,
+          actionIcon: included ? 'minus-circle' : 'add-circle',
+          actionTone: state === 'blocked' ? 'muted' : (included ? 'warning' : 'primary'),
+          actionLabel: state === 'blocked'
+            ? `${name}不可加入狗饭`
+            : (included ? `从狗饭移除${name}` : `加入狗饭${name}`),
+          actionDisabled: !canAdd
+        }
+      })
+    })
+  }))
+}
+
+function humanMealSummary(groups = []) {
+  const rows = groups.flatMap((group) => group.rows || [])
+  if (!rows.length) return '人饭'
+  const included = rows.filter((row) => row.state === 'included').length
+  return `人饭 ${included}/${rows.length}`
+}
+
+function sourceSelectionFromDataset(dataset = {}) {
+  return {
+    humanMenuId: String(dataset.humanMenuId || ''),
+    ingredientPosition: Number(dataset.ingredientPosition),
+    conceptId: String(dataset.conceptId || ''),
+    variantId: String(dataset.variantId || '')
+  }
 }
 
 Page({
@@ -46,7 +144,11 @@ Page({
     draftId: '',
     dog: null,
     humanMenus: [],
+    humanMenuGroups: [],
+    humanMealSummary: '人饭',
+    sourcePickerExpanded: false,
     ingredients: [],
+    nutrientRecords: [],
     energyTargetText: '',
     mealAssessment: null,
     nutritionLoading: false,
@@ -87,10 +189,17 @@ Page({
       dog: draft.dog,
       lifeStage: estimateLifeStage({ birthDate: draft.dog.birthDate })
     })
+    const groups = humanMealGroups(
+      draft.humanMenus,
+      draft.sourceIngredientSelections
+    )
     this.setData({
       dog: draft.dog,
       humanMenus: draft.humanMenus,
+      humanMenuGroups: groups,
+      humanMealSummary: humanMealSummary(groups),
       ingredients: ingredientRows(draft.ingredients),
+      nutrientRecords: [],
       energyTargetText: energyTargetText(requirement),
       note: String(draft.note || ''),
       mealAssessment: draft.latestAssessment && draft.latestAssessment.energy
@@ -125,7 +234,12 @@ Page({
     })
     const snapshot = buildAssessmentSnapshot(draft, assessment)
     updateDraftAssessment(draft.id, snapshot)
-    this.setData({ mealAssessment: assessment, nutritionLoading: false })
+    this.setData({
+      ingredients: ingredientRows(draft.ingredients, assessmentData.nutrientRecords),
+      nutrientRecords: assessmentData.nutrientRecords,
+      mealAssessment: assessment,
+      nutritionLoading: false
+    })
   },
 
   onIngredientAmountInput(event) {
@@ -139,22 +253,75 @@ Page({
       itemIndex === index ? { ...item, perMealAmountGram: amount } : item
     ))
     updateDraftIngredients(this.data.draftId, ingredients)
-    this.setData({ ingredients: ingredientRows(ingredients) }, () => this.refreshMealAssessment())
+    this.setData({
+      ingredients: ingredientRows(ingredients, this.data.nutrientRecords)
+    }, () => this.refreshMealAssessment())
   },
 
   onRemoveIngredient(event) {
     const index = Number(event.currentTarget.dataset.index)
     const restored = restoreDraft(this.data.draftId)
     if (restored.status !== 'restored') return
-    const ingredients = restored.draft.ingredients.filter((item, itemIndex) => itemIndex !== index)
-    updateDraftIngredients(this.data.draftId, ingredients)
-    this.setData({ ingredients: ingredientRows(ingredients) }, () => this.refreshMealAssessment())
+    const ingredient = restored.draft.ingredients[index]
+    if (!ingredient) return
+    const sourceSelections = restored.draft.sourceIngredientSelections.filter((selection) => (
+      selection.conceptId === ingredient.conceptId
+      && selection.variantId === ingredient.variantId
+    ))
+    const next = sourceSelections.length
+      ? sourceSelections.reduce(removeSourceIngredient, restored.draft)
+      : updateDraftIngredients(
+          this.data.draftId,
+          restored.draft.ingredients.filter((item, itemIndex) => itemIndex !== index)
+        )
+    if (sourceSelections.length) saveDraft(next)
+    const groups = humanMealGroups(next.humanMenus, next.sourceIngredientSelections)
+    this.setData({
+      humanMenuGroups: groups,
+      humanMealSummary: humanMealSummary(groups),
+      ingredients: ingredientRows(next.ingredients, this.data.nutrientRecords),
+      mealAssessment: null
+    }, () => this.refreshMealAssessment())
   },
 
   onAddIngredient() {
     wx.navigateTo({
       url: `/subpackages/custom-recipe/ingredient-search/index?draftKind=sharedMeal&draftId=${encodeURIComponent(this.data.draftId)}`
     })
+  },
+
+  onToggleHumanMealPicker() {
+    this.setData({ sourcePickerExpanded: !this.data.sourcePickerExpanded })
+  },
+
+  onDismissHumanMealPicker() {
+    this.setData({ sourcePickerExpanded: false })
+  },
+
+  onSourcePickerContentTap() {},
+
+  onToggleSourceIngredient(event) {
+    const selection = sourceSelectionFromDataset(event.currentTarget.dataset)
+    const restored = restoreDraft(this.data.draftId)
+    if (restored.status !== 'restored') return
+    const isIncluded = restored.draft.sourceIngredientSelections.some((item) => (
+      hasSameSourceSelection(item, selection)
+    ))
+    try {
+      const next = isIncluded
+        ? removeSourceIngredient(restored.draft, selection)
+        : reincludeSourceIngredient(restored.draft, selection)
+      saveDraft(next)
+      const groups = humanMealGroups(next.humanMenus, next.sourceIngredientSelections)
+      this.setData({
+        humanMenuGroups: groups,
+        humanMealSummary: humanMealSummary(groups),
+        ingredients: ingredientRows(next.ingredients, this.data.nutrientRecords),
+        mealAssessment: null
+      }, () => this.refreshMealAssessment())
+    } catch (error) {
+      wx.showToast({ title: error.message || '暂时无法更新来源食材', icon: 'none' })
+    }
   },
 
   onNutritionToggle(event) {
@@ -180,7 +347,9 @@ Page({
     const ingredients = event.detail && event.detail.ingredients
     if (!Array.isArray(ingredients) || !ingredients.length) return
     updateDraftIngredients(this.data.draftId, ingredients)
-    this.setData({ ingredients: ingredientRows(ingredients) }, () => this.refreshMealAssessment())
+    this.setData({
+      ingredients: ingredientRows(ingredients, this.data.nutrientRecords)
+    }, () => this.refreshMealAssessment())
   },
 
   onNoteInput(event) {
@@ -222,12 +391,13 @@ Page({
     } catch (error) {
       wx.showToast({ title: error.message || '暂时无法保存', icon: 'none' })
     }
-  },
-
-  onRestart() {
-    if (!resetDraft()) return
-    wx.redirectTo({ url: '/subpackages/shared-meal/dog-select/index' })
   }
 })
 
-module.exports = { energyTargetText, ingredientRows }
+module.exports = {
+  energyTargetText,
+  ingredientRows,
+  humanMealGroups,
+  humanMealSummary,
+  sourceSelectionFromDataset
+}

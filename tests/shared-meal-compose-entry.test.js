@@ -140,19 +140,30 @@ test('canonical 菜单页只把已发布非 blocked 映射项写入草稿并展�
   assert.doesNotMatch(template, /<button\b/)
 })
 
-test('compose 直接消费根共享能量实现并保持所有自动食材克重为空', () => {
+test('compose 使用 v2 连续食材列表并保持所有自动食材克重为空', () => {
   const source = read('subpackages/shared-meal/compose/index.js')
   const template = read('subpackages/shared-meal/compose/index.wxml')
   const compatibility = read('subpackages/custom-recipe/services/energyRequirementService.js')
 
   assert.match(source, /services\/meal-assessment\/energyRequirementService/)
+  assert.match(source, /services\/meal-assessment\/mealEnergyService/)
   assert.match(source, /services\/lifeStageEstimator/)
   assert.match(source, /calculateEnergyRequirement/)
   assert.match(source, /perMealAmountGram === null/)
-  assert.match(template, /本餐能量目标/)
-  assert.match(template, /待填写/)
-  assert.match(template, /系统不会自动生成单项克重或比例/)
-  assert.match(template, /<ui-button[^>]*wx:if="\{\{errorText\}\}"[^>]*>明确重新开始/)
+  assert.match(template, /狗饭食材/)
+  assert.match(template, /item\.energyText/)
+  assert.match(template, /item\.ratioText/)
+  assert.match(template, /icon="minus-circle"/)
+  assert.match(template, /compact/)
+  assert.match(template, /\{\{humanMealSummary\}\}/)
+  assert.match(template, /disabled="\{\{!ingredients\.length\}\}"/)
+  assert.match(template, /class="shared-meal-compose-scroll"[^>]*scroll-y/)
+  assert.match(template, /class="shared-meal-compose-human-menu-button"[^>]*catchtap="onToggleHumanMealPicker"/)
+  assert.doesNotMatch(template, /本餐能量目标/)
+  assert.doesNotMatch(template, /系统不会自动生成单项克重或比例/)
+  assert.doesNotMatch(template, /<ui-field[\s\S]*?item\.amountInput/)
+  assert.doesNotMatch(template, /明确重新开始/)
+  assert.doesNotMatch(source, /onRestart\(/)
   assert.equal(
     compatibility.trim(),
     "module.exports = require('../../../services/meal-assessment/energyRequirementService')"

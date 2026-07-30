@@ -1,7 +1,7 @@
 <view class="nutrition-assessment">
   <view
     wx:if="{{!expanded}}"
-    class="nutrition-assessment__summary"
+    class="nutrition-assessment__summary {{compact ? 'nutrition-assessment__summary--compact' : ''}}"
     hover-class="nutrition-assessment__summary--pressed"
     aria-role="button"
     aria-label="查看本餐评估详情"
