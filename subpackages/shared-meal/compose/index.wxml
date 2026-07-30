@@ -19,7 +19,7 @@
           >
             <view class="shared-meal-compose-ingredient-copy">
               <view class="shared-meal-compose-ingredient__name">{{item.name}}</view>
-              <view class="shared-meal-compose-ingredient__energy">{{item.energyText}}</view>
+              <view class="shared-meal-compose-ingredient__energy">{{item.energyText}} · {{item.measurementBasisText}}</view>
             </view>
             <view class="shared-meal-compose-ingredient__ratio">{{item.ratioText}}</view>
             <view class="shared-meal-compose-amount-control">

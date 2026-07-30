@@ -1,4 +1,5 @@
 const sharedMealRecordService = require('../../../services/sharedMealRecordService')
+const { measurementBasisText } = require('../../../utils/ingredientMeasurementBasis')
 
 function detailView(record) {
   const mealTime = new Date(record.mealTime)
@@ -7,7 +8,12 @@ function detailView(record) {
     mealTimeText: Number.isNaN(mealTime.getTime()) ? record.mealTime : mealTime.toLocaleString('zh-CN'),
     dogName: record.dogSnapshot && record.dogSnapshot.name || '狗狗',
     humanMenu: record.humanMenu || [],
-    dogMealItems: record.dogMealItems || [],
+    dogMealItems: (record.dogMealItems || []).map((item) => ({
+      ...item,
+      measurementBasisText: measurementBasisText(
+        item.preparationState || item.preparation_state
+      )
+    })),
     energyText: record.assessment && record.assessment.energy && record.assessment.energy.statusLabel || '数据不足',
     coverageText: record.assessment && record.assessment.dataCoverage && record.assessment.dataCoverage.energyComplete
       ? '能量数据可计算'

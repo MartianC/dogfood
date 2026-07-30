@@ -198,6 +198,42 @@ test('狗饭行展示真实每百克能量、克重占比且不替用户补首�
   assert.equal(ingredients[3].perMealAmountGram, null)
 })
 
+test('狗饭行按来源营养形态展示生活化称量口径且旧数据安全降级', () => {
+  const { moduleExports } = loadComposePage()
+  const ingredients = [
+    { ...fixture, variantId: 'variant-raw', name: '生鸡肉' },
+    { ...fixture, variantId: 'variant-cooked', name: '熟鸡肉' },
+    { ...fixture, variantId: 'variant-dry', name: '鸡肉干' },
+    { ...fixture, variantId: 'variant-legacy', name: '旧版食材' }
+  ]
+  const humanMenus = [menu({
+    ingredients: [{
+      position: 0,
+      sourceText: '鸡肉',
+      amountText: '',
+      components: [
+        component({ variantId: 'variant-raw', preparationState: 'raw' }),
+        component({ variantId: 'variant-cooked', preparationState: 'boiled' }),
+        component({ variantId: 'variant-dry', preparationState: 'dry' })
+      ]
+    }]
+  })]
+
+  const rows = moduleExports.ingredientRows(ingredients, [], humanMenus)
+
+  assert.deepEqual(rows.map((row) => row.measurementBasisText), [
+    '按生重称量',
+    '按熟重称量',
+    '按干重称量',
+    '按当前记录口径称量'
+  ])
+  const template = fs.readFileSync(
+    path.join(root, 'subpackages/shared-meal/compose/index.wxml'),
+    'utf8'
+  )
+  assert.match(template, /\{\{item\.measurementBasisText\}\}/)
+})
+
 test('人饭入口按全部来源行统计当前加入数', () => {
   const { moduleExports } = loadComposePage()
   const groups = [{ rows: [

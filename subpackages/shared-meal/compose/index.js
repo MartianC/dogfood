@@ -24,6 +24,7 @@ const mealAssessmentService = require('../../../services/meal-assessment/mealAss
 const nutritionDataService = require('../../../services/meal-assessment/nutritionDataService')
 const sharedMealRecordService = require('../../../services/sharedMealRecordService')
 const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
+const { measurementBasisText } = require('../../../utils/ingredientMeasurementBasis')
 
 function energyTargetText(result) {
   if (!result.available) return '暂时无法计算，请返回完善档案。'
@@ -37,7 +38,25 @@ function formatEnergyValue(value) {
   return Number.isInteger(value) ? String(value) : String(Math.round(value * 10) / 10)
 }
 
-function ingredientRows(ingredients = [], nutrientRecords = []) {
+function preparationStateByVariantId(humanMenus = []) {
+  const states = new Map()
+  humanMenus.forEach((menu) => {
+    const ingredients = Array.isArray(menu.ingredients) ? menu.ingredients : []
+    ingredients.forEach((ingredient) => {
+      const components = Array.isArray(ingredient.components) ? ingredient.components : []
+      components.forEach((component) => {
+        const variantId = String(component.variantId || '')
+        if (variantId && !states.has(variantId)) {
+          states.set(variantId, component.preparationState)
+        }
+      })
+    })
+  })
+  return states
+}
+
+function ingredientRows(ingredients = [], nutrientRecords = [], humanMenus = []) {
+  const preparationStates = preparationStateByVariantId(humanMenus)
   const totalGram = ingredients.reduce((sum, ingredient) => {
     const amount = Number(ingredient.perMealAmountGram)
     return Number.isFinite(amount) && amount > 0 ? sum + amount : sum
@@ -48,6 +67,10 @@ function ingredientRows(ingredients = [], nutrientRecords = []) {
     amountInput: ingredient.perMealAmountGram === null
       ? ''
       : String(ingredient.perMealAmountGram),
+    measurementBasisText: measurementBasisText(
+      ingredient.preparationState
+      || preparationStates.get(String(ingredient.variantId || ''))
+    ),
     energyText: (() => {
       const result = mealEnergyService.calculateMealEnergy({
         ingredients: [{ ...ingredient, perMealAmountGram: 100 }],
@@ -197,7 +220,7 @@ Page({
       humanMenus: draft.humanMenus,
       humanMenuGroups: groups,
       humanMealSummary: humanMealSummary(groups),
-      ingredients: ingredientRows(draft.ingredients),
+      ingredients: ingredientRows(draft.ingredients, [], draft.humanMenus),
       nutrientRecords: [],
       energyTargetText: energyTargetText(requirement),
       mealAssessment: draft.latestAssessment && draft.latestAssessment.energy
@@ -233,7 +256,11 @@ Page({
     const snapshot = buildAssessmentSnapshot(draft, assessment)
     updateDraftAssessment(draft.id, snapshot)
     this.setData({
-      ingredients: ingredientRows(draft.ingredients, assessmentData.nutrientRecords),
+      ingredients: ingredientRows(
+        draft.ingredients,
+        assessmentData.nutrientRecords,
+        draft.humanMenus
+      ),
       nutrientRecords: assessmentData.nutrientRecords,
       mealAssessment: assessment,
       nutritionLoading: false
@@ -252,7 +279,7 @@ Page({
     ))
     updateDraftIngredients(this.data.draftId, ingredients)
     this.setData({
-      ingredients: ingredientRows(ingredients, this.data.nutrientRecords)
+      ingredients: ingredientRows(ingredients, this.data.nutrientRecords, this.data.humanMenus)
     }, () => this.refreshMealAssessment())
   },
 
@@ -277,7 +304,7 @@ Page({
     this.setData({
       humanMenuGroups: groups,
       humanMealSummary: humanMealSummary(groups),
-      ingredients: ingredientRows(next.ingredients, this.data.nutrientRecords),
+      ingredients: ingredientRows(next.ingredients, this.data.nutrientRecords, next.humanMenus),
       mealAssessment: null
     }, () => this.refreshMealAssessment())
   },
@@ -314,7 +341,7 @@ Page({
       this.setData({
         humanMenuGroups: groups,
         humanMealSummary: humanMealSummary(groups),
-        ingredients: ingredientRows(next.ingredients, this.data.nutrientRecords),
+        ingredients: ingredientRows(next.ingredients, this.data.nutrientRecords, next.humanMenus),
         mealAssessment: null
       }, () => this.refreshMealAssessment())
     } catch (error) {
@@ -346,7 +373,7 @@ Page({
     if (!Array.isArray(ingredients) || !ingredients.length) return
     updateDraftIngredients(this.data.draftId, ingredients)
     this.setData({
-      ingredients: ingredientRows(ingredients, this.data.nutrientRecords)
+      ingredients: ingredientRows(ingredients, this.data.nutrientRecords, this.data.humanMenus)
     }, () => this.refreshMealAssessment())
   },
 

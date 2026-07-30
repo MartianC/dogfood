@@ -297,6 +297,7 @@ function normalizeHumanRecipeDetail(result = {}) {
                 component.display_name_zh || component.canonical_name_zh || ''
               ),
               category: String(component.category_code || 'other'),
+              preparationState: String(component.preparation_state || ''),
               policyStatus,
               blockedReason: canAutoInclude ? '' : String(
                 component.blockedReason || '当前策略不允许加入狗饭。'
