@@ -41,7 +41,7 @@
 
 ## 代码质量扫描
 
-状态：UI-only fallback。
+状态：官方扫描为 UI-only fallback；skill 提供只读静态预检，不冒充官方扫描。
 
 2026-07-01 在 macOS 微信开发者工具 Stable v2.01.2510290 验证：
 
@@ -52,7 +52,34 @@
 - 应用包内可见 `js/common/miniprogram-builder/common/code-analyse/index.js`，但它是构建器依赖图分析模块；另有 `code-analyse-viewer`/`ide.codeAnalyse.send`，显示为「代码依赖分析」，也不等同于截图里的「代码质量」面板。
 - 当前项目和 DevTools 缓存中没有发现可复用的 `miniprogram-analyse-result.json` 扫描产物。
 
-因此不要把 `code-analyse` 包装成 `scripts/wxdevtools.js` 命令，也不要承诺 CLI 能运行代码质量扫描。需要读取或运行扫描时，先用 CLI 打开项目，再通过 DevTools UI 的「代码质量」面板处理；只有用户明确要求重新扫描时才点击「重新扫描」。
+2026-07-30 复核 DevTools 随附规则清单，当前共有 13 条：
+
+| 类别 | 规则名 | 官方阈值或配置 |
+| --- | --- | --- |
+| 主包 | `PACKAGE_SIZE_LIMIT` | 编译后各包主包部分小于 1.5 M，不包含插件 |
+| 主包 | `CONTAINS_OTHER_PKG_JS` | 主包不包含只被其他分包使用的 JS |
+| 主包 | `CONTAINS_OTHER_PKG_COMPONENTS` | 主包不包含主包未使用的组件 |
+| 代码压缩 | `JS_COMPRESS_OPEN` | `setting.minified=true` |
+| 代码压缩 | `WXML_COMPRESS_OPEN` | `setting.minifyWXML=true` |
+| 代码压缩 | `WXSS_COMPRESS_OPEN` | `setting.minifyWXSS=true` |
+| 代码包 | `LAZYCODE_LOADING_OPEN` | `app.json` 配置 `lazyCodeLoading: requiredComponents` |
+| 代码包 | `PLUGIN_OVER_SIZE` | 单个插件不超过 200 K |
+| 代码包 | `IMAGE_AND_AUDIO_LIMIT` | 图片与音频资源合计不超过 200 K |
+| 无使用或无依赖文件 | `CONTAINS_UNUSED_PLUGINS` | 不存在未使用插件声明 |
+| 无使用或无依赖文件 | `CONTAINS_UNUSED_COMPONENTS` | 不存在 JSON 已声明但 WXML 未使用的组件 |
+| 无使用或无依赖文件 | `CONTAINS_UNUSED_CODES` | 不存在编译依赖图未收录的代码文件 |
+| 敏感信息 | `CONTAINS_APPSECRET` | 编译后 JS/JSON 不包含经官方服务确认为 AppSecret 的 32 位十六进制值 |
+
+官方实现细节：
+
+- 主包体积和资源体积针对 `compiledPkg`，不能用工作树目录大小替代。
+- `CONTAINS_OTHER_PKG_JS` 在编译依赖图中筛选位于主包的 `Js` 节点；节点只要存在任意位于主包的直接父依赖就不报告。`scripts/check-code-quality.js` 复现这一直接父依赖语义，并用源码入口近似编译图收录范围。
+- `CONTAINS_UNUSED_COMPONENTS` 还会读取 WXML `useTags`、递归模板引用、`componentPlaceholder` 和包级声明；简单扫描组件目录会产生误报。
+- `CONTAINS_APPSECRET` 会把候选值发给官方服务确认；本地脚本只做高置信字面量预警，不输出候选内容。
+- 官方按需注入文档：`https://developers.weixin.qq.com/miniprogram/dev/framework/ability/lazyload.html`。
+- 当前规则教程入口：`https://developers.weixin.qq.com/community/develop/doc/00040e5a0846706e893dcc24256009`。
+
+因此不要把 `code-analyse` 包装成 `scripts/wxdevtools.js` 命令，也不要承诺 CLI 能运行代码质量扫描。本地先运行 `scripts/check-code-quality.js`；需要编译包精确结果时，先用 CLI 打开项目，再通过 DevTools UI 的「代码质量」面板处理。只有用户明确要求重新扫描时才点击「重新扫描」。
 
 ## 已知 HTTP 端点
 

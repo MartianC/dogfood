@@ -9,16 +9,17 @@ description: Use when Codex needs to interact with WeChat Developer Tools, 微�
 
 优先通过官方 CLI、HTTP 服务和 `miniprogram-automator` 与微信开发者工具交互。默认不要使用 computer use 点按界面。
 
-代码质量扫描是例外：当前已验证版本没有稳定 CLI、HTTP 或 `miniprogram-automator` 入口，只能作为 UI-only fallback 处理。
+代码质量分两层处理：先运行 skill 自带的只读静态预检；需要编译包精确结果时，再把 DevTools「代码质量」面板作为 UI-only fallback。当前已验证版本没有稳定的官方 CLI、HTTP 或 `miniprogram-automator` 扫描入口。
 
 ## 默认流程
 
 1. 定位项目绝对路径，确认存在 `project.config.json`。
 2. 运行 `scripts/wxdevtools.js doctor` 确认 CLI 路径和工具版本。
-3. 对打开、预览、构建 npm 等低风险动作，使用 `scripts/wxdevtools.js`。
-4. 对页面级交互，优先让项目安装 `miniprogram-automator`，再使用 `scripts/automator-runner.js`。
-5. 对代码质量扫描，先打开项目，再按“代码质量扫描”小节使用 DevTools UI。
-6. 对登录、上传、退出、关闭项目、清缓存等高影响动作，先向用户确认，并在脚本命令中传入对应 `--confirm <command>`。
+3. 只要本轮修改了小程序代码、配置或资源，交付前必须运行 `scripts/check-code-quality.js`；执行预览或上传前也必须先运行。不要用项目自己的包体检查代替它。
+4. 对打开、预览、构建 npm 等低风险动作，使用 `scripts/wxdevtools.js`。
+5. 对页面级交互，优先让项目安装 `miniprogram-automator`，再使用 `scripts/automator-runner.js`。
+6. 需要编译包精确结果时，先打开项目，再按“代码质量扫描”小节使用 DevTools UI。
+7. 对登录、上传、退出、关闭项目、清缓存等高影响动作，先向用户确认，并在脚本命令中传入对应 `--confirm <command>`。
 
 ## 服务端口关闭
 
@@ -26,7 +27,26 @@ description: Use when Codex needs to interact with WeChat Developer Tools, 微�
 
 ## 代码质量扫描
 
-代码质量面板在当前验证版本中没有公开 CLI、HTTP 或 `miniprogram-automator` 接口。需要读取或运行扫描时：
+### 本地静态预检
+
+`scripts/check-code-quality.js` 按官方 DevTools 当前 13 条规则逐项输出结果，状态分为：
+
+- `通过`：脚本可以可靠判定且未发现问题。
+- `未通过`：脚本发现确定问题，退出码为 `1`；修复后必须重跑。
+- `需复核`：规则依赖 DevTools 编译包或私有依赖分析，脚本不会伪装成官方扫描结果。
+
+其中“主包内不应存在主包未使用的 JS 文件”按官方依赖图的直接父依赖语义实现：主包 JS 若被编译图收录、只由分包侧到达，且没有任何主包 JS、页面或组件直接父节点，则失败。不要把“所有分包入口遍历后可达”当成通过条件。
+
+```bash
+node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /absolute/project
+node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /absolute/project --json
+```
+
+规则失败时报告文件路径但不自动修复；AppSecret 检查永远不输出疑似密钥内容。项目缺配置、JSON/JS 解析失败或依赖图无法可信建立时，关闭检查并以退出码 `2` 失败。
+
+### 官方面板复核
+
+代码质量面板在当前验证版本中没有公开 CLI、HTTP 或 `miniprogram-automator` 接口。需要读取或运行官方扫描时：
 
 1. 先用 `scripts/wxdevtools.js open --project /absolute/project` 打开项目。
 2. 使用 computer use 定位底部「代码质量」面板；读取已有结果是低风险。
@@ -39,15 +59,16 @@ description: Use when Codex needs to interact with WeChat Developer Tools, 微�
 下面的 `/absolute/project` 是示例占位，执行前必须替换为真实项目绝对路径。
 
 ```bash
-/Users/cyr/.codex/skills/wechat-devtools/scripts/wxdevtools.js doctor
-/Users/cyr/.codex/skills/wechat-devtools/scripts/wxdevtools.js open --project /absolute/project
-/Users/cyr/.codex/skills/wechat-devtools/scripts/wxdevtools.js preview --project /absolute/project
-/Users/cyr/.codex/skills/wechat-devtools/scripts/wxdevtools.js build-npm --project /absolute/project
-/Users/cyr/.codex/skills/wechat-devtools/scripts/wxdevtools.js auto --project /absolute/project --port 9420
-/Users/cyr/.codex/skills/wechat-devtools/scripts/wxdevtools.js upload --project /absolute/project --version 1.0.0 --desc "描述" --confirm upload
+node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /absolute/project
+/absolute/path/to/wechat-devtools/scripts/wxdevtools.js doctor
+/absolute/path/to/wechat-devtools/scripts/wxdevtools.js open --project /absolute/project
+/absolute/path/to/wechat-devtools/scripts/wxdevtools.js preview --project /absolute/project
+/absolute/path/to/wechat-devtools/scripts/wxdevtools.js build-npm --project /absolute/project
+/absolute/path/to/wechat-devtools/scripts/wxdevtools.js auto --project /absolute/project --port 9420
+/absolute/path/to/wechat-devtools/scripts/wxdevtools.js upload --project /absolute/project --version 1.0.0 --desc "描述" --confirm upload
 ```
 
-代码质量扫描没有脚本命令；先用 `open` 打开项目，再按上面的 UI-only 流程读取或重新扫描。
+本地静态预检不是 `wxdevtools.js` 的伪造官方命令；需要官方扫描时，先用 `open` 打开项目，再按上面的 UI-only 流程读取或重新扫描。
 
 ## 页面自动化
 
@@ -79,7 +100,9 @@ description: Use when Codex needs to interact with WeChat Developer Tools, 微�
 | 执行高影响命令但没有 `--confirm` | 先取得用户明确授权，再传入对应确认参数 |
 | 项目路径使用相对路径 | 要求用户提供真实项目绝对路径 |
 | 页面级操作直接点 UI | 使用 `miniprogram-automator` |
-| 把代码质量扫描当成 CLI 命令 | 这是 UI-only fallback；先 `open` 项目，再读取「代码质量」面板 |
+| 小程序改动完成后只运行项目测试或包体检查 | 额外运行 `scripts/check-code-quality.js`，修复所有确定失败项 |
+| 把本地静态预检说成官方扫描 | 预检只负责可稳定复现规则；编译包精确结果仍使用 UI-only fallback |
+| 把代码质量扫描当成官方 CLI 命令 | 官方扫描是 UI-only fallback；先 `open` 项目，再读取「代码质量」面板 |
 | 为了代码质量结果封装内部 `code-analyse` | 不要封装；它不是代码质量面板的稳定接口 |
 | 未经用户要求点击「重新扫描」 | 只读取已有结果；用户明确要求扫描时才点「重新扫描」 |
 | `tap` 只写 `"confirm": "tap"` | 说明具体业务后果并记录明确用户确认 |
