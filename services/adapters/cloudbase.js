@@ -1,5 +1,52 @@
 const mock = require('./mock')
 
+class CloudFunctionCallError extends Error {
+  constructor(functionName, cause) {
+    super('云函数调用失败')
+    this.name = 'CloudFunctionCallError'
+    this.functionName = functionName
+    this.cause = cause
+    this.cloudCode = readCloudErrorCode(cause)
+    this.cloudText = collectCloudErrorText(cause)
+  }
+}
+
+function readCloudErrorCode(error) {
+  if (!error || typeof error !== 'object') return ''
+  const code = error.errCode != null
+    ? error.errCode
+    : error.code != null
+      ? error.code
+      : error.errno
+  return code == null ? '' : String(code)
+}
+
+function collectCloudErrorText(error, depth = 0, visited = new Set()) {
+  if (error == null || depth > 3) return ''
+  if (typeof error !== 'object') return String(error)
+  if (visited.has(error)) return ''
+  visited.add(error)
+
+  const parts = [
+    error.errCode,
+    error.code,
+    error.errno,
+    error.statusCode,
+    error.message,
+    error.errMsg,
+    error.errorMessage,
+    error.RetMsg,
+    error.ErrMsg
+  ]
+  const nestedKeys = ['cause', 'error', 'result', 'response']
+  nestedKeys.forEach((key) => {
+    if (error[key] != null) {
+      parts.push(collectCloudErrorText(error[key], depth + 1, visited))
+    }
+  })
+  return parts.filter((value) => value !== undefined && value !== null && value !== '').join('\n')
+}
+
 function canUseCloud() {
   return typeof wx !== 'undefined' && wx.cloud && typeof wx.cloud.callFunction === 'function'
 }
@@ -10,6 +57,14 @@ async function callFunction(name, data) {
   }
   const result = await wx.cloud.callFunction({ name, data })
   return result.result
+}
+
+async function callRecordFunction(data) {
+  try {
+    return await callFunction('sharedMealRecord', data)
+  } catch (error) {
+    throw new CloudFunctionCallError('sharedMealRecord', error)
+  }
 }
 
 async function login() {
@@ -73,17 +128,17 @@ async function getHumanRecipe(recipeId) {
 
 async function saveSharedMealRecord(saveIntent) {
   if (!canUseCloud()) return mock.saveSharedMealRecord(saveIntent)
-  return callFunction('sharedMealRecord', { action: 'save', payload: saveIntent })
+  return callRecordFunction({ action: 'save', payload: saveIntent })
 }
 
 async function listSharedMealRecords(options = {}) {
   if (!canUseCloud()) return mock.listSharedMealRecords(options)
-  return callFunction('sharedMealRecord', { action: 'list', ...options })
+  return callRecordFunction({ action: 'list', ...options })
 }
 
 async function getSharedMealRecord(recordId) {
   if (!canUseCloud()) return mock.getSharedMealRecord(recordId)
-  return callFunction('sharedMealRecord', { action: 'get', recordId })
+  return callRecordFunction({ action: 'get', recordId })
 }
 
 module.exports = {
@@ -100,5 +155,7 @@ module.exports = {
   getHumanRecipe,
   saveSharedMealRecord,
   listSharedMealRecords,
-  getSharedMealRecord
+  getSharedMealRecord,
+  CloudFunctionCallError,
+  collectCloudErrorText
 }

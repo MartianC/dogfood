@@ -44,3 +44,99 @@ test('Mock 记录保存幂等、同 key 异内容冲突并可稳定回看快照'
   detail.dogSnapshot.name = '篡改'
   assert.equal((await recordService.get(first.id)).dogSnapshot.name, '布丁')
 })
+
+async function withCloudFailure(rawError, run) {
+  const originalWx = global.wx
+  global.wx = {
+    cloud: {
+      async callFunction() {
+        throw rawError
+      }
+    }
+  }
+  try {
+    await run()
+  } finally {
+    global.wx = originalWx
+  }
+}
+
+const errorCases = [
+  {
+    name: '函数未部署',
+    raw: { errCode: -501000, errMsg: 'cloud.callFunction:fail FUNCTION_NOT_FOUND' },
+    code: 'FUNCTION_NOT_DEPLOYED',
+    retryable: false
+  },
+  {
+    name: '集合未就绪',
+    raw: { errMsg: 'cloud.callFunction:fail NamespaceNotFound: Db or Table not exist' },
+    code: 'STORAGE_NOT_READY',
+    retryable: false
+  },
+  {
+    name: '索引未就绪',
+    raw: { errMsg: 'cloud.callFunction:fail query requires an index' },
+    code: 'STORAGE_NOT_READY',
+    retryable: false
+  },
+  {
+    name: '未登录',
+    raw: { errMsg: 'cloud.callFunction:fail Error: 请先登录' },
+    code: 'UNAUTHENTICATED',
+    retryable: false
+  },
+  {
+    name: '无权限',
+    raw: { errMsg: 'cloud.callFunction:fail FORBIDDEN_DOG: 无权使用该狗狗档案' },
+    code: 'FORBIDDEN',
+    retryable: false
+  },
+  {
+    name: '网络失败',
+    raw: { errMsg: 'cloud.callFunction:fail request:fail timeout' },
+    code: 'NETWORK_ERROR',
+    retryable: true
+  },
+  {
+    name: '记录不存在',
+    raw: { errMsg: 'cloud.callFunction:fail Error: 未找到本餐记录' },
+    code: 'RECORD_NOT_FOUND',
+    retryable: false
+  }
+]
+
+errorCases.forEach(({ name, raw, code, retryable }) => {
+  test(`记录服务稳定分类${name}错误`, async () => {
+    await withCloudFailure(raw, async () => {
+      await assert.rejects(
+        () => recordService.list(),
+        (error) => {
+          assert.equal(error.name, 'SharedMealRecordError')
+          assert.equal(error.code, code)
+          assert.equal(error.retryable, retryable)
+          assert.equal(error.operation, 'list')
+          assert.equal(error.cause, raw)
+          return true
+        }
+      )
+    })
+  })
+})
+
+test('记录服务把未知云错误收口且不暴露底层文案', async () => {
+  const raw = new Error('internal stack and sensitive detail')
+  await withCloudFailure(raw, async () => {
+    await assert.rejects(
+      () => recordService.get('record-1'),
+      (error) => {
+        assert.equal(error.code, 'UNKNOWN')
+        assert.equal(error.retryable, false)
+        assert.equal(error.operation, 'get')
+        assert.equal(error.message, '记录服务暂时不可用')
+        assert.equal(error.message.includes(raw.message), false)
+        return true
+      }
+    )
+  })
+})
