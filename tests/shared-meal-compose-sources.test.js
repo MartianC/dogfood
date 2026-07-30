@@ -10,7 +10,7 @@ const {
   createDraftFromMenus,
   restoreDraft,
   saveDraft
-} = require('../services/sharedMealDraftService')
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 
 const root = path.resolve(__dirname, '..')
 const dog = { id: 'dog-source-panel', name: '布丁' }

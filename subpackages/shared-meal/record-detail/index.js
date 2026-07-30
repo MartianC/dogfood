@@ -1,5 +1,5 @@
 const sharedMealRecordService = require('../../../services/sharedMealRecordService')
-const { measurementBasisText } = require('../../../utils/ingredientMeasurementBasis')
+const { measurementBasisText } = require('../utils/ingredientMeasurementBasis')
 
 function detailView(record) {
   const mealTime = new Date(record.mealTime)

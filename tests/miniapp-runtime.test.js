@@ -99,7 +99,23 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
     'subpackages/custom-recipe/services/energyRequirementService.js',
     'subpackages/custom-recipe/services/mealEnergyService.js',
     'subpackages/custom-recipe/services/mealAssessmentService.js',
+    'subpackages/custom-recipe/services/runtimeDataReleaseService.js',
+    'subpackages/custom-recipe/services/ingredientOperationRules.js',
+    'subpackages/custom-recipe/services/sharedMealContract.js',
+    'subpackages/custom-recipe/services/sharedMealDraftService.js',
+    'subpackages/custom-recipe/services/draftAdapters.js',
     'subpackages/shared-meal/services/humanRecipeService.js',
+    'subpackages/shared-meal/services/energyRequirementService.js',
+    'subpackages/shared-meal/services/mealEnergyService.js',
+    'subpackages/shared-meal/services/nutritionAssessmentService.js',
+    'subpackages/shared-meal/services/mealAssessmentService.js',
+    'subpackages/shared-meal/services/nutritionDataService.js',
+    'subpackages/shared-meal/services/runtimeDataReleaseService.js',
+    'subpackages/shared-meal/services/ingredientOperationRules.js',
+    'subpackages/shared-meal/services/sharedMealContract.js',
+    'subpackages/shared-meal/services/sharedMealDraftService.js',
+    'subpackages/shared-meal/services/sharedMealDogEligibility.js',
+    'subpackages/shared-meal/utils/ingredientMeasurementBasis.js',
     'subpackages/dog-profile/services/fileService.js',
     'subpackages/plan-extra/services/customRecipeService.js',
     'subpackages/plan-extra/services/planCalculatorService.js'
@@ -109,6 +125,12 @@ test('分包服务文件显式进入开发者工具打包清单', () => {
     assert.ok(fs.existsSync(path.join(__dirname, '..', servicePath)), `${servicePath} 不存在`)
     assert.ok(includes.has(servicePath), `${servicePath} 未加入 packOptions.include`)
   })
+  assert.ok(
+    (projectConfig.packOptions.ignore || []).some((item) => (
+      item.type === 'folder' && item.value === 'shared-src'
+    )),
+    '共享源码目录必须排除出小程序代码包'
+  )
 })
 
 test('自定义食谱分包建议服务不依赖主包专用算法文件', () => {
@@ -236,8 +258,8 @@ test('搜索食材是独立页面，默认、结果和无结果状态互斥', ()
   assert.match(js, /ingredientService\.loadIngredientCatalog/)
   assert.match(js, /ingredientWorkbench\.addIngredient/)
   assert.match(js, /draftAdapters\.saveIngredients/)
-  assert.match(js, /require\(['"]\.\.\/\.\.\/\.\.\/services\/draftAdapters\/index['"]\)/)
-  assert.doesNotMatch(js, /require\(['"]\.\.\/\.\.\/\.\.\/services\/draftAdapters['"]\)/)
+  assert.match(js, /require\(['"]\.\.\/services\/draftAdapters['"]\)/)
+  assert.doesNotMatch(js, /require\(['"]\.\.\/\.\.\/\.\.\/services\/draftAdapters/)
   assert.match(js, /getOpenerEventChannel/)
   assert.match(js, /wx\.navigateBack/)
   assert.match(wxss, /padding: 36rpx 32rpx 48rpx/)
@@ -296,7 +318,11 @@ test('营养评估组件提供双标准、档案切换、建议入口和进阶�
   const root = path.join(__dirname, '..', 'components', 'nutrition-assessment')
   const wxml = fs.readFileSync(path.join(root, 'index.wxml'), 'utf8')
   const wxss = fs.readFileSync(path.join(root, 'index.wxss'), 'utf8')
-  const service = fs.readFileSync(path.join(__dirname, '..', 'services', 'meal-assessment', 'nutritionAssessmentService.js'), 'utf8')
+  const service = fs.readFileSync(path.join(
+    __dirname,
+    '..',
+    'subpackages/custom-recipe/services/nutritionAssessmentService.js'
+  ), 'utf8')
   const config = JSON.parse(fs.readFileSync(path.join(root, 'index.json'), 'utf8'))
 
   assert.match(wxml, /国标评估/)

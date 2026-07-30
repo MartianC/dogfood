@@ -81,16 +81,13 @@ function collectJavaScriptFiles(directory) {
 }
 
 function projectTargets() {
-  const files = collectJavaScriptFiles(path.join(root, 'subpackages/shared-meal'))
-  fs.readdirSync(path.join(root, 'services'), { withFileTypes: true }).forEach((entry) => {
-    if (entry.isFile() && /^sharedMeal.*\.js$/.test(entry.name)) {
-      files.push(path.join(root, 'services', entry.name))
-    }
-  })
+  const files = [
+    ...collectJavaScriptFiles(path.join(root, 'subpackages/shared-meal')),
+    ...collectJavaScriptFiles(path.join(root, 'subpackages/custom-recipe'))
+  ]
   files.push(
     path.join(root, 'cloudfunctions/sharedMealRecord/index.js'),
-    path.join(root, 'cloudfunctions/sharedMealRecord/ingredientOperationRules.js'),
-    path.join(root, 'utils/ingredientOperationRules.js')
+    path.join(root, 'cloudfunctions/sharedMealRecord/ingredientOperationRules.js')
   )
   return files
 }

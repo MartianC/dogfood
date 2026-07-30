@@ -3,10 +3,10 @@ const assert = require('node:assert/strict')
 
 const {
   measurementBasisText
-} = require('../utils/ingredientMeasurementBasis')
+} = require('../subpackages/shared-meal/utils/ingredientMeasurementBasis')
 const {
   normalizeHumanRecipeDetail
-} = require('../services/sharedMealDraftService')
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 
 function loadRecordDetailPage() {
   const file = require.resolve('../subpackages/shared-meal/record-detail/index.js')

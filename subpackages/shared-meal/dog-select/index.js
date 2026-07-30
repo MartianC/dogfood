@@ -2,12 +2,12 @@ const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
 const {
   evaluateSharedMealDogEligibility
-} = require('../../../services/sharedMealDogEligibility')
+} = require('../services/sharedMealDogEligibility')
 const {
   restoreDraft,
   refreshDraftDog,
   saveDogSelectionDraft
-} = require('../../../services/sharedMealDraftService')
+} = require('../services/sharedMealDraftService')
 
 const REASON_TEXT = {
   under_eight_weeks: '狗狗还不到 8 周，不适合使用当前自动创建流程。',

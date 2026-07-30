@@ -2,12 +2,12 @@ const humanRecipeService = require('../services/humanRecipeService')
 const {
   canSearchIngredient,
   canAutoIncludeIngredient
-} = require('../../../utils/ingredientOperationRules')
+} = require('../services/ingredientOperationRules')
 const {
   restoreDraft,
   createDraftFromMenus,
   saveDraft
-} = require('../../../services/sharedMealDraftService')
+} = require('../services/sharedMealDraftService')
 const {
   MENU_SEARCH_SESSION_VERSION,
   createMenuSearchSession,

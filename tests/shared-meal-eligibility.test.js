@@ -3,7 +3,7 @@ const assert = require('node:assert/strict')
 
 const {
   evaluateSharedMealDogEligibility
-} = require('../services/sharedMealDogEligibility')
+} = require('../subpackages/shared-meal/services/sharedMealDogEligibility')
 
 const eligibleDog = {
   id: 'dog-1',

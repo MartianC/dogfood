@@ -1,10 +1,10 @@
 const env = require('../../../config/env')
 const {
   canAddIngredient
-} = require('../../../utils/ingredientOperationRules')
+} = require('./ingredientOperationRules')
 const {
   normalizeHumanRecipeDetail
-} = require('../../../services/sharedMealDraftService')
+} = require('./sharedMealDraftService')
 
 let adapter = env.useCloudBase
   ? require('../../../services/adapters/cloudbase')

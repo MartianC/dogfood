@@ -1,5 +1,5 @@
-const customRecipeService = require('../customRecipeService')
-const sharedMealDraftService = require('../sharedMealDraftService')
+const customRecipeService = require('./customRecipeService')
+const sharedMealDraftService = require('./sharedMealDraftService')
 
 const DRAFT_KINDS = new Set(['customRecipe', 'sharedMeal'])
 

@@ -1,8 +1,8 @@
 const ingredientService = require('../services/ingredientService')
 const ingredientWorkbench = require('../services/ingredientWorkbench')
 const nutrientIngredientService = require('../services/nutrientIngredientService')
-const draftAdapters = require('../../../services/draftAdapters/index')
-const { canAddIngredient } = require('../../../utils/ingredientOperationRules')
+const draftAdapters = require('../services/draftAdapters')
+const { canAddIngredient } = require('../services/ingredientOperationRules')
 
 function findRecipe(draftKind, recipeId) {
   return draftAdapters.getDraft(draftKind, recipeId)

@@ -13,7 +13,7 @@ const {
   saveDraft,
   restoreDraft,
   refreshDraftDog
-} = require('../services/sharedMealDraftService')
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 
 const root = path.resolve(__dirname, '..')
 

@@ -1,4 +1,3 @@
-// 此文件由 scripts/sync-subpackage-services.js 自动生成，请修改 shared-src 后重新同步。
 const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
 const { deriveActivityLevel } = require('../../../services/dogProfileDerivations')
 const energyRequirementService = require('./energyRequirementService')

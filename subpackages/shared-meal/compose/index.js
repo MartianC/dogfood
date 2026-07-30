@@ -15,16 +15,16 @@ const {
   buildAssessmentSnapshot,
   buildSaveIntent,
   confirmSaveIntent
-} = require('../../../services/sharedMealDraftService')
-const { canAddIngredient } = require('../../../utils/ingredientOperationRules')
-const { evaluateSharedMealDogEligibility } = require('../../../services/sharedMealDogEligibility')
-const { calculateEnergyRequirement } = require('../../../services/meal-assessment/energyRequirementService')
-const mealEnergyService = require('../../../services/meal-assessment/mealEnergyService')
-const mealAssessmentService = require('../../../services/meal-assessment/mealAssessmentService')
-const nutritionDataService = require('../../../services/meal-assessment/nutritionDataService')
+} = require('../services/sharedMealDraftService')
+const { canAddIngredient } = require('../services/ingredientOperationRules')
+const { evaluateSharedMealDogEligibility } = require('../services/sharedMealDogEligibility')
+const { calculateEnergyRequirement } = require('../services/energyRequirementService')
+const mealEnergyService = require('../services/mealEnergyService')
+const mealAssessmentService = require('../services/mealAssessmentService')
+const nutritionDataService = require('../services/nutritionDataService')
 const sharedMealRecordService = require('../../../services/sharedMealRecordService')
 const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
-const { measurementBasisText } = require('../../../utils/ingredientMeasurementBasis')
+const { measurementBasisText } = require('../utils/ingredientMeasurementBasis')
 
 function energyTargetText(result) {
   if (!result.available) return '暂时无法计算，请返回完善档案。'

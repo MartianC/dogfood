@@ -14,7 +14,7 @@ const {
   resetDraft,
   saveDraft,
   saveDogSelectionDraft
-} = require('../services/sharedMealDraftService')
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 const {
   selectMenuRecipe
 } = require('../subpackages/shared-meal/services/menuSearchSessionService')

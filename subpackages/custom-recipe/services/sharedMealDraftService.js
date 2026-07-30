@@ -1,8 +1,9 @@
-const storage = require('../utils/storage')
+// 此文件由 scripts/sync-subpackage-services.js 自动生成，请修改 shared-src 后重新同步。
+const storage = require('../../../utils/storage')
 const {
   canAddIngredient,
   canAutoIncludeIngredient
-} = require('../utils/ingredientOperationRules')
+} = require('./ingredientOperationRules')
 const {
   INGREDIENT_CONTRACT_VERSION,
   canonicalizeIngredients,

@@ -1,12 +1,19 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const service = require('../services/meal-assessment/energyRequirementService')
-const compatibilityService = require('../subpackages/custom-recipe/services/energyRequirementService')
+const service = require('../subpackages/custom-recipe/services/energyRequirementService')
+const sharedMealService = require('../subpackages/shared-meal/services/energyRequirementService')
 
-test('根共享实现与 custom-recipe 兼容 re-export 指向同一行为', () => {
-  assert.equal(compatibilityService, service)
-  assert.equal(compatibilityService.calculateEnergyRequirement, service.calculateEnergyRequirement)
-  assert.deepEqual(compatibilityService.ACTIVITY_FACTORS, service.ACTIVITY_FACTORS)
+test('两个分包的生成实现保持行为一致且模块状态隔离', () => {
+  assert.notEqual(sharedMealService, service)
+  assert.deepEqual(sharedMealService.ACTIVITY_FACTORS, service.ACTIVITY_FACTORS)
+  const input = {
+    dog: { weightKg: 10, dailyMeals: 2, dailyActivityHours: 1.5 },
+    lifeStage: { available: true, energyStage: 'adult' }
+  }
+  assert.deepEqual(
+    sharedMealService.calculateEnergyRequirement(input),
+    service.calculateEnergyRequirement(input)
+  )
 })
 
 test('幼犬按品种估算的成年体重计算每日和本餐目标', () => {

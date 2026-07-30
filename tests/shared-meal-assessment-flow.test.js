@@ -2,13 +2,14 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const storage = require('../utils/storage')
-const mealEnergyService = require('../services/meal-assessment/mealEnergyService')
+const { checkGeneratedFiles } = require('../scripts/sync-subpackage-services')
+const mealEnergyService = require('../subpackages/shared-meal/services/mealEnergyService')
 const {
   saveDraft,
   buildSaveIntent,
   confirmSaveIntent,
   SHARED_MEAL_DRAFT_STORAGE_KEY
-} = require('../services/sharedMealDraftService')
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 
 function seedDraft() {
   const ingredient = { ...fixture, perMealAmountGram: 100 }
@@ -51,12 +52,13 @@ function assessment({ critical = false, missing = false } = {}) {
   }
 }
 
-test('共享评估核心保持唯一实现且旧路径只兼容转发', () => {
+test('共享评估核心由唯一源同步到两个分包且模块状态隔离', () => {
+  assert.deepEqual(checkGeneratedFiles(), [])
   ;['energyRequirementService', 'mealEnergyService', 'nutritionAssessmentService', 'mealAssessmentService', 'nutritionDataService', 'runtimeDataReleaseService'].forEach((name) => {
-    assert.equal(
-      require(`../subpackages/custom-recipe/services/${name}`),
-      require(`../services/meal-assessment/${name}`)
-    )
+    const customRecipe = require(`../subpackages/custom-recipe/services/${name}`)
+    const sharedMeal = require(`../subpackages/shared-meal/services/${name}`)
+    assert.notEqual(customRecipe, sharedMeal)
+    assert.deepEqual(Object.keys(customRecipe).sort(), Object.keys(sharedMeal).sort())
   })
 })
 

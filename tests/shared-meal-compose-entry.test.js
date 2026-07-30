@@ -4,7 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 const root = path.resolve(__dirname, '..')
-const { canAddIngredient } = require('../utils/ingredientOperationRules')
+const { canAddIngredient } = require('../subpackages/shared-meal/services/ingredientOperationRules')
 const humanRecipeService = require('../subpackages/shared-meal/services/humanRecipeService')
 
 function read(relativePath) {
@@ -143,10 +143,10 @@ test('canonical 菜单页只把已发布非 blocked 映射项写入草稿并展�
 test('compose 使用 v2 连续食材列表并保持所有自动食材克重为空', () => {
   const source = read('subpackages/shared-meal/compose/index.js')
   const template = read('subpackages/shared-meal/compose/index.wxml')
-  const compatibility = read('subpackages/custom-recipe/services/energyRequirementService.js')
+  const generatedService = read('subpackages/custom-recipe/services/energyRequirementService.js')
 
-  assert.match(source, /services\/meal-assessment\/energyRequirementService/)
-  assert.match(source, /services\/meal-assessment\/mealEnergyService/)
+  assert.match(source, /require\(['"]\.\.\/services\/energyRequirementService['"]\)/)
+  assert.match(source, /require\(['"]\.\.\/services\/mealEnergyService['"]\)/)
   assert.match(source, /services\/lifeStageEstimator/)
   assert.match(source, /calculateEnergyRequirement/)
   assert.match(source, /perMealAmountGram === null/)
@@ -170,10 +170,8 @@ test('compose 使用 v2 连续食材列表并保持所有自动食材克重为�
     read('subpackages/shared-meal/compose/index.json'),
     /"ui-field"/
   )
-  assert.equal(
-    compatibility.trim(),
-    "module.exports = require('../../../services/meal-assessment/energyRequirementService')"
-  )
+  assert.match(generatedService, /sync-subpackage-services\.js 自动生成/)
+  assert.match(generatedService, /\.\.\/\.\.\/\.\.\/services\/dogProfileDerivations/)
 })
 
 test('compose 对 eligible 菜谱草稿显示能量目标且不填入食材克重', async () => {
@@ -185,7 +183,7 @@ test('compose 对 eligible 菜谱草稿显示能量目标且不填入食材克�
     saveDogSelectionDraft,
     createDraftFromMenus,
     saveDraft
-  } = require('../services/sharedMealDraftService')
+  } = require('../subpackages/shared-meal/services/sharedMealDraftService')
   const dog = dogService.decorateSavedDog({
     id: 'dog-compose',
     name: '布丁',

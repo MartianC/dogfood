@@ -1,9 +1,9 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
-const { fingerprint } = require('../services/sharedMealContract')
+const { fingerprint } = require('../subpackages/shared-meal/services/sharedMealContract')
 const operationContract = require('../contracts/shared-meal/ingredient-operation-rules-v1.json')
-const rootRules = require('../utils/ingredientOperationRules')
+const miniProgramRules = require('../subpackages/shared-meal/services/ingredientOperationRules')
 const cloudRules = require('../cloudfunctions/sharedMealRecord/ingredientOperationRules')
 const { validateSaveIntent, createSharedMealRecordGateway } = require('../cloudfunctions/sharedMealRecord')
 
@@ -35,12 +35,12 @@ test('云端逐字段消费 canonical 食材并与客户端指纹一致', () => 
   assert.throws(() => validateSaveIntent(makeIntent({ ...fixture, perMealAmountGram: 100, policyStatus: 'blocked' })), /被阻止食材不可保存/)
 })
 
-test('云函数包内规则与根运行时规则对四态保持契约一致', () => {
+test('云函数包内规则与小程序分包规则对四态保持契约一致', () => {
   assert.deepEqual(cloudRules.KNOWN_POLICY_STATUSES, operationContract.knownStatuses)
   operationContract.knownStatuses.forEach((policyStatus) => {
     assert.equal(
       cloudRules.canAddIngredient({ policy_status: policyStatus }),
-      rootRules.canAddIngredient({ policyStatus }),
+      miniProgramRules.canAddIngredient({ policyStatus }),
       policyStatus
     )
   })

@@ -59,6 +59,10 @@
         "type": "folder"
       },
       {
+        "value": "shared-src",
+        "type": "folder"
+      },
+      {
         "value": "tests",
         "type": "folder"
       },
@@ -121,7 +125,71 @@
         "type": "file"
       },
       {
+        "value": "subpackages/custom-recipe/services/runtimeDataReleaseService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/custom-recipe/services/ingredientOperationRules.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/custom-recipe/services/sharedMealContract.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/custom-recipe/services/sharedMealDraftService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/custom-recipe/services/draftAdapters.js",
+        "type": "file"
+      },
+      {
         "value": "subpackages/shared-meal/services/humanRecipeService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/energyRequirementService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/mealEnergyService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/nutritionAssessmentService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/mealAssessmentService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/nutritionDataService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/runtimeDataReleaseService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/ingredientOperationRules.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/sharedMealContract.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/sharedMealDraftService.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/services/sharedMealDogEligibility.js",
+        "type": "file"
+      },
+      {
+        "value": "subpackages/shared-meal/utils/ingredientMeasurementBasis.js",
         "type": "file"
       },
       {

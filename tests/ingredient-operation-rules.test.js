@@ -11,7 +11,7 @@ const {
   canAutoIncludeIngredient,
   KNOWN_POLICY_STATUSES,
   BLOCKED_POLICY_STATUS
-} = require('../utils/ingredientOperationRules')
+} = require('../subpackages/shared-meal/services/ingredientOperationRules')
 
 const expected = {
   allowed: true,
@@ -33,7 +33,7 @@ test('唯一食材操作规则对搜索、添加和自动带入使用同一非 b
 
 test('小程序运行时规则不直接 require 机器契约 JSON', () => {
   const source = fs.readFileSync(
-    path.join(__dirname, '..', 'utils/ingredientOperationRules.js'),
+    path.join(__dirname, '..', 'subpackages/shared-meal/services/ingredientOperationRules.js'),
     'utf8'
   )
   assert.doesNotMatch(source, /require\([^)]*contracts\/shared-meal\/[^)]*\.json/)

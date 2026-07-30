@@ -1,6 +1,6 @@
-const { estimateLifeStage } = require('./lifeStageEstimator')
-const { estimateExpectedAdultWeight } = require('./dogProfileDerivations')
-const { validateSpecialNutritionNeeds } = require('./dogProfileContract')
+const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
+const { estimateExpectedAdultWeight } = require('../../../services/dogProfileDerivations')
+const { validateSpecialNutritionNeeds } = require('../../../services/dogProfileContract')
 
 function hasText(value) {
   return typeof value === 'string' && value.trim().length > 0

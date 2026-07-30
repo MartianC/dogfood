@@ -14,17 +14,24 @@ test('根目录普通 JS 均由主包真实页面或组件使用', () => {
   assert.deepEqual(findUnusedMainPackageJavaScript(), [])
 })
 
-test('全部分包页面与组件入口让真实共享根 JS 可达', () => {
-  const reachable = collectReachableMainJavaScript()
-  assert.equal(reachable.has('utils/ingredientOperationRules.js'), true)
-
-  const mainPackageSources = [
-    'app.js',
-    ...JSON.parse(
-      fs.readFileSync(path.join(__dirname, '..', 'app.json'), 'utf8')
-    ).pages.map((page) => `${page}.js`)
-  ].map((file) => fs.readFileSync(path.join(__dirname, '..', file), 'utf8')).join('\n')
-  assert.doesNotMatch(mainPackageSources, /ingredientOperationRules/)
+test('跨分包共享服务生成到各自分包且不在主包保留运行时入口', () => {
+  const projectRoot = path.join(__dirname, '..')
+  assert.equal(fs.existsSync(path.join(projectRoot, 'utils/ingredientOperationRules.js')), false)
+  assert.equal(fs.existsSync(path.join(projectRoot, 'services/sharedMealDraftService.js')), false)
+  assert.equal(
+    fs.existsSync(path.join(
+      projectRoot,
+      'subpackages/custom-recipe/services/ingredientOperationRules.js'
+    )),
+    true
+  )
+  assert.equal(
+    fs.existsSync(path.join(
+      projectRoot,
+      'subpackages/shared-meal/services/ingredientOperationRules.js'
+    )),
+    true
+  )
 })
 
 test('mainPackageReachability/v2 正反 fixtures 保留分包共享并拒绝孤儿根 JS', () => {

@@ -1,4 +1,4 @@
-const { deriveActivityLevel } = require('../dogProfileDerivations')
+const { deriveActivityLevel } = require('../../../services/dogProfileDerivations')
 
 const ACTIVITY_FACTORS = {
   low: { min: 95, max: 95 },

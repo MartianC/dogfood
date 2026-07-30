@@ -1,7 +1,7 @@
 const env = require('../../../config/env')
 const storage = require('../../../utils/storage')
 const recipes = require('../../../data/recipes')
-const { canSearchIngredient } = require('../../../utils/ingredientOperationRules')
+const { canSearchIngredient } = require('./ingredientOperationRules')
 const runtimeDataReleaseService = require('./runtimeDataReleaseService')
 
 const RECENT_KEY = 'recentIngredients'

@@ -3,7 +3,7 @@ const assert = require('node:assert/strict')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const storage = require('../utils/storage')
 const recordService = require('../services/sharedMealRecordService')
-const { fingerprint } = require('../services/sharedMealContract')
+const { fingerprint } = require('../subpackages/shared-meal/services/sharedMealContract')
 
 function intent() {
   const candidate = {

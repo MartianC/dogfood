@@ -17,7 +17,7 @@ const {
   removeSourceIngredient,
   reincludeSourceIngredient,
   updateDraftIngredients
-} = require('../services/sharedMealDraftService')
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 
 const root = path.resolve(__dirname, '..')
 const dog = { id: 'dog-1', name: '布丁' }
@@ -471,7 +471,7 @@ test('草稿服务对四态分别执行自动带入、来源选择和后续更�
 
 test('草稿服务不直接比较 blocked 且保留自动带入与用户添加语义', () => {
   const source = fs.readFileSync(
-    path.join(root, 'services/sharedMealDraftService.js'),
+    path.join(root, 'subpackages/shared-meal/services/sharedMealDraftService.js'),
     'utf8'
   )
 

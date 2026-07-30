@@ -5,7 +5,7 @@ const path = require('node:path')
 
 const {
   validateSharedMealIngredient
-} = require('../services/sharedMealDraftService')
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 
 const root = path.resolve(__dirname, '..')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')

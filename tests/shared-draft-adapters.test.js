@@ -3,8 +3,11 @@ const assert = require('node:assert/strict')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const storage = require('../utils/storage')
 const customRecipeService = require('../services/customRecipeService')
-const draftAdapters = require('../services/draftAdapters')
-const { saveDraft, SHARED_MEAL_DRAFT_STORAGE_KEY } = require('../services/sharedMealDraftService')
+const draftAdapters = require('../subpackages/custom-recipe/services/draftAdapters')
+const {
+  saveDraft,
+  SHARED_MEAL_DRAFT_STORAGE_KEY
+} = require('../subpackages/custom-recipe/services/sharedMealDraftService')
 
 function sharedDraft() {
   return {
