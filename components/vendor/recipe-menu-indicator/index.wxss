@@ -61,6 +61,10 @@
   color: var(--df-color-muted);
 }
 
+.recipe-menu-indicator--loading-compact {
+  min-height: auto;
+}
+
 .recipe-menu-indicator__loading {
   color: var(--df-color-muted);
 }

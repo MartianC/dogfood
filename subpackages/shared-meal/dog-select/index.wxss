@@ -43,3 +43,115 @@
   margin-bottom: var(--df-space-1);
   font-weight: 700;
 }
+
+.shared-meal-recovery-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 max(var(--df-space-6), 16px);
+  box-sizing: border-box;
+  background: var(--df-color-mask);
+}
+
+.shared-meal-recovery-sheet {
+  width: 100%;
+  max-width: 686rpx;
+  max-height: calc(100vh - 96px);
+  box-sizing: border-box;
+  margin-bottom: 64rpx;
+  margin-bottom: max(64rpx, 32px, env(safe-area-inset-bottom));
+  padding: max(48rpx, 24px);
+  border-radius: max(32rpx, 16px);
+  background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-sheet);
+  overflow-y: auto;
+}
+
+.shared-meal-recovery-header {
+  min-height: max(var(--df-touch-min), 44px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-4);
+}
+
+.shared-meal-recovery-title {
+  color: var(--df-color-text);
+  font-size: max(40rpx, 20px);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.shared-meal-recovery-close {
+  width: max(var(--df-touch-min), 44px);
+  height: max(var(--df-touch-min), 44px);
+  flex: 0 0 max(var(--df-touch-min), 44px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shared-meal-recovery-description {
+  margin-top: max(var(--df-space-6), 16px);
+  color: var(--df-color-text-secondary);
+  font-size: max(26rpx, 13px);
+  line-height: max(40rpx, 20px);
+}
+
+.shared-meal-recovery-summary {
+  margin-top: max(var(--df-space-6), 16px);
+  padding: max(var(--df-space-6), 16px);
+  border: max(1rpx, 1px) solid var(--df-color-line);
+  border-radius: max(32rpx, 16px);
+  display: grid;
+  gap: max(var(--df-space-3), 8px);
+  background: var(--df-color-bg);
+}
+
+.shared-meal-recovery-summary-label {
+  color: var(--df-color-muted);
+  font-size: max(var(--df-font-sm), 12px);
+  line-height: max(36rpx, 18px);
+}
+
+.shared-meal-recovery-dog-name {
+  color: var(--df-color-text);
+  font-size: max(34rpx, 17px);
+  font-weight: 800;
+  line-height: max(48rpx, 24px);
+  overflow-wrap: anywhere;
+}
+
+.shared-meal-recovery-menu {
+  color: var(--df-color-text);
+  font-size: max(var(--df-font-md), 14px);
+  line-height: max(40rpx, 20px);
+  overflow-wrap: anywhere;
+}
+
+.shared-meal-recovery-time {
+  color: var(--df-color-muted);
+  font-size: max(var(--df-font-sm), 12px);
+  line-height: max(36rpx, 18px);
+}
+
+.shared-meal-recovery-summary--loading {
+  justify-items: center;
+  text-align: center;
+}
+
+.shared-meal-recovery-loading-title {
+  color: var(--df-color-text);
+  font-size: max(30rpx, 15px);
+  font-weight: 700;
+  line-height: max(44rpx, 22px);
+}
+
+.shared-meal-recovery-actions {
+  margin-top: max(var(--df-space-6), 16px);
+  display: grid;
+  gap: max(var(--df-space-3), 8px);
+}

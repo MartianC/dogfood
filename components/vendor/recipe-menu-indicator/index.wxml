@@ -22,11 +22,11 @@
   />
 </view>
 
-<view wx:else class="recipe-menu-indicator recipe-menu-indicator--loading">
+<view wx:else class="recipe-menu-indicator recipe-menu-indicator--loading recipe-menu-indicator--{{kind}}">
   <t-loading
     t-class="recipe-menu-indicator__loading"
     theme="circular"
-    size="40rpx"
+    size="{{iconSize}}"
     text="{{text}}"
   />
 </view>

@@ -6,6 +6,13 @@ const path = require('node:path')
 const root = path.resolve(__dirname, '..')
 const { canAddIngredient } = require('../subpackages/shared-meal/services/ingredientOperationRules')
 const humanRecipeService = require('../subpackages/shared-meal/services/humanRecipeService')
+const storage = require('../utils/storage')
+const sharedMealFixture = require('./fixtures/shared-meal-ingredient-v1.json')
+const {
+  SHARED_MEAL_DRAFT_STORAGE_KEY,
+  createDraftFromMenus,
+  saveDraft
+} = require('../subpackages/shared-meal/services/sharedMealDraftService')
 
 function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8')
@@ -120,6 +127,238 @@ test('选狗页保留单狗自动、多狗显式单选和 incomplete/blocked 分
   const dogEdit = read('subpackages/dog-profile/dog-edit/index.js')
   assert.match(dogEdit, /decodeURIComponent\(options\.redirect/)
   assert.match(dogEdit, /wx\.redirectTo\(\{ url: this\.data\.redirect \}\)/)
+})
+
+function createRecoveryDraft(dog, overrides = {}) {
+  return createDraftFromMenus({
+    id: overrides.id || 'draft-entry-recovery',
+    dog,
+    humanMenus: overrides.humanMenus || [{
+      id: 'human-menu-recovery',
+      title: '番茄炒蛋',
+      ingredients: []
+    }],
+    sourceIngredientSelections: [],
+    mealTime: '2026-07-30T08:30:00.000Z',
+    dataVersions: sharedMealFixture.dataVersions
+  })
+}
+
+function createDog(overrides = {}) {
+  return {
+    id: 'dog-recovery',
+    name: '布丁',
+    birthDate: '2020-01-01',
+    breed: 'shiba-inu',
+    weightKg: 10,
+    dailyMeals: 2,
+    dailyActivityHours: 1.5,
+    bodyCondition: 'ideal',
+    specialNutritionNeeds: {
+      hasDisease: false,
+      reproductiveStatus: 'none',
+      therapeuticWeightManagement: 'none'
+    },
+    ...overrides
+  }
+}
+
+async function withDogSelectPage({ draft, dogs }, run) {
+  const dogService = require('../services/dogService')
+  const authService = require('../services/authService')
+  const originalListDogs = dogService.listDogs
+  const originalGetAuthState = authService.getAuthState
+  const originalWx = global.wx
+  const navigations = []
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  if (draft) saveDraft(draft)
+  dogService.listDogs = async () => dogs
+  authService.getAuthState = () => 'has-profile'
+  global.wx = {
+    navigateTo({ url }) { navigations.push(url) }
+  }
+
+  try {
+    const definition = loadPage('subpackages/shared-meal/dog-select/index.js')
+    const context = {
+      ...definition,
+      data: structuredClone(definition.data),
+      setData(patch) { Object.assign(this.data, patch) }
+    }
+    await run({ definition, context, navigations })
+  } finally {
+    dogService.listDogs = originalListDogs
+    authService.getAuthState = originalGetAuthState
+    global.wx = originalWx
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  }
+}
+
+test('有效草稿显示恢复选择，未选择前不导航、不写回且单狗不会抢先继续', async () => {
+  const savedDog = createDog({ name: '旧名字' })
+  const latestDog = createDog({ name: '新名字' })
+  const draft = createRecoveryDraft(savedDog)
+
+  await withDogSelectPage({ draft, dogs: [latestDog] }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, {})
+    await definition.onShow.call(context)
+
+    assert.equal(context.data.recoveryVisible, true)
+    assert.equal(context.data.recoveryStatus, 'resumable')
+    assert.equal(context.data.recoveryDogName, '旧名字')
+    assert.match(context.data.recoveryMenuSummary, /番茄炒蛋/)
+    assert.deepEqual(navigations, [])
+    assert.equal(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY).dog.name, '旧名字')
+  })
+})
+
+test('继续编辑使用最新狗狗档案进入原草稿 compose', async () => {
+  const draft = createRecoveryDraft(createDog({ name: '旧名字' }))
+  const latestDog = createDog({ name: '新名字' })
+
+  await withDogSelectPage({ draft, dogs: [latestDog] }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, {})
+    await definition.onShow.call(context)
+    definition.onContinueRecovery.call(context)
+
+    assert.deepEqual(navigations, [
+      '/subpackages/shared-meal/compose/index?draftId=draft-entry-recovery'
+    ])
+    assert.equal(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY).dog.name, '新名字')
+  })
+})
+
+test('继续编辑遇到不完整档案时先完善，返回后用更新档案继续原草稿', async () => {
+  const incompleteDog = createDog({ birthDate: '' })
+  const latestDogs = [incompleteDog]
+  const draft = createRecoveryDraft(incompleteDog)
+
+  await withDogSelectPage({ draft, dogs: latestDogs }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, {})
+    await definition.onShow.call(context)
+    definition.onContinueRecovery.call(context)
+    assert.match(navigations[0], /dog-profile\/dog-edit\/index\?id=dog-recovery/)
+
+    latestDogs[0] = createDog({ name: '完善后的布丁' })
+    const returnedDefinition = loadPage('subpackages/shared-meal/dog-select/index.js')
+    const returnedContext = {
+      ...returnedDefinition,
+      data: structuredClone(returnedDefinition.data),
+      setData(patch) { Object.assign(this.data, patch) }
+    }
+    returnedDefinition.onLoad.call(returnedContext, { draftId: draft.id })
+    await returnedDefinition.onShow.call(returnedContext)
+
+    assert.match(navigations[1], /compose\/index\?draftId=draft-entry-recovery/)
+    assert.equal(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY).dog.name, '完善后的布丁')
+  })
+})
+
+test('重新开始显式清理旧草稿并停留选狗页', async () => {
+  const draft = createRecoveryDraft(createDog())
+
+  await withDogSelectPage({ draft, dogs: [createDog()] }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, {})
+    await definition.onShow.call(context)
+    definition.onRestartRecovery.call(context)
+
+    assert.equal(context.data.recoveryVisible, false)
+    assert.notEqual(context.data.draftId, draft.id)
+    assert.equal(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
+    assert.deepEqual(navigations, [])
+  })
+})
+
+test('关闭恢复提示保留草稿并且不触发单狗自动跳转', async () => {
+  const draft = createRecoveryDraft(createDog())
+
+  await withDogSelectPage({ draft, dogs: [createDog()] }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, {})
+    await definition.onShow.call(context)
+    definition.onCloseRecovery.call(context)
+
+    assert.equal(context.data.recoveryVisible, false)
+    assert.deepEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), draft)
+    assert.deepEqual(navigations, [])
+  })
+})
+
+test('Loading 期间关闭恢复提示后不会在档案加载完成时再次弹出', async () => {
+  const draft = createRecoveryDraft(createDog())
+  let resolveDogs
+  const dogs = new Promise((resolve) => { resolveDogs = resolve })
+
+  await withDogSelectPage({ draft, dogs }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, {})
+    const showing = definition.onShow.call(context)
+    definition.onCloseRecovery.call(context)
+    resolveDogs([createDog()])
+    await showing
+
+    assert.equal(context.data.recoveryVisible, false)
+    assert.deepEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), draft)
+    assert.deepEqual(navigations, [])
+  })
+})
+
+test('失效草稿只显示重新开始，入口模板只使用项目 UI 与 vendor wrapper', async () => {
+  storage.setSync(SHARED_MEAL_DRAFT_STORAGE_KEY, { schemaVersion: 0, id: 'old-draft' })
+  const dogService = require('../services/dogService')
+  const authService = require('../services/authService')
+  const originalListDogs = dogService.listDogs
+  const originalGetAuthState = authService.getAuthState
+  dogService.listDogs = async () => [createDog()]
+  authService.getAuthState = () => 'has-profile'
+
+  try {
+    const definition = loadPage('subpackages/shared-meal/dog-select/index.js')
+    const context = {
+      ...definition,
+      data: structuredClone(definition.data),
+      setData(patch) { Object.assign(this.data, patch) }
+    }
+    definition.onLoad.call(context, {})
+    await definition.onShow.call(context)
+    assert.equal(context.data.recoveryStatus, 'invalid')
+    assert.equal(context.data.recoveryVisible, true)
+  } finally {
+    dogService.listDogs = originalListDogs
+    authService.getAuthState = originalGetAuthState
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  }
+
+  const source = read('subpackages/shared-meal/dog-select/index.js')
+  const template = read('subpackages/shared-meal/dog-select/index.wxml')
+  const styles = read('subpackages/shared-meal/dog-select/index.wxss')
+  const config = JSON.parse(read('subpackages/shared-meal/dog-select/index.json'))
+  assert.doesNotMatch(source, /resumeExistingDraft/)
+  assert.doesNotMatch(template, /<button\b|<t-/)
+  assert.match(template, /wx:elif="\{\{recoveryStatus === 'resumable'\}\}"/)
+  assert.match(template, /继续编辑/)
+  assert.match(template, /重新开始/)
+  assert.equal((template.match(/variant="warning-outline"/g) || []).length, 1)
+  assert.equal((template.match(/size="xlarge"/g) || []).length, 3)
+  assert.match(template, /上次做到这里/)
+  assert.match(template, /继续会保留现在的菜单和食材；重新开始会清除这份草稿。/)
+  assert.match(template, /草稿状态/)
+  assert.match(template, /无法安全恢复/)
+  assert.match(template, /不会进入原来的编辑内容/)
+  assert.match(template, /请稍候，不会修改现有草稿/)
+  assert.doesNotMatch(template, /wx:if="\{\{recoveryStatus !== 'loading'\}\}"/)
+  assert.match(styles, /max-height:\s*calc\(100vh - 96px\)/)
+  assert.match(styles, /padding:\s*0 max\(var\(--df-space-6\), 16px\)/)
+  assert.match(styles, /margin-bottom:\s*max\(64rpx, 32px, env\(safe-area-inset-bottom\)\)/)
+  assert.match(styles, /padding:\s*max\(48rpx, 24px\)/)
+  assert.match(styles, /border-radius:\s*max\(32rpx, 16px\)/)
+  assert.match(styles, /width:\s*max\(var\(--df-touch-min\), 44px\)/)
+  assert.match(styles, /font-size:\s*max\(40rpx, 20px\)/)
+  assert.match(template, /recipe-menu-indicator/)
+  assert.match(template, /ui-button/)
+  assert.equal(
+    config.usingComponents['recipe-menu-indicator'],
+    '../../../components/vendor/recipe-menu-indicator/index'
+  )
+  assert.equal(config.usingComponents['ui-button'], '../../../components/ui/ui-button/index')
 })
 
 test('canonical 菜单页只把已发布非 blocked 映射项写入草稿并展示安全分组', () => {

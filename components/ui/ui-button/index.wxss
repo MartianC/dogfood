@@ -45,6 +45,12 @@
   font-size: 24rpx;
 }
 
+.ui-button--xlarge {
+  min-height: max(96rpx, 48px);
+  border-radius: max(var(--df-radius-lg), 12px);
+  font-size: max(30rpx, 15px);
+}
+
 .ui-button--primary {
   color: var(--df-color-on-primary);
   background: var(--df-color-primary);
@@ -67,6 +73,13 @@
   color: var(--df-color-on-primary);
   background: var(--df-color-warning);
   border-color: var(--df-color-warning);
+}
+
+.ui-button--warning-outline {
+  color: var(--df-color-warning);
+  background: var(--df-color-surface);
+  border-color: var(--df-color-warning);
+  border-width: 1px;
 }
 
 .ui-button--ghost {
@@ -92,6 +105,12 @@
 
 .ui-button--pressed.ui-button--warning {
   background: var(--df-color-warning-pressed);
+  border-color: var(--df-color-warning-pressed);
+}
+
+.ui-button--pressed.ui-button--warning-outline {
+  color: var(--df-color-warning-pressed);
+  background: var(--df-color-warning-soft);
   border-color: var(--df-color-warning-pressed);
 }
 

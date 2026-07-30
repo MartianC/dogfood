@@ -43,4 +43,59 @@
       </view>
     </view>
   </block>
+
+  <view
+    wx:if="{{recoveryVisible}}"
+    class="shared-meal-recovery-mask"
+    catchtap="onCloseRecovery"
+  >
+    <view class="shared-meal-recovery-sheet" catchtap="onRecoverySheetTap">
+      <view class="shared-meal-recovery-header">
+        <view class="shared-meal-recovery-title">
+          {{recoveryStatus === 'resumable' ? '继续上次编辑？' : (recoveryStatus === 'invalid' ? '这份草稿不能继续' : '正在检查草稿')}}
+        </view>
+        <view
+          class="shared-meal-recovery-close"
+          aria-role="button"
+          aria-label="关闭草稿恢复提示"
+          catchtap="onCloseRecovery"
+        >
+          <recipe-menu-indicator kind="icon" icon="close" iconSize="40rpx" />
+        </view>
+      </view>
+
+      <view wx:if="{{recoveryStatus === 'loading'}}" class="shared-meal-recovery-summary shared-meal-recovery-summary--loading">
+        <recipe-menu-indicator kind="loading-compact" iconSize="56rpx" />
+        <view class="shared-meal-recovery-loading-title">正在读取上次的内容</view>
+        <view class="shared-meal-recovery-summary-label">请稍候，不会修改现有草稿</view>
+      </view>
+
+      <block wx:elif="{{recoveryStatus === 'resumable'}}">
+        <view class="shared-meal-recovery-summary">
+          <view class="shared-meal-recovery-summary-label">上次做到这里</view>
+          <view class="shared-meal-recovery-dog-name">{{recoveryDogName}}</view>
+          <view class="shared-meal-recovery-menu">{{recoveryMenuSummary}}</view>
+          <view wx:if="{{recoveryTimeText}}" class="shared-meal-recovery-time">{{recoveryTimeText}}</view>
+        </view>
+        <view class="shared-meal-recovery-description">继续会保留现在的菜单和食材；重新开始会清除这份草稿。</view>
+        <view class="shared-meal-recovery-actions">
+          <ui-button size="xlarge" bind:tap="onContinueRecovery">继续编辑</ui-button>
+          <ui-button size="xlarge" variant="warning-outline" bind:tap="onRestartRecovery">重新开始</ui-button>
+        </view>
+      </block>
+
+      <block wx:elif="{{recoveryStatus === 'invalid'}}">
+        <view class="shared-meal-recovery-summary">
+          <view class="shared-meal-recovery-summary-label">草稿状态</view>
+          <view class="shared-meal-recovery-dog-name">无法安全恢复</view>
+          <view class="shared-meal-recovery-menu">内容损坏或版本已失效</view>
+          <view class="shared-meal-recovery-time">不会进入原来的编辑内容</view>
+        </view>
+        <view class="shared-meal-recovery-description">为避免带入不完整内容，请重新开始并重新选择狗狗和菜单。</view>
+        <view class="shared-meal-recovery-actions">
+          <ui-button size="xlarge" bind:tap="onRestartRecovery">重新开始</ui-button>
+        </view>
+      </block>
+    </view>
+  </view>
 </view>

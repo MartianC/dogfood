@@ -22,7 +22,7 @@
 | `components/vendor/recipe-ingredient-search` | `Search` | props `value/loading/placeholder/actionText`；events `change/action`；页面负责决定默认、结果和无结果状态 |
 | `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input`、`Icon` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
 | `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
-| `components/vendor/recipe-menu-indicator` | `Checkbox`、`Icon`、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，Icon 和 Loading 仅展示；不读取菜谱服务 |
+| `components/vendor/recipe-menu-indicator` | `Checkbox`、`Icon`、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`kind` 支持 `checkbox/icon/loading/loading-compact`，紧凑 Loading 不保留 44pt 占位；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，Icon 和 Loading 仅展示；不读取菜谱服务 |
 
 vendor 适配层只负责第三方 API、主题和基础状态转换，不读取业务服务，不执行页面跳转，不保存食谱数据。
 
@@ -32,8 +32,8 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
-| prop | `variant` | `primary | secondary | outline | warning | ghost`，默认 `primary`；`outline` 为主题色描边操作 |
-| prop | `size` | `small | medium | large`，默认 `large` |
+| prop | `variant` | `primary | secondary | outline | warning | warning-outline | ghost`，默认 `primary`；`outline` 为主题色描边操作，`warning-outline` 为警示色描边操作 |
+| prop | `size` | `small | medium | large | xlarge`，默认 `large`；`xlarge` 高度为 `96rpx`，用于设计稿明确要求的 48pt 主操作 |
 | prop | `disabled` | 禁用态，默认 `false` |
 | prop | `loading` | 加载态，默认 `false` |
 | prop | `block` | 是否撑满容器，默认 `true`；`false` 时按内容渲染为小操作按钮 |
