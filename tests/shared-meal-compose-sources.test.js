@@ -149,6 +149,10 @@ test('今天的人饭展示 included、removed、blocked 和 unmapped 四态且�
     path.join(root, 'subpackages/shared-meal/compose/index.wxml'),
     'utf8'
   )
+  const styles = fs.readFileSync(
+    path.join(root, 'subpackages/shared-meal/compose/index.wxss'),
+    'utf8'
+  )
   const sourcePanel = template.match(
     /class="shared-meal-compose-source-panel"[\s\S]*?<\/scroll-view>/
   )
@@ -157,6 +161,14 @@ test('今天的人饭展示 included、removed、blocked 和 unmapped 四态且�
   assert.match(sourcePanel[0], /icon="\{\{source\.actionIcon\}\}"/)
   assert.match(template, /catchtap="onToggleHumanMealPicker"/)
   assert.doesNotMatch(template, /<t-[a-z-]+/)
+  assert.match(
+    styles,
+    /\.shared-meal-compose-source-panel\s*{[^}]*width:\s*calc\(100% - 64rpx\);/s
+  )
+  assert.doesNotMatch(
+    styles,
+    /\.shared-meal-compose-source-panel\s*{[^}]*right:\s*32rpx;/s
+  )
 })
 
 test('狗饭行展示真实每百克能量、克重占比且不替用户补首次克重', () => {

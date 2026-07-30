@@ -110,18 +110,6 @@
   justify-content: center;
 }
 
-.shared-meal-compose-auxiliary {
-  display: grid;
-  gap: var(--df-space-3);
-  margin-top: 320rpx;
-}
-
-.shared-meal-compose-note-input {
-  min-height: var(--df-touch-min);
-  color: var(--df-color-text);
-  font-size: var(--df-font-md);
-}
-
 .shared-meal-compose-assessment-dock {
   position: fixed;
   z-index: 15;
@@ -149,7 +137,7 @@
 
 .shared-meal-compose-source-panel {
   position: absolute;
-  right: 32rpx;
+  width: calc(100% - 64rpx);
   bottom: calc(192rpx + constant(safe-area-inset-bottom));
   bottom: calc(192rpx + env(safe-area-inset-bottom));
   left: 32rpx;

@@ -162,8 +162,14 @@ test('compose 使用 v2 连续食材列表并保持所有自动食材克重为�
   assert.doesNotMatch(template, /本餐能量目标/)
   assert.doesNotMatch(template, /系统不会自动生成单项克重或比例/)
   assert.doesNotMatch(template, /<ui-field[\s\S]*?item\.amountInput/)
+  assert.doesNotMatch(template, /备注（可选）|最多 200 字|保存是记录本餐/)
   assert.doesNotMatch(template, /明确重新开始/)
   assert.doesNotMatch(source, /onRestart\(/)
+  assert.doesNotMatch(source, /onNoteInput\(|\bnote:\s*['"]/)
+  assert.doesNotMatch(
+    read('subpackages/shared-meal/compose/index.json'),
+    /"ui-field"/
+  )
   assert.equal(
     compatibility.trim(),
     "module.exports = require('../../../services/meal-assessment/energyRequirementService')"

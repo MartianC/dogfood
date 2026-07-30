@@ -54,12 +54,6 @@
         <ui-button variant="outline" bind:tap="onAddIngredient">＋ 额外添加食材</ui-button>
       </view>
 
-      <view class="shared-meal-compose-auxiliary">
-        <ui-field label="备注（可选）" helpText="最多 200 字，只随这条本餐记录保存。">
-          <input class="shared-meal-compose-note-input" value="{{note}}" maxlength="200" placeholder="例如：今天单独清蒸" bindinput="onNoteInput" />
-        </ui-field>
-        <ui-notice variant="warning">保存是记录本餐，不代表本餐营养完整或适合长期重复喂养。若家庭自制餐长期占主要饮食，请咨询兽医或宠物营养专业人士。</ui-notice>
-      </view>
     </view>
   </scroll-view>
 

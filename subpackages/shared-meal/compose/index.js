@@ -153,7 +153,6 @@ Page({
     mealAssessment: null,
     nutritionLoading: false,
     nutritionExpanded: false,
-    note: '',
     saving: false,
     errorText: ''
   },
@@ -201,7 +200,6 @@ Page({
       ingredients: ingredientRows(draft.ingredients),
       nutrientRecords: [],
       energyTargetText: energyTargetText(requirement),
-      note: String(draft.note || ''),
       mealAssessment: draft.latestAssessment && draft.latestAssessment.energy
         ? draft.latestAssessment
         : null,
@@ -350,13 +348,6 @@ Page({
     this.setData({
       ingredients: ingredientRows(ingredients, this.data.nutrientRecords)
     }, () => this.refreshMealAssessment())
-  },
-
-  onNoteInput(event) {
-    const note = String(event.detail.value || '').slice(0, 200)
-    const restored = restoreDraft(this.data.draftId)
-    if (restored.status === 'restored') saveDraft({ ...restored.draft, note })
-    this.setData({ note })
   },
 
   async persistRecord(saveIntent) {
