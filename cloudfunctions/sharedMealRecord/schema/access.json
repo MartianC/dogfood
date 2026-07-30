@@ -1,0 +1,8 @@
+{
+  "contract": "sharedMealRecordAccess/v1",
+  "collection": "shared_meal_records",
+  "aclTag": "ADMINONLY",
+  "clientRead": false,
+  "clientWrite": false,
+  "description": "共享本餐记录仅允许云函数管理端访问，小程序客户端不可直读或直写。"
+}

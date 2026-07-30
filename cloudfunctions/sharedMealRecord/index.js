@@ -37,6 +37,9 @@ function validateSaveIntent(saveIntent) {
   if (!candidate || !candidate.targetDogId || !candidate.mealTime) {
     fail('INVALID_PAYLOAD', '本餐快照字段缺失')
   }
+  if (!Array.isArray(candidate.photoFileIds) || candidate.photoFileIds.length > 0) {
+    fail('INVALID_PAYLOAD', '当前版本暂不支持照片')
+  }
   if (!Array.isArray(candidate.dogMealItems) || !candidate.dogMealItems.length) {
     fail('INVALID_PAYLOAD', '本餐食材不能为空')
   }

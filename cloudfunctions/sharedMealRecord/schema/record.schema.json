@@ -19,7 +19,7 @@
     },
     "assessment": { "type": "object" },
     "note": { "type": "string", "maxLength": 200 },
-    "photoFileIds": { "type": "array", "items": { "type": "string" } },
+    "photoFileIds": { "type": "array", "maxItems": 0, "items": { "type": "string" } },
     "versions": { "type": "object" }
   }
 }

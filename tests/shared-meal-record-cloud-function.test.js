@@ -35,6 +35,13 @@ test('云端逐字段消费 canonical 食材并与客户端指纹一致', () => 
   assert.throws(() => validateSaveIntent(makeIntent({ ...fixture, perMealAmountGram: 100, policyStatus: 'blocked' })), /被阻止食材不可保存/)
 })
 
+test('照片字段只兼容空数组', () => {
+  const saveIntent = makeIntent()
+  saveIntent.candidate.photoFileIds = ['cloud://unexpected-photo']
+  saveIntent.requestFingerprint = fingerprint(saveIntent.candidate)
+  assert.throws(() => validateSaveIntent(saveIntent), /暂不支持照片/)
+})
+
 test('云函数包内规则与小程序分包规则对四态保持契约一致', () => {
   assert.deepEqual(cloudRules.KNOWN_POLICY_STATUSES, operationContract.knownStatuses)
   operationContract.knownStatuses.forEach((policyStatus) => {

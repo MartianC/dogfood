@@ -26,6 +26,7 @@
 - `docs/data/canine-ingredient-policies-sop.md`：每次目录导入后的犬食安全策略对账、证据审核、版本化和发布流程。
 - `docs/data/nutrient-rankings-sop.md`：营养素排行的公式、过滤、版本化、空排行、导入和回滚流程。
 - `docs/data/human-recipes-sop.md`：授权菜谱的原料映射、安全过滤、运行时投影和增量发布流程。
+- `docs/data/shared-meal-record-deployment.md`：共享本餐记录云函数、集合权限、索引、只读探针、烟测和回滚契约。
 - `docs/domain/CONTEXT.md`：食材概念、形态、目录项、安全策略和人饭原料提及的统一领域词汇。
 
 <!-- miniapp-ui-system:docs:start -->

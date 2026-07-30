@@ -11,6 +11,15 @@
       ]
     },
     {
+      "name": "owner_meal_time",
+      "unique": false,
+      "fields": [
+        { "field": "_openid", "order": "asc" },
+        { "field": "mealTime", "order": "desc" },
+        { "field": "_id", "order": "desc" }
+      ]
+    },
+    {
       "name": "owner_dog_meal_time",
       "unique": false,
       "fields": [

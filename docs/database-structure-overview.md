@@ -130,7 +130,7 @@ CloudBase 公共只读投影
 | `versions` | object | recipe、mapping、catalog、policy、standard、nutrition source 与 assessment algorithm 版本 |
 | `createdAt` | Date | 服务端创建时间；没有更新 action |
 
-索引机器契约位于 `cloudfunctions/sharedMealRecord/schema/indexes.json`：唯一索引为 `(_openid ASC, idempotencyKey ASC)`；列表索引为 `(_openid ASC, targetDogId ASC, mealTime DESC, _id DESC)`。生产集合和索引需另行人工部署，本轮只交付代码与契约。
+索引机器契约位于 `cloudfunctions/sharedMealRecord/schema/indexes.json`：唯一索引为 `(_openid ASC, idempotencyKey ASC)`；全部记录列表索引为 `(_openid ASC, mealTime DESC, _id DESC)`；按狗筛选索引为 `(_openid ASC, targetDogId ASC, mealTime DESC, _id DESC)`。权限契约位于同目录 `access.json`，固定为 `ADMINONLY`，小程序客户端不可直读或直写。生产集合、权限和索引需另行明确授权后部署。
 
 ## 3. CloudBase 公共营养集合
 
