@@ -16,9 +16,9 @@ description: Use when Codex needs to interact with WeChat Developer Tools, 微�
 1. 定位项目绝对路径，确认存在 `project.config.json`。
 2. 运行 `scripts/wxdevtools.js doctor` 确认 CLI 路径和工具版本。
 3. 只要本轮修改了小程序代码、配置或资源，交付前必须运行 `scripts/check-code-quality.js`；执行预览或上传前也必须先运行。不要用项目自己的包体检查代替它。
-4. 对打开、预览、构建 npm 等低风险动作，使用 `scripts/wxdevtools.js`。
-5. 对页面级交互，优先让项目安装 `miniprogram-automator`，再使用 `scripts/automator-runner.js`。
-6. 需要编译包精确结果时，先打开项目，再按“代码质量扫描”小节使用 DevTools UI。
+4. 对打开、预览、构建 npm 等低风险动作，使用 `scripts/wxdevtools.js`；`preview` 和 `build-npm` 直接执行，不要为了保险先额外执行 `open`。
+5. 对页面级交互，优先让项目安装 `miniprogram-automator`，再使用 `scripts/automator-runner.js`；runner 会优先复用同一端口的已有会话，首次启动后只断开自动化连接，不关闭工程。
+6. 需要编译包精确结果时，先确认目标工程是否已打开：已打开则直接复用，未打开才执行 `open`，再按“代码质量扫描”小节使用 DevTools UI。
 7. 对登录、上传、退出、关闭项目、清缓存等高影响动作，先向用户确认，并在脚本命令中传入对应 `--confirm <command>`。
 
 ## 服务端口关闭
@@ -48,7 +48,7 @@ node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /
 
 代码质量面板在当前验证版本中没有公开 CLI、HTTP 或 `miniprogram-automator` 接口。需要读取或运行官方扫描时：
 
-1. 先用 `scripts/wxdevtools.js open --project /absolute/project` 打开项目。
+1. 先确认目标工程是否已打开；已打开则直接复用，未打开才用 `scripts/wxdevtools.js open --project /absolute/project` 打开项目。不要在每次读取或扫描前重复执行 `open`。
 2. 使用 computer use 定位底部「代码质量」面板；读取已有结果是低风险。
 3. 只有用户明确要求重新运行扫描时，才点击「重新扫描」；等待完成后只摘录通过状态、问题分类、文件路径和必要说明。
 4. 不要点击「查看教程」、自动修复、上传、登录或任何会修改项目/账号状态的入口；需要修代码时回到正常代码修改和测试流程。
@@ -73,6 +73,14 @@ node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /
 ## 页面自动化
 
 如果用户需要点击、读取页面状态、跳转页面或验证小程序界面，使用 `scripts/automator-runner.js`。如果项目没有安装 `miniprogram-automator`，先说明需要添加开发依赖，并征得用户同意。
+
+自动化测试默认复用规则：
+
+- 同一工程的连续测试使用固定端口；默认 `9420`，并确保该端口不与其他工程共享。
+- runner 先通过 `automator.connect()` 连接已有会话；连接失败时才调用一次 `automator.launch()`。
+- 每轮结束只调用 `miniProgram.disconnect()` 释放 SDK 连接，保留 DevTools 工程窗口和自动化服务供下一轮复用。
+- 不要把每个视觉状态拆成会关闭工程的独立 DevTools 会话；可拆分 action 文件，但应复用同一端口和工程会话。
+- 只有用户明确要求关闭工程或退出工具时，才使用需要确认的 `close` 或 `quit` 命令。
 
 `tap`、`reLaunch` 和 `navigateTo` 之前必须判断副作用风险。无法确认是否会触发后端写入、支付、通知、删除、上传等外部副作用时，按高风险处理，并向用户确认具体业务后果。
 
@@ -100,6 +108,8 @@ node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /
 | 执行高影响命令但没有 `--confirm` | 先取得用户明确授权，再传入对应确认参数 |
 | 项目路径使用相对路径 | 要求用户提供真实项目绝对路径 |
 | 页面级操作直接点 UI | 使用 `miniprogram-automator` |
+| 每个测试前都执行 `open`，或先 `open` 再 `preview` / `build-npm` | 已打开工程直接复用；`preview` / `build-npm` 直接执行 |
+| 每个自动化状态都 `launch()`，结束再 `close()` | 同一端口先 `connect()`，仅首次 `launch()`，结束只 `disconnect()` |
 | 小程序改动完成后只运行项目测试或包体检查 | 额外运行 `scripts/check-code-quality.js`，修复所有确定失败项 |
 | 把本地静态预检说成官方扫描 | 预检只负责可稳定复现规则；编译包精确结果仍使用 UI-only fallback |
 | 把代码质量扫描当成官方 CLI 命令 | 官方扫描是 UI-only fallback；先 `open` 项目，再读取「代码质量」面板 |

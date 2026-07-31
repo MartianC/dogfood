@@ -52,3 +52,14 @@ test('官方接口参考记录 13 条规则与官方扫描边界', () => {
   assert.match(reference, /code-analyse/);
   assert.match(reference, /不要|不能|不得/);
 });
+
+test('自动化规则要求复用已有工程会话且默认不关闭工程', () => {
+  const skill = readSkillFile('SKILL.md');
+  const reference = readSkillFile('references/official-interfaces.md');
+
+  assert.match(skill, /先通过 `automator\.connect\(\)` 连接已有会话/);
+  assert.match(skill, /连接失败时才调用一次 `automator\.launch\(\)`/);
+  assert.match(skill, /miniProgram\.disconnect\(\)/);
+  assert.match(skill, /不要在每次读取或扫描前重复执行 `open`/);
+  assert.match(reference, /miniProgram\.close\(\).*App\.exit.*Tool\.close/);
+});

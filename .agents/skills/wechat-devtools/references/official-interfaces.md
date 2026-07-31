@@ -135,6 +135,19 @@ const miniProgram = await automator.launch({
 })
 ```
 
+连续测试时不要反复执行上述 `launch()`。首次启动后，保留工程窗口与自动化服务；后续进程连接同一工程的固定端口：
+
+```javascript
+const miniProgram = await automator.connect({
+  wsEndpoint: 'ws://127.0.0.1:9420',
+})
+
+// 测试结束只释放当前 SDK 连接，不发送 App.exit / Tool.close。
+miniProgram.disconnect()
+```
+
+`miniProgram.close()` 会发送 `App.exit` 和 `Tool.close`，因此不适合作为连续测试的默认清理动作。下一轮重新 `launch()` 会再次打开工程并可能让 DevTools 抢到前台。`scripts/automator-runner.js` 会先尝试 `connect()`，连接失败才 `launch()`，最后优先 `disconnect()`。同一端口只能分配给一个工程，避免连接到其他工程的自动化会话。
+
 可用能力包括页面跳转、读取页面数据、获取元素状态、触发元素事件、注入 AppService 代码和调用 `wx` API。触发元素事件前必须判断是否会产生外部副作用，无法判断时按高风险处理。
 
 ## automator-runner 规则
@@ -145,8 +158,10 @@ const miniProgram = await automator.launch({
 - `pageData` 默认脱敏敏感字段；优先设置 `fields` 字符串数组读取必要字段。
 - `text` 输出也会脱敏。
 - `actionTimeout` 默认 30000ms，可在 action JSON 顶层调整，范围是 100 到 600000。
-- `launch`、`currentPage`、每个 action 和 `close` 都受超时保护；`close` 超时时 runner 会打印警告并退出。
+- `connect`、`launch`、`currentPage`、每个 action 以及连接释放都受超时保护；释放超时时 runner 会打印警告并退出。
 - `port` 范围是 1 到 65535，默认 9420。
+- 同一工程的连续测试固定使用同一 `port`；runner 优先复用已有会话，只在连接失败时启动工程。
+- runner 结束时默认只断开 SDK 连接，不关闭工程窗口。
 - `userConfirmation` 不能是 `yes`、`ok`、`confirmed`、`确认`、`可以` 这类机械值，也不能只是这些机械值的拼接，且不能过短。
 
 示例：

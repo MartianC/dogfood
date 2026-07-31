@@ -257,8 +257,50 @@ async function runAction(miniProgram, state, action) {
   }
 }
 
-async function closeMiniProgram(miniProgram, timeoutMs) {
-  if (!miniProgram || typeof miniProgram.close !== 'function') return;
+async function connectOrLaunch(automator, spec) {
+  const wsEndpoint = `ws://127.0.0.1:${spec.port}`;
+  if (typeof automator.connect === 'function') {
+    try {
+      const miniProgram = await withTimeout(
+        automator.connect({ wsEndpoint }),
+        Math.min(spec.timeout, 2000),
+        '连接已有自动化会话',
+      );
+      return { miniProgram, session: 'reused' };
+    } catch (_) {
+      // 没有可复用会话时才启动工程；连接失败是正常的首次运行路径。
+    }
+  }
+
+  const miniProgram = await withTimeout(
+    automator.launch({
+      cliPath: spec.cliPath || '/Applications/wechatwebdevtools.app/Contents/MacOS/cli',
+      projectPath: spec.projectPath,
+      port: spec.port,
+      timeout: spec.timeout,
+      projectConfig: spec.projectConfig,
+    }),
+    spec.timeout,
+    'launch',
+  );
+  return { miniProgram, session: 'launched' };
+}
+
+async function releaseMiniProgram(miniProgram, timeoutMs) {
+  if (!miniProgram) return;
+  if (typeof miniProgram.disconnect === 'function') {
+    try {
+      await withTimeout(Promise.resolve(miniProgram.disconnect()), timeoutMs, '断开自动化连接');
+    } catch (error) {
+      console.error(
+        redactSensitiveString(
+          JSON.stringify({ ok: false, warning: '断开自动化连接失败', detail: error && error.message ? error.message : error }),
+        ),
+      );
+    }
+    return;
+  }
+  if (typeof miniProgram.close !== 'function') return;
   try {
     await withTimeout(miniProgram.close(), timeoutMs, '关闭 miniProgram');
   } catch (error) {
@@ -278,19 +320,10 @@ async function main() {
   validateActions(spec.actions);
   const automator = loadAutomator(spec.projectPath);
   let miniProgram;
+  let session;
   const results = [];
   try {
-    miniProgram = await withTimeout(
-      automator.launch({
-        cliPath: spec.cliPath || '/Applications/wechatwebdevtools.app/Contents/MacOS/cli',
-        projectPath: spec.projectPath,
-        port: spec.port,
-        timeout: spec.timeout,
-        projectConfig: spec.projectConfig,
-      }),
-      spec.timeout,
-      'launch',
-    );
+    ({ miniProgram, session } = await connectOrLaunch(automator, spec));
 
     const state = {
       page: await withTimeout(miniProgram.currentPage(), spec.actionTimeout, 'currentPage'),
@@ -299,9 +332,9 @@ async function main() {
       results.push(await withTimeout(runAction(miniProgram, state, action), spec.actionTimeout, `${action.type} action`));
     }
   } finally {
-    await closeMiniProgram(miniProgram, spec.actionTimeout);
+    await releaseMiniProgram(miniProgram, spec.actionTimeout);
   }
-  console.log(redactSensitiveString(JSON.stringify({ ok: true, results }, null, 2)));
+  console.log(redactSensitiveString(JSON.stringify({ ok: true, session, results }, null, 2)));
 }
 
 main().catch((error) => fail('自动化执行失败', error && error.stack ? error.stack : error));

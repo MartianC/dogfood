@@ -161,6 +161,61 @@ test('tap 外部副作用带具体确认和 confirmedEffect 时允许执行', ()
   assert.equal(fs.readFileSync(path.join(root, 'closed'), 'utf8'), '1');
 });
 
+test('已有自动化会话时直接连接，结束后只断开连接且不重新启动或关闭工程', () => {
+  const { root, project } = makeProject();
+  writeAutomator(project, `module.exports = {
+  connect: async ({ wsEndpoint }) => {
+    require('node:fs').writeFileSync(${JSON.stringify(path.join(root, 'connected'))}, wsEndpoint);
+    return {
+      currentPage: async () => ({ data: async () => ({ reused: true }) }),
+      disconnect: () => require('node:fs').writeFileSync(${JSON.stringify(path.join(root, 'disconnected'))}, '1'),
+      close: async () => require('node:fs').writeFileSync(${JSON.stringify(path.join(root, 'closed'))}, '1')
+    };
+  },
+  launch: async () => {
+    require('node:fs').writeFileSync(${JSON.stringify(path.join(root, 'launched'))}, '1');
+    throw new Error('不应重新启动工程');
+  }
+};
+`);
+
+  const result = runProjectSpec(project, {
+    port: 9527,
+    actions: [{ type: 'pageData' }],
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(fs.readFileSync(path.join(root, 'connected'), 'utf8'), 'ws://127.0.0.1:9527');
+  assert.equal(fs.readFileSync(path.join(root, 'disconnected'), 'utf8'), '1');
+  assert.equal(fs.existsSync(path.join(root, 'launched')), false);
+  assert.equal(fs.existsSync(path.join(root, 'closed')), false);
+});
+
+test('没有已有自动化会话时只启动一次，结束后保留工程供下一轮复用', () => {
+  const { root, project } = makeProject();
+  writeAutomator(project, `module.exports = {
+  connect: async () => { throw new Error('没有已有会话'); },
+  launch: async () => {
+    require('node:fs').writeFileSync(${JSON.stringify(path.join(root, 'launched'))}, '1');
+    return {
+      currentPage: async () => ({ data: async () => ({ launched: true }) }),
+      disconnect: () => require('node:fs').writeFileSync(${JSON.stringify(path.join(root, 'disconnected'))}, '1'),
+      close: async () => require('node:fs').writeFileSync(${JSON.stringify(path.join(root, 'closed'))}, '1')
+    };
+  }
+};
+`);
+
+  const result = runProjectSpec(project, {
+    actions: [{ type: 'pageData' }],
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(fs.readFileSync(path.join(root, 'launched'), 'utf8'), '1');
+  assert.equal(fs.readFileSync(path.join(root, 'disconnected'), 'utf8'), '1');
+  assert.equal(fs.existsSync(path.join(root, 'closed')), false);
+});
+
 test('navigateTo 缺少 sideEffectRisk 时在连接 DevTools 前失败', () => {
   const result = runSpec({
     actions: [{ type: 'navigateTo', url: '/pages/order/index' }],
