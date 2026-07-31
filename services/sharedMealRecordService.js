@@ -1,5 +1,7 @@
 const env = require('../config/env')
 const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./adapters/mock')
+const monthState = require('./sharedMealRecordMonthState')
+const calendarModel = require('./sharedMealRecordCalendarModel')
 
 const ERROR_DEFINITIONS = [
   {
@@ -103,10 +105,23 @@ function get(recordId) {
   return executeRecordOperation('get', () => adapter.getSharedMealRecord(recordId))
 }
 
+function createMonthState(options = {}) {
+  return monthState.createSharedMealRecordMonthState({
+    ...options,
+    listRecords: options.listRecords || list
+  })
+}
+
+function createCalendarModel(records, options) {
+  return calendarModel.createRecordCalendarModel(records, options)
+}
+
 module.exports = {
   save,
   list,
   get,
+  createMonthState,
+  createCalendarModel,
   SharedMealRecordError,
   mapRecordError
 }
