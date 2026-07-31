@@ -977,3 +977,17 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
 - 已逐屏截图复核默认、空态、局部加载、失败、整月空态、长列表以及详情四态；未发现
   横向溢出、TabBar 遮挡、默认蓝色残留或不可读的长文案。
 - 2026-07-31 用户确认 D4.1 通过；计划任务已勾选，F4 系列可以按前置关系开始实施。
+
+### 2026-07-31 F4.3 小程序实现
+
+- 记录页已按 L01–L06 接入月份状态和上海自然日日历模型；默认选中今天，切换月份选中目标月首日，点击日期立即更新当天列表，下拉刷新与失败重试均保留目标月份和选择。
+- 新增 `components/vendor/record-calendar`，内部固定使用 TDesign Calendar 的 `use-popup=false`、`type=single`、`switch-mode=year-month` 和无确认按钮，只向页面暴露 `select/panelchange`。TDesign 1.15.3 的动态函数型 `format` 兼容集中在包装层，页面只传 `calendarDays`。
+- 页面继续组合 `ui-card`、`ui-tag`、`ui-notice` 和 `ui-empty`，未新增 token、裸色值或页面级 `<t-*>`。当天条目展示上海时间、狗狗、人饭摘要和狗饭食材数；长名称允许自然换行。
+- DevTools `build-npm` 无 warning；375×812 实际截图确认主绿选中态、“已记”后缀、当天列表、页面滚动和三项 TabBar 无遮挡。其余五态由页面结构与状态测试覆盖，完整逐态截图对比仍由 F4.6 统一执行。
+
+### 2026-07-31 F4.4、F4.5 记录详情实现
+
+- 已用 Figma Design Context 复核 R01 `20158:951`、R02 `20159:966`、R03 `20159:39884`、R04 `20160:994`。工程顺序严格保持为狗狗快照、保存时双轴评估、人饭菜单、狗饭食材、保存快照、可选备注和责任边界。
+- 新增纯详情 view model，只从记录内的 `dogSnapshot/humanMenu/dogMealItems/assessment/versions/note` 建立展示分组；canonical 狗饭项缺少 `preparationState` 时，只允许沿保存的 `sourceRefs → humanMenu.components` 快照恢复口径，不查询当前档案、活动目录、营养数据、标准或算法，不读取或生成照片模型。
+- 页面继续组合 `ui-card` 和 `ui-notice`；狗狗快照使用 soft card，其余使用 white surface，评估通过项目 `primary/warning` token 同时配合明确文字表达。没有新增 token、组件变体或页面级第三方标签。
+- 完整、营养不足、数据缺失、无备注、长狗名、长菜单、长版本、多菜和缺损旧快照均有自动化覆盖。DevTools `build-npm` 无 warning；375×812 实际 R01 截图确认首屏层级、卡片宽度、32rpx 内边距、主绿评估文字和下方滚动内容无横向溢出。R02–R04 完整逐态截图留给 F4.6。

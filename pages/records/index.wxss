@@ -3,16 +3,37 @@
 .records-page,
 .records-list {
   display: grid;
-  gap: var(--df-space-3);
+  gap: var(--df-space-4);
 }
 
-.records-loading,
 .records-entry__meta {
   color: var(--df-color-muted);
   font-size: var(--df-font-sm);
 }
 
+.records-day {
+  display: grid;
+  gap: var(--df-space-4);
+}
+
+.records-day__head {
+  min-height: var(--df-touch-min);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-3);
+}
+
+.records-day__heading {
+  min-width: 0;
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .records-entry {
+  box-sizing: border-box;
   min-height: 88rpx;
 }
 
@@ -29,7 +50,17 @@
   font-weight: 700;
 }
 
+.records-entry__dog {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .records-entry__menu,
 .records-entry__meta {
   margin-top: var(--df-space-2);
+}
+
+.records-entry__menu {
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }

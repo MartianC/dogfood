@@ -77,6 +77,7 @@ TDesign 适配范围：
 - `components/vendor/recipe-create-popup`：包装 `Popup/Cell/Input/Button`。
 - `components/vendor/recipe-fab`：包装 `Fab`。
 - `components/vendor/recipe-empty`：包装 `Empty/Button`。
+- `components/vendor/record-calendar`：包装页面内嵌 `Calendar/Loading`，固定单选年月切换并将 TDesign 时间戳收口为日期事件。
 
 第三方组件主题必须映射 `--df-*` 语义色。因小程序组件样式隔离，`custom-tab-bar/index.js` 的 `tabBarStyle` 保存一份与本文件同步的 TDesign CSS 变量字符串；修改主色、表面色或弱色时必须同步更新。
 

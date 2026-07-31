@@ -1,7 +1,8 @@
 {
   "navigationBarTitleText": "本餐记录",
+  "enablePullDownRefresh": true,
   "usingComponents": {
-    "ui-button": "../../components/ui/ui-button/index",
+    "record-calendar": "../../components/vendor/record-calendar/index",
     "ui-card": "../../components/ui/ui-card/index",
     "ui-empty": "../../components/ui/ui-empty/index",
     "ui-notice": "../../components/ui/ui-notice/index",

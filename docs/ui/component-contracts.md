@@ -23,6 +23,7 @@
 | `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input`、`Icon` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
 | `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
 | `components/vendor/recipe-menu-indicator` | `Checkbox`、`Icon`、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`kind` 支持 `checkbox/icon/loading/loading-compact`，紧凑 Loading 不保留 44pt 占位；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，Icon 和 Loading 仅展示；不读取菜谱服务 |
+| `components/vendor/record-calendar` | `Calendar`、`Loading` | props `value/calendarDays/loading`；固定 `use-popup=false`、`type=single`、`switch-mode=year-month`、无确认按钮；events `select/panelchange` 只返回稳定日期或年月；“已记”仅表示当天至少一条记录，不读取记录服务 |
 
 vendor 适配层只负责第三方 API、主题和基础状态转换，不读取业务服务，不执行页面跳转，不保存食谱数据。
 

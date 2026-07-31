@@ -1,0 +1,22 @@
+<view class="record-calendar">
+  <view class="record-calendar__clip">
+    <t-calendar
+      id="record-calendar__tdesign"
+      t-class="record-calendar__calendar"
+      use-popup="{{false}}"
+      type="single"
+      switch-mode="year-month"
+      confirm-btn="{{null}}"
+      value="{{selectedTimestamp}}"
+      min-date="{{minDate}}"
+      max-date="{{maxDate}}"
+      format="{{calendarFormat}}"
+      readonly="{{loading}}"
+      bind:select="onSelect"
+      bind:panel-change="onPanelChange"
+    />
+  </view>
+  <view wx:if="{{loading}}" class="record-calendar__loading">
+    <t-loading theme="circular" size="40rpx" text="正在读取本月记录" />
+  </view>
+</view>

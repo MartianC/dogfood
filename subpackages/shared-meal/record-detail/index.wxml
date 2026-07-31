@@ -2,33 +2,57 @@
   <view wx:if="{{loading}}" class="shared-meal-detail-loading">正在读取本餐快照</view>
   <ui-notice wx:elif="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
   <block wx:elif="{{record}}">
-    <ui-card variant="primary">
-      <view class="shared-meal-detail-dog">{{record.dogName}}的一顿饭</view>
-      <view class="shared-meal-detail-meta">{{record.mealTimeText}}</view>
+    <ui-card variant="soft" padding="large">
+      <view class="shared-meal-detail-dog">{{record.dog.heading}}</view>
+      <view class="shared-meal-detail-meta">{{record.dog.mealTimeText}}</view>
+      <view class="shared-meal-detail-meta">{{record.dog.profileText}}</view>
+    </ui-card>
+
+    <ui-card padding="large">
+      <view class="shared-meal-detail-section__heading">保存时的本餐评估</view>
+      <view class="shared-meal-detail-assessment__status shared-meal-detail-assessment__status--{{record.assessment.energy.tone}}">{{record.assessment.energy.heading}}</view>
+      <view class="shared-meal-detail-meta">{{record.assessment.energy.detailText}}</view>
+      <view class="shared-meal-detail-assessment__status shared-meal-detail-assessment__status--{{record.assessment.nutrition.tone}}">{{record.assessment.nutrition.heading}}</view>
+      <view wx:if="{{record.assessment.nutrition.detailText}}" class="shared-meal-detail-meta">{{record.assessment.nutrition.detailText}}</view>
+      <view class="shared-meal-detail-meta">{{record.assessment.coverageText}}</view>
     </ui-card>
 
     <view class="shared-meal-detail-section">
       <view class="shared-meal-detail-section__heading">当时的人饭菜单</view>
-      <ui-card wx:for="{{record.humanMenu}}" wx:key="id" padding="small">
-        <view class="shared-meal-detail-menu">{{item.title}}</view>
-        <view wx:for="{{item.ingredients}}" wx:for-item="source" wx:key="position" class="shared-meal-detail-meta">{{source.sourceText || source.rawName}}{{source.amountText ? ' · ' + source.amountText : ''}}</view>
+      <ui-card padding="large">
+        <view wx:for="{{record.humanMenus}}" wx:key="id" class="shared-meal-detail-menu">
+          <view class="shared-meal-detail-menu__name">{{item.title}}</view>
+          <view class="shared-meal-detail-meta">{{item.ingredientsText}}</view>
+        </view>
+        <view wx:if="{{!record.humanMenus.length}}" class="shared-meal-detail-meta">未保存人饭菜单快照</view>
       </ui-card>
     </view>
 
     <view class="shared-meal-detail-section">
       <view class="shared-meal-detail-section__heading">狗狗这顿吃了什么</view>
-      <ui-card wx:for="{{record.dogMealItems}}" wx:key="variantId" padding="small">
-        <view class="shared-meal-detail-row"><view>{{item.name}}</view><ui-tag variant="neutral">{{item.perMealAmountGram}} g</ui-tag></view>
+      <ui-card padding="large">
+        <view wx:for="{{record.dogMealItems}}" wx:key="id" class="shared-meal-detail-ingredient">
+          <view class="shared-meal-detail-ingredient__amount">{{item.amountText}}</view>
+          <view class="shared-meal-detail-meta">{{item.detailText}}</view>
+        </view>
+        <view wx:if="{{!record.dogMealItems.length}}" class="shared-meal-detail-meta">未保存狗饭食材快照</view>
       </ui-card>
     </view>
 
-    <ui-card>
-      <view class="shared-meal-detail-section__heading">保存时的本餐评估</view>
-      <view class="shared-meal-detail-meta">{{record.energyText}} · {{record.coverageText}}</view>
-      <view class="shared-meal-detail-meta">{{record.versionsText}}</view>
-    </ui-card>
+    <view class="shared-meal-detail-section">
+      <view class="shared-meal-detail-section__heading">保存快照</view>
+      <ui-card padding="large">
+        <view class="shared-meal-detail-snapshot__name">数据覆盖与版本</view>
+        <view class="shared-meal-detail-meta">{{record.snapshot.coverageText}}</view>
+        <view class="shared-meal-detail-meta shared-meal-detail-version">{{record.snapshot.versionText}}</view>
+      </ui-card>
+    </view>
 
-    <ui-card wx:if="{{record.note}}"><view class="shared-meal-detail-section__heading">备注</view><view>{{record.note}}</view></ui-card>
+    <view wx:if="{{record.hasNote}}" class="shared-meal-detail-section">
+      <view class="shared-meal-detail-section__heading">备注</view>
+      <ui-card padding="large"><view class="shared-meal-detail-note">{{record.note}}</view></ui-card>
+    </view>
+
     <ui-notice variant="warning">这是保存时的单餐快照，不会随标准更新而重算，也不代表营养完整或适合长期重复喂养。</ui-notice>
   </block>
 </view>

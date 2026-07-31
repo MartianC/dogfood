@@ -1,0 +1,52 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-brand-color-light: var(--df-color-primary-soft);
+  --td-text-color-primary: var(--df-color-text);
+  --td-text-color-secondary: var(--df-color-text-secondary);
+  --td-text-color-placeholder: var(--df-color-muted);
+  --td-text-color-disabled: var(--df-color-line-strong);
+  --td-text-color-anti: var(--df-color-on-primary);
+  --td-bg-color-container: var(--df-color-surface);
+  --td-border-color: var(--df-color-line);
+  --td-calendar-active-color: var(--df-color-primary);
+  --td-calendar-bg-color: var(--df-color-surface);
+  --td-calendar-days-color: var(--df-color-muted);
+  --td-calendar-item-suffix-color: var(--df-color-primary);
+  --td-calendar-selected-border-radius: var(--df-radius-md);
+  --td-calendar-selected-color: var(--df-color-on-primary);
+  --td-calendar-switch-mode-icon-color: var(--df-color-text-secondary);
+  --td-calendar-switch-mode-icon-disabled-color: var(--df-color-line-strong);
+  --td-calendar-title-color: var(--df-color-text);
+  --td-loading-text-color: var(--df-color-text-secondary);
+}
+
+.record-calendar {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface);
+}
+
+.record-calendar__clip {
+  overflow: hidden;
+}
+
+.record-calendar__calendar {
+  z-index: 0 !important;
+  margin-bottom: -116rpx;
+  transform: translateY(-116rpx);
+}
+
+.record-calendar__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--df-color-surface);
+  opacity: 0.92;
+}

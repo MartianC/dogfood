@@ -3,35 +3,72 @@
 .shared-meal-detail-page,
 .shared-meal-detail-section {
   display: grid;
-  gap: var(--df-space-3);
+  gap: var(--df-space-4);
 }
 
 .shared-meal-detail-dog,
 .shared-meal-detail-section__heading,
-.shared-meal-detail-menu {
+.shared-meal-detail-menu__name,
+.shared-meal-detail-ingredient__amount,
+.shared-meal-detail-snapshot__name {
+  min-width: 0;
   color: var(--df-color-text);
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .shared-meal-detail-dog {
-  font-size: var(--df-font-xl);
+  font-size: 40rpx;
+  line-height: 1.5;
 }
 
-.shared-meal-detail-section__heading,
-.shared-meal-detail-menu {
+.shared-meal-detail-section__heading {
   font-size: var(--df-font-lg);
+  line-height: 1.5;
+}
+
+.shared-meal-detail-menu,
+.shared-meal-detail-ingredient {
+  min-width: 0;
+}
+
+.shared-meal-detail-menu + .shared-meal-detail-menu,
+.shared-meal-detail-ingredient + .shared-meal-detail-ingredient {
+  margin-top: var(--df-space-4);
 }
 
 .shared-meal-detail-meta,
 .shared-meal-detail-loading {
   margin-top: var(--df-space-1);
   color: var(--df-color-muted);
-  font-size: var(--df-font-sm);
+  font-size: var(--df-font-md);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
-.shared-meal-detail-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--df-space-3);
+.shared-meal-detail-assessment__status {
+  margin-top: var(--df-space-3);
+  font-size: var(--df-font-md);
+  font-weight: 700;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.shared-meal-detail-assessment__status--good {
+  color: var(--df-color-primary);
+}
+
+.shared-meal-detail-assessment__status--warning {
+  color: var(--df-color-warning);
+}
+
+.shared-meal-detail-note {
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.shared-meal-detail-version {
+  word-break: break-all;
 }

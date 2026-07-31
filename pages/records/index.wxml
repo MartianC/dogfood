@@ -1,17 +1,47 @@
 <view class="page with-tab-bar records-page">
-  <ui-notice wx:if="{{errorText}}" variant="warning" clickable="{{true}}" bind:tap="onShow">{{errorText}}</ui-notice>
-  <view wx:if="{{loading}}" class="records-loading">正在读取本餐记录</view>
-  <ui-empty wx:elif="{{!records.length}}" title="还没有本餐记录" description="从已经决定的人饭菜单开始，记录一顿给狗狗单独制作的饭。" actionText="记录第一顿" bind:action="onCreateMeal" />
-  <view wx:else class="records-list">
-    <ui-card wx:for="{{records}}" wx:key="id" padding="small">
-      <view class="records-entry" data-id="{{item.id}}" aria-role="button" aria-label="查看{{item.dogName}}的本餐记录" bindtap="onOpenRecord">
-        <view class="records-entry__head">
-          <view class="records-entry__dog">{{item.dogName}}</view>
-          <ui-tag variant="neutral">{{item.mealTimeText}}</ui-tag>
+  <ui-card padding="none">
+    <record-calendar
+      value="{{selectedDateKey}}"
+      calendarDays="{{calendarDays}}"
+      loading="{{loading}}"
+      bind:select="onCalendarSelect"
+      bind:panelchange="onCalendarPanelChange"
+    />
+  </ui-card>
+
+  <ui-notice wx:if="{{errorText}}" variant="warning" clickable="{{true}}" bind:tap="onRetryMonth">{{errorText}}</ui-notice>
+
+  <view wx:if="{{loadStatus !== 'idle' && !(loadStatus === 'loading' && !monthHasRecords)}}" class="records-day">
+    <view class="records-day__head">
+      <view class="records-day__heading">{{selectedDateText}}</view>
+      <ui-tag wx:if="{{selectedRecords.length}}" variant="good">{{selectedRecords.length}} 次喂食</ui-tag>
+    </view>
+
+    <view wx:if="{{selectedRecords.length}}" class="records-list">
+      <ui-card wx:for="{{selectedRecords}}" wx:key="id" padding="small">
+        <view class="records-entry" data-id="{{item.id}}" aria-role="button" aria-label="查看{{item.dogName}}的本餐记录" bindtap="onOpenRecord">
+          <view class="records-entry__head">
+            <view class="records-entry__dog">{{item.dogName}}</view>
+            <ui-tag variant="neutral">{{item.timeText}}</ui-tag>
+          </view>
+          <view class="records-entry__menu">{{item.menuText}}</view>
+          <view class="records-entry__meta">{{item.ingredientCount}} 种狗饭食材</view>
         </view>
-        <view class="records-entry__menu">{{item.menuText}}</view>
-        <view class="records-entry__meta">{{item.ingredientCount}} 种狗饭食材 · {{item.assessmentText}}</view>
-      </view>
-    </ui-card>
+      </ui-card>
+    </view>
+
+    <ui-empty
+      wx:elif="{{loadStatus === 'success' && monthHasRecords}}"
+      title="这天还没有喂食记录"
+      description="可以选择有“已记”标记的日期，查看当天的喂食情况。"
+    />
+
+    <ui-empty
+      wx:elif="{{loadStatus === 'success'}}"
+      title="这个月还没有本餐记录"
+      description="从已经决定的人饭菜单开始，记录一顿给狗狗单独制作的饭。"
+      actionText="记录第一顿"
+      bind:action="onCreateMeal"
+    />
   </view>
 </view>

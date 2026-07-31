@@ -2,7 +2,6 @@
   "navigationBarTitleText": "本餐详情",
   "usingComponents": {
     "ui-card": "../../../components/ui/ui-card/index",
-    "ui-notice": "../../../components/ui/ui-notice/index",
-    "ui-tag": "../../../components/ui/ui-tag/index"
+    "ui-notice": "../../../components/ui/ui-notice/index"
   }
 }
