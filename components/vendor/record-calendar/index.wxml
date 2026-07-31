@@ -17,6 +17,6 @@
     />
   </view>
   <view wx:if="{{loading}}" class="record-calendar__loading">
-    <t-loading theme="circular" size="40rpx" text="正在读取本月记录" />
+    <t-loading theme="circular" size="40rpx" />
   </view>
 </view>

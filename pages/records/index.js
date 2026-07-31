@@ -38,6 +38,19 @@ function selectedDateText(dateKey) {
   return `${Number(match[1])}月${Number(match[2])}日`
 }
 
+function activeMonthText(monthKey) {
+  const match = /^\d{4}-(\d{2})$/.exec(String(monthKey || ''))
+  return match ? `${Number(match[1])} 月` : '本月'
+}
+
+function selectedDateHeading(dateKey, recordCount) {
+  return `${selectedDateText(dateKey)} · ${recordCount ? `${recordCount}次喂食` : '暂无喂食'}`
+}
+
+function selectedDateDescription(recordCount) {
+  return recordCount > 3 ? '当天记录按时间倒序，可继续向下滚动' : '绿色“已记”表示当天有记录'
+}
+
 function recordView(record) {
   const parts = shanghaiDateParts(record.mealTime)
   const menus = (record.humanMenu || []).map((item) => item.title).filter(Boolean)
@@ -53,8 +66,11 @@ function recordView(record) {
 Page({
   data: {
     activeMonthKey: '',
+    activeMonthText: '本月',
     selectedDateKey: '',
     selectedDateText: '当天喂食',
+    selectedDateHeading: '当天喂食 · 暂无喂食',
+    selectedDateDescription: '绿色“已记”表示当天有记录',
     calendarDays: [],
     selectedRecords: [],
     monthHasRecords: false,
@@ -77,17 +93,21 @@ Page({
       monthKey: state.activeMonthKey,
       selectedDateKey: state.selectedDateKey
     })
+    const selectedRecords = calendar.selectedRecords.map(recordView)
     this.setData({
       activeMonthKey: state.activeMonthKey,
+      activeMonthText: activeMonthText(state.activeMonthKey),
       selectedDateKey: state.selectedDateKey,
       selectedDateText: selectedDateText(state.selectedDateKey),
+      selectedDateHeading: selectedDateHeading(state.selectedDateKey, selectedRecords.length),
+      selectedDateDescription: selectedDateDescription(selectedRecords.length),
       calendarDays: calendar.calendarDays,
-      selectedRecords: calendar.selectedRecords.map(recordView),
+      selectedRecords,
       monthHasRecords: calendar.markedDateKeys.length > 0,
       loadStatus: state.status,
       loading: state.status === 'loading',
       errorText: state.status === 'error'
-        ? '这个月的记录暂时没有加载成功，点此重新加载。'
+        ? '请检查网络后重试，当前选择不会丢失'
         : ''
     })
   },
@@ -167,5 +187,8 @@ module.exports = {
   monthKeyFromDateKey,
   firstDateKeyOfMonth,
   selectedDateText,
+  activeMonthText,
+  selectedDateHeading,
+  selectedDateDescription,
   recordView
 }

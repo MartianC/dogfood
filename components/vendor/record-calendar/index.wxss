@@ -26,7 +26,6 @@
 .record-calendar {
   position: relative;
   overflow: hidden;
-  border-radius: var(--df-radius-lg);
   background: var(--df-color-surface);
 }
 
@@ -47,6 +46,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 104rpx;
   background: var(--df-color-surface);
-  opacity: 0.92;
+  opacity: 0.68;
 }

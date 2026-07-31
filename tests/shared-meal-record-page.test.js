@@ -69,8 +69,10 @@ test('记录页结构覆盖 L01–L06 的有记录、当天空、加载、失败
   assert.match(wxml, /calendarDays="\{\{calendarDays\}\}"/)
   assert.match(wxml, /loading="\{\{loading\}\}"/)
   assert.match(wxml, /bind:tap="onRetryMonth"/)
-  assert.match(wxml, /这天还没有喂食记录/)
-  assert.match(wxml, /这个月还没有本餐记录/)
+  assert.match(wxml, /这一天还没有喂食记录/)
+  assert.match(wxml, /还没有喂食记录/)
+  assert.match(wxml, /records-entry__chevron/)
+  assert.match(wxml, /记录第一顿/)
   assert.match(wxml, /wx:for="\{\{selectedRecords\}\}"/)
   assert.match(wxss, /overflow-wrap: anywhere/)
   assert.doesNotMatch(wxml, /连续打卡|每日趋势|营养完整/)
@@ -81,6 +83,9 @@ test('日历日期与时间展示使用上海自然日并保持长文案字段',
   assert.equal(moduleExports.shanghaiTodayKey(new Date('2026-07-30T16:30:00.000Z')), '2026-07-31')
   assert.equal(moduleExports.monthKeyFromDateKey('2026-07-31'), '2026-07')
   assert.equal(moduleExports.firstDateKeyOfMonth('2026-08'), '2026-08-01')
+  assert.equal(moduleExports.activeMonthText('2026-08'), '8 月')
+  assert.equal(moduleExports.selectedDateHeading('2026-07-30', 2), '7月30日 · 2次喂食')
+  assert.equal(moduleExports.selectedDateDescription(4), '当天记录按时间倒序，可继续向下滚动')
 
   const view = moduleExports.recordView({
     id: 'record-1',
@@ -176,7 +181,7 @@ test('选中无记录日期保留月份数据，失败后可从当前月份重�
   current = { ...current, status: 'error', error: new Error('network') }
   page.syncRecordView()
   assert.equal(page.data.loadStatus, 'error')
-  assert.equal(page.data.errorText, '这个月的记录暂时没有加载成功，点此重新加载。')
+  assert.equal(page.data.errorText, '请检查网络后重试，当前选择不会丢失')
   await page.onRetryMonth()
   assert.equal(retried, 1)
   assert.equal(page.data.loadStatus, 'success')

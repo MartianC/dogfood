@@ -1,66 +1,83 @@
 @import "../../styles/tokens.wxss";
 
-.records-page,
 .records-list {
   display: grid;
   gap: var(--df-space-4);
 }
 
-.records-entry__meta {
-  color: var(--df-color-muted);
-  font-size: var(--df-font-sm);
+.records-page {
+  padding-top: 0;
+}
+
+.records-calendar-shell {
+  margin-right: -32rpx;
+  margin-left: -32rpx;
+  background: var(--df-color-surface);
 }
 
 .records-day {
-  display: grid;
-  gap: var(--df-space-4);
-}
-
-.records-day__head {
-  min-height: var(--df-touch-min);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--df-space-3);
+  padding-top: var(--df-space-3);
 }
 
 .records-day__heading {
   min-width: 0;
   color: var(--df-color-text);
-  font-size: var(--df-font-lg);
+  font-size: var(--df-font-md);
   font-weight: 800;
   line-height: 1.35;
+}
+
+.records-day__description,
+.records-day__empty,
+.records-entry__summary {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 1.45;
+}
+
+.records-day__description {
+  margin-top: var(--df-space-1);
+}
+
+.records-day__action,
+.records-list {
+  margin-top: var(--df-space-5);
+}
+
+.records-day__empty {
+  padding: 92rpx 0 32rpx;
+  text-align: center;
 }
 
 .records-entry {
   box-sizing: border-box;
   min-height: 88rpx;
-}
-
-.records-entry__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--df-space-2);
+  gap: var(--df-space-3);
 }
 
-.records-entry__dog,
-.records-entry__menu {
+.records-entry__content {
+  min-width: 0;
+  flex: 1;
+}
+
+.records-entry__heading {
+  min-width: 0;
   color: var(--df-color-text);
   font-weight: 700;
-}
-
-.records-entry__dog {
-  min-width: 0;
   overflow-wrap: anywhere;
 }
 
-.records-entry__menu,
-.records-entry__meta {
-  margin-top: var(--df-space-2);
+.records-entry__summary {
+  margin-top: var(--df-space-1);
+  overflow-wrap: anywhere;
 }
 
-.records-entry__menu {
-  line-height: 1.45;
-  overflow-wrap: anywhere;
+.records-entry__chevron {
+  flex: none;
+  color: var(--df-color-muted);
+  font-size: 48rpx;
+  font-weight: 300;
+  line-height: 1;
 }

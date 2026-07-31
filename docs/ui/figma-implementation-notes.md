@@ -970,8 +970,8 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
   `color/text/secondary`、`color/border/default`、`color/action/primary`、
   `spacing/sm`、`spacing/md` 和 `radius/md`。主操作实例映射工程现行
   `--df-color-primary=#25684A`；没有新增或修改 variable、文字样式或效果样式。
-- 记录条目在 Figma 中复用 TDesign Cell 表达结构；工程继续组合 `ui-card` 和 `ui-tag`。
-  空态、按钮分别映射 `ui-empty`、`ui-button`；NavBar 与三项 TabBar 沿用现状。
+- 记录条目在 Figma 中复用 TDesign Cell 表达结构；工程以 `ui-card` 组合两行摘要和方向箭头。
+  月份失败、整月空态的主操作映射 `ui-button`，其余空态使用页面内克制文字；NavBar 与三项 TabBar 沿用现状。
 - L01–L06、R01–R04 均为 `375 × 812`，`placeholder=false`，无零尺寸节点。新增自由文本使用
   `Noto Sans SC Regular / Medium`；系统状态栏保留既有字体。
 - 已逐屏截图复核默认、空态、局部加载、失败、整月空态、长列表以及详情四态；未发现
@@ -982,7 +982,7 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
 
 - 记录页已按 L01–L06 接入月份状态和上海自然日日历模型；默认选中今天，切换月份选中目标月首日，点击日期立即更新当天列表，下拉刷新与失败重试均保留目标月份和选择。
 - 新增 `components/vendor/record-calendar`，内部固定使用 TDesign Calendar 的 `use-popup=false`、`type=single`、`switch-mode=year-month` 和无确认按钮，只向页面暴露 `select/panelchange`。TDesign 1.15.3 的动态函数型 `format` 兼容集中在包装层，页面只传 `calendarDays`。
-- 页面继续组合 `ui-card`、`ui-tag`、`ui-notice` 和 `ui-empty`，未新增 token、裸色值或页面级 `<t-*>`。当天条目展示上海时间、狗狗、人饭摘要和狗饭食材数；长名称允许自然换行。
+- 页面组合 `ui-card` 和 TDesign Calendar vendor wrapper，未新增 token、裸色值或页面级 `<t-*>`。当天条目展示上海时间、狗狗、人饭摘要和狗饭食材数；长名称允许自然换行。
 - DevTools `build-npm` 无 warning；375×812 实际截图确认主绿选中态、“已记”后缀、当天列表、页面滚动和三项 TabBar 无遮挡。其余五态由页面结构与状态测试覆盖，完整逐态截图对比仍由 F4.6 统一执行。
 
 ### 2026-07-31 F4.4、F4.5 记录详情实现
@@ -991,3 +991,11 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
 - 新增纯详情 view model，只从记录内的 `dogSnapshot/humanMenu/dogMealItems/assessment/versions/note` 建立展示分组；canonical 狗饭项缺少 `preparationState` 时，只允许沿保存的 `sourceRefs → humanMenu.components` 快照恢复口径，不查询当前档案、活动目录、营养数据、标准或算法，不读取或生成照片模型。
 - 页面继续组合 `ui-card` 和 `ui-notice`；狗狗快照使用 soft card，其余使用 white surface，评估通过项目 `primary/warning` token 同时配合明确文字表达。没有新增 token、组件变体或页面级第三方标签。
 - 完整、营养不足、数据缺失、无备注、长狗名、长菜单、长版本、多菜和缺损旧快照均有自动化覆盖。DevTools `build-npm` 无 warning；375×812 实际 R01 截图确认首屏层级、卡片宽度、32rpx 内边距、主绿评估文字和下方滚动内容无横向溢出。R02–R04 完整逐态截图留给 F4.6。
+
+### 2026-07-31 F4.6 十态视觉验收
+
+- 通过每态独立的 DevTools 自动化会话，在 375×812 同 viewport 下完成 L01–L06 与 R01–R04 十张实际截图；逐张对照冻结 frame 检查尺寸、层级、文案、长文本、局部状态和底部遮挡。
+- 记录页根据截图差异移除月历外层卡片和页面侧边缩进，使 TDesign Calendar 以全宽白底直接承接内容区；月份加载保留降噪后的月历轮廓，只在日期区显示 circular Loading。
+- 当天摘要改为“日期 · 次数/暂无喂食”单行标题和生活化说明；条目按时间、狗狗、菜单与食材数形成两行层级并增加进入详情的方向箭头。当天空态改为克制居中文字，月份失败和整月空态改为说明加独立整宽 `ui-button`。
+- R01–R04 均确认狗狗快照与保存时双轴评估优先、正常/不足/缺失均有文字结论、长狗名与菜单自然换行、无备注不留占位；详情实现无需返工。
+- 全量测试 325 项中 324 通过、1 项既有条件跳过；UI、主包、记录合同、偏差、分包同步、代码质量和 `git diff --check` 通过，DevTools `build-npm` 返回 `warnings: []`。临时截图与自动化注入脚本在验收后清理，不进入提交。
