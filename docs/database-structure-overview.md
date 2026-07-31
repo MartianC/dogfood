@@ -1,6 +1,6 @@
 # 数据库结构总览
 
-更新时间：2026-07-27
+更新时间：2026-08-01
 
 这份文档以当前代码、导出脚本和项目设计文档为准，区分三类数据：用户业务数据、公共营养运行时投影、离线审核主库。CloudBase 是文档数据库，下面的“表”统一指集合；离线部分明确写作 SQLite 表。
 
@@ -25,7 +25,7 @@
 CloudBase 公共只读投影
   ├─ foods / food_nutrients / food_localized_name / pet_nutrition_standards
   └─ data_releases / food_nutrition_profiles / ingredient_catalog /
-     canine_ingredient_policies / nutrient_rankings
+     canine_ingredient_policies / nutrient_rankings / human_recipes
 ```
 
 业务集合由云函数写入；公共集合由离线导出和受限导入脚本写入。页面层应使用 `id`、`userId` 等业务字段，不把 `_id`、`_openid` 泄漏成业务契约。
@@ -53,6 +53,7 @@ CloudBase 公共只读投影
 |---|---|---|
 | `_id` | string | 主键 |
 | `_openid` | string | CloudBase 用户归属，不可由客户端决定 |
+| `schemaVersion` | number，当前为 3 | `dogProfile/v3` 合同版本 |
 | `name` | string，必填 | 狗狗名称 |
 | `birthDate` | `YYYY-MM-DD`，必填 | 当前实际写入字段；由此派生年龄阶段 |
 | `ageStage` | string | 当前读取/展示字段，写入时由其他服务补齐或历史遗留 |
@@ -68,7 +69,10 @@ CloudBase 公共只读投影
 | `allergens` | string[] | 过敏源，创建时初始化为空数组 |
 | `avoidIngredients` | string[] | 忌口，创建时初始化为空数组 |
 | `healthNotes` | string | 健康备注 |
+| `specialNutritionNeeds` | object | 用户显式确认的疾病、生殖状态和治疗性体重管理；未知值为 `null` |
 | `createdAt` / `updatedAt` | Date | 审计时间 |
+
+`birthDate`、`dailyActivityHours` 和 `specialNutritionNeeds` 是共享本餐适用门禁的可信输入；生命阶段与活动档位在运行时派生。客户端和云函数都按 `dogProfile/v3` 校验，旧版档案缓存不能冒充当前合同。
 
 ### `customRecipes`
 
@@ -123,14 +127,17 @@ CloudBase 公共只读投影
 | `idempotencyKey` | string | 与 `_openid` 组成唯一索引，保证重试只创建一条 |
 | `requestFingerprint` | string | 对 canonical 单餐候选快照的确定性指纹；同 key 异指纹拒绝 |
 | `dogSnapshot` | object | 保存时档案快照 |
-| `humanMenu` / `sourceIngredientSelections` | object[] | 人饭菜单、全部来源原料及选择决定快照 |
-| `dogMealItems` | object[] | 引用 `sharedMealIngredient/v1` 的最终食材和克重 |
+| `humanMenu` / `sourceIngredientSelections` | object[] | 一到多道人饭菜单、全部来源原料及跨菜单选择决定快照 |
+| `dogMealItems` | object[] | 引用 `sharedMealIngredient/v1` 的最终食材和用户填写克重；同一食材可保留多个 `sourceRefs` |
 | `assessment` | object | 保存时能量、营养密度、数据覆盖和算法版本快照 |
-| `note` / `photoFileIds` | string / string[] | 可选备注与云文件引用 |
+| `note` | string，最大 200 字 | 可选历史备注；当前创建页不展示备注输入，但保留旧草稿兼容 |
+| `photoFileIds` | string[]，`maxItems=0` | 只兼容空数组；当前没有照片选择、上传、保存或展示能力 |
 | `versions` | object | recipe、mapping、catalog、policy、standard、nutrition source 与 assessment algorithm 版本 |
 | `createdAt` | Date | 服务端创建时间；没有更新 action |
 
-索引机器契约位于 `cloudfunctions/sharedMealRecord/schema/indexes.json`：唯一索引为 `(_openid ASC, idempotencyKey ASC)`；全部记录列表索引为 `(_openid ASC, mealTime DESC, _id DESC)`；按狗筛选索引为 `(_openid ASC, targetDogId ASC, mealTime DESC, _id DESC)`。权限契约位于同目录 `access.json`，固定为 `ADMINONLY`，小程序客户端不可直读或直写。生产集合、权限和索引需另行明确授权后部署。
+索引机器契约位于 `cloudfunctions/sharedMealRecord/schema/indexes.json`：唯一索引为 `(_openid ASC, idempotencyKey ASC)`；全部记录列表索引为 `(_openid ASC, mealTime DESC, _id DESC)`；按狗筛选索引为 `(_openid ASC, targetDogId ASC, mealTime DESC, _id DESC)`。权限契约位于同目录 `access.json`，固定为 `ADMINONLY`，小程序客户端不可直读或直写。`sharedMealRecord` 云函数、生产集合、ACL 和三条业务索引已于 2026-07-31 部署并通过最小幂等烟测；后续结构变更仍需单独授权。
+
+共享本餐记录不保存自动分配结果。`dogMealItems[].perMealAmountGram` 来自用户首次填写或用户明确确认后的整餐等比例缩放；营养标准只生成评估快照，不反推食材比例。
 
 ## 3. CloudBase 公共营养集合
 
@@ -145,7 +152,7 @@ CloudBase 公共只读投影
 
 ### 食材知识运行时投影
 
-- `data_releases`：发布指针和计数。字段：`release_id`、`base_release_id`、`schema_version`、`status`（当前固定 `staging`）、`catalog_version`、`policy_version`、`ranking_version`、独立 `recipe_version`、输入 `mapping_version`、`rollback_candidate`、`generated_at`、`sources[]`、`collections` 计数。
+- `data_releases`：发布指针和计数。字段：`release_id`、`base_release_id`、`schema_version`、`status`（`staging` 或 `active`）、`catalog_version`、`policy_version`、`ranking_version`、独立 `recipe_version`、输入 `mapping_version`、`rollback_candidate`、`generated_at`、`sources[]`、`collections` 计数。生产查询只消费当前活动发布，新的导出先进入 staging 完成验证。
 - `food_nutrition_profiles`：一条 `source_release_id + fdc_id` 一份聚合快照。字段：`release_id`、`food_id`、`fdc_id`、食物描述/来源版本、`nutrient_count`、`known_nutrient_count`、`nutrients` 对象。`nutrients[nutrient_id]` 含 `name`、`unit`、`amount`、`value_status`。
 - `ingredient_catalog`：搜索和选择目录项。字段：`release_id`、`catalog_version`、`policy_version`、`concept_id`、`variant_id`、中文名/别名、分类、制备/部位/皮骨状态、`food_id`/`fdc_id`、来源版本、`policy_status`；新生成物不保存权限布尔字段。
 - `canine_ingredient_policies`：安全策略快照。字段：`policy_id`、`policy_version`、兼容目录版本、`subject_key`、`concept_id`、可选 `variant_id`、`decision`、`hazard_type`、`conditions`、`evidence`、`rationale`、审核人/时间和下次复核时间。
@@ -170,7 +177,7 @@ CloudBase 公共只读投影
 
 ## 5. 关系、版本和权限
 
-1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱、清单和共享本餐记录以 ID 引用，同时保存 snapshots。
+1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱、清单和共享本餐记录以 ID 引用，同时保存 snapshots。共享本餐一次只引用一只狗狗。
 2. 营养关系：`foods` → `food_nutrients` / `food_localized_name`；`food_nutrition_profiles` 将同一食物的营养明细聚合成一次读取；`ingredient_catalog.variant_id` → `food_id`。
 3. 审核关系：`ingredient_concept` → `ingredient_alias` / `ingredient_variant`；策略优先匹配 variant，缺失时回退 concept；排行必须同时兼容 catalog 和 policy 版本。
 4. 发布关系：一个 `release_id` 绑定一组 `catalog_version`、`policy_version`、`ranking_version` 和各集合计数。旧快照不可修改，生产切换应通过活动版本指针完成。
@@ -178,7 +185,7 @@ CloudBase 公共只读投影
 
 ## 6. 当前需要优先收口的地方
 
-- **档案契约漂移**：旧设计文档用 `ageStage`、`activityLevel` 等作为输入，但当前实际校验使用 `birthDate`、`dailyActivityHours`、`bodyCondition`；应明确哪些是源字段、哪些是派生字段，并补一次迁移/兼容策略。
+- **旧档案数据迁移仍需统计**：当前客户端、云函数和缓存已经统一使用 `dogProfile/v3`，并把 `birthDate`、`dailyActivityHours`、`specialNutritionNeeds` 作为可信输入；仍需单独统计线上旧文档缺失字段的规模，再决定是否执行一次性迁移。
 - **用户主键命名不一致**：`users` 使用 `openId`，其他集合使用 `_openid`。这是 CloudBase 约定与业务字段混用，建议保留 `_openid` 做权限，统一业务层只暴露 `userId`。
 - **写入白名单不足**：`saveCustomRecipe` 和 `saveMealPlan` 直接展开 payload，可能写入未定义字段或覆盖审计字段；应改为显式字段白名单和服务端枚举校验。
 - **关系没有服务端校验**：保存食谱/清单时尚未确认 `targetDogIds` 属于当前用户，也没有验证 `recipeId`、`customRecipeId` 与 `sourceType` 的一致性。
@@ -189,6 +196,6 @@ CloudBase 公共只读投影
 
 1. 先冻结本文件中的集合契约，并用脚本扫描线上/测试 fixture 的实际字段。
 2. 给四个业务集合增加服务端 DTO 白名单、枚举和归属校验。
-3. 为 `dogs` 建立 `profileSchemaVersion`，把源字段与派生字段分开，兼容旧数据后再清理旧字段。
+3. 统计 `dogs` 中缺少 `dogProfile/v3` 必需字段的旧文档；继续在读取边界显式降级，不从派生字段反推可信输入。
 4. 为公共投影统一要求 `release_id` + 兼容版本，所有查询显式带活动版本。
 5. 最后再考虑删除冗余字段或拆集合；历史清单和食谱必须继续依赖快照，不做破坏性回填。
