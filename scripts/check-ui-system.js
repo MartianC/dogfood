@@ -3,7 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const root = process.cwd()
+const root = path.resolve(__dirname, '..')
 const errors = []
 const forbiddenClassNames = [
   'hero',
@@ -29,6 +29,28 @@ const thirdPartyTags = [
 const allowedRawColorFiles = new Set([
   path.normalize('styles/tokens.wxss'),
 ])
+const expectedSharedMealWorkPackages = {
+  menuSearch: {
+    designTaskId: 'D1.1',
+    implementationTaskIds: ['F1.2', 'F1.3', 'F1.4', 'F1.5', 'F1.6', 'F1.7'],
+    states: ['D01', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'D12', 'D13', 'D14'],
+  },
+  composeSources: {
+    designTaskId: 'D2.1',
+    implementationTaskIds: ['F2.2', 'F2.3', 'F2.4'],
+    states: ['V01', 'V02', 'V03', 'V04', 'V05', 'V06'],
+  },
+  draftRecovery: {
+    designTaskId: 'D3.1',
+    implementationTaskIds: ['F3.2', 'F3.3'],
+    states: ['R01', 'R02', 'R03', 'R04', 'R05'],
+  },
+  recordListAndDetail: {
+    designTaskId: 'D4.1',
+    implementationTaskIds: ['F4.3', 'F4.5', 'F4.6'],
+    states: ['L01', 'L02', 'L03', 'L04', 'L05', 'L06', 'R01', 'R02', 'R03', 'R04'],
+  },
+}
 
 function report(message) {
   errors.push(message)
@@ -142,6 +164,108 @@ function validateFigmaComponentMap() {
   }
 }
 
+function collectSharedMealFigmaEvidenceErrors(evidence, projectRoot = root) {
+  const findings = []
+  const add = (message) => findings.push(`共享本餐 Figma 证据：${message}`)
+  if (!evidence || evidence.contract !== 'sharedMealFigmaImplementationEvidence/v1') {
+    add('契约版本无效')
+    return findings
+  }
+  const packages = evidence.workPackages || {}
+  for (const [name, expected] of Object.entries(expectedSharedMealWorkPackages)) {
+    const item = packages[name]
+    if (!item) {
+      add(`${name} 缺少工作包`)
+      continue
+    }
+    if (item.designTaskId !== expected.designTaskId
+      || JSON.stringify(item.implementationTaskIds) !== JSON.stringify(expected.implementationTaskIds)) {
+      add(`${name} 的任务范围不正确`)
+    }
+    const source = item.source || {}
+    if (!source.fileKey || !source.pageNodeId || !Array.isArray(source.frameNodeIds) || source.frameNodeIds.length === 0) {
+      add(`${name} 缺少 Figma file/page/frame node`)
+    }
+    if (!Number.isFinite(Number(source.frameWidthPx)) || Number(source.frameWidthPx) <= 0
+      || !source.targetViewport || !Number.isFinite(Number(source.targetViewport.width))
+      || !Number.isFinite(Number(source.targetViewport.height))) {
+      add(`${name} 缺少有效的 frame 或目标 viewport 尺寸`)
+    }
+    if (!item.confirmation || item.confirmation.status !== 'confirmed') {
+      add(`${name} 的用户确认状态必须为 confirmed`)
+    }
+    if (!item.confirmation || !item.confirmation.date || item.confirmation.confirmedBy !== 'user') {
+      add(`${name} 缺少用户确认日期或确认人`)
+    }
+    if (!item.confirmation || !item.confirmation.notesMarker) {
+      add(`${name} 缺少用户确认交接记录定位`)
+    }
+    if (!Array.isArray(item.tokenMap) || item.tokenMap.length === 0) {
+      add(`${name} 缺少 token map`)
+    } else {
+      const tokenText = fs.readFileSync(path.join(projectRoot, 'styles/tokens.wxss'), 'utf8')
+      item.tokenMap.forEach((mapping) => {
+        if (!mapping.figma || !mapping.target || !tokenText.includes(`${mapping.target}:`)) {
+          add(`${name} 存在无效 token map`)
+        }
+      })
+    }
+    if (!Array.isArray(item.componentMap) || item.componentMap.length === 0) {
+      add(`${name} 缺少 component map`)
+    } else {
+      item.componentMap.forEach((mapping) => {
+        if (!mapping.figma || !mapping.target || !fs.existsSync(path.join(projectRoot, mapping.target))) {
+          add(`${name} 存在无效 component map`)
+        }
+      })
+    }
+    const validation = item.visualValidation || {}
+    if (validation.status !== 'passed') add(`${name} 的视觉验收状态必须为 passed`)
+    const screenshot = validation.screenshotEvidence
+    if (!screenshot || screenshot.method !== 'wechat-devtools' || screenshot.result !== 'passed'
+      || JSON.stringify(screenshot.comparedFrameNodeIds) !== JSON.stringify(source.frameNodeIds)) {
+      add(`${name} 缺少截图比对证据`)
+    }
+    if (JSON.stringify(validation.states) !== JSON.stringify(expected.states)) {
+      add(`${name} 的视觉验收状态覆盖不完整`)
+    }
+    if (Array.isArray(source.frameNodeIds) && source.frameNodeIds.length !== expected.states.length) {
+      add(`${name} 的 frame 与验收状态无法一一对应`)
+    }
+    if (!validation.date || validation.artifactPolicy !== 'reviewed-then-deleted') {
+      add(`${name} 缺少视觉验收日期或临时截图清理策略`)
+    }
+    if (!validation.implementationNotesSection) {
+      add(`${name} 缺少设计交接文档定位`)
+    }
+  }
+  const extraPackages = Object.keys(packages).filter((name) => !expectedSharedMealWorkPackages[name])
+  if (extraPackages.length) add(`包含计划外工作包：${extraPackages.join(', ')}`)
+  return [...new Set(findings)].sort()
+}
+
+function validateSharedMealFigmaEvidence() {
+  const rel = 'docs/ui/shared-meal-figma-implementation-evidence.json'
+  const evidence = readJsonIfExists(rel)
+  if (!evidence) {
+    report(rel + ': 缺少共享本餐四个 UI 工作包的机器证据')
+    return
+  }
+  collectSharedMealFigmaEvidenceErrors(evidence, root).forEach(report)
+  const notesPath = path.join(root, 'docs/ui/figma-implementation-notes.md')
+  const notes = fs.existsSync(notesPath) ? fs.readFileSync(notesPath, 'utf8') : ''
+  Object.entries(evidence.workPackages || {}).forEach(([name, item]) => {
+    const markers = [
+      item.confirmation && item.confirmation.notesMarker,
+      item.visualValidation && item.visualValidation.implementationNotesSection,
+    ].filter(Boolean)
+    if (markers.some((marker) => !notes.includes(marker))) {
+      report(`共享本餐 Figma 证据：${name} 的设计交接章节不存在`)
+    }
+  })
+}
+
+function main() {
 for (const file of walk(root)) {
   const rel = path.relative(root, file)
   const normalized = path.normalize(rel)
@@ -192,6 +316,7 @@ for (const file of walk(root)) {
 validateFigmaSourceManifest()
 validateFigmaTokenMap()
 validateFigmaComponentMap()
+validateSharedMealFigmaEvidence()
 
 const uniqueErrors = [...new Set(errors)].sort()
 
@@ -201,3 +326,8 @@ if (uniqueErrors.length) {
 }
 
 console.log('UI system checks passed.')
+}
+
+if (require.main === module) main()
+
+module.exports = { collectSharedMealFigmaEvidenceErrors }

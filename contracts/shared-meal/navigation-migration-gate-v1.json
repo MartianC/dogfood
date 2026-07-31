@@ -1,11 +1,43 @@
 {
   "contract": "navigationMigrationGate/v1",
-  "requiredEvidence": [
-    "tests/shared-meal-draft.test.js",
-    "tests/shared-meal-assessment-flow.test.js",
-    "tests/shared-meal-record-service.test.js",
-    "tests/shared-meal-record-ui.test.js"
+  "evidenceGroups": {
+    "multiMenu": [
+      { "kind": "test", "path": "tests/shared-meal-menu-search.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-menu-session.test.js" }
+    ],
+    "sourceReselection": [
+      { "kind": "test", "path": "tests/shared-meal-compose-sources.test.js" },
+      { "kind": "test", "path": "tests/ingredient-measurement-basis.test.js" }
+    ],
+    "explicitDraftRecovery": [
+      { "kind": "test", "path": "tests/shared-meal-compose-entry.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-draft.test.js" }
+    ],
+    "cloudRecordContract": [
+      { "kind": "contractChecker", "path": "scripts/check-shared-meal-record-contract.js" },
+      { "kind": "test", "path": "tests/shared-meal-record-contract.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-record-cloud-function.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-record-service.test.js" }
+    ],
+    "recordPaginationAndDetail": [
+      { "kind": "test", "path": "tests/shared-meal-record-month-state.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-record-calendar-model.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-record-page.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-record-detail-model.test.js" },
+      { "kind": "test", "path": "tests/shared-meal-record-detail-page.test.js" }
+    ]
+  },
+  "contractPaths": [
+    "cloudfunctions/sharedMealRecord/schema/access.json",
+    "cloudfunctions/sharedMealRecord/schema/indexes.json",
+    "cloudfunctions/sharedMealRecord/schema/record.schema.json",
+    "contracts/shared-meal/shared-meal-ingredient-v1.schema.json"
   ],
   "tabs": ["首页", "记录", "我的"],
-  "legacyCompatibility": "routes-retained-not-primary"
+  "legacyCompatibility": "routes-retained-not-primary",
+  "legacyPaths": [
+    "pages/recipes/list/index",
+    "pages/recipes/detail/index",
+    "pages/plan/index/index"
+  ]
 }

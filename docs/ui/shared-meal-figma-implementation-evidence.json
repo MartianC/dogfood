@@ -1,0 +1,139 @@
+{
+  "contract": "sharedMealFigmaImplementationEvidence/v1",
+  "notes": "docs/ui/figma-implementation-notes.md",
+  "workPackages": {
+    "menuSearch": {
+      "designTaskId": "D1.1",
+      "implementationTaskIds": ["F1.2", "F1.3", "F1.4", "F1.5", "F1.6", "F1.7"],
+      "source": {
+        "fileKey": "CHUlIiWUhuXHA0IUwQe6Qe",
+        "pageNodeId": "19922:2",
+        "frameNodeIds": ["19938:10", "19940:31", "19940:85", "19941:73", "19941:38023", "19942:135", "19943:172", "19944:227", "19945:263", "19946:310", "19946:38288", "19971:383", "19971:464", "20007:665"],
+        "frameWidthPx": 375,
+        "targetViewport": { "width": 375, "height": 812 }
+      },
+      "confirmation": { "status": "confirmed", "date": "2026-07-29", "confirmedBy": "user", "notesMarker": "2026-07-29 用户已确认 D1.1 通过" },
+      "tokenMap": [
+        { "figma": "color/action/primary", "target": "--df-color-primary" },
+        { "figma": "color/bg/surface", "target": "--df-color-surface" }
+      ],
+      "componentMap": [
+        { "figma": "SharedMealMenuCard", "target": "components/ui/ui-card" },
+        { "figma": "TDesign Checkbox/Icon/Loading", "target": "components/vendor/recipe-menu-indicator" },
+        { "figma": "SharedMealSelectionSummary Tag", "target": "components/ui/ui-tag" },
+        { "figma": "Summary CTA", "target": "components/ui/ui-button" }
+      ],
+      "visualValidation": {
+        "status": "passed",
+        "date": "2026-07-29",
+        "screenshotEvidence": {
+          "method": "wechat-devtools",
+          "result": "passed",
+          "comparedFrameNodeIds": ["19938:10", "19940:31", "19940:85", "19941:73", "19941:38023", "19942:135", "19943:172", "19944:227", "19945:263", "19946:310", "19946:38288", "19971:383", "19971:464", "20007:665"]
+        },
+        "states": ["D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "D11", "D12", "D13", "D14"],
+        "artifactPolicy": "reviewed-then-deleted",
+        "implementationNotesSection": "### F1.3 小程序实现记录"
+      }
+    },
+    "composeSources": {
+      "designTaskId": "D2.1",
+      "implementationTaskIds": ["F2.2", "F2.3", "F2.4"],
+      "source": {
+        "fileKey": "CHUlIiWUhuXHA0IUwQe6Qe",
+        "pageNodeId": "20031:2",
+        "frameNodeIds": ["20086:12", "20091:45", "20092:90", "20093:132", "20094:152", "20095:194"],
+        "frameWidthPx": 375,
+        "targetViewport": { "width": 375, "height": 812 }
+      },
+      "confirmation": { "status": "confirmed", "date": "2026-07-30", "confirmedBy": "user", "notesMarker": "2026-07-30 用户确认 D2.1 通过" },
+      "tokenMap": [
+        { "figma": "color/action/primary", "target": "--df-color-primary" },
+        { "figma": "color/text/secondary", "target": "--df-color-text-secondary" }
+      ],
+      "componentMap": [
+        { "figma": "HumanMealIngredientRow Icon", "target": "components/vendor/recipe-menu-indicator" },
+        { "figma": "ComposeBottomAction CTA", "target": "components/ui/ui-button" },
+        { "figma": "本餐评估", "target": "components/nutrition-assessment" }
+      ],
+      "visualValidation": {
+        "status": "passed",
+        "date": "2026-07-30",
+        "screenshotEvidence": {
+          "method": "wechat-devtools",
+          "result": "passed",
+          "comparedFrameNodeIds": ["20086:12", "20091:45", "20092:90", "20093:132", "20094:152", "20095:194"]
+        },
+        "states": ["V01", "V02", "V03", "V04", "V05", "V06"],
+        "artifactPolicy": "reviewed-then-deleted",
+        "implementationNotesSection": "#### F2.4 compose 局部视觉验收记录"
+      }
+    },
+    "draftRecovery": {
+      "designTaskId": "D3.1",
+      "implementationTaskIds": ["F3.2", "F3.3"],
+      "source": {
+        "fileKey": "CHUlIiWUhuXHA0IUwQe6Qe",
+        "pageNodeId": "20119:2",
+        "frameNodeIds": ["20127:8", "20131:25", "20132:42", "20132:38974", "20132:39048"],
+        "frameWidthPx": 375,
+        "targetViewport": { "width": 375, "height": 812 }
+      },
+      "confirmation": { "status": "confirmed", "date": "2026-07-30", "confirmedBy": "user", "notesMarker": "2026-07-30 用户确认 D3.1 通过" },
+      "tokenMap": [
+        { "figma": "color/action/primary", "target": "--df-color-primary" },
+        { "figma": "工程遮罩映射", "target": "--df-color-mask" }
+      ],
+      "componentMap": [
+        { "figma": "SharedMealDraftRecoverySheet 操作", "target": "components/ui/ui-button" },
+        { "figma": "TDesign Close/Loading", "target": "components/vendor/recipe-menu-indicator" }
+      ],
+      "visualValidation": {
+        "status": "passed",
+        "date": "2026-07-30",
+        "screenshotEvidence": {
+          "method": "wechat-devtools",
+          "result": "passed",
+          "comparedFrameNodeIds": ["20127:8", "20131:25", "20132:42", "20132:38974", "20132:39048"]
+        },
+        "states": ["R01", "R02", "R03", "R04", "R05"],
+        "artifactPolicy": "reviewed-then-deleted",
+        "implementationNotesSection": "### F3.3 恢复提示视觉验收记录"
+      }
+    },
+    "recordListAndDetail": {
+      "designTaskId": "D4.1",
+      "implementationTaskIds": ["F4.3", "F4.5", "F4.6"],
+      "source": {
+        "fileKey": "CHUlIiWUhuXHA0IUwQe6Qe",
+        "pageNodeId": "20148:72",
+        "frameNodeIds": ["20151:2", "20153:236", "20155:380", "20155:39409", "20155:39757", "20155:39938", "20158:951", "20159:966", "20159:39884", "20160:994"],
+        "frameWidthPx": 375,
+        "targetViewport": { "width": 375, "height": 812 }
+      },
+      "confirmation": { "status": "confirmed", "date": "2026-07-31", "confirmedBy": "user", "notesMarker": "2026-07-31 用户确认 D4.1 通过" },
+      "tokenMap": [
+        { "figma": "color/action/primary", "target": "--df-color-primary" },
+        { "figma": "color/bg/surface", "target": "--df-color-surface" }
+      ],
+      "componentMap": [
+        { "figma": "TDesign Calendar", "target": "components/vendor/record-calendar" },
+        { "figma": "记录 Cell/详情容器", "target": "components/ui/ui-card" },
+        { "figma": "错误与评估提示", "target": "components/ui/ui-notice" },
+        { "figma": "重试与空态操作", "target": "components/ui/ui-button" }
+      ],
+      "visualValidation": {
+        "status": "passed",
+        "date": "2026-07-31",
+        "screenshotEvidence": {
+          "method": "wechat-devtools",
+          "result": "passed",
+          "comparedFrameNodeIds": ["20151:2", "20153:236", "20155:380", "20155:39409", "20155:39757", "20155:39938", "20158:951", "20159:966", "20159:39884", "20160:994"]
+        },
+        "states": ["L01", "L02", "L03", "L04", "L05", "L06", "R01", "R02", "R03", "R04"],
+        "artifactPolicy": "reviewed-then-deleted",
+        "implementationNotesSection": "### 2026-07-31 F4.6 十态视觉验收"
+      }
+    }
+  }
+}
