@@ -9,6 +9,8 @@
 
 ## 当前方向与实施计划
 
+- `docs/superpowers/plans/2026-08-01-project-structure-and-interface-roadmap.md`：下一阶段以项目结构和界面编排为主线的 DAG 路线图；体重、护理和统一记录时间轴作为主线完成后的次要能力支线。
+- `docs/superpowers/specs/2026-08-01-target-information-architecture.md`：P0.1 已冻结的目标态信息架构；在导航模型、页面职责和入口归属上优先于旧三 Tab 描述，但不表示目标导航已经上线。
 - 当前共享本餐主线按以下顺序阅读，发生冲突时以前一项为准：
   1. `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.md`：已批准的产品事实来源。
   2. `docs/superpowers/plans/2026-07-28-shared-meal-deviation-closure.md`：相对当前实现基线的偏差收敛任务与验收状态。
