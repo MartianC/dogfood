@@ -12,6 +12,7 @@
 - `docs/superpowers/plans/2026-08-01-project-structure-and-interface-roadmap.md`：下一阶段以项目结构和界面编排为主线的 DAG 路线图；体重、护理和统一记录时间轴作为主线完成后的次要能力支线。
 - `docs/superpowers/specs/2026-08-01-target-information-architecture.md`：P0.1 已冻结的目标态信息架构；在导航模型、页面职责和入口归属上优先于旧三 Tab 描述，但不表示目标导航已经上线。
 - `docs/superpowers/specs/2026-08-01-current-structure-and-navigation-migration-contract.md`：P0.2 的现状页面/依赖审计、迁移分类、canonical 路径、旧深链和回滚合同；对应机器契约位于 `contracts/navigation/project-navigation-migration-v1.json`。
+- `docs/superpowers/specs/2026-08-01-home-and-global-navigation-design.md`：D1.1 的首页六类状态、320/375/390pt 响应式画板、四目的地与中央“记一顿”动作规格；供 F1.3、F1.4 和 N1.1 实施消费。
 - 当前共享本餐主线按以下顺序阅读，发生冲突时以前一项为准：
   1. `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.md`：已批准的产品事实来源。
   2. `docs/superpowers/plans/2026-07-28-shared-meal-deviation-closure.md`：相对当前实现基线的偏差收敛任务与验收状态。

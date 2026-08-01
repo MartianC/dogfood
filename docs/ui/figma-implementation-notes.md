@@ -1,5 +1,13 @@
 # 食谱模块 Figma 实施交接
 
+## 2026-08-01 D1.1 首页与全局导航
+
+- 在 Figma 文件 `CHUlIiWUhuXHA0IUwQe6Qe` 新增页面“狗饭 · 首页与全局导航 D1.1”（Page `20186:28`），交付 H01–H08 八个首页状态和 N01 导航规格板；完整节点、状态、尺寸和实现映射见 [`首页与全局导航设计交接`](../superpowers/specs/2026-08-01-home-and-global-navigation-design.md)。
+- 首页覆盖游客、无档案、有草稿、今天无记录、今天有记录和数据失败；另以 390pt 覆盖多狗、长狗名、长菜单名，以 320pt 覆盖窄屏换行和底部遮挡。
+- 四个目的地使用 TDesign Icon 组件，中央动作直接复用 TDesign Fab；工程仍须由 `custom-tab-bar` 包装 TDesign TabBar/TabBarItem。Figma MCP 未提供 TDesign TabBar 所需的 PingFang SC，因此新画板不能跨页重建该根实例，导航文字按项目既有规则降级为 Noto Sans SC。
+- 旧“狗饭 · 食谱”Figma 变量与当前 `--df-*` 存在历史色值差异。本轮未修改旧变量，避免影响已评审页面；新画板以当前工程 token 映射颜色、间距、圆角和按下态。
+- 最终审计确认 9 个 Frame 无 placeholder、无字体偏差和文字越界；8 个首页画板底部均保留 28pt 安全区，中央 Fab 均为 48 × 48pt。逐帧截图发现并修复长文案容器锁高和六字按钮换行后，无重叠、裁切或导航遮挡。
+
 ## 设计文件与范围
 
 - Figma 文件：[dogfood](https://www.figma.com/design/CHUlIiWUhuXHA0IUwQe6Qe/dogfood?m=auto&t=zV40jcxtf81ayc1j-6)
