@@ -1,36 +1,118 @@
-<view class="page with-tab-bar home-page">
-  <view class="home-greeting">
-    <view class="home-greeting__date">{{todayText}}</view>
-    <view class="home-greeting__heading df-heading-xl">和狗狗共享食材，分开做一顿饭</view>
-    <view class="home-greeting__copy df-body">从你已经决定的人饭菜单里挑选基础食材，为狗狗单独称量、无调味烹饪。</view>
+<view class="page with-tab-bar home-page" aria-label="首页">
+  <view class="home-header">
+    <view class="home-header__date df-caption">{{todayText}}</view>
+    <view class="home-header__title df-heading-xl">今天接下来做什么？</view>
+    <view class="home-header__copy df-body">记录今天和狗狗共享的一顿饭，按这次的菜单单独称量。</view>
   </view>
 
-  <ui-card variant="primary" padding="large">
-    <view class="home-create">
-      <view class="home-create__mark">＋</view>
-      <view class="home-create__heading">记录一起吃的一顿</view>
-      <view class="home-create__copy">选择这次的狗狗和人饭菜单，再填写狗饭克重。</view>
-      <ui-button bind:tap="onCreateMeal">开始记录</ui-button>
+  <ui-card
+    variant="{{homeState.status === 'data-error' ? 'plain' : 'primary'}}"
+    padding="large"
+  >
+    <view class="home-primary home-primary--{{homeState.status}}">
+      <view class="home-primary__eyebrow">当前主任务</view>
+      <view class="home-primary__title">{{homeState.primaryTask.label}}</view>
+      <view class="home-primary__description">{{homeState.primaryTask.description}}</view>
+      <ui-button variant="primary" bind:tap="onPrimaryTask">{{homeState.primaryTask.label}}</ui-button>
     </view>
   </ui-card>
 
-  <ui-card wx:if="{{dogs.length}}">
-    <view class="home-dogs__heading">这次可以选择</view>
-    <view class="home-dogs__names">{{dogs.length === 1 ? dogs[0].name : dogs.length + ' 只狗狗，开始时再单选'}}</view>
-  </ui-card>
-
-  <view class="home-recent">
-    <view class="section-head">
-      <view class="df-heading-lg">最近一顿</view>
-      <view class="section-action" aria-role="button" bindtap="onOpenRecords">全部记录</view>
+  <ui-notice
+    wx:if="{{homeState.status === 'data-error'}}"
+    variant="warning"
+  >
+    <view class="home-error">
+      <view class="home-error__title">{{homeState.error.title}}</view>
+      <view class="home-error__description">{{homeState.error.description}}</view>
+      <ui-button variant="secondary" size="small" bind:tap="onRetryHome">重新加载</ui-button>
     </view>
-    <ui-card wx:if="{{latestRecord}}" padding="small">
-      <view class="home-record" aria-role="button" aria-label="查看最近一顿记录" bindtap="onOpenLatestRecord">
-        <view class="home-record__heading">{{latestRecord.dogName}} · {{latestRecord.menuText}}</view>
-        <view class="home-record__meta">{{latestRecord.ingredientCount}} 种狗饭食材 · 查看保存时快照</view>
+  </ui-notice>
+
+  <view class="home-section">
+    <view class="home-section__head">
+      <view class="df-heading-lg">今天</view>
+    </view>
+    <ui-card padding="medium">
+      <view class="home-summary">
+        <view class="home-summary__title">{{homeState.todaySummary.title}}</view>
+        <view class="home-summary__description">{{homeState.todaySummary.description}}</view>
+        <view wx:if="{{homeState.todaySummary.count}}" class="home-summary__dogs">
+          <text wx:for="{{homeState.todaySummary.dogNames}}" wx:key="*this" class="home-summary__dog">{{item}}</text>
+        </view>
       </view>
     </ui-card>
-    <ui-empty wx:else title="还没有记录" description="保存第一顿后，会在这里显示最近的单餐快照。" />
+  </view>
+
+  <view wx:if="{{homeState.draft}}" class="home-section">
+    <view class="home-section__head">
+      <view class="df-heading-lg">正在继续</view>
+    </view>
+    <ui-card variant="soft" padding="medium">
+      <view class="home-draft">
+        <view class="home-draft__title">{{homeState.draft.dogName}} · {{homeState.draft.menuText}}</view>
+        <view class="home-draft__meta">{{homeState.draft.updatedAtText}} · 由你决定继续或重新开始</view>
+      </view>
+    </ui-card>
+  </view>
+
+  <view wx:if="{{homeState.profileIssues.length}}" class="home-section">
+    <view class="home-section__head">
+      <view class="df-heading-lg">档案事项</view>
+      <view class="home-section__hint">最多显示 3 条</view>
+    </view>
+    <view class="home-issue-list">
+      <ui-card
+        wx:for="{{homeState.profileIssues}}"
+        wx:key="key"
+        padding="small"
+      >
+        <view
+          class="home-issue"
+          data-dog-id="{{item.dogId}}"
+          aria-role="button"
+          aria-label="{{item.dogName}}，{{item.title}}"
+          bind:tap="onOpenProfileIssue"
+        >
+          <view class="home-issue__copy">
+            <view class="home-issue__title">{{item.dogName}} · {{item.title}}</view>
+            <view class="home-issue__description">{{item.description}}</view>
+          </view>
+          <view class="home-issue__chevron" aria-hidden="true">›</view>
+        </view>
+      </ui-card>
+    </view>
+  </view>
+
+  <view class="home-section home-recent">
+    <view class="home-section__head">
+      <view class="df-heading-lg">最近一顿</view>
+      <view
+        wx:if="{{homeState.status !== 'guest'}}"
+        class="home-section__action"
+        aria-role="button"
+        aria-label="查看全部本餐记录"
+        bind:tap="onOpenRecords"
+      >全部记录</view>
+    </view>
+    <ui-card wx:if="{{homeState.recentRecord}}" padding="medium">
+      <view
+        class="home-record"
+        aria-role="button"
+        aria-label="查看{{homeState.recentRecord.dogName}}的最近一顿记录"
+        bind:tap="onOpenLatestRecord"
+      >
+        <view class="home-record__copy">
+          <view class="home-record__title">{{homeState.recentRecord.dogName}} · {{homeState.recentRecord.menuText}}</view>
+          <view class="home-record__meta">{{homeState.recentRecord.ingredientCount}} 种狗饭食材 · {{homeState.recentRecord.snapshotText}}</view>
+        </view>
+        <view class="home-record__chevron" aria-hidden="true">›</view>
+      </view>
+    </ui-card>
+    <ui-empty
+      wx:else
+      title="{{homeState.status === 'guest' ? '登录后查看最近记录' : homeState.recentSummary.title}}"
+      description="{{homeState.status === 'guest' ? '登录后可以查看真实的本餐快照。' : homeState.recentSummary.description}}"
+    />
   </view>
 
   <ui-notice variant="neutral">本功能只评估并记录单餐，不提供长期完整性结论。</ui-notice>
