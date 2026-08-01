@@ -4,42 +4,9 @@
       <image class="profile-avatar" src="{{(user && user.avatarUrl) || defaultDogAvatar}}" mode="aspectFill" />
       <view class="profile-main">
         <view class="profile-title">{{authState === 'guest' ? '游客模式' : (user.nickname || '微信用户')}}</view>
-        <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案和本餐记录' : ('已创建 ' + dogs.length + ' 只狗狗档案')}}</view>
+        <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案和本餐记录' : '本餐记录会保存到当前账号'}}</view>
       </view>
       <ui-tag variant="{{authState === 'guest' ? 'neutral' : 'good'}}" size="small">{{authState === 'guest' ? '未登录' : '已登录'}}</ui-tag>
     </view>
   </ui-card>
-
-  <view wx:if="{{authState === 'guest'}}" class="section guest-panel">
-    <ui-card>
-      <view class="panel-title">登录后管理狗狗档案</view>
-      <view class="panel-desc">开始记录本餐前，需要先登录并添加狗狗档案。</view>
-      <view class="panel-action">
-        <ui-button bind:tap="onLogin">微信登录并添加狗狗</ui-button>
-      </view>
-    </ui-card>
-  </view>
-
-  <view wx:else class="section">
-    <view class="section-head">
-      <view class="df-heading-lg">狗狗档案</view>
-      <view class="section-action" bindtap="onAddDog">新增</view>
-    </view>
-    <view wx:if="{{dogs.length}}" class="profile-dog-list">
-      <ui-card wx:for="{{dogs}}" wx:key="id">
-        <view class="dog-panel">
-          <image class="dog-avatar" src="{{item.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
-          <view class="dog-copy">
-            <view class="dog-panel-head">
-              <text>{{item.name}}</text>
-              <text class="edit-link" data-id="{{item.id}}" bindtap="onEditDogPanel">修改</text>
-            </view>
-            <view class="dog-meta">{{item.lifeStageLabel || '档案待完善'}}｜{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
-          </view>
-        </view>
-      </ui-card>
-    </view>
-    <empty-state wx:else title="还没有狗狗档案" description="先添加一只狗狗，生成清单时会自动换算份量。" actionText="添加狗狗" image-url="{{defaultDogAvatar}}" bind:action="onAddDog" />
-  </view>
-
 </view>
