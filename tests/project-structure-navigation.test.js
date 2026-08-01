@@ -34,7 +34,9 @@ test('狗狗 canonical 页面先注册并保持在当前三 Tab 之外', () => {
 
   const pageSource = read('pages/dogs/index.js')
   assert.match(pageSource, /Page\(\{/)
-  assert.doesNotMatch(pageSource, /wx\.cloud|dogService|authService/)
+  assert.match(pageSource, /require\(['"]\.\.\/\.\.\/services\/dogService['"]\)/)
+  assert.match(pageSource, /require\(['"]\.\.\/\.\.\/services\/authService['"]\)/)
+  assert.doesNotMatch(pageSource, /wx\.cloud/)
 })
 
 test('P0.2 固定的旧深链继续注册且不成为主入口', () => {

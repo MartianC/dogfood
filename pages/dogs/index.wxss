@@ -1,1 +1,70 @@
-/* A1.2 只建立 canonical 页面骨架，完整界面由 F1.1 实现。 */
+@import "../../styles/tokens.wxss";
+
+.panel-action {
+  margin-top: 24rpx;
+}
+
+.panel-title {
+  color: var(--df-color-text);
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.panel-desc {
+  margin-top: 12rpx;
+  color: var(--df-color-muted);
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.section-action {
+  color: var(--df-color-primary);
+  font-size: 26rpx;
+}
+
+.profile-dog-list {
+  display: grid;
+  gap: 16rpx;
+}
+
+.dog-panel {
+  display: grid;
+  grid-template-columns: 88rpx 1fr;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.dog-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border: 1rpx solid var(--df-color-line-strong);
+  border-radius: 24rpx;
+  background: var(--df-color-surface-muted);
+  display: block;
+}
+
+.dog-copy {
+  min-width: 0;
+}
+
+.dog-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  color: var(--df-color-text);
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.edit-link {
+  color: var(--df-color-primary);
+  font-size: 26rpx;
+}
+
+.dog-meta {
+  margin-top: 10rpx;
+  color: var(--df-color-muted);
+  font-size: 23rpx;
+  line-height: 1.45;
+}
