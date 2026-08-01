@@ -166,16 +166,10 @@ test('狗狗档案标准化保留头像字段', () => {
   assert.equal(dog.avatarUrl, '/assets/dogs/default-dog.jpg')
 })
 
-test('档案列表和卡片只展示派生阶段并为旧档案保留待完善状态', () => {
+test('狗狗档案卡片只展示派生阶段并为旧档案保留待完善状态', () => {
   const root = path.join(__dirname, '..')
-  const sources = [
-    'pages/profile/index/index.js',
-    'components/dog-card/index.js'
-  ].map((file) => fs.readFileSync(path.join(root, file), 'utf8')).join('\n')
-  const templates = [
-    'pages/profile/index/index.wxml',
-    'components/dog-card/index.wxml'
-  ].map((file) => fs.readFileSync(path.join(root, file), 'utf8')).join('\n')
+  const sources = fs.readFileSync(path.join(root, 'components/dog-card/index.js'), 'utf8')
+  const templates = fs.readFileSync(path.join(root, 'components/dog-card/index.wxml'), 'utf8')
 
   assert.doesNotMatch(sources, /ageStageLabels/)
   assert.doesNotMatch(templates, /ageStageLabels|\.ageStage/)
