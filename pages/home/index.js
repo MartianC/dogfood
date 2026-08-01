@@ -1,6 +1,7 @@
 const dogService = require('../../services/dogService')
 const authService = require('../../services/authService')
 const sharedMealRecordService = require('../../services/sharedMealRecordService')
+const sharedMealEntryService = require('../../services/sharedMealEntryService')
 const { MAIN_TABS } = require('../../services/navigationMigrationService')
 
 function todayText(now = new Date()) {
@@ -51,7 +52,7 @@ Page({
   },
 
   onCreateMeal() {
-    wx.navigateTo({ url: '/subpackages/shared-meal/dog-select/index' })
+    return sharedMealEntryService.startSharedMeal()
   },
 
   onOpenLatestRecord() {

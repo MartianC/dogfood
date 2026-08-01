@@ -1,4 +1,5 @@
 const sharedMealRecordService = require('../../services/sharedMealRecordService')
+const sharedMealEntryService = require('../../services/sharedMealEntryService')
 
 const SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000
 
@@ -178,7 +179,7 @@ Page({
   },
 
   onCreateMeal() {
-    wx.navigateTo({ url: '/subpackages/shared-meal/dog-select/index' })
+    return sharedMealEntryService.startSharedMeal()
   }
 })
 

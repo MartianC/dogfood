@@ -10,13 +10,14 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8')
 }
 
-function loadRecordsPage(recordService) {
+function loadRecordsPage(recordService, entryService = { startSharedMeal: async () => ({ status: 'flow-started' }) }) {
   const source = read('pages/records/index.js')
   let definition
   const context = {
     Page(page) { definition = page },
     require(request) {
       if (request === '../../services/sharedMealRecordService') return recordService
+      if (request === '../../services/sharedMealEntryService') return entryService
       throw new Error(`测试未提供依赖：${request}`)
     },
     module: { exports: {} },

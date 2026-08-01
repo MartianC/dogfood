@@ -11,6 +11,7 @@ function loadHomePage({ dogService, recordService, authState = 'guest' }) {
     '../../services/dogService': dogService,
     '../../services/authService': { getAuthState },
     '../../services/sharedMealRecordService': recordService,
+    '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'flow-started' }) },
     '../../services/navigationMigrationService': {
       MAIN_TABS: [{ value: 'records', pagePath: 'pages/records/index' }]
     }
