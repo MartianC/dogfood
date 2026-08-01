@@ -3,6 +3,7 @@
 const fs = require('node:fs')
 const path = require('node:path')
 const { spawnSync } = require('node:child_process')
+const { runProjectNavigationGate } = require('./check-project-navigation-gate')
 
 const root = path.resolve(__dirname, '..')
 const expectedEvidence = {
@@ -97,25 +98,15 @@ function runCommand(command, args, label) {
 
 function main() {
   const gate = JSON.parse(fs.readFileSync(path.join(root, 'contracts/shared-meal/navigation-migration-gate-v1.json'), 'utf8'))
-  const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
   validateGateContract(gate, root)
-
-  const tabs = appConfig.tabBar.list.map((item) => item.text)
-  if (JSON.stringify(tabs) !== JSON.stringify(gate.tabs)) {
-    throw new Error('主导航尚未切换为首页、记录、我的')
-  }
-  gate.legacyPaths.forEach((pagePath) => {
-    if (!appConfig.pages.includes(pagePath)) throw new Error(`旧兼容路由已被删除：${pagePath}`)
-    if (appConfig.tabBar.list.some((item) => item.pagePath === pagePath)) {
-      throw new Error(`旧路由仍暴露为主入口：${pagePath}`)
-    }
-  })
 
   const evidence = Object.values(gate.evidenceGroups).flat()
   const tests = evidence.filter((item) => item.kind === 'test').map((item) => item.path)
   const contractCheckers = evidence.filter((item) => item.kind === 'contractChecker')
   runCommand(process.execPath, ['--test', ...tests], '导航迁移核心测试证据')
   contractCheckers.forEach((item) => runCommand(process.execPath, [item.path], `导航迁移合同证据 ${item.path}`))
+  // 共享本餐证据门禁继续保留；项目级 Tab、中央动作和兼容页检查统一由 G1.1 负责。
+  runProjectNavigationGate(root)
   console.log('Shared meal navigation gate passed.')
 }
 
