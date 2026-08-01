@@ -79,6 +79,29 @@ test('记录页结构覆盖 L01–L06 的有记录、当天空、加载、失败
   assert.doesNotMatch(wxml, /连续打卡|每日趋势|营养完整/)
 })
 
+test('F1.5 保留记录页确认文案并通过统一记餐入口启动', async () => {
+  const pageJson = JSON.parse(read('pages/records/index.json'))
+  const pageWxml = read('pages/records/index.wxml')
+  let entryCalls = 0
+  const entryService = {
+    async startSharedMeal() {
+      entryCalls += 1
+      return { status: 'flow-started' }
+    }
+  }
+  const { definition } = loadRecordsPage({}, entryService)
+
+  assert.equal(pageJson.navigationBarTitleText, '本餐记录')
+  assert.match(pageWxml, /还没有喂食记录/)
+  assert.match(pageWxml, /保存第一顿后，日历会显示每天的打卡情况/)
+  assert.match(pageWxml, /<ui-button bind:tap="onCreateMeal">记录第一顿<\/ui-button>/)
+  assert.doesNotMatch(pageWxml, /subpackages\/shared-meal\/dog-select\/index/)
+
+  const result = await definition.onCreateMeal()
+  assert.deepEqual(result, { status: 'flow-started' })
+  assert.equal(entryCalls, 1)
+})
+
 test('日历日期与时间展示使用上海自然日并保持长文案字段', () => {
   const { moduleExports } = loadRecordsPage({})
   assert.equal(moduleExports.shanghaiTodayKey(new Date('2026-07-30T16:30:00.000Z')), '2026-07-31')

@@ -179,6 +179,7 @@ Page({
   },
 
   onCreateMeal() {
+    // 记录空态只负责发起统一入口，登录、建档、草稿和选狗守卫由入口服务处理。
     return sharedMealEntryService.startSharedMeal()
   }
 })
