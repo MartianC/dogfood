@@ -300,6 +300,7 @@ function buildProfileIssues(dogs, profileStates, explicitIssues) {
     seen.add(key)
     const copy = PROFILE_ISSUE_COPY[issue.code] || DEFAULT_PROFILE_ISSUE
     result.push({
+      key,
       dogId: text(issue.dogId || issue.dog && issue.dog.id),
       dogName: text(issue.dogName || issue.dog && issue.dog.name, '狗狗'),
       code: text(issue.code, 'profile_incomplete'),
@@ -319,6 +320,7 @@ function buildProfileIssues(dogs, profileStates, explicitIssues) {
       seen.add(key)
       const copy = PROFILE_ISSUE_COPY[code] || DEFAULT_PROFILE_ISSUE
       result.push({
+        key,
         dogId: dogId(dog),
         dogName: dogName(dog),
         code,
@@ -540,5 +542,6 @@ module.exports = {
   recordView,
   normalizeRecords,
   draftView,
-  formatDraftUpdatedAt
+  formatDraftUpdatedAt,
+  shanghaiDateKey
 }
