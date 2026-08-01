@@ -12,6 +12,17 @@ function loadHomePage({ dogService, recordService, authState = 'guest' }) {
     '../../services/authService': { getAuthState },
     '../../services/sharedMealRecordService': recordService,
     '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'flow-started' }) },
+    '../../services/homeStateModel': {
+      recordView(record) {
+        if (!record) return null
+        return {
+          id: record.id,
+          dogName: record.dogSnapshot && record.dogSnapshot.name || '狗狗',
+          menuText: (record.humanMenu || []).map((item) => item.title).filter(Boolean).join('、') || '这一顿',
+          ingredientCount: (record.dogMealItems || []).length
+        }
+      }
+    },
     '../../services/navigationMigrationService': {
       MAIN_TABS: [{ value: 'records', pagePath: 'pages/records/index' }]
     }

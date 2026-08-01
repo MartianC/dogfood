@@ -2,6 +2,7 @@ const dogService = require('../../services/dogService')
 const authService = require('../../services/authService')
 const sharedMealRecordService = require('../../services/sharedMealRecordService')
 const sharedMealEntryService = require('../../services/sharedMealEntryService')
+const { recordView } = require('../../services/homeStateModel')
 const { MAIN_TABS } = require('../../services/navigationMigrationService')
 
 function todayText(now = new Date()) {
@@ -9,14 +10,7 @@ function todayText(now = new Date()) {
 }
 
 function latestRecordView(record) {
-  if (!record) return null
-  const menuText = (record.humanMenu || []).map((item) => item.title).filter(Boolean).join('、')
-  return {
-    ...record,
-    dogName: record.dogSnapshot && record.dogSnapshot.name || '狗狗',
-    menuText: menuText || '这一顿',
-    ingredientCount: (record.dogMealItems || []).length
-  }
+  return recordView(record)
 }
 
 Page({
