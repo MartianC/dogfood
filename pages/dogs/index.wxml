@@ -1,0 +1,5 @@
+<view class="page with-tab-bar dogs-page" aria-label="狗狗档案中心">
+  <view class="section">
+    <view class="df-heading-xl">狗狗</view>
+  </view>
+</view>

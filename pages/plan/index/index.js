@@ -40,7 +40,7 @@ Page({
   },
 
   onGoRecipes() {
-    wx.switchTab({ url: '/pages/recipes/list/index' })
+    wx.navigateTo({ url: '/pages/recipes/list/index' })
   },
 
   onCheckItem(e) {

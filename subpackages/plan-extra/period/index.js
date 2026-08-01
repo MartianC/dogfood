@@ -81,6 +81,6 @@ Page({
     if (!this.data.preview) return
     const saved = await mealPlanService.savePlan(this.data.preview)
     getApp().setLatestPlan(saved)
-    wx.switchTab({ url: '/pages/plan/index/index' })
+    wx.redirectTo({ url: '/pages/plan/index/index' })
   }
 })

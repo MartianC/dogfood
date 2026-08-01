@@ -2,10 +2,11 @@
   "pages": [
     "pages/home/index",
     "pages/records/index",
+    "pages/dogs/index",
+    "pages/profile/index/index",
     "pages/recipes/list/index",
     "pages/recipes/detail/index",
-    "pages/plan/index/index",
-    "pages/profile/index/index"
+    "pages/plan/index/index"
   ],
   "subpackages": [
     {
