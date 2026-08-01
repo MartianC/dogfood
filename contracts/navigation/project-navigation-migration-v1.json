@@ -1,0 +1,199 @@
+{
+  "contract": "projectNavigationMigration/v1",
+  "status": "frozen-target",
+  "sourceOfTruth": "docs/superpowers/specs/2026-08-01-current-structure-and-navigation-migration-contract.md",
+  "current": {
+    "tabBar": [
+      { "id": "home", "label": "首页", "pagePath": "pages/home/index" },
+      { "id": "records", "label": "记录", "pagePath": "pages/records/index" },
+      { "id": "profile", "label": "我的", "pagePath": "pages/profile/index/index" }
+    ],
+    "navigationDefinitionFiles": [
+      "app.json",
+      "custom-tab-bar/index.js",
+      "services/navigationMigrationService.js"
+    ],
+    "registeredPageCount": 18,
+    "subpackageRoots": [
+      "subpackages/dog-profile",
+      "subpackages/plan-extra",
+      "subpackages/custom-recipe",
+      "subpackages/shared-meal"
+    ]
+  },
+  "target": {
+    "tabBar": [
+      { "id": "home", "label": "首页", "pagePath": "pages/home/index", "position": 0 },
+      { "id": "records", "label": "记录", "pagePath": "pages/records/index", "position": 1 },
+      { "id": "dogs", "label": "狗狗", "pagePath": "pages/dogs/index", "position": 3 },
+      { "id": "profile", "label": "我的", "pagePath": "pages/profile/index/index", "position": 4 }
+    ],
+    "centralAction": {
+      "id": "start-shared-meal",
+      "label": "记一顿",
+      "position": 2,
+      "isTab": false,
+      "hasSelectedState": false,
+      "entryService": "services/sharedMealEntryService.js",
+      "currentFlowEntryPath": "subpackages/shared-meal/dog-select/index",
+      "callers": [
+        "pages/home/index",
+        "pages/records/index",
+        "custom-tab-bar/index"
+      ]
+    },
+    "registrationOrder": [
+      "pages/home/index",
+      "pages/records/index",
+      "pages/dogs/index",
+      "pages/profile/index/index"
+    ]
+  },
+  "dependencyProfiles": {
+    "home": {
+      "services": ["authService", "dogService", "sharedMealRecordService", "navigationMigrationService"],
+      "adapterMethods": ["login", "listDogs", "listSharedMealRecords"],
+      "cloudFunctions": ["login", "dogProfile", "sharedMealRecord"]
+    },
+    "records": {
+      "services": ["sharedMealRecordService", "sharedMealRecordMonthState", "sharedMealRecordCalendarModel"],
+      "adapterMethods": ["listSharedMealRecords"],
+      "cloudFunctions": ["sharedMealRecord"]
+    },
+    "profile": {
+      "services": ["authService", "dogService"],
+      "adapterMethods": ["login", "listDogs"],
+      "cloudFunctions": ["login", "dogProfile"]
+    },
+    "dogProfileEditor": {
+      "services": ["authService", "dogService", "fileService", "dogProfileDerivations", "lifeStageEstimator"],
+      "adapterMethods": ["login", "listDogs", "getDogProfileContract", "createDog", "updateDog", "deleteDog"],
+      "cloudFunctions": ["login", "dogProfile"]
+    },
+    "legacyRecipeLibrary": {
+      "services": ["dogService", "customRecipeService"],
+      "adapterMethods": ["listDogs"],
+      "cloudFunctions": ["dogProfile"]
+    },
+    "legacyRecipeDetail": {
+      "services": ["authService", "dogService"],
+      "adapterMethods": ["login", "listDogs"],
+      "cloudFunctions": ["login", "dogProfile"]
+    },
+    "legacyMealPlan": {
+      "services": ["mealPlanService"],
+      "adapterMethods": ["saveMealPlan", "listMealPlans"],
+      "cloudFunctions": ["saveMealPlan"]
+    },
+    "legacyMealPlanPeriod": {
+      "services": ["dogService", "mealPlanService", "customRecipeService", "planCalculatorService"],
+      "adapterMethods": ["listDogs", "saveMealPlan"],
+      "cloudFunctions": ["dogProfile", "saveMealPlan"]
+    },
+    "legacyCustomRecipeEditor": {
+      "services": ["dogService", "customRecipeService", "ingredientWorkbench", "mealAssessmentService", "nutritionDataService"],
+      "adapterMethods": ["listDogs"],
+      "cloudFunctions": ["dogProfile"]
+    },
+    "legacyCustomRecipeAdvice": {
+      "services": ["customRecipeService"],
+      "adapterMethods": ["saveCustomRecipe"],
+      "cloudFunctions": ["saveCustomRecipe"]
+    },
+    "ingredientPicker": {
+      "services": ["draftAdapters", "ingredientService", "ingredientWorkbench", "nutrientIngredientService", "ingredientOperationRules"],
+      "adapterMethods": [],
+      "cloudFunctions": []
+    },
+    "sharedMealDogSelect": {
+      "services": ["authService", "dogService", "sharedMealDogEligibility", "sharedMealDraftService"],
+      "adapterMethods": ["login", "listDogs"],
+      "cloudFunctions": ["login", "dogProfile"]
+    },
+    "sharedMealMenu": {
+      "services": ["humanRecipeService", "menuSearchSessionService", "sharedMealDraftService", "ingredientOperationRules"],
+      "adapterMethods": ["searchHumanRecipes", "getHumanRecipe"],
+      "cloudFunctions": ["searchHumanRecipes", "getHumanRecipe"]
+    },
+    "sharedMealCompose": {
+      "services": ["sharedMealDraftService", "sharedMealDogEligibility", "mealAssessmentService", "mealEnergyService", "nutritionDataService", "sharedMealRecordService"],
+      "adapterMethods": ["getHumanRecipe", "saveSharedMealRecord"],
+      "cloudFunctions": ["getHumanRecipe", "sharedMealRecord"]
+    },
+    "sharedMealRecordDetail": {
+      "services": ["sharedMealRecordService"],
+      "adapterMethods": ["getSharedMealRecord"],
+      "cloudFunctions": ["sharedMealRecord"]
+    },
+    "redirectShell": {
+      "services": [],
+      "adapterMethods": [],
+      "cloudFunctions": []
+    }
+  },
+  "pages": [
+    { "path": "pages/home/index", "package": "main", "classification": "migrate", "canonicalId": "home", "dependencyProfile": "home", "targetHandling": "原路径保留，改造为自适应今日首页" },
+    { "path": "pages/records/index", "package": "main", "classification": "migrate", "canonicalId": "records", "dependencyProfile": "records", "targetHandling": "原路径保留，仅衔接标题、空态与统一记餐入口" },
+    { "path": "pages/dogs/index", "package": "main", "classification": "new", "canonicalId": "dogs", "dependencyProfile": "profile", "targetHandling": "新增狗狗 Tab canonical 页面，复用现有档案服务与编辑分包" },
+    { "path": "pages/profile/index/index", "package": "main", "classification": "migrate", "canonicalId": "profile", "dependencyProfile": "profile", "targetHandling": "原路径保留，移除狗狗与旧批量入口，只保留账号和真实设置" },
+    { "path": "pages/recipes/list/index", "package": "main", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "legacyRecipeLibrary", "targetHandling": "保留直接深链，不进入 TabBar 或新首页" },
+    { "path": "pages/recipes/detail/index", "package": "main", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "legacyRecipeDetail", "targetHandling": "保留 id 查询参数与直接深链" },
+    { "path": "pages/plan/index/index", "package": "main", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "legacyMealPlan", "targetHandling": "保留历史清单读取；将指向非 Tab 页的 switchTab 改为兼容导航" },
+    { "path": "subpackages/dog-profile/dog-edit/index", "package": "subpackages/dog-profile", "classification": "retain", "canonicalId": null, "dependencyProfile": "dogProfileEditor", "targetHandling": "继续作为新增/编辑/完善档案任务页，保留 id 与 redirect 参数" },
+    { "path": "subpackages/dog-profile/dog-quick-create/index", "package": "subpackages/dog-profile", "classification": "retain", "canonicalId": null, "dependencyProfile": "dogProfileEditor", "targetHandling": "继续作为快速建档兼容任务页，保留 redirect 参数" },
+    { "path": "subpackages/plan-extra/period/index", "package": "subpackages/plan-extra", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "legacyMealPlanPeriod", "targetHandling": "保留 recipeId/source 深链；将指向非 Tab 页的 switchTab 改为兼容导航" },
+    { "path": "subpackages/plan-extra/detail/index", "package": "subpackages/plan-extra", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "legacyMealPlan", "targetHandling": "保留历史详情深链；将指向非 Tab 页的 switchTab 改为兼容导航" },
+    { "path": "subpackages/custom-recipe/edit/index", "package": "subpackages/custom-recipe", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "legacyCustomRecipeEditor", "targetHandling": "保留旧自定义狗饭编辑及 id 参数，不设主入口" },
+    { "path": "subpackages/custom-recipe/ingredient-search/index", "package": "subpackages/custom-recipe", "classification": "retain", "canonicalId": null, "dependencyProfile": "ingredientPicker", "targetHandling": "继续供共享本餐和旧自定义食谱复用，不复制食材规则" },
+    { "path": "subpackages/custom-recipe/advice/index", "package": "subpackages/custom-recipe", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "legacyCustomRecipeAdvice", "targetHandling": "保留旧自定义狗饭建议与保存链路，不设主入口" },
+    { "path": "subpackages/shared-meal/dog-select/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealDogSelect", "targetHandling": "保留为统一记餐入口后的现有流程页，不让调用方复制守卫" },
+    { "path": "subpackages/shared-meal/menu-search/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealMenu", "targetHandling": "保留 canonical 菜单选择页及 draftId 参数" },
+    { "path": "subpackages/shared-meal/dog-select/menu-search/index", "package": "subpackages/shared-meal", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "redirectShell", "targetHandling": "保留旧嵌套路由跳转壳，透传参数到 canonical 菜单页" },
+    { "path": "subpackages/shared-meal/compose/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealCompose", "targetHandling": "保留 draftId、编辑、评估和幂等保存闭环" },
+    { "path": "subpackages/shared-meal/record-detail/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealRecordDetail", "targetHandling": "保留 recordId 与不可变快照详情" }
+  ],
+  "legacyDeepLinks": [
+    { "path": "pages/recipes/list/index", "queryKeys": [], "handling": "retain-direct" },
+    { "path": "pages/recipes/detail/index", "queryKeys": ["id"], "handling": "retain-direct" },
+    { "path": "pages/plan/index/index", "queryKeys": [], "handling": "retain-direct-fix-outgoing-navigation" },
+    { "path": "subpackages/plan-extra/period/index", "queryKeys": ["recipeId", "source"], "handling": "retain-direct-fix-outgoing-navigation" },
+    { "path": "subpackages/plan-extra/detail/index", "queryKeys": [], "handling": "retain-direct-fix-outgoing-navigation" },
+    { "path": "subpackages/custom-recipe/edit/index", "queryKeys": ["id"], "handling": "retain-direct" },
+    { "path": "subpackages/custom-recipe/advice/index", "queryKeys": [], "handling": "retain-direct" },
+    { "path": "subpackages/shared-meal/dog-select/menu-search/index", "queryKeys": ["draftId"], "handling": "redirect-to-subpackages/shared-meal/menu-search/index" }
+  ],
+  "migrationOwners": {
+    "pageRegistrationAndLegacyNavigation": "A1.2",
+    "navigationGate": "G1.1",
+    "sharedMealEntryService": "A1.1",
+    "home": "F1.3/F1.4",
+    "records": "F1.5",
+    "dogs": "F1.1",
+    "profile": "F1.2",
+    "tabBarSwitch": "N1.1"
+  },
+  "rollback": {
+    "baseline": "three-tabs-home-records-profile",
+    "restoreFiles": [
+      "app.json",
+      "custom-tab-bar/index.js",
+      "custom-tab-bar/index.wxml",
+      "custom-tab-bar/index.wxss",
+      "services/navigationMigrationService.js"
+    ],
+    "keepRegisteredCompatibilityPages": true,
+    "deleteNewPages": false,
+    "requiresCloudRollback": false,
+    "requiresDataMigrationRollback": false
+  },
+  "invariants": [
+    "target-tab-paths-are-unique",
+    "central-action-is-not-a-tab",
+    "all-central-action-callers-use-one-entry-service",
+    "task-pages-do-not-register-as-tabs",
+    "legacy-deep-links-remain-registered",
+    "legacy-pages-are-not-primary-entries",
+    "pages-do-not-access-cloud-database-directly",
+    "ui-recomposition-does-not-copy-domain-rules"
+  ]
+}
