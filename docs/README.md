@@ -10,10 +10,15 @@
 ## 当前方向与实施计划
 
 - `docs/superpowers/plans/2026-08-01-project-structure-and-interface-roadmap.md`：下一阶段以项目结构和界面编排为主线的 DAG 路线图；体重、护理和统一记录时间轴作为主线完成后的次要能力支线。
-- `docs/superpowers/specs/2026-08-01-target-information-architecture.md`：P0.1 已冻结的目标态信息架构；在导航模型、页面职责和入口归属上优先于旧三 Tab 描述，但不表示目标导航已经上线。
+- `docs/superpowers/specs/2026-08-01-target-information-architecture.md`：P0.1 已冻结的目标态信息架构；当前实现已按该文档上线“首页、记录、狗狗、我的 + 中央记一顿”。
 - `docs/superpowers/specs/2026-08-01-current-structure-and-navigation-migration-contract.md`：P0.2 的现状页面/依赖审计、迁移分类、canonical 路径、旧深链和回滚合同；对应机器契约位于 `contracts/navigation/project-navigation-migration-v1.json`。
 - `docs/superpowers/specs/2026-08-01-home-and-global-navigation-design.md`：D1.1 的首页六类状态、320/375/390pt 响应式画板、四目的地与中央“记一顿”动作规格；供 F1.3、F1.4 和 N1.1 实施消费。
 - `docs/superpowers/specs/2026-08-01-dog-center-account-records-interface-design.md`：已确认的 D1.2 / D1.3 修订交接；只拆分当前“我的”的既有内容、原样保留当前记录页，并统一复用 D1.1 TabBar。
+- `docs/基础功能.md`：当前主线能力、四个一级目的地、中央“记一顿”和旧兼容边界。
+- `docs/微信小程序设计文档.md`：当前产品信息架构、页面职责、入口合同和验收重点。
+- `docs/小程序架构设计.md`：主包/分包边界、服务依赖方向、导航入口和自动化门禁。
+- `docs/database-structure-overview.md`：集合、索引、权限与主导航数据入口；本次导航重排不新增数据资源。
+- `docs/ui/figma-implementation-notes.md`：D1.1、D1.2/D1.3 与运行态 TabBar 的 UI 交接和视觉验收记录。
 - 当前共享本餐主线按以下顺序阅读，发生冲突时以前一项为准：
   1. `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.md`：已批准的产品事实来源。
   2. `docs/superpowers/plans/2026-07-28-shared-meal-deviation-closure.md`：相对当前实现基线的偏差收敛任务与验收状态。
@@ -42,6 +47,12 @@
 - `docs/ui/ai-frontend-rules.md`：AI 或开发者修改 UI 前后的规则、禁止项和验证命令。
 - `scripts/check-ui-system.js`：UI 静态检查入口；全项目必须通过，不再使用迁移期 baseline。
 <!-- miniapp-ui-system:docs:end -->
+
+## 主线交付状态
+
+- `DOC1.1` 已将产品、架构、数据库入口和 UI 交接统一到当前运行态；旧三 Tab、旧食谱和批量描述只保留在明确的历史/兼容段。
+- `V1.1` 的自动检查入口为 `npm test`、`npm run check:ui`、`npm run check:main-package`、`npm run check:shared-meal-navigation`、`npm run check:project-navigation` 和 `git diff --check`。
+- V1.1 不包含体重、护理、统一时间轴、云端部署、线上数据迁移或 Git 提交。
 
 ## 工作日志格式建议
 

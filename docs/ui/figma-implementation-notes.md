@@ -1,5 +1,15 @@
 # 食谱模块 Figma 实施交接
 
+> 当前运行态说明（2026-08-02）：本文件前部的 D1.1、D1.2/D1.3 和本节之后的历史 Figma 交接共同组成设计档案。当前小程序运行导航以 `docs/superpowers/specs/2026-08-01-home-and-global-navigation-design.md` 及 `docs/superpowers/specs/2026-08-01-dog-center-account-records-interface-design.md` 为准；旧“食谱 / 清单”四 Tab 仅属于下方标明日期的历史设计，不代表当前 TabBar。
+
+## 2026-08-02 DOC1/V1 主线导航实现交接
+
+- 当前一级导航为“首页 / 记录 / 狗狗 / 我的”，中央“记一顿”使用 TDesign Fab，保持独立的 48 × 48pt 主操作和无选中态语义；四个真实目的地由 `custom-tab-bar` 包装 TDesign `TabBar/TabBarItem`。
+- 工程实现保持 D1.1 的 `theme=tag`、`shape=round`、左右两组 Tab 与中央间隙、主色 `#25684A`、按下态 `#1D523A`、底部安全区和 `with-tab-bar` 内容预留。Fab 的主题变量同时下沉到内部 Button，避免回退为 TDesign 默认蓝色。
+- 首页实现覆盖游客、无档案、可恢复草稿、今天无记录、今天有记录和数据失败；狗狗页只迁入原“我的”的档案内容；“我的”只保留账号卡；记录页保留本餐月历与详情模型。体重、护理和统一记录时间轴不属于本次视觉交付。
+- 首页的记餐入口、记录空态和中央动作均调用 `sharedMealEntryService.startSharedMeal()`；首页在“今天有记录”时仍可将主任务导向记录回看。任务型子页面不重复显示 TabBar 或中央动作。旧食谱、批量和兼容深链保留代码访问，但不进入当前主导航。
+- V1.1 视觉验收覆盖 320pt、375/390pt、长狗名、长菜单名、多狗、长列表、底部安全区和页面内容不被导航遮挡；临时截图和 `.design-check/` 产物不进入仓库。
+
 ## 2026-08-01 D1.1 首页与全局导航
 
 - 在 Figma 文件 `CHUlIiWUhuXHA0IUwQe6Qe` 新增页面“狗饭 · 首页与全局导航 D1.1”（Page `20186:28`），交付 H01–H08 八个首页状态和 N01 导航规格板；完整节点、状态、尺寸和实现映射见 [`首页与全局导航设计交接`](../superpowers/specs/2026-08-01-home-and-global-navigation-design.md)。
@@ -16,7 +26,7 @@
 - 负责人：产品与开发协作
 - 画布：微信小程序 375 × 812 逻辑画布；主要点击区不小于 44 × 44 pt，固定底部操作预留安全区。
 
-本轮将第二个底部 Tab 保持为“食谱”，但其主入口改为“我的食谱”。旧公共食谱列表与详情流程不在本轮 Figma 主流程中展示；实现阶段保留既有代码，不在本轮删除。
+以下 2026-07-10 至 2026-07-31 的章节记录食谱模块及旧三/四 Tab 方案的历史设计与实施证据；它们用于追溯，不覆盖上方 2026-08-02 的当前运行态导航。
 
 ## Figma 页面与基础资源
 
@@ -979,7 +989,7 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
   `spacing/sm`、`spacing/md` 和 `radius/md`。主操作实例映射工程现行
   `--df-color-primary=#25684A`；没有新增或修改 variable、文字样式或效果样式。
 - 记录条目在 Figma 中复用 TDesign Cell 表达结构；工程以 `ui-card` 组合两行摘要和方向箭头。
-  月份失败、整月空态的主操作映射 `ui-button`，其余空态使用页面内克制文字；NavBar 与三项 TabBar 沿用现状。
+  月份失败、整月空态的主操作映射 `ui-button`，其余空态使用页面内克制文字；NavBar 与当前四项 TabBar 沿用 D1.1 的运行态设计。
 - L01–L06、R01–R04 均为 `375 × 812`，`placeholder=false`，无零尺寸节点。新增自由文本使用
   `Noto Sans SC Regular / Medium`；系统状态栏保留既有字体。
 - 已逐屏截图复核默认、空态、局部加载、失败、整月空态、长列表以及详情四态；未发现
@@ -991,7 +1001,7 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
 - 记录页已按 L01–L06 接入月份状态和上海自然日日历模型；默认选中今天，切换月份选中目标月首日，点击日期立即更新当天列表，下拉刷新与失败重试均保留目标月份和选择。
 - 新增 `components/vendor/record-calendar`，内部固定使用 TDesign Calendar 的 `use-popup=false`、`type=single`、`switch-mode=year-month` 和无确认按钮，只向页面暴露 `select/panelchange`。TDesign 1.15.3 的动态函数型 `format` 兼容集中在包装层，页面只传 `calendarDays`。
 - 页面组合 `ui-card` 和 TDesign Calendar vendor wrapper，未新增 token、裸色值或页面级 `<t-*>`。当天条目展示上海时间、狗狗、人饭摘要和狗饭食材数；长名称允许自然换行。
-- DevTools `build-npm` 无 warning；375×812 实际截图确认主绿选中态、“已记”后缀、当天列表、页面滚动和三项 TabBar 无遮挡。其余五态由页面结构与状态测试覆盖，完整逐态截图对比仍由 F4.6 统一执行。
+- DevTools `build-npm` 无 warning；375×812 实际截图确认主绿选中态、“已记”后缀、当天列表、页面滚动和四项 TabBar 无遮挡。其余五态由页面结构与状态测试覆盖，完整逐态截图对比仍由 F4.6 统一执行。
 
 ### 2026-07-31 F4.4、F4.5 记录详情实现
 
