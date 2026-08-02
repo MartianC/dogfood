@@ -14,8 +14,17 @@ const tabBarStyle = [
   '--td-tab-bar-active-color: #25684a',
   '--td-tab-bar-color: #6f7b73',
   '--td-tab-bar-hover-bg-color: #eef3ef',
-  '--td-font-body-large: 28rpx / 40rpx PingFang SC, Microsoft YaHei, Arial Regular',
-  '--td-tab-bar-height: 80rpx'
+  '--td-font-body-large: 22rpx / 32rpx PingFang SC, Microsoft YaHei, Arial Regular',
+  '--td-tab-bar-height: 80rpx',
+  'box-sizing: border-box',
+  'padding: 0 16rpx'
+].join(';')
+
+const tabItemStyle = [
+  tabBarStyle,
+  'flex: 0 0 calc((100% - 142rpx) / 4)',
+  'padding: 0',
+  'margin: 24rpx 0'
 ].join(';')
 
 const fabButtonStyle = [
@@ -33,6 +42,8 @@ Component({
     selected: 'home',
     items,
     tabBarStyle,
+    tabItemStyle,
+    tabBarGapStyle: 'flex: 0 0 142rpx; width: 142rpx; pointer-events: none',
     fabButtonProps: {
       theme: 'primary',
       shape: 'circle',
@@ -41,8 +52,8 @@ Component({
     },
     fabStyle: [
       'left: calc(50% - 48rpx)',
-      'bottom: calc(64rpx + constant(safe-area-inset-bottom))',
-      'bottom: calc(64rpx + env(safe-area-inset-bottom))',
+      'bottom: calc(136rpx + constant(safe-area-inset-bottom))',
+      'bottom: calc(136rpx + env(safe-area-inset-bottom))',
       'width: 96rpx',
       'height: 96rpx',
       'box-sizing: border-box',

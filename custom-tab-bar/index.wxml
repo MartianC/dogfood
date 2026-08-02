@@ -10,21 +10,22 @@
     custom-style="{{tabBarStyle}}"
     bind:change="onChange"
   >
-    <t-tab-bar-item
-      wx:for="{{items}}"
-      wx:key="value"
-      value="{{item.value}}"
-      custom-style="{{tabBarStyle}}"
-      aria-label="{{item.label}}"
-    >
-      <image
-        slot="icon"
-        class="app-tab-bar__icon"
-        src="{{selected === item.value ? item.selectedIconPath : item.iconPath}}"
-        mode="aspectFit"
-      />
-      {{item.label}}
-    </t-tab-bar-item>
+    <block wx:for="{{items}}" wx:key="value">
+      <t-tab-bar-item
+        value="{{item.value}}"
+        custom-style="{{tabItemStyle}}"
+        aria-label="{{item.label}}"
+      >
+        <image
+          slot="icon"
+          class="app-tab-bar__icon"
+          src="{{selected === item.value ? item.selectedIconPath : item.iconPath}}"
+          mode="aspectFit"
+        />
+        {{item.label}}
+      </t-tab-bar-item>
+      <view wx:if="{{index === 1}}" style="{{tabBarGapStyle}}" aria-hidden="true" />
+    </block>
   </t-tab-bar>
   <t-fab
     icon="add"
@@ -35,4 +36,5 @@
     data-action-id="start-shared-meal"
     bind:click="onStartSharedMeal"
   />
+  <view class="app-tab-bar__fab-label" aria-hidden="true">记一顿</view>
 </view>

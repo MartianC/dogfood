@@ -83,7 +83,7 @@ TDesign 适配范围：
 
 按下态规则：自研 `ui-button` 显式使用 `hover-class="ui-button--pressed"`，按 variant 映射 `primary-pressed`、`primary-soft-pressed`、`surface-pressed` 和 `warning-pressed`。TDesign Button/Fab 适配层必须同时覆盖 `--td-brand-color-active`、`--td-brand-color-light-active` 及对应的 `--td-button-*-active-*` 变量，禁止回退到 TDesign 默认蓝色。
 
-TabBar 图文比例：外框仍为设计稿 `343 × 56`；图标 slot 固定 `32rpx`（16 px），标签使用 `28rpx / 40rpx`（14 px），图标下方保留 `4rpx` 间距。不得通过放大图标或缩小文字改变四项布局。
+TabBar 图文比例：外框按 D1.1 设计稿为 `343 × 64pt`；四个 item 在中央 Fab 两侧分为左右两组，中间保留独立间隙。图标 slot 固定 `40rpx`（20 px），标签使用 `22rpx / 32rpx`（11 px），图标下方保留 `4rpx` 间距。320pt 窄屏按同一组结构收缩 item 宽度，不得恢复四项均匀铺满并让 Fab 覆盖 item。
 
 ## JSON 和 Canvas 同步规则
 

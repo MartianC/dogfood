@@ -188,13 +188,13 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
 - 已由独立 subagent 按需求覆盖、Figma 还原、TDesign 适配边界、数据丢失风险、测试缺口和回归风险完成审核。
 - 草稿持久化：本地新建记录改用 `draft_*` 临时 ID；首次云端保存时剥离临时 ID，成功后以持久化 ID 回写草稿和本地列表，避免把首次创建误判为更新。新增完整保存序列测试覆盖该路径。
 - F05 营养摘要：空食材状态补充固定底部的收起态“营养汇总”，显示 `0 g` 和添加食材后的状态提示，与设计稿的页面信息层级一致。
-- TabBar 尺寸：内容高度调整为 `80rpx`，配合 TDesign 自带上下间距得到总高 `112rpx`（56 px）；外层宽度为 `100%`，配合左右 `32rpx` 间距得到 `686rpx`（343 px），底部位置固定为 `56rpx`（28 px）。
+- TabBar 尺寸：内容高度保持 `80rpx`，上下外间距调整为 `24rpx`，得到设计稿总高 `128rpx`（64 pt）；外层宽度为 `100%`，配合左右 `32rpx` 间距得到 `686rpx`（343 pt），底部位置固定为 `56rpx`（28 pt）。四个 item 以左右两组排布，中间为 Fab 预留独立间隙。
 - Popup 安全区：移除业务内层重复的 `env(safe-area-inset-bottom)`，由 TDesign Popup 统一处理底部安全区，避免真机出现双倍留白。
 - 审核修复后验证：`npm run check:ui` 通过；`npm test` 共 37 项通过；微信开发者工具预览成功，总包约 `539.0 KB`。当前改动未提交、未暂存。
 
 ### 2026-07-11 TabBar 比例与按下态校正
 
-- TabBar 外框、四项结构、选中态和安全区保持不变；图标 slot 固定为 `32rpx`（16 px），文字固定为 `28rpx / 40rpx`（14 px），图标下方间距为 `4rpx`，用于匹配 Figma 中图文比例。
+- TabBar 外框、四项结构、选中态和安全区保持不变；按 D1.1 设计稿将图标 slot 调整为 `40rpx`（20 px），文字调整为 `22rpx / 32rpx`（11 px），图标下方间距为 `4rpx`，并将 item 在中央 Fab 两侧分组，避免 Fab 覆盖中间分页。
 - 新增 `primary-pressed`、`primary-soft-pressed`、`surface-pressed` 和 `warning-pressed` 项目 token。自研 `ui-button` 通过 `hover-class="ui-button--pressed"` 使用这些 token；TDesign Popup、Fab、Empty 适配层覆盖 `brand-color-active`、`button-*-active-*`，Popup Cell 也使用 `surface-pressed`，不再回退蓝色。
 - 验证：微信开发者工具 `build-npm` 返回 `warnings: []`，`preview` 成功，包体约 `540.5 KB`；`npm run check:ui` 通过；`npm test` 38 项通过。
 
