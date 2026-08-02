@@ -59,7 +59,7 @@ Component({
     onStartSharedMeal() { return sharedMealEntryService.startSharedMeal() }
   }
 })`,
-    customTabBarWxml: `<t-tab-bar>\n${tabMarkup}\n</t-tab-bar>\n<button data-action-id="start-shared-meal" bindtap="onStartSharedMeal">记一顿</button>`,
+    customTabBarWxml: `<t-tab-bar>\n${tabMarkup}\n</t-tab-bar>\n<t-fab data-action-id="start-shared-meal" bind:click="onStartSharedMeal" aria-label="记一顿" />`,
     homeJs: "const sharedMealEntryService = require('../../services/sharedMealEntryService')\nfunction onCreateMeal() { return sharedMealEntryService.startSharedMeal() }",
     homeWxml: '<ui-button bind:tap="onCreateMeal">开始记录</ui-button>',
     recordsJs: "const sharedMealEntryService = require('../../services/sharedMealEntryService')\nfunction onCreateMeal() { return sharedMealEntryService.startSharedMeal() }",

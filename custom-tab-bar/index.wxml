@@ -26,4 +26,13 @@
       {{item.label}}
     </t-tab-bar-item>
   </t-tab-bar>
+  <t-fab
+    icon="add"
+    text=""
+    button-props="{{fabButtonProps}}"
+    style="{{fabStyle}}"
+    aria-label="记一顿"
+    data-action-id="start-shared-meal"
+    bind:click="onStartSharedMeal"
+  />
 </view>

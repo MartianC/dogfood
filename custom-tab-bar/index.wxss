@@ -7,12 +7,23 @@
   left: 0;
   z-index: 100;
   pointer-events: none;
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-brand-color-light: var(--df-color-primary-soft);
+  --td-brand-color-light-active: var(--df-color-primary-soft-pressed);
+  --td-button-primary-bg-color: var(--df-color-primary);
+  --td-button-primary-border-color: var(--df-color-primary);
+  --td-button-primary-active-bg-color: var(--df-color-primary-pressed);
+  --td-button-primary-active-border-color: var(--df-color-primary-pressed);
+  --td-button-primary-color: var(--df-color-on-primary);
+  --td-fab-shadow: var(--df-shadow-primary);
 }
 
 .app-tab-bar {
   box-sizing: border-box;
   width: 100%;
-  margin: 0 auto 56rpx;
+  margin: 0 auto calc(56rpx + constant(safe-area-inset-bottom));
+  margin: 0 auto calc(56rpx + env(safe-area-inset-bottom));
   pointer-events: auto;
   --td-tab-bar-round-shadow: var(--df-shadow-card);
 }

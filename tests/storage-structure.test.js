@@ -32,13 +32,13 @@ test('清单保存失败时进入本地待同步队列并可重试', async () =>
   assert.deepEqual(memory.get('pendingMealPlans'), [])
 })
 
-test('小程序配置包含三个新主 Tab、记录页和旧兼容路由', () => {
+test('小程序配置包含四个新主 Tab、记录页和旧兼容路由', () => {
   const appJsonPath = path.join(__dirname, '..', 'app.json')
   const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'))
 
   assert.deepEqual(
     appJson.tabBar.list.map((item) => item.text),
-    ['首页', '记录', '我的']
+    ['首页', '记录', '狗狗', '我的']
   )
   assert.ok(appJson.pages.includes('pages/home/index'))
   assert.ok(appJson.pages.includes('pages/records/index'))
@@ -82,7 +82,7 @@ test('TabBar 使用本地图标资源', () => {
   })
 })
 
-test('TabBar 通过 TDesign 自定义组件保留三个主路由', () => {
+test('TabBar 通过 TDesign 自定义组件保留四个主路由和中央记一顿动作', () => {
   const appJsonPath = path.join(__dirname, '..', 'app.json')
   const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'))
   const tabBarRoot = path.join(__dirname, '..', 'custom-tab-bar')
@@ -95,24 +95,38 @@ test('TabBar 通过 TDesign 自定义组件保留三个主路由', () => {
   assert.equal(Object.hasOwn(appJson, 'style'), false)
   assert.equal(tabBarJson.usingComponents['t-tab-bar'], 'tdesign-miniprogram/tab-bar/tab-bar')
   assert.equal(tabBarJson.usingComponents['t-tab-bar-item'], 'tdesign-miniprogram/tab-bar-item/tab-bar-item')
+  assert.equal(tabBarJson.usingComponents['t-fab'], 'tdesign-miniprogram/fab/fab')
   assert.match(tabBarWxml, /theme="tag"/)
   assert.match(tabBarWxml, /shape="round"/)
+  assert.match(tabBarWxml, /data-action-id="start-shared-meal"/)
+  assert.match(tabBarWxml, /aria-label="记一顿"/)
+  assert.match(tabBarWxml, /bind:click="onStartSharedMeal"/)
   assert.match(tabBarJs, /--td-tab-bar-height: 80rpx/)
   assert.match(tabBarJs, /--td-font-body-large: 28rpx \/ 40rpx/)
+  assert.match(tabBarJs, /sharedMealEntryService\.startSharedMeal\(\)/)
+  assert.match(tabBarJs, /value: 'dogs'/)
+  assert.match(tabBarJs, /width: 96rpx/)
+  assert.match(tabBarJs, /height: 96rpx/)
+  assert.match(tabBarJs, /pointer-events: auto/)
+  assert.match(tabBarJs, /fabButtonProps:\s*\{[^}]*style:/s)
+  assert.match(tabBarJs, /--td-button-primary-bg-color:\s*#25684a/)
+  assert.match(tabBarJs, /--td-button-primary-active-bg-color:\s*#1d523a/)
+  assert.match(tabBarJs, /--td-button-primary-bg-color: var\(--df-color-primary\)/)
   assert.match(tabBarWxss, /width:\s*100%/)
   assert.match(tabBarWxss, /width:\s*32rpx/)
   assert.match(tabBarWxss, /margin-bottom:\s*4rpx/)
-  assert.match(tabBarWxss, /margin:\s*0 auto 56rpx/)
+  assert.match(tabBarWxss, /env\(safe-area-inset-bottom\)/)
   assert.match(tabBarJs, /wx\.switchTab/)
 
   const routes = Array.from(tabBarJs.matchAll(/path:\s*'([^']+)'/g), (match) => match[1])
   assert.deepEqual(routes, appJson.tabBar.list.map((item) => `/${item.pagePath}`))
 })
 
-test('三个 Tab 页面在显示时同步 TDesign 选中态', () => {
+test('四个 Tab 页面在显示时同步 TDesign 选中态', () => {
   const expected = {
     'pages/home/index.js': 'home',
     'pages/records/index.js': 'records',
+    'pages/dogs/index.js': 'dogs',
     'pages/profile/index/index.js': 'profile'
   }
 

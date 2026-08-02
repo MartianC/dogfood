@@ -170,7 +170,7 @@ function validateNavigationImplementation({ appConfig, contract, sources }) {
     '自定义 TabBar 必须声明独立的中央记餐动作'
   )
   assertCondition(
-    /bind(?::tap|tap)=["']onStartSharedMeal["']/.test(sources.customTabBarWxml),
+    /bind(?::(?:tap|click)|tap|click)=["']onStartSharedMeal["']/.test(sources.customTabBarWxml),
     '中央记餐动作必须绑定统一记餐入口处理器'
   )
   assertCondition(
@@ -188,7 +188,10 @@ function validateNavigationImplementation({ appConfig, contract, sources }) {
       `${caller} 未复用 sharedMealEntryService.startSharedMeal()`
     )
   })
-  assertCondition(/bind(?::tap|tap)=["']onCreateMeal["']/.test(sources.homeWxml), '首页缺少统一记餐入口操作')
+  assertCondition(
+    /bind(?::tap|tap)=["']on(?:CreateMeal|PrimaryTask)["']/.test(sources.homeWxml),
+    '首页缺少统一记餐入口操作'
+  )
   assertCondition(/bind(?::tap|tap)=["']onCreateMeal["']/.test(sources.recordsWxml), '记录空态缺少统一记餐入口操作')
 
   const directFlowPattern = new RegExp(centralAction.currentFlowEntryPath.replaceAll('/', '\\/'))

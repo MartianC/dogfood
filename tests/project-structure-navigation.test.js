@@ -18,15 +18,15 @@ function registeredRoutes(config) {
   ]
 }
 
-test('狗狗 canonical 页面先注册并保持在当前三 Tab 之外', () => {
+test('狗狗 canonical 页面注册并成为第四个真实 Tab', () => {
   const config = JSON.parse(read('app.json'))
   const contract = JSON.parse(read('contracts/navigation/project-navigation-migration-v1.json'))
   const targetPaths = contract.target.registrationOrder
 
   assert.deepEqual(config.pages.slice(0, targetPaths.length), targetPaths)
   assert.equal(config.pages.filter((page) => page === 'pages/dogs/index').length, 1)
-  assert.deepEqual(config.tabBar.list.map((item) => item.text), ['首页', '记录', '我的'])
-  assert.equal(config.tabBar.list.some((item) => item.pagePath === 'pages/dogs/index'), false)
+  assert.deepEqual(config.tabBar.list.map((item) => item.text), ['首页', '记录', '狗狗', '我的'])
+  assert.equal(config.tabBar.list.some((item) => item.pagePath === 'pages/dogs/index'), true)
 
   for (const extension of ['js', 'json', 'wxml', 'wxss']) {
     assert.equal(fs.existsSync(path.join(root, `pages/dogs/index.${extension}`)), true)
