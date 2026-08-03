@@ -1,5 +1,11 @@
 # 食谱模块 Figma 实施交接
 
+## 2026-08-03 H04 首页主任务卡样式校正
+
+- 首页 H04 主任务卡按设计稿改用 `ui-card` 的 `plain` surface，保留 `large` 内边距和项目卡片边框/阴影；主绿色只用于“今天的下一步”眉题和 `ui-button` 主操作。
+- 标题使用 `--df-color-text`，说明使用 `--df-color-muted`；没有修改 `ui-card--primary`，因此兼容批量清单页的旧 Hero 保持原样。
+- 页面行为、六类首页状态、主任务路由和统一记餐入口不变；本轮只修正视觉层级。
+
 > 当前运行态说明（2026-08-02）：本文件前部的 D1.1、D1.2/D1.3 和本节之后的历史 Figma 交接共同组成设计档案。当前小程序运行导航以 `docs/superpowers/specs/2026-08-01-home-and-global-navigation-design.md` 及 `docs/superpowers/specs/2026-08-01-dog-center-account-records-interface-design.md` 为准；旧“食谱 / 清单”四 Tab 仅属于下方标明日期的历史设计，不代表当前 TabBar。
 
 ## 2026-08-02 DOC1/V1 主线导航实现交接

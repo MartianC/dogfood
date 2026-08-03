@@ -14,7 +14,6 @@
 
 .home-header__date,
 .home-header__copy,
-.home-primary__description,
 .home-summary__description,
 .home-draft__meta,
 .home-issue__description,
@@ -45,35 +44,22 @@
 }
 
 .home-primary__eyebrow {
-  color: var(--df-color-primary-soft);
+  color: var(--df-color-primary);
   font-size: var(--df-font-sm);
   font-weight: 700;
   letter-spacing: 0.04em;
 }
 
 .home-primary__title {
-  color: var(--df-color-on-primary);
+  color: var(--df-color-text);
   font-size: var(--df-font-xl);
   font-weight: 800;
   line-height: 1.25;
 }
 
 .home-primary__description {
-  color: var(--df-color-on-primary-muted);
+  color: var(--df-color-muted);
   line-height: 1.5;
-}
-
-.home-primary--data-error .home-primary__eyebrow,
-.home-primary--data-error .home-primary__title {
-  color: var(--df-color-text);
-}
-
-.home-primary--data-error .home-primary__description {
-  color: var(--df-color-text-secondary);
-}
-
-.home-primary--data-error {
-  gap: var(--df-space-3);
 }
 
 .home-error {
