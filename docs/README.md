@@ -18,6 +18,7 @@
 - `docs/微信小程序设计文档.md`：当前产品信息架构、页面职责、入口合同和验收重点。
 - `docs/小程序架构设计.md`：主包/分包边界、服务依赖方向、导航入口和自动化门禁。
 - `docs/database-structure-overview.md`：集合、索引、权限与主导航数据入口；本次导航重排不新增数据资源。
+- `docs/superpowers/specs/2026-08-04-weight-domain-and-data-contract.md`：W1.1 体重领域词汇、`weightMeasurement/v1` 合同、当前值投影、删除回退和既有 `weightKg` 兼容策略。
 - `docs/ui/figma-implementation-notes.md`：D1.1、D1.2/D1.3 与运行态 TabBar 的 UI 交接和视觉验收记录。
 - 当前共享本餐主线按以下顺序阅读，发生冲突时以前一项为准：
   1. `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.md`：已批准的产品事实来源。
