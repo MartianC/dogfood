@@ -1,6 +1,6 @@
 # 数据库结构总览
 
-更新时间：2026-08-02
+更新时间：2026-08-04
 
 这份文档以当前代码、导出脚本和项目设计文档为准，区分三类数据：用户业务数据、公共营养运行时投影、离线审核主库。CloudBase 是文档数据库，下面的“表”统一指集合；离线部分明确写作 SQLite 表。
 
@@ -12,6 +12,7 @@
        └─ dogs
             ├─ customRecipes
             ├─ mealPlans
+            ├─ weight_measurements
             └─ shared_meal_records
 
 离线 SQLite 主库
@@ -42,7 +43,7 @@ CloudBase 公共只读投影
 | 我的 | `authService` | `users` | 只承载账号信息和已实现的低频能力，不读取狗狗档案列表 |
 | 中央“记一顿” | `sharedMealEntryService` | 无独立集合 | 统一进入现有登录、建档、选狗、草稿恢复、菜单和本餐保存流程 |
 
-体重、护理和统一记录时间轴尚未接入本次主线，当前不应据此新增集合或首页数据来源。旧 `customRecipes`、`mealPlans` 与旧深链继续保留兼容，但不成为当前导航入口。
+体重代码已完成独立数据入口，但尚未接入主线页面或首页事项；体重集合、索引和云函数仍需 OW1 单独授权部署。统一记录时间轴尚未接入。旧 `customRecipes`、`mealPlans` 与旧深链继续保留兼容，但不成为当前导航入口。
 
 ## 2. CloudBase 用户业务集合
 
@@ -72,7 +73,7 @@ CloudBase 公共只读投影
 | `birthDate` | `YYYY-MM-DD`，必填 | 当前实际写入字段；由此派生年龄阶段 |
 | `ageStage` | string | 当前读取/展示字段，写入时由其他服务补齐或历史遗留 |
 | `breed` | `shiba-inu` / `labrador-retriever` / `mixed-or-unknown` | 受控品种 |
-| `weightKg` | number > 0 | 体重 |
+| `weightKg` | number > 0 或 null | 当前体重；体重历史上线后无有效测量时允许为 null |
 | `dailyMeals` | number > 0 | 每日餐数 |
 | `dailyActivityHours` | number，0–6，0.5 步长 | 当前主输入 |
 | `activityLevel` | string | 根据活动时长派生，可能为空/历史值 |
@@ -87,6 +88,24 @@ CloudBase 公共只读投影
 | `createdAt` / `updatedAt` | Date | 审计时间 |
 
 `birthDate`、`dailyActivityHours` 和 `specialNutritionNeeds` 是共享本餐适用门禁的可信输入；生命阶段与活动档位在运行时派生。客户端和云函数都按 `dogProfile/v3` 校验，旧版档案缓存不能冒充当前合同。
+
+### `weight_measurements`
+
+用途：保存单只狗狗的体重测量历史。唯一写入、列表、详情和删除入口为 `weightRecord` 云函数；小程序客户端不得直读或直写集合。W1.2 已完成代码、schema、权限和索引合同，但未执行 OW1 线上部署或旧 `weightKg` 历史回填。
+
+| 字段 | 类型/约束 | 说明 |
+|---|---|---|
+| `_id` | string | CloudBase 主键，服务端生成并映射为业务 `id` |
+| `_openid` | string | CloudBase 用户归属，只取云函数上下文 |
+| `schemaVersion` | number，固定为 1 | `weightMeasurement/v1` 存储版本 |
+| `dogId` | string，必填 | 当前用户拥有的狗狗 ID |
+| `weightKg` | number > 0，最多两位小数 | 单位固定为 kg |
+| `measuredOn` | `YYYY-MM-DD` | 称量日期，不能晚于上海自然日当天 |
+| `createdAt` | Date | 服务端创建时间，用于同日稳定排序 |
+
+机器合同位于 `cloudfunctions/weightRecord/schema/record.schema.json`，写入字段合同位于 `contracts/weight/weight-measurement-write-v1.schema.json`。索引位于 `cloudfunctions/weightRecord/schema/indexes.json`，按 `_openid ASC, dogId ASC, measuredOn DESC, createdAt DESC, _id DESC` 支持单狗历史分页；权限位于同目录 `access.json`，固定为 `ADMINONLY`。
+
+新增或删除体重记录时，`weightRecord` 在服务端事务中同步更新 `dogs.weightKg`：最新有效测量作为当前值，没有剩余有效测量时清空为 null。旧档案 `weightKg` 只在没有历史记录时作为兼容当前值，不自动生成历史记录。
 
 ### `customRecipes`
 
@@ -191,11 +210,11 @@ CloudBase 公共只读投影
 
 ## 5. 关系、版本和权限
 
-1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱、清单和共享本餐记录以 ID 引用，同时保存 snapshots。共享本餐一次只引用一只狗狗。
+1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱、清单、体重测量和共享本餐记录以 ID 引用，同时保存 snapshots。共享本餐一次只引用一只狗狗。
 2. 营养关系：`foods` → `food_nutrients` / `food_localized_name`；`food_nutrition_profiles` 将同一食物的营养明细聚合成一次读取；`ingredient_catalog.variant_id` → `food_id`。
 3. 审核关系：`ingredient_concept` → `ingredient_alias` / `ingredient_variant`；策略优先匹配 variant，缺失时回退 concept；排行必须同时兼容 catalog 和 policy 版本。
 4. 发布关系：一个 `release_id` 绑定一组 `catalog_version`、`policy_version`、`ranking_version` 和各集合计数。旧快照不可修改，生产切换应通过活动版本指针完成。
-5. 权限：`users`、`dogs`、`customRecipes`、`mealPlans`、`shared_meal_records` 仅云函数访问；共享本餐保存还会复核狗狗归属、活动数据版本和当前食材策略。公共营养集合客户端可读不可写；策略集合按当前设计由云函数读取，不能直接暴露原始审核字段。
+5. 权限：`users`、`dogs`、`customRecipes`、`mealPlans`、`weight_measurements`、`shared_meal_records` 仅云函数访问；体重和共享本餐写入都会复核狗狗归属。共享本餐保存还会复核活动数据版本和当前食材策略。公共营养集合客户端可读不可写；策略集合按当前设计由云函数读取，不能直接暴露原始审核字段。
 
 ## 6. 当前需要优先收口的地方
 

@@ -1,0 +1,8 @@
+{
+  "contract": "weightRecordAccess/v1",
+  "collection": "weight_measurements",
+  "aclTag": "ADMINONLY",
+  "clientRead": false,
+  "clientWrite": false,
+  "description": "体重测量记录仅允许 weightRecord 云函数管理端访问，小程序客户端不可直读或直写。"
+}

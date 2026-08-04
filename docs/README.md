@@ -19,6 +19,7 @@
 - `docs/小程序架构设计.md`：主包/分包边界、服务依赖方向、导航入口和自动化门禁。
 - `docs/database-structure-overview.md`：集合、索引、权限与主导航数据入口；本次导航重排不新增数据资源。
 - `docs/superpowers/specs/2026-08-04-weight-domain-and-data-contract.md`：W1.1 体重领域词汇、`weightMeasurement/v1` 合同、当前值投影、删除回退和既有 `weightKg` 兼容策略。
+- `docs/superpowers/specs/2026-08-04-weight-record-client-cloud-implementation.md`：W1.2 体重 service、adapter、云函数、事务同步、集合资源合同和 OW1 未部署边界。
 - `docs/superpowers/specs/2026-08-04-care-domain-and-data-contract.md`：C1.1 护理四类事实、`careRecord/v1` 合同、用户填写的下次日期和单狗隔离边界。
 - `docs/ui/figma-implementation-notes.md`：D1.1、D1.2/D1.3 与运行态 TabBar 的 UI 交接和视觉验收记录。
 - 当前共享本餐主线按以下顺序阅读，发生冲突时以前一项为准：
@@ -53,8 +54,9 @@
 ## 主线交付状态
 
 - `DOC1.1` 已将产品、架构、数据库入口和 UI 交接统一到当前运行态；旧三 Tab、旧食谱和批量描述只保留在明确的历史/兼容段。
+- `W1.2` 已完成体重客户端 service、adapter、云函数代码和本地资源合同；尚未接入页面，也未部署线上 CloudBase 资源。
 - `V1.1` 的自动检查入口为 `npm test`、`npm run check:ui`、`npm run check:main-package`、`npm run check:shared-meal-navigation`、`npm run check:project-navigation` 和 `git diff --check`。
-- V1.1 不包含体重、护理、统一时间轴、云端部署、线上数据迁移或 Git 提交。
+- V1.1 不包含体重、护理、统一时间轴、云端部署、线上数据迁移或 Git 提交；W1.2 的线上动作仍等待 OW1 授权。
 
 ## 工作日志格式建议
 

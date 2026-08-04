@@ -1,3 +1,4 @@
+// 此文件由 scripts/sync-weight-contract.js 自动生成，请修改 services/weightContract.js 后重新同步。
 const WEIGHT_MEASUREMENT_CONTRACT = 'weightMeasurement/v1'
 const WEIGHT_MEASUREMENT_SCHEMA_VERSION = 1
 const WEIGHT_MEASUREMENT_KEYS = Object.freeze([
