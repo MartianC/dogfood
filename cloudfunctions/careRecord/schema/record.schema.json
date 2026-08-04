@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "careRecordStorage/v1",
+  "title": "护理记录 CloudBase 存储 v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "_openid",
+    "schemaVersion",
+    "dogId",
+    "type",
+    "name",
+    "occurredOn",
+    "nextDate",
+    "notes",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "_openid": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": 1 },
+    "dogId": { "type": "string", "minLength": 1 },
+    "type": {
+      "enum": [
+        "vaccine",
+        "internal_deworming",
+        "external_deworming",
+        "other"
+      ]
+    },
+    "name": { "type": "string", "maxLength": 120 },
+    "occurredOn": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "nextDate": {
+      "type": ["string", "null"],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "notes": { "type": "string", "maxLength": 2000 },
+    "createdAt": {
+      "type": ["string", "object"],
+      "description": "CloudBase Date；返回 DTO 时转换为 ISO datetime 字符串"
+    },
+    "updatedAt": {
+      "type": ["string", "object"],
+      "description": "CloudBase Date；返回 DTO 时转换为 ISO datetime 字符串"
+    }
+  }
+}

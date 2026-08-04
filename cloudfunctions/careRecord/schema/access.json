@@ -1,0 +1,8 @@
+{
+  "contract": "careRecordAccess/v1",
+  "collection": "care_records",
+  "aclTag": "ADMINONLY",
+  "clientRead": false,
+  "clientWrite": false,
+  "description": "护理记录仅允许 careRecord 云函数管理端访问，小程序客户端不可直读或直写。"
+}

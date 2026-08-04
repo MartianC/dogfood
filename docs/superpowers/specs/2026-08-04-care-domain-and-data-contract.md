@@ -1,6 +1,6 @@
 # 护理领域与数据合同
 
-**状态：** C1.1 已完成，等待 C1.2 实现客户端与云端资源
+**状态：** C1.1/C1.2 代码已完成，等待 C1.3 页面与 OC1 授权部署
 
 **日期：** 2026-08-04
 
@@ -10,7 +10,7 @@
 
 ## 1. 目标与边界
 
-本合同只冻结护理领域的词汇、护理记录字段、用户填写的下次日期语义和单狗隔离规则，为后续 C1.2 提供稳定输入。它不创建 CloudBase 集合、索引、云函数或权限资源，也不改页面、首页事项、统一时间轴、线上数据或历史本餐快照。
+本合同冻结护理领域的词汇、护理记录字段、用户填写的下次日期语义和单狗隔离规则。C1.1 本身不创建 CloudBase 集合、索引、云函数或权限资源；C1.2 已完成仓库内的客户端、云函数和资源合同代码，但未部署线上资源，也不改页面、首页事项、统一时间轴、线上数据或历史本餐快照。
 
 机器可读实体合同为 [`care-record-v1.schema.json`](../../../contracts/care/care-record-v1.schema.json)，写入字段合同为 [`care-record-write-v1.schema.json`](../../../contracts/care/care-record-write-v1.schema.json)，纯合同参考实现为 [`careRecordContract.js`](../../../contracts/care/careRecordContract.js)。
 
@@ -71,7 +71,7 @@
 
 ## 4. 写入、读取与删除边界
 
-这些是 C1.2 实现必须遵守的稳定接口语义，本轮不实现具体 adapter 或云函数：
+这些是 C1.2 已实现并由 service、adapter 与云函数共同遵守的稳定接口语义：
 
 | 操作 | 必需输入 | 结果与边界 |
 | --- | --- | --- |
@@ -95,6 +95,14 @@
 
 - `careRecord/v1` 与 `careRecordWrite/v1` 是本轮冻结的稳定合同。新增字段或改变枚举语义必须升级版本，不在 v1 中静默复用旧字段。
 - `contracts/care/careRecordContract.js` 是客户端和云函数未来共享的纯规范化/校验参考；本轮不把它接入主包、adapter 或页面。
-- **C1.2：** 实现独立护理 service、adapter、云函数、集合 schema、索引、权限、分页、失败恢复和测试；不得自动部署云端资源。
+- **C1.2：** 已实现独立护理 service、adapter、云函数、集合 schema、索引、权限、分页、失败恢复和测试；不得自动部署云端资源。详细交接见 [`护理记录客户端与云端实现`](2026-08-04-care-record-client-cloud-implementation.md)。
 - **C1.3：** 使用本合同实现护理列表、筛选、表单和删除确认；页面复用 D2.1 交接中的 UI Kernel，不在本合同中加入 UI 字段或医疗文案。
 - **H2.1/R2.1：** 首页事项和统一记录时间轴属于后续任务，不由本合同提前改变。
+
+## 7. C1.2 实现交接
+
+- `care/careRecordService.js` 提供 `create/update/delete/list/get`，在写入前校验字段，在读取和写入后统一映射未部署、存储未就绪、未登录、无权限、记录不存在、输入无效和网络错误。
+- `care/adapters/careRecordCloudbase.js` 只调用 `careRecord` 云函数；`care/adapters/careRecordMock.js` 提供同形状的本地单狗 CRUD、类型筛选和游标分页。
+- `cloudfunctions/careRecord` 使用上下文 `_openid` 做用户隔离，复核 `dogs` 归属，禁止更新时更换 `dogId`，并将 CloudBase Date 与内部字段转换为业务 DTO。
+- `care_records` 的存储 schema、`ADMINONLY` 权限和两条列表索引位于 `cloudfunctions/careRecord/schema/`；根合同修改后运行 `npm run sync:care-record-contract`，用 `npm run check:care-record-contract` 校验同步状态。
+- C1.2 只完成代码和本地合同测试，不创建线上集合、索引或部署云函数；OC1 仍需单独授权，且不自动迁移或清理历史数据。

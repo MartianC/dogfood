@@ -12,6 +12,7 @@
     "check:ui": "node scripts/check-ui-system.js",
     "check:project-navigation": "node scripts/check-project-navigation-gate.js",
     "check:care-record-contract": "node scripts/check-care-record-contract.js",
+    "sync:care-record-contract": "node scripts/sync-care-record-contract.js",
     "sync:weight-contract": "node scripts/sync-weight-contract.js",
     "check:weight-contract": "node scripts/sync-weight-contract.js --check",
     "check:shared-meal-record": "node scripts/check-shared-meal-record-contract.js",
