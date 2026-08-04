@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "care_001",
+  "dogId": "dog_001",
+  "type": "vaccine",
+  "name": "狂犬病疫苗",
+  "occurredOn": "2026-07-01",
+  "nextDate": "2027-07-01",
+  "notes": "社区动物医院，用户记录的事实备注。",
+  "createdAt": "2026-07-01T09:00:00.000Z",
+  "updatedAt": "2026-07-01T09:00:00.000Z"
+}

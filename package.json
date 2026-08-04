@@ -11,6 +11,7 @@
     "check:main-package": "node scripts/check-main-package-unused-js.js",
     "check:ui": "node scripts/check-ui-system.js",
     "check:project-navigation": "node scripts/check-project-navigation-gate.js",
+    "check:care-record-contract": "node scripts/check-care-record-contract.js",
     "check:shared-meal-record": "node scripts/check-shared-meal-record-contract.js",
     "check:shared-meal-navigation": "node scripts/check-shared-meal-navigation-gate.js",
     "check:shared-meal-deviation": "node scripts/check-shared-meal-deviation-baseline.js",
