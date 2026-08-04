@@ -73,6 +73,7 @@ test('游客首页不请求档案、记录或草稿，仍展示登录主任务',
   })
   let viewData
   await definition.onShow.call({
+    now: definition.now,
     getTabBar: () => ({ setData() {} }),
     setData(data) { viewData = data }
   })
@@ -90,6 +91,7 @@ test('已登录首页在记录服务失败时展示稳定错误降级，仍保�
   })
   let viewData
   await definition.onShow.call({
+    now: definition.now,
     getTabBar: () => ({ setData() {} }),
     setData(data) { viewData = data }
   })
@@ -116,6 +118,7 @@ test('主页把今天记录与最近记录分别交给状态模型', async () =>
   })
   let viewData
   await definition.onShow.call({
+    now: definition.now,
     getTabBar: () => ({ setData() {} }),
     setData(data) { viewData = data }
   })
@@ -139,6 +142,7 @@ test('主页显示可恢复草稿状态且不自动导航', async () => {
   })
   let viewData
   await definition.onShow.call({
+    now: definition.now,
     getTabBar: () => ({ setData() {} }),
     setData(data) { viewData = data }
   })
@@ -156,11 +160,16 @@ test('今天有记录时主任务打开记录页，而不是重复启动记餐�
   })
   let viewData
   await definition.onShow.call({
+    now: definition.now,
     getTabBar: () => ({ setData() {} }),
     setData(data) { viewData = data }
   })
   definition.onOpenRecords = () => { switchedTo = 'records' }
-  await definition.onPrimaryTask.call({ data: viewData, onOpenRecords: definition.onOpenRecords })
+  await definition.onPrimaryTask.call({
+    data: viewData,
+    onOpenRecords: definition.onOpenRecords,
+    onCreateMeal: definition.onCreateMeal
+  })
   assert.equal(switchedTo, 'records')
 })
 

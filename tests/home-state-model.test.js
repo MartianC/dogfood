@@ -15,6 +15,8 @@ const dog = {
   name: '布丁'
 }
 
+const FIXED_NOW = new Date('2026-08-02T04:00:00.000Z')
+
 function record({ id, dogName = '布丁', menu = '番茄炒蛋', mealTime = '2026-08-02T04:00:00.000Z' } = {}) {
   return {
     id: id || `record-${dogName}`,
@@ -65,7 +67,8 @@ test('可恢复草稿优先于普通首页状态，并展示狗狗、菜单和�
         mealTime: '2026-08-02T03:15:00.000Z'
       }
     },
-    todayRecords: [record()]
+    todayRecords: [record()],
+    now: FIXED_NOW
   })
 
   assert.equal(state.status, HOME_STATUS.DRAFT)
