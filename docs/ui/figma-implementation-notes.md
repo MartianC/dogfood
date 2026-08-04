@@ -16,6 +16,14 @@
 - 首页的记餐入口、记录空态和中央动作均调用 `sharedMealEntryService.startSharedMeal()`；首页在“今天有记录”时仍可将主任务导向记录回看。任务型子页面不重复显示 TabBar 或中央动作。旧食谱、批量和兼容深链保留代码访问，但不进入当前主导航。
 - V1.1 视觉验收覆盖 320pt、375/390pt、长狗名、长菜单名、多狗、长列表、底部安全区和页面内容不被导航遮挡；临时截图和 `.design-check/` 产物不进入仓库。
 
+## 2026-08-05 C1.3 护理记录页面实现交接
+
+- 实现依据为 Figma 文件 `CHUlIiWUhuXHA0IUwQe6Qe` 的 D2.1 画板 C01–C04（`20251:14`、`20251:70`、`20251:102`、`20251:146`），对应交接文档 [`体重与护理交互设计交接`](../superpowers/specs/2026-08-04-weight-and-care-interface-design.md)。页面进入狗狗档案分包，任务型页面不显示底部 TabBar。
+- 新增 `subpackages/dog-profile/care-record` 列表页和 `subpackages/dog-profile/care-edit` 表单页：列表覆盖全部/四类筛选、有记录、空态、分页、长备注、编辑和删除确认；表单覆盖新增、编辑、发生日期、用户填写的下次日期、备注计数、保存失败和删除确认。
+- 页面组合 `ui-card`、`ui-button`、`ui-empty`、`ui-field`、`ui-notice`、`ui-tag`，颜色、间距、圆角、阴影沿用 `--df-*` token；没有新增 TDesign 页面标签、基础组件或裸色值。护理规则继续由 C1.2 `careRecordService` 负责，页面只编排状态和导航。
+- 与 C01–C04 的实现差异：C1.3 将记录操作拆为任务型列表页和表单页，使用原生日期 `picker` 与项目 `ui-field`；删除确认复用小程序 `wx.showModal`，因为当前 UI Kernel 没有通用 Dialog wrapper。未实现首页事项、统一记录时间轴、护理周期推导或医疗结论。
+- 验证：完成后运行 `npm run check:ui`、护理页面定向测试、`npm run check:main-package`、`npm run check:project-navigation` 和 `git diff --check`；未执行线上部署或写入 CloudBase 资源。
+
 ## 2026-08-01 D1.1 首页与全局导航
 
 - 在 Figma 文件 `CHUlIiWUhuXHA0IUwQe6Qe` 新增页面“狗饭 · 首页与全局导航 D1.1”（Page `20186:28`），交付 H01–H08 八个首页状态和 N01 导航规格板；完整节点、状态、尺寸和实现映射见 [`首页与全局导航设计交接`](../superpowers/specs/2026-08-01-home-and-global-navigation-design.md)。
@@ -1065,3 +1073,12 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
 - 继续使用 `docs/ui/design-system.md` 的 `--df-*` 语义 token；本轮没有新增或修改 token、Figma variable、文字样式或效果样式。
 - 自由文本使用 `Noto Sans SC`；10 个画板均为 `375 × 812`，结构检查没有发现画板内溢出或文字越界。
 - D2.1 设计稿已于 2026-08-04 获用户确认，路线图任务已勾选；W1.3/C1.3 可按本交接进入实现。
+
+## 2026-08-05 W1.3 体重趋势页面实现
+
+本轮实现对应 D2.1 的 B01 `20250:14`、B02 `20250:73`、B03 `20250:105` 和 B04 `20250:142`。体重趋势页与编辑页均为 `dog-profile` 分包任务型页面，不显示底部 TabBar；狗狗档案卡补充体重趋势/第一次记录入口。
+
+- 页面复用 `ui-card`、`ui-button`、`ui-field`、`ui-empty`、`ui-notice` 和 `ui-tag`，使用现有 `--df-*` token；没有新增颜色 token、TDesign 直用或基础组件变体。
+- B01/B02 的当前值、CSS 趋势点线、历史列表、空态和分页由 `weightTrendModel` 生成；B03/B04 的字段、保存中、错误、删除确认和最新值回退说明由独立表单页承载。
+- 趋势图使用轻量 CSS 点线表达实际测量序列，不引入 canvas 或图片资产；历史列表同时提供日期、体重和相邻记录差值，避免仅依赖图形或颜色。
+- 当前已完成结构、UI 静态检查和自动化状态测试；尚未在微信开发者工具中完成 B01–B04 的 375×812 逐屏截图复核，临时视觉验收仍需在 OW1/发布前单独完成。

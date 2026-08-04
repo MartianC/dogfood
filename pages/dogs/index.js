@@ -36,5 +36,21 @@ Page({
 
   onEditDogPanel(e) {
     wx.navigateTo({ url: `/subpackages/dog-profile/dog-edit/index?id=${e.currentTarget.dataset.id}` })
+  },
+
+  onViewWeight(e) {
+    const dogId = e && e.currentTarget && e.currentTarget.dataset.id
+    if (!dogId) return
+    wx.navigateTo({
+      url: `/subpackages/dog-profile/weight/index?dogId=${encodeURIComponent(dogId)}`
+    })
+  },
+
+  onViewCare(e) {
+    const dogId = e && e.currentTarget && e.currentTarget.dataset.id
+    if (!dogId) return
+    wx.navigateTo({
+      url: `/subpackages/dog-profile/care-record/index?dogId=${encodeURIComponent(dogId)}`
+    })
   }
 })

@@ -1,0 +1,97 @@
+<view class="page care-record-page" aria-label="护理记录">
+  <view class="care-record-head">
+    <view class="care-record-heading">
+      <view class="df-heading-lg">护理记录</view>
+      <view class="care-record-dog-name">{{dogName || '选择狗狗后查看记录'}}</view>
+    </view>
+    <ui-button size="medium" block="{{false}}" bind:tap="onAdd">添加记录</ui-button>
+  </view>
+
+  <view wx:if="{{errorCode === 'NO_DOG'}}" class="section">
+    <ui-empty
+      title="还没有狗狗档案"
+      description="先添加一只狗狗，再记录护理事实。"
+      action-text="添加狗狗"
+      bind:action="onAddDog"
+    />
+  </view>
+
+  <view wx:elif="{{errorCode}}" class="section care-record-error">
+    <ui-notice variant="warning">{{errorMessage}}</ui-notice>
+    <view class="care-record-error__action">
+      <ui-button variant="secondary" bind:tap="onRetry">重新加载</ui-button>
+    </view>
+  </view>
+
+  <view wx:else class="section">
+    <ui-field wx:if="{{dogs.length > 1}}" label="当前狗狗">
+      <picker range="{{dogs}}" range-key="name" value="{{dogIndex}}" bindchange="onDogChange">
+        <view class="care-record-picker-value">{{dogName}}</view>
+      </picker>
+    </ui-field>
+
+    <view class="care-record-filter-section">
+      <view class="care-record-filter-label">护理类型</view>
+      <view class="care-record-filters" aria-role="radiogroup" aria-label="护理类型筛选">
+        <view
+          wx:for="{{filterOptions}}"
+          wx:key="value"
+          class="care-record-filter"
+          data-value="{{item.value}}"
+          aria-role="radio"
+          aria-label="{{item.label}}"
+          aria-checked="{{selectedType === item.value}}"
+          bindtap="onFilter"
+        >
+          <ui-tag variant="{{selectedType === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="care-record-loading">
+      <ui-notice>正在加载护理记录…</ui-notice>
+    </view>
+
+    <ui-empty
+      wx:elif="{{!records.length}}"
+      title="还没有护理记录"
+      description="记录一次疫苗、驱虫或其他护理事实。"
+      action-text="添加护理记录"
+      bind:action="onAdd"
+    />
+
+    <view wx:else class="care-record-list">
+      <ui-card wx:for="{{records}}" wx:key="id" padding="medium">
+        <view class="care-record-card">
+          <view class="care-record-card__head">
+            <ui-tag variant="good">{{item.typeLabel}}</ui-tag>
+            <text class="care-record-card__date">{{item.occurredOn}}</text>
+          </view>
+          <view wx:if="{{item.name}}" class="care-record-card__name">{{item.nameText}}</view>
+          <view class="care-record-card__next">下次：{{item.nextDateText}}</view>
+          <view wx:if="{{item.notes}}" class="care-record-card__notes" user-select="true">{{item.notes}}</view>
+          <view class="care-record-card__actions">
+            <ui-button
+              size="small"
+              block="{{false}}"
+              data-id="{{item.id}}"
+              catch:tap="onEdit"
+            >编辑</ui-button>
+            <ui-button
+              size="small"
+              variant="warning-outline"
+              block="{{false}}"
+              loading="{{deletingId === item.id}}"
+              data-id="{{item.id}}"
+              catch:tap="onDelete"
+            >删除</ui-button>
+          </view>
+        </view>
+      </ui-card>
+
+      <view wx:if="{{nextCursor}}" class="care-record-more">
+        <ui-button variant="secondary" loading="{{loadingMore}}" bind:tap="loadMore">加载更多</ui-button>
+      </view>
+    </view>
+  </view>
+</view>

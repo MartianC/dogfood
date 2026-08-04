@@ -101,8 +101,8 @@
 
 ## 7. C1.2 实现交接
 
-- `care/careRecordService.js` 提供 `create/update/delete/list/get`，在写入前校验字段，在读取和写入后统一映射未部署、存储未就绪、未登录、无权限、记录不存在、输入无效和网络错误。
-- `care/adapters/careRecordCloudbase.js` 只调用 `careRecord` 云函数；`care/adapters/careRecordMock.js` 提供同形状的本地单狗 CRUD、类型筛选和游标分页。
+- `subpackages/dog-profile/services/careRecordService.js` 提供 `create/update/delete/list/get`，在写入前校验字段，在读取和写入后统一映射未部署、存储未就绪、未登录、无权限、记录不存在、输入无效和网络错误；根 `care/careRecordService.js` 保留兼容转发。
+- `subpackages/dog-profile/services/careRecordCloudbaseAdapter.js` 只调用 `careRecord` 云函数；`subpackages/dog-profile/services/careRecordMockAdapter.js` 提供同形状的本地单狗 CRUD、类型筛选和游标分页。
 - `cloudfunctions/careRecord` 使用上下文 `_openid` 做用户隔离，复核 `dogs` 归属，禁止更新时更换 `dogId`，并将 CloudBase Date 与内部字段转换为业务 DTO。
 - `care_records` 的存储 schema、`ADMINONLY` 权限和两条列表索引位于 `cloudfunctions/careRecord/schema/`；根合同修改后运行 `npm run sync:care-record-contract`，用 `npm run check:care-record-contract` 校验同步状态。
 - C1.2 只完成代码和本地合同测试，不创建线上集合、索引或部署云函数；OC1 仍需单独授权，且不自动迁移或清理历史数据。

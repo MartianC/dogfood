@@ -1,0 +1,66 @@
+<view class="page with-bottom-action with-stacked-actions weight-edit-page" aria-label="{{modeTitle}}">
+  <view wx:if="{{loadStatus === 'loading'}}" class="weight-edit-status" aria-live="polite">
+    正在读取体重记录
+  </view>
+
+  <block wx:elif="{{loadStatus === 'error'}}">
+    <view class="weight-edit-status">
+      <ui-notice variant="warning">{{errorText}}</ui-notice>
+      <view class="weight-edit-status__action">
+        <ui-button size="medium" bind:tap="onRetry">重新加载</ui-button>
+      </view>
+      <view class="weight-edit-status__action">
+        <ui-button variant="secondary" size="medium" bind:tap="onCancel">返回</ui-button>
+      </view>
+    </view>
+  </block>
+
+  <block wx:elif="{{loadStatus === 'ready'}}">
+    <view class="weight-edit-heading">
+      <view class="df-heading-lg">{{modeTitle}}</view>
+      <view class="weight-edit-heading__description">只记录实际测量值，不填写估算或建议数值。</view>
+    </view>
+
+    <view class="weight-edit-section">
+      <ui-card padding="large">
+        <view class="weight-edit-form">
+          <ui-field label="狗狗">
+            <view class="weight-edit-readonly">{{dogName}}</view>
+          </ui-field>
+
+          <ui-field label="体重（kg）" errorText="{{weightKgError}}" helpText="大于 0，最多保留两位小数。">
+            <input
+              class="weight-edit-control"
+              type="digit"
+              data-key="weightKg"
+              value="{{form.weightKg}}"
+              placeholder="例如 12.5"
+              bindinput="setField"
+            />
+          </ui-field>
+
+          <ui-field label="称量日期" errorText="{{measuredOnError}}" helpText="不能晚于今天。">
+            <picker mode="date" end="{{today}}" value="{{form.measuredOn}}" bindchange="onMeasuredOn">
+              <view class="weight-edit-picker-value {{form.measuredOn ? '' : 'weight-edit-picker-value--empty'}}">
+                {{form.measuredOn || '请选择称量日期'}}
+              </view>
+            </picker>
+          </ui-field>
+
+          <ui-notice>称量日期和体重会作为一条历史事实保存；修改不会就地覆盖原记录。</ui-notice>
+          <ui-notice wx:if="{{formError}}" variant="warning">{{formError}}</ui-notice>
+        </view>
+      </ui-card>
+    </view>
+
+    <view wx:if="{{id}}" class="weight-edit-delete">
+      <ui-button variant="warning-outline" loading="{{deleting}}" disabled="{{saving}}" bind:tap="onDelete">删除这次测量</ui-button>
+      <view class="weight-edit-delete__description">删除最新记录时，当前体重会按历史回退规则更新。</view>
+    </view>
+
+    <view class="bottom-action">
+      <ui-button loading="{{saving}}" disabled="{{deleting}}" bind:tap="onSave">保存体重</ui-button>
+      <ui-button variant="secondary" disabled="{{saving || deleting}}" bind:tap="onCancel">取消</ui-button>
+    </view>
+  </block>
+</view>

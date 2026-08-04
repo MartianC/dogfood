@@ -16,12 +16,14 @@
 
 | 模块 | 路径 | 职责 |
 | --- | --- | --- |
-| 护理 service | `care/careRecordService.js` | 校验写入与列表参数，统一 CRUD、类型筛选、分页结果和稳定错误分类 |
-| CloudBase adapter | `care/adapters/careRecordCloudbase.js` | 只负责调用 `careRecord` 云函数和收口底层调用错误；无 CloudBase 运行时则回退 Mock |
-| Mock adapter | `care/adapters/careRecordMock.js` | 使用本地 storage 模拟单狗归属、CRUD、类型筛选和稳定游标分页 |
+| 护理 service | `subpackages/dog-profile/services/careRecordService.js` | 校验写入与列表参数，统一 CRUD、类型筛选、分页结果和稳定错误分类；根 `care/careRecordService.js` 保留兼容转发 |
+| CloudBase adapter | `subpackages/dog-profile/services/careRecordCloudbaseAdapter.js` | 只负责调用 `careRecord` 云函数和收口底层调用错误；无 CloudBase 运行时则回退 Mock |
+| Mock adapter | `subpackages/dog-profile/services/careRecordMockAdapter.js` | 使用本地 storage 模拟单狗归属、CRUD、类型筛选和稳定游标分页 |
 | 合同同步 | `scripts/sync-care-record-contract.js` | 将根合同同步到云函数包内，避免云函数依赖小程序包外文件 |
 
 service 和 adapter 不读取 `care_records` 集合，不接受 `id`、`_id`、`_openid`、`userId`、`createdAt` 或 `updatedAt` 作为写入字段。写入前统一规范化空名称、空备注和未填写的下次日期；下次日期只保存用户明确填写的值。
+
+C1.3 将运行时 service 和 adapter 放入狗狗档案分包，避免任务页从分包反向依赖根 `care/` 代码；根路径只作为 C1.2 兼容导出和测试入口。
 
 ## 3. 云函数操作
 

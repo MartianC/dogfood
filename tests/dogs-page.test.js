@@ -55,7 +55,7 @@ test('狗狗页显示时加载最新档案并同步狗狗 Tab 选中态', async 
   assert.deepEqual(viewData.dogs, dogs)
 })
 
-test('狗狗页的游客登录、添加和编辑入口都进入现有档案编辑页', async () => {
+test('狗狗页的游客登录、添加、体重和护理入口都进入对应页面', async () => {
   const navigations = []
   const authService = {
     getAuthState: () => 'guest',
@@ -70,15 +70,19 @@ test('狗狗页的游客登录、添加和编辑入口都进入现有档案编�
   await definition.onLogin.call({ setData() {} })
   definition.onAddDog.call({ setData() {} })
   definition.onEditDogPanel.call({ setData() {} }, { currentTarget: { dataset: { id: 'dog-1' } } })
+  definition.onViewWeight.call({ setData() {} }, { currentTarget: { dataset: { id: 'dog-1' } } })
+  definition.onViewCare.call({ setData() {} }, { currentTarget: { dataset: { id: 'dog-1' } } })
 
   assert.deepEqual(navigations, [
     '/subpackages/dog-profile/dog-edit/index',
     '/subpackages/dog-profile/dog-edit/index',
-    '/subpackages/dog-profile/dog-edit/index?id=dog-1'
+    '/subpackages/dog-profile/dog-edit/index?id=dog-1',
+    '/subpackages/dog-profile/weight/index?dogId=dog-1',
+    '/subpackages/dog-profile/care-record/index?dogId=dog-1'
   ])
 })
 
-test('狗狗页只迁移当前档案内容，不引入体重、护理或新的单狗概览入口', () => {
+test('狗狗页提供体重和护理入口，但不提前接入统一时间轴', () => {
   const wxml = fs.readFileSync(path.join(root, 'pages/dogs/index.wxml'), 'utf8')
   const js = fs.readFileSync(path.join(root, 'pages/dogs/index.js'), 'utf8')
 
@@ -86,6 +90,8 @@ test('狗狗页只迁移当前档案内容，不引入体重、护理或新的�
   assert.match(wxml, /狗狗档案/)
   assert.match(wxml, /还没有狗狗档案/)
   assert.match(wxml, /wx:for="\{\{dogs\}\}"/)
-  assert.doesNotMatch(`${js}\n${wxml}`, /体重曲线|疫苗|驱虫|单狗概览|狗狗详情/)
+  assert.match(`${js}\n${wxml}`, /体重趋势|记录第一次体重/)
+  assert.match(`${js}\n${wxml}`, /护理记录|care-record/)
+  assert.doesNotMatch(`${js}\n${wxml}`, /疫苗|驱虫|统一时间轴/)
   assert.doesNotMatch(wxml, /navigator[^>]+pages\/dogs|bind:tap="onViewDog"/)
 })

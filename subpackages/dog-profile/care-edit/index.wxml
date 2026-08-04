@@ -1,0 +1,88 @@
+<view class="page care-edit-page" aria-label="护理记录表单">
+  <view wx:if="{{loading}}" class="section care-edit-loading">
+    <ui-notice>正在加载护理记录…</ui-notice>
+  </view>
+
+  <view wx:elif="{{loadError}}" class="section care-edit-error">
+    <ui-notice variant="warning">{{loadError}}</ui-notice>
+    <view class="care-edit-error__actions">
+      <ui-button bind:tap="onRetry">重新加载</ui-button>
+      <ui-button variant="secondary" bind:tap="onCancel">返回</ui-button>
+    </view>
+  </view>
+
+  <view wx:else class="section care-edit-section">
+    <ui-card>
+      <view class="care-edit-form">
+        <ui-field label="记录狗狗">
+          <view wx:if="{{id}}" class="care-edit-readonly">{{dogName}}</view>
+          <picker wx:else range="{{dogs}}" range-key="name" value="{{dogIndex}}" bindchange="onDogChange">
+            <view class="care-edit-picker-value">{{dogName}}</view>
+          </picker>
+        </ui-field>
+
+        <ui-field label="护理类型">
+          <picker range="{{typeOptions}}" range-key="label" value="{{typeIndex}}" bindchange="onTypeChange">
+            <view class="care-edit-picker-value">{{typeOptions[typeIndex].label}}</view>
+          </picker>
+        </ui-field>
+
+        <ui-field label="护理名称" helpText="可以填写名称，也可以留空。">
+          <input
+            class="care-edit-control"
+            data-key="name"
+            value="{{form.name}}"
+            maxlength="120"
+            bindinput="onTextInput"
+            placeholder="例如 狂犬病疫苗"
+          />
+        </ui-field>
+
+        <ui-field label="发生日期" errorText="{{occurredOnError}}">
+          <picker mode="date" end="{{today}}" value="{{form.occurredOn}}" bindchange="onOccurredDate">
+            <view class="care-edit-picker-value {{form.occurredOn ? '' : 'care-edit-picker-value--empty'}}">
+              {{form.occurredOn || '请选择发生日期'}}
+            </view>
+          </picker>
+        </ui-field>
+
+        <ui-field label="下次日期" helpText="只填写你自己确定的计划日期，不会自动推导。" errorText="{{nextDateError}}">
+          <picker mode="date" start="{{form.occurredOn}}" value="{{form.nextDate}}" bindchange="onNextDate">
+            <view class="care-edit-picker-value {{form.nextDate ? '' : 'care-edit-picker-value--empty'}}">
+              {{form.nextDate || '未填写下次日期'}}
+            </view>
+          </picker>
+        </ui-field>
+
+        <ui-field label="备注" helpText="只记录这次护理事实的说明，例如医院或品牌。">
+          <textarea
+            class="care-edit-notes"
+            data-key="notes"
+            value="{{form.notes}}"
+            maxlength="2000"
+            auto-height="true"
+            bindinput="onTextInput"
+            placeholder="可以填写护理事实备注"
+          />
+          <view class="care-edit-notes-meta">{{form.notes.length}} / 2000</view>
+        </ui-field>
+
+        <ui-notice wx:if="{{formError}}" variant="warning">{{formError}}</ui-notice>
+
+        <view class="care-edit-actions">
+          <ui-button loading="{{saving}}" disabled="{{saving || deleting}}" bind:tap="onSave">保存护理记录</ui-button>
+          <ui-button variant="secondary" disabled="{{saving || deleting}}" bind:tap="onCancel">取消</ui-button>
+        </view>
+
+        <view wx:if="{{id}}" class="care-edit-delete">
+          <ui-button
+            variant="warning-outline"
+            loading="{{deleting}}"
+            disabled="{{saving}}"
+            bind:tap="onDelete"
+          >删除护理记录</ui-button>
+        </view>
+      </view>
+    </ui-card>
+  </view>
+</view>

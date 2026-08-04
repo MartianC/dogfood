@@ -201,7 +201,7 @@ test('护理云函数写入边界拒绝客户端伪造实体字段', () => {
     /写入字段不完整/
   )
   assert.throws(
-    () => validateWritePayload({ ...payload(), occurredOn: '2026-08-05' }),
+    () => validateWritePayload({ ...payload(), occurredOn: '2099-08-05' }),
     /发生日期不能晚于今天/
   )
 })

@@ -1,0 +1,62 @@
+@import "../../../styles/tokens.wxss";
+
+.care-edit-page {
+  padding-top: 24rpx;
+}
+
+.care-edit-loading,
+.care-edit-error {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.care-edit-error__actions,
+.care-edit-actions {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.care-edit-section {
+  margin-top: 0;
+}
+
+.care-edit-form {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.care-edit-control,
+.care-edit-picker-value,
+.care-edit-readonly {
+  min-height: 58rpx;
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  line-height: 58rpx;
+}
+
+.care-edit-picker-value--empty {
+  color: var(--df-color-muted);
+}
+
+.care-edit-notes {
+  width: 100%;
+  min-height: 180rpx;
+  box-sizing: border-box;
+  padding: 8rpx 0;
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  line-height: 1.6;
+}
+
+.care-edit-notes-meta {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  line-height: 1.4;
+  text-align: right;
+}
+
+.care-edit-delete {
+  padding-top: var(--df-space-2);
+  border-top: 1rpx solid var(--df-color-line);
+}
