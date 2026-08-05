@@ -524,7 +524,7 @@ W1.3 + C1.3 → D3.1 → R2.1 → F2.1 → V2.1
 
 **主线进度：** 16 / 16
 
-**次要能力进度：** 7 / 14
+**次要能力进度：** 8 / 14
 
 ### 主线
 
@@ -551,7 +551,7 @@ W1.3 + C1.3 → D3.1 → R2.1 → F2.1 → V2.1
 - [x] `W1.1` 体重领域与数据合同（见 [`体重领域与数据合同`](../specs/2026-08-04-weight-domain-and-data-contract.md)）
 - [x] `W1.2` 体重客户端与云端实现（见 [`体重记录客户端与云端实现`](../specs/2026-08-04-weight-record-client-cloud-implementation.md)）
 - [x] `W1.3` 体重趋势页面（见 [`体重趋势页面实施交接`](../specs/2026-08-05-weight-trend-page-implementation.md)）
-- [ ] `OW1` 授权部署体重资源
+- [x] `OW1` 授权部署体重资源
 - [x] `C1.1` 护理领域与数据合同（见 [`护理领域与数据合同`](../specs/2026-08-04-care-domain-and-data-contract.md)）
 - [x] `C1.2` 护理客户端与云端实现（见 [`护理记录客户端与云端实现`](../specs/2026-08-04-care-record-client-cloud-implementation.md)）
 - [x] `C1.3` 护理记录页面（见 [`护理记录页面实现`](../specs/2026-08-05-care-record-page-implementation.md)）
