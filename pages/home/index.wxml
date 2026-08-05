@@ -57,7 +57,7 @@
 
   <view wx:if="{{homeState.profileIssues.length}}" class="home-section">
     <view class="home-section__head">
-      <view class="df-heading-lg">档案事项</view>
+      <view class="df-heading-lg">狗狗事项</view>
       <view class="home-section__hint">最多显示 3 条</view>
     </view>
     <view class="home-issue-list">
@@ -69,6 +69,7 @@
         <view
           class="home-issue"
           data-dog-id="{{item.dogId}}"
+          data-action="{{item.action}}"
           aria-role="button"
           aria-label="{{item.dogName}}，{{item.title}}"
           bind:tap="onOpenProfileIssue"

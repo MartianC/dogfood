@@ -26,7 +26,7 @@ function calendarBounds(value) {
 function createCalendarFormat(days) {
   const marked = new Set((Array.isArray(days) ? days : []).map((item) => item && item.dateKey).filter(Boolean))
   return (day) => {
-    day.suffix = marked.has(localDateKey(day.date)) ? '已记' : ''
+    day.suffix = marked.has(localDateKey(day.date)) ? '•' : ''
     return day
   }
 }

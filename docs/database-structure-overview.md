@@ -38,13 +38,13 @@ CloudBase 公共只读投影
 
 | 页面/动作 | 客户端服务 | 数据入口 | 说明 |
 | --- | --- | --- | --- |
-| 首页 | `authService`、`dogService`、`sharedMealRecordService`、`homeStateModel` | `users`、`dogs`、`shared_meal_records` | 展示今日主任务、草稿摘要、今日记录和最近一顿；读取失败时仍保留“记一顿”入口 |
+| 首页 | `authService`、`dogService`、`sharedMealRecordService`、`homeItemService`、`homeStateModel` | `users`、`dogs`、`shared_meal_records`、`weight_measurements`、`care_records` | 展示今日主任务、草稿摘要、今日记录、最近一顿和最多三条真实狗狗事项；读取失败时仍保留“记一顿”入口 |
 | 记录 | `sharedMealRecordService`、月份状态与日历模型 | `shared_meal_records` | 继续只负责本餐月份、日期和不可变详情回看 |
 | 狗狗 | `authService`、`dogService` | `users`、`dogs` | 承载原“我的”中的狗狗档案列表、新增和编辑入口 |
 | 我的 | `authService` | `users` | 只承载账号信息和已实现的低频能力，不读取狗狗档案列表 |
 | 中央“记一顿” | `sharedMealEntryService` | 无独立集合 | 统一进入现有登录、建档、选狗、草稿恢复、菜单和本餐保存流程 |
 
-体重和护理代码已分别完成独立数据入口，但尚未接入主线页面或首页事项；体重和护理集合、索引和云函数仍需 OW1/OC1 分别单独授权部署。统一记录时间轴尚未接入。旧 `customRecipes`、`mealPlans` 与旧深链继续保留兼容，但不成为当前导航入口。
+体重和护理代码已分别完成独立数据入口，H2.1 已在首页查询和展示层接入事项；首页不直读集合，仍通过两个领域云函数的列表动作获取数据。统一记录时间轴尚未接入。旧 `customRecipes`、`mealPlans` 与旧深链继续保留兼容，但不成为当前导航入口。
 
 ## 2. CloudBase 用户业务集合
 
@@ -92,7 +92,7 @@ CloudBase 公共只读投影
 
 ### `weight_measurements`
 
-用途：保存单只狗狗的体重测量历史。唯一写入、列表、详情和删除入口为 `weightRecord` 云函数；小程序客户端不得直读或直写集合。W1.2 已完成代码、schema、权限和索引合同，但未执行 OW1 线上部署或旧 `weightKg` 历史回填。
+用途：保存单只狗狗的体重测量历史。唯一写入、列表、详情和删除入口为 `weightRecord` 云函数；小程序客户端不得直读或直写集合。W1.2、W1.3 和 OW1 已完成；首页只读取最新有效测量，不把旧 `weightKg` 生成历史事项，也不执行历史回填。
 
 | 字段 | 类型/约束 | 说明 |
 |---|---|---|
@@ -110,7 +110,7 @@ CloudBase 公共只读投影
 
 ### `care_records`
 
-用途：保存单只狗狗的疫苗、体内驱虫、体外驱虫和其他护理事实。唯一写入、列表、详情和删除入口为 `careRecord` 云函数；小程序客户端不得直读或直写集合。C1.2 已完成代码、schema、权限和索引合同，但未执行 OC1 线上部署或历史数据迁移。
+用途：保存单只狗狗的疫苗、体内驱虫、体外驱虫和其他护理事实。唯一写入、列表、详情和删除入口为 `careRecord` 云函数；小程序客户端不得直读或直写集合。C1.2、C1.3 和 OC1 已完成；首页只读取用户填写的 `nextDate`，不自动推导护理周期或迁移历史数据。
 
 | 字段 | 类型/约束 | 说明 |
 |---|---|---|

@@ -6,6 +6,7 @@ const {
   PRIMARY_TASK_TYPE,
   buildHomeState,
   buildProfileIssues,
+  buildHomeIssues,
   draftView,
   formatDraftUpdatedAt
 } = require('../services/homeStateModel')
@@ -168,6 +169,59 @@ test('档案事项消费完整性和适用性结果，最多输出三条并保�
   )
   assert.equal(blockedIssue[0].code, 'not_applicable')
   assert.equal(blockedIssue[0].kind, 'applicability')
+})
+
+test('首页将档案、体重和护理事项合并为最多三条，并保留不同跳转动作', () => {
+  const issues = buildHomeIssues(
+    [{ id: 'dog-1', name: '布丁' }],
+    [],
+    [],
+    [
+      {
+        key: 'care:dog-1:care-1',
+        kind: 'care',
+        action: 'open-care',
+        dogId: 'dog-1',
+        dogName: '布丁',
+        title: '狂犬病疫苗',
+        description: '你填写的下次日期：2026年8月8日'
+      },
+      {
+        key: 'weight:dog-1:weight-1',
+        kind: 'weight',
+        action: 'open-weight',
+        dogId: 'dog-1',
+        dogName: '布丁',
+        title: '体重记录',
+        description: '上次记录于 1 天前'
+      },
+      {
+        key: 'care:dog-1:care-2',
+        kind: 'care',
+        action: 'open-care',
+        dogId: 'dog-1',
+        dogName: '布丁',
+        title: '体内驱虫',
+        description: '你填写的下次日期：2026年9月8日'
+      },
+      {
+        key: 'care:dog-1:care-3',
+        kind: 'care',
+        action: 'open-care',
+        dogId: 'dog-1',
+        dogName: '布丁',
+        title: '其他护理',
+        description: '你填写的下次日期：2026年10月8日'
+      }
+    ]
+  )
+
+  assert.equal(issues.length, 3)
+  assert.deepEqual(issues.map((issue) => issue.action), [
+    'open-care',
+    'open-weight',
+    'open-care'
+  ])
 })
 
 test('损坏或失效草稿不会进入有草稿状态', () => {
