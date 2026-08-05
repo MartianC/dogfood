@@ -555,7 +555,7 @@ W1.3 + C1.3 → D3.1 → R2.1 → F2.1 → V2.1
 - [x] `C1.1` 护理领域与数据合同（见 [`护理领域与数据合同`](../specs/2026-08-04-care-domain-and-data-contract.md)）
 - [x] `C1.2` 护理客户端与云端实现（见 [`护理记录客户端与云端实现`](../specs/2026-08-04-care-record-client-cloud-implementation.md)）
 - [x] `C1.3` 护理记录页面（见 [`护理记录页面实现`](../specs/2026-08-05-care-record-page-implementation.md)）
-- [ ] `OC1` 授权部署护理资源
+- [x] `OC1` 授权部署护理资源
 - [ ] `H2.1` 首页接入体重与护理事项
 - [ ] `D3.1` 统一记录时间轴设计
 - [ ] `R2.1` 统一时间轴查询与展示模型
