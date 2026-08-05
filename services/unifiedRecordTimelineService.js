@@ -1,8 +1,7 @@
 const dogService = require('./dogService')
 const sharedMealRecordService = require('./sharedMealRecordService')
 const sharedMealRecordMonthState = require('./sharedMealRecordMonthState')
-const weightService = require('../subpackages/dog-profile/services/weightService')
-const careRecordService = require('../care/careRecordService')
+const dogRecordQueryService = require('./dogRecordQueryService')
 const {
   SOURCE_NAMES,
   normalizeMonthKey,
@@ -128,8 +127,8 @@ function allSourcesStatus(sources) {
 function createUnifiedRecordTimelineService(options = {}) {
   const listDogs = options.listDogs || dogService.listDogs
   const listMeals = options.listMeals || sharedMealRecordService.list
-  const listWeights = options.listWeights || weightService.list
-  const listCare = options.listCare || careRecordService.list
+  const listWeights = options.listWeights || dogRecordQueryService.listWeights
+  const listCare = options.listCare || dogRecordQueryService.listCare
 
   async function query(queryOptions = {}) {
     const monthKey = normalizeMonthKey(queryOptions.monthKey)

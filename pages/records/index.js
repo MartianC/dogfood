@@ -188,6 +188,11 @@ Page({
   },
 
   async onShow() {
+    const app = typeof getApp === 'function' ? getApp() : null
+    if (app && app.globalData && app.globalData.authReady) {
+      await app.globalData.authReady
+    }
+
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
     if (tabBar) tabBar.setData({ selected: 'records' })
     const state = this.ensureTimelineState().getState()

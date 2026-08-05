@@ -14,7 +14,8 @@ function read(relativePath) {
 function loadRecordsPage(
   recordService,
   entryService = { startSharedMeal: async () => ({ status: 'flow-started' }) },
-  wx = {}
+  wx = {},
+  app = { globalData: { authReady: Promise.resolve() } }
 ) {
   const source = read('pages/records/index.js')
   let definition
@@ -31,7 +32,8 @@ function loadRecordsPage(
     Promise,
     console,
     encodeURIComponent,
-    wx
+    wx,
+    getApp() { return app }
   }
   vm.runInNewContext(`(function () { ${source}\n })()`, context, { filename: 'pages/records/index.js' })
   return { definition, moduleExports: context.module.exports }
@@ -243,6 +245,42 @@ test('记录页默认读取今天月份，切换月份后选择首日并展示�
   assert.deepEqual(calls[1], { monthKey: '2026-08', selectedDateKey: '2026-08-01' })
   assert.equal(page.data.selectedDateKey, '2026-08-01')
   assert.deepEqual(page.data.selectedRecords.map((item) => item.id), ['meal:aug-1'])
+})
+
+test('记录页等待应用认证初始化后再开始查询记录', async () => {
+  let resolveAuth
+  const authReady = new Promise((resolve) => {
+    resolveAuth = resolve
+  })
+  let loadCalls = 0
+  const timelineState = {
+    getState: () => ({
+      activeMonthKey: '',
+      selectedDateKey: '',
+      expandedDogIds: null,
+      status: 'idle',
+      model: null,
+      error: null
+    }),
+    load: async () => {
+      loadCalls += 1
+    }
+  }
+  const { definition } = loadRecordsPage(
+    { createUnifiedRecordTimelineState: () => timelineState },
+    undefined,
+    {},
+    { globalData: { authReady } }
+  )
+  const page = createPageContext(definition)
+  const request = page.onShow()
+
+  await Promise.resolve()
+  assert.equal(loadCalls, 0)
+
+  resolveAuth()
+  await request
+  assert.equal(loadCalls, 1)
 })
 
 test('选中无记录日期保留月份数据，失败后可从当前月份重试', async () => {

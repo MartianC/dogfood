@@ -1,5 +1,7 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
+const fs = require('node:fs')
+const path = require('node:path')
 
 const {
   createUnifiedRecordTimelineService,
@@ -11,6 +13,15 @@ const dogs = [
   { id: 'dog-1', name: '布丁' },
   { id: 'dog-2', name: '奶糖' }
 ]
+
+test('统一记录时间轴的默认数据源不直接依赖狗狗分包 service', () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, '..', 'services/unifiedRecordTimelineService.js'),
+    'utf8'
+  )
+  assert.doesNotMatch(source, /subpackages\/dog-profile\/services\/(?:weight|care)(?:Record)?Service/)
+  assert.match(source, /dogRecordQueryService/)
+})
 
 test('R2.1 按月份读取三类独立服务，分页后过滤月份并保留来源状态', async () => {
   const calls = { meal: [], weight: [], care: [] }
