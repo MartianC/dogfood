@@ -11,9 +11,11 @@ const FIXED_NOW = new Date('2026-08-02T04:00:00.000Z')
 function loadHomePage({
   dogService,
   recordService,
+  homeItemService = { listForDogs: async () => [] },
   authState = 'guest',
   draft = null,
-  now = FIXED_NOW
+  now = FIXED_NOW,
+  wx = {}
 }) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.js'), 'utf8')
   const getAuthState = typeof authState === 'function' ? authState : () => authState
@@ -22,6 +24,7 @@ function loadHomePage({
     '../../services/authService': { getAuthState },
     '../../services/sharedMealRecordService': recordService,
     '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'flow-started' }) },
+    '../../services/homeItemService': homeItemService,
     '../../services/homeDraftSummaryService': {
       getDraftSummary() { return draft }
     },
@@ -42,7 +45,8 @@ function loadHomePage({
     },
     wx: {
       switchTab() {},
-      navigateTo() {}
+      navigateTo() {},
+      ...wx
     },
     module: { exports: {} },
     exports: {},
@@ -128,6 +132,41 @@ test('主页把今天记录与最近记录分别交给状态模型', async () =>
   assert.equal(viewData.homeState.recentRecord.menuText, '番茄炒蛋')
 })
 
+test('主页将体重与护理事项交给首页模型，并保持狗狗身份', async () => {
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    dogService: { listDogs: async () => [{ id: 'dog-1', name: '布丁' }] },
+    recordService: { list: async () => ({ items: [] }) },
+    homeItemService: {
+      listForDogs: async (dogs, options) => {
+        assert.deepEqual(dogs, [{ id: 'dog-1', name: '布丁' }])
+        assert.equal(options.now, FIXED_NOW)
+        return [{
+          key: 'weight:dog-1:weight-1',
+          kind: 'weight',
+          action: 'open-weight',
+          dogId: 'dog-1',
+          dogName: '布丁',
+          title: '体重记录',
+          description: '上次记录于 1 天前',
+          recordId: 'weight-1',
+          measuredOn: '2026-08-01'
+        }]
+      }
+    }
+  })
+  let viewData
+  await definition.onShow.call({
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { viewData = data }
+  })
+
+  assert.equal(viewData.homeState.profileIssues.length, 1)
+  assert.equal(viewData.homeState.profileIssues[0].action, 'open-weight')
+  assert.equal(viewData.homeState.profileIssues[0].dogName, '布丁')
+})
+
 test('主页显示可恢复草稿状态且不自动导航', async () => {
   const definition = loadHomePage({
     authState: 'has-profile',
@@ -173,6 +212,31 @@ test('今天有记录时主任务打开记录页，而不是重复启动记餐�
   assert.equal(switchedTo, 'records')
 })
 
+test('首页体重和护理事项进入对应狗狗记录页，档案事项仍进入编辑页', () => {
+  const navigations = []
+  const definition = loadHomePage({
+    dogService: { listDogs: async () => [] },
+    recordService: { list: async () => ({ items: [] }) },
+    wx: { navigateTo: (options) => navigations.push(options) }
+  })
+
+  definition.onOpenProfileIssue({
+    currentTarget: { dataset: { action: 'open-weight', dogId: 'dog-1' } }
+  })
+  definition.onOpenProfileIssue({
+    currentTarget: { dataset: { action: 'open-care', dogId: 'dog-2' } }
+  })
+  definition.onOpenProfileIssue({
+    currentTarget: { dataset: { action: 'edit-dog', dogId: 'dog-3' } }
+  })
+
+  assert.deepEqual(navigations.map((item) => item.url), [
+    '/subpackages/dog-profile/weight/index?dogId=dog-1',
+    '/subpackages/dog-profile/care-record/index?dogId=dog-2',
+    '/subpackages/dog-profile/dog-edit/index?id=dog-3'
+  ])
+})
+
 test('上海自然日边界稳定区分今天记录', () => {
   const definition = loadHomePage({
     dogService: { listDogs: async () => [] },
@@ -197,6 +261,7 @@ test('首页 WXML 覆盖六类模型状态并保留 UI Kernel 与底部安全区
   assert.match(wxml, /homeState\.todaySummary/)
   assert.match(wxml, /homeState\.draft/)
   assert.match(wxml, /homeState\.profileIssues/)
+  assert.match(wxml, /data-action="\{\{item\.action\}\}"/)
   assert.match(wxml, /homeState\.recentRecord/)
   assert.match(wxml, /class="page with-tab-bar home-page"/)
   assert.match(wxml, /<ui-card\s+variant="plain"\s+padding="large"/)

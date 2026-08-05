@@ -5,6 +5,8 @@ const {
   normalizeSpecialNutritionNeeds,
   validateSpecialNutritionNeeds
 } = require('../dogProfileContract')
+const weightContract = require('../weightContract')
+const careContract = require('../../contracts/care/careRecordContract')
 
 function now() {
   return new Date().toISOString()
@@ -307,6 +309,53 @@ async function getSharedMealRecord(recordId) {
   return JSON.parse(JSON.stringify(record))
 }
 
+async function listWeightMeasurements(options = {}) {
+  const dogId = String(options.dogId || '').trim()
+  const limit = Math.min(Math.max(Number(options.limit) || 1, 1), 50)
+  const items = storage.getSync('mockWeightMeasurements', [])
+    .filter((item) => item.userId === env.mockUser.id && item.dogId === dogId)
+    .map((item) => ({
+      schemaVersion: item.schemaVersion,
+      id: item.id,
+      dogId: item.dogId,
+      weightKg: item.weightKg,
+      measuredOn: item.measuredOn,
+      createdAt: item.createdAt
+    }))
+    .sort((left, right) => (
+      String(right.measuredOn || '').localeCompare(String(left.measuredOn || ''))
+      || String(right.createdAt || '').localeCompare(String(left.createdAt || ''))
+      || String(right.id || '').localeCompare(String(left.id || ''))
+    ))
+
+  return {
+    dogId,
+    items: JSON.parse(JSON.stringify(items.slice(0, limit))),
+    nextCursor: null,
+    contract: 'weightRecord/v1',
+    schemaVersion: weightContract.WEIGHT_MEASUREMENT_SCHEMA_VERSION
+  }
+}
+
+async function listCareRecords(options = {}) {
+  const dogId = String(options.dogId || '').trim()
+  const limit = Math.min(Math.max(Number(options.limit) || 20, 1), 20)
+  const type = String(options.type || '').trim()
+  const items = storage.getSync('mockCareRecords', [])
+    .filter((item) => item.dogId === dogId && (!type || item.type === type))
+    .map((item) => careContract.normalizeCareRecord(item))
+    .sort((left, right) => (
+      String(right.occurredOn || '').localeCompare(String(left.occurredOn || ''))
+      || String(right.id || '').localeCompare(String(left.id || ''))
+    ))
+
+  return {
+    dogId,
+    items: JSON.parse(JSON.stringify(items.slice(0, limit))),
+    nextCursor: null
+  }
+}
+
 module.exports = {
   login,
   getDogProfileContract,
@@ -321,5 +370,7 @@ module.exports = {
   getHumanRecipe,
   saveSharedMealRecord,
   listSharedMealRecords,
-  getSharedMealRecord
+  getSharedMealRecord,
+  listWeightMeasurements,
+  listCareRecords
 }

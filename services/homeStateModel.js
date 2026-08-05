@@ -335,6 +335,34 @@ function buildProfileIssues(dogs, profileStates, explicitIssues) {
   return result.slice(0, 3)
 }
 
+function normalizeHomeItems(items) {
+  return asArray(items)
+    .filter((item) => isObject(item) && text(item.dogId) && text(item.action))
+    .map((item) => {
+      const dogIdValue = text(item.dogId)
+      const kind = text(item.kind, 'record')
+      const recordId = text(item.recordId)
+      return {
+        key: text(item.key, `${kind}:${dogIdValue}:${recordId}`),
+        dogId: dogIdValue,
+        dogName: text(item.dogName, '狗狗'),
+        kind,
+        title: text(item.title, '查看记录'),
+        description: text(item.description),
+        action: text(item.action),
+        recordId,
+        measuredOn: text(item.measuredOn),
+        nextDate: text(item.nextDate)
+      }
+    })
+}
+
+function buildHomeIssues(dogs, profileStates, explicitIssues, homeItems) {
+  return buildProfileIssues(dogs, profileStates, explicitIssues)
+    .concat(normalizeHomeItems(homeItems))
+    .slice(0, 3)
+}
+
 function isErrorLike(value) {
   if (value === true) return true
   if (!value) return false
@@ -505,11 +533,20 @@ function buildHomeState(input = {}) {
   else if (dogs.length === 0) status = HOME_STATUS.PROFILE_REQUIRED
   else if (todayRecords.length > 0) status = HOME_STATUS.TODAY_HAS_RECORDS
 
-  const profileIssues = buildProfileIssues(dogs, source.profileStates, source.profileIssues)
+  const homeIssues = buildHomeIssues(
+    dogs,
+    source.profileStates,
+    source.profileIssues,
+    source.homeItems
+  )
   const todayNames = todayDogNames(todayRecords)
   const recent = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST
     ? []
     : recentRecords
+
+  const visibleHomeIssues = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST
+    ? []
+    : homeIssues
 
   return {
     status,
@@ -522,9 +559,8 @@ function buildHomeState(input = {}) {
       error
     }),
     todaySummary: createTodaySummary(status, todayRecords, todayNames, error),
-    profileIssues: status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST
-      ? []
-      : profileIssues,
+    profileIssues: visibleHomeIssues,
+    homeIssues: visibleHomeIssues,
     draft: status === HOME_STATUS.DRAFT ? draft : null,
     recentRecords: recent,
     recentRecord: recent[0] || null,
@@ -539,6 +575,8 @@ module.exports = {
   PROFILE_ISSUE_COPY,
   buildHomeState,
   buildProfileIssues,
+  buildHomeIssues,
+  normalizeHomeItems,
   recordView,
   normalizeRecords,
   draftView,

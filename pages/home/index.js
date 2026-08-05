@@ -3,6 +3,7 @@ const authService = require('../../services/authService')
 const sharedMealRecordService = require('../../services/sharedMealRecordService')
 const sharedMealEntryService = require('../../services/sharedMealEntryService')
 const homeDraftSummaryService = require('../../services/homeDraftSummaryService')
+const homeItemService = require('../../services/homeItemService')
 const {
   HOME_STATUS,
   PRIMARY_TASK_TYPE,
@@ -72,6 +73,7 @@ Page({
 
     let dogs = []
     let records = []
+    let homeItems = []
     const errors = {}
 
     try {
@@ -87,6 +89,14 @@ Page({
       errors.records = error
     }
 
+    if (dogs.length) {
+      try {
+        homeItems = await homeItemService.listForDogs(dogs, { now })
+      } catch (error) {
+        errors.homeItems = error
+      }
+    }
+
     const draft = homeDraftSummaryService.getDraftSummary()
     const homeState = buildHomeState({
       authState: authService.getAuthState(),
@@ -94,6 +104,7 @@ Page({
       draft,
       todayRecords: recordsForToday(records, now),
       recentRecords: records,
+      homeItems,
       errors,
       now
     })
@@ -136,10 +147,21 @@ Page({
   },
 
   onOpenProfileIssue(event) {
-    const dogId = event && event.currentTarget && event.currentTarget.dataset.dogId
+    const dataset = event && event.currentTarget && event.currentTarget.dataset
+    const dogId = dataset && dataset.dogId
     if (!dogId) return
+
+    const action = dataset.action || 'edit-dog'
+    const path = action === 'open-weight'
+      ? '/subpackages/dog-profile/weight/index'
+      : action === 'open-care'
+        ? '/subpackages/dog-profile/care-record/index'
+        : '/subpackages/dog-profile/dog-edit/index'
+    const url = action === 'edit-dog'
+      ? `${path}?id=${encodeURIComponent(dogId)}`
+      : `${path}?dogId=${encodeURIComponent(dogId)}`
     wx.navigateTo({
-      url: `/subpackages/dog-profile/dog-edit/index?id=${encodeURIComponent(dogId)}`
+      url
     })
   },
 
