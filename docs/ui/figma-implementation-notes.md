@@ -1113,4 +1113,15 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
 - 为表达“方形日期项 + 圆形选中态”，画布中的 Calendar 实例保留既有月份导航、星期标题和日期层级，但日期网格使用已解除最小高度限制的视觉实例；F2.1 仍通过 `record-calendar` wrapper 收口第三方 API，不让页面直接接触 TDesign Calendar。
 - 本轮没有新增颜色 token、Figma variable、基础组件变体或第三方标签；7 个状态画板已通过 Figma MCP 结构检查与 375/320/390pt 截图复核，未发现顶部筛选残留、日期数字基线抬高、日历底部遮挡或单狗展开/收起残留。
 
-用户已于 2026-08-05 确认 D3.1 设计，允许进入路线图 `R2.1`；本次提交仅包含设计交接，R2.1/F2.1 尚未实施。
+用户已于 2026-08-05 确认 D3.1 设计，允许进入路线图 `R2.1`；本轮已在独立 worktree 实施 R2.1 查询与展示模型，F2.1 页面改造尚未实施。
+
+## 2026-08-05 R2.1 统一时间轴查询与展示模型
+
+R2.1 在独立 worktree `codex/r21-unified-record-timeline` 中完成查询层实现，主 worktree 未改动页面代码。实现位于
+`services/unifiedRecordTimelineModel.js` 和 `services/unifiedRecordTimelineService.js`，通过
+`sharedMealRecordService` 的惰性门面为后续 `pages/records` 接入保留稳定入口。
+
+- 查询层继续读取共享本餐、体重测量和护理记录三个独立 service，不合并写模型或直接读取集合；体重和护理按狗狗分页读取后按上海自然日过滤月份，吃饭复用既有月份边界读取器。
+- 模型输出带来源前缀的 ID、日期精度、稳定排序键、详情路由、日历圆点数据、按狗狗分组和单狗直接列表；有圆点的日期不再返回“已记”文案。
+- 每个来源保留 `success`、`partial` 或 `error` 状态，单狗请求失败不会覆盖其他狗狗成功结果；全量失败不会伪装为空态。状态对象支持月份缓存、日期切换、展开状态、刷新和重试。
+- 本轮只完成 R2.1 查询与展示模型和自动化测试，不修改 `pages/records`、WXML/WXSS、CloudBase 资源或三类业务写入合同；F2.1 负责后续页面接入。
