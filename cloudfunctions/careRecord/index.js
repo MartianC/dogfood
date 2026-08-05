@@ -52,14 +52,24 @@ function validateType(type) {
 }
 
 async function assertDogOwnership(database, openId, dogId) {
-  const result = await database.collection('dogs').doc(String(dogId)).get()
+  let result
+  try {
+    result = await database.collection('dogs').doc(String(dogId)).get()
+  } catch (error) {
+    fail('FORBIDDEN_DOG', '无权使用该狗狗档案')
+  }
   if (!result.data || result.data._openid !== openId) {
     fail('FORBIDDEN_DOG', '无权使用该狗狗档案')
   }
 }
 
 async function getOwnedDocument(collection, openId, recordId) {
-  const result = await collection.doc(String(recordId || '')).get()
+  let result
+  try {
+    result = await collection.doc(String(recordId || '')).get()
+  } catch (error) {
+    fail('NOT_FOUND', '未找到护理记录')
+  }
   if (!result.data || result.data._openid !== openId) {
     fail('NOT_FOUND', '未找到护理记录')
   }

@@ -21,7 +21,7 @@ function payload(overrides = {}) {
   }
 }
 
-function fakeDatabase() {
+function fakeDatabase({ rejectMissingDocs = false } = {}) {
   const collections = {
     dogs: [
       { _id: 'dog-1', _openid: 'owner-1' },
@@ -75,7 +75,9 @@ function fakeDatabase() {
       doc(id) {
         return {
           async get() {
-            return { data: collections[name].find((item) => item._id === id) || null }
+            const data = collections[name].find((item) => item._id === id) || null
+            if (!data && rejectMissingDocs) throw new Error('document does not exist')
+            return { data }
           },
           async update({ data }) {
             const index = collections[name].findIndex((item) => item._id === id)
@@ -193,6 +195,20 @@ test('护理云函数拒绝跨用户、跨狗更新和无效查询，不泄漏�
     /缺少目标狗狗/
   )
   assert.throws(() => decodeCursor('not-a-cursor'), /分页游标无效/)
+})
+
+test('护理云函数将 CloudBase 缺失文档异常归一化为业务错误', async () => {
+  const database = fakeDatabase({ rejectMissingDocs: true })
+  const gateway = createCareRecordGateway({ database, openId: 'owner-1' })
+
+  await assert.rejects(
+    () => gateway({ action: 'get', recordId: 'missing-record' }),
+    /未找到护理记录/
+  )
+  await assert.rejects(
+    () => gateway({ action: 'list', dogId: 'missing-dog' }),
+    /无权使用该狗狗档案/
+  )
 })
 
 test('护理云函数写入边界拒绝客户端伪造实体字段', () => {
