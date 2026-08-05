@@ -120,7 +120,7 @@ test('记录日历包装 TDesign Calendar 并只暴露稳定页面事件', () =>
   const pageJson = JSON.parse(read('pages/records/index.json'))
   const pageWxml = read('pages/records/index.wxml')
 
-  assert.equal(json.styleIsolation, 'isolated')
+  assert.equal(json.styleIsolation, 'shared')
   assert.equal(json.usingComponents['t-calendar'], 'tdesign-miniprogram/calendar/calendar')
   assert.equal(pageJson.usingComponents['record-calendar'], '../../components/vendor/record-calendar/index')
   assert.match(wxml, /use-popup="\{\{false\}\}"/)
@@ -131,6 +131,11 @@ test('记录日历包装 TDesign Calendar 并只暴露稳定页面事件', () =>
   assert.match(wxml, /bind:panel-change="onPanelChange"/)
   assert.match(calendarJs, /day\.suffix = marked\.has\(localDateKey\(day\.date\)\) \? '•' : ''/)
   assert.match(calendarWxss, /--td-calendar-selected-border-radius: 50%/)
+  assert.match(calendarWxss, /--record-calendar-date-size: 88rpx/)
+  assert.match(calendarWxss, /height: 560rpx !important/)
+  assert.match(calendarWxss, /width: var\(--record-calendar-date-size\) !important/)
+  assert.match(calendarWxss, /height: var\(--record-calendar-date-size\) !important/)
+  assert.match(calendarWxss, /margin: 0 auto !important/)
   assert.doesNotMatch(pageWxml, /<t-/)
 })
 
