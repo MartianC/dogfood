@@ -15,7 +15,7 @@
   --td-calendar-bg-color: var(--df-color-surface);
   --td-calendar-days-color: var(--df-color-muted);
   --td-calendar-item-suffix-color: var(--df-color-primary);
-  --td-calendar-selected-border-radius: var(--df-radius-md);
+  --td-calendar-selected-border-radius: 50%;
   --td-calendar-selected-color: var(--df-color-on-primary);
   --td-calendar-switch-mode-icon-color: var(--df-color-text-secondary);
   --td-calendar-switch-mode-icon-disabled-color: var(--df-color-line-strong);

@@ -200,7 +200,7 @@ function createUnifiedRecordTimelineState(options = {}) {
   let current = {
     activeMonthKey: '',
     selectedDateKey: '',
-    expandedDogIds: [],
+    expandedDogIds: null,
     status: 'idle',
     model: null,
     error: null
@@ -209,7 +209,9 @@ function createUnifiedRecordTimelineState(options = {}) {
   function getState() {
     return {
       ...current,
-      expandedDogIds: current.expandedDogIds.slice(),
+      expandedDogIds: Array.isArray(current.expandedDogIds)
+        ? current.expandedDogIds.slice()
+        : null,
       model: current.model
     }
   }
@@ -218,7 +220,7 @@ function createUnifiedRecordTimelineState(options = {}) {
     current = {
       activeMonthKey: monthKey,
       selectedDateKey,
-      expandedDogIds: expandedDogIds.slice(),
+      expandedDogIds: Array.isArray(expandedDogIds) ? expandedDogIds.slice() : null,
       status,
       model,
       error
@@ -236,8 +238,8 @@ function createUnifiedRecordTimelineState(options = {}) {
       expandedDogIds: hasOwn(loadOptions, 'expandedDogIds')
         ? (Array.isArray(loadOptions.expandedDogIds) ? loadOptions.expandedDogIds.slice() : [])
         : current.activeMonthKey === monthKey
-          ? current.expandedDogIds.slice()
-          : []
+          ? (Array.isArray(current.expandedDogIds) ? current.expandedDogIds.slice() : null)
+          : null
     }
   }
 

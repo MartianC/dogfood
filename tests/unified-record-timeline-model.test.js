@@ -139,6 +139,20 @@ test('显式展开状态只影响狗狗分组，不改变记录排序', () => {
   ])
 })
 
+test('明确全部收起后切换日期仍保留收起意图，默认策略使用 null', () => {
+  const model = createUnifiedRecordTimelineModel({
+    dogs,
+    sources: { meal: sourceItems.meal },
+    monthKey: '2026-08',
+    selectedDateKey: '2026-08-05'
+  })
+  assert.equal(model.expandedDogIds, null)
+  const collapsed = selectUnifiedRecordTimelineModel(model, { expandedDogIds: [] })
+  const nextDate = selectUnifiedRecordTimelineModel(collapsed, { selectedDateKey: '2026-08-04' })
+  assert.deepEqual(nextDate.dogGroups.map((group) => group.expanded), [false, false])
+  assert.deepEqual(nextDate.expandedDogIds, [])
+})
+
 test('排序函数对同源同日记录使用稳定 ID 作为最终排序键', () => {
   const records = [
     { id: 'weight:b', source: 'weight', dateKey: '2026-08-05', sortKey: '2026-08-05T00:00:00.000+08:00', tieKey: 'same' },

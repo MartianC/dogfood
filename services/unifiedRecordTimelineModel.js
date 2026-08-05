@@ -388,6 +388,7 @@ function createUnifiedRecordTimelineModel({
   return {
     monthKey: normalizedMonthKey,
     selectedDateKey: text(selectedDateKey),
+    expandedDogIds: Array.isArray(expandedDogIds) ? expandedDogIds.slice() : null,
     dogs: normalizedDogs,
     dogCount: normalizedDogs.length,
     isSingleDog: normalizedDogs.length === 1,
@@ -422,14 +423,15 @@ function selectUnifiedRecordTimelineModel(model, options = {}) {
   const selectedDateKey = Object.prototype.hasOwnProperty.call(options, 'selectedDateKey')
     ? text(options.selectedDateKey)
     : model.selectedDateKey
+  const expandedDogIds = Object.prototype.hasOwnProperty.call(options, 'expandedDogIds')
+    ? options.expandedDogIds
+    : model.expandedDogIds
   const derived = buildDerivedView({
     dogs,
     sourceItems,
     monthKey: model.monthKey,
     selectedDateKey,
-    expandedDogIds: Object.prototype.hasOwnProperty.call(options, 'expandedDogIds')
-      ? options.expandedDogIds
-      : undefined
+    expandedDogIds
   })
   const statuses = SOURCE_NAMES.map((source) => sources[source].status)
   const allSourcesFailed = statuses.every((status) => status === 'error')
@@ -438,6 +440,7 @@ function selectUnifiedRecordTimelineModel(model, options = {}) {
     ...model,
     monthKey: model.monthKey,
     selectedDateKey,
+    expandedDogIds: Array.isArray(expandedDogIds) ? expandedDogIds.slice() : null,
     dogs,
     dogCount: dogs.length,
     isSingleDog: dogs.length === 1,
