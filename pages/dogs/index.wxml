@@ -23,7 +23,23 @@
               <text>{{item.name}}</text>
               <text class="edit-link" data-id="{{item.id}}" bindtap="onEditDogPanel">修改</text>
             </view>
-            <view class="dog-meta">{{item.lifeStageLabel || '档案待完善'}}｜{{item.weightKg}}kg｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
+            <view class="dog-meta">{{item.lifeStageLabel || '档案待完善'}}｜{{item.weightKg > 0 ? item.weightKg + 'kg' : '体重未记录'}}｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
+              <view class="dog-panel__actions">
+                <ui-button
+                  size="small"
+                block="{{false}}"
+                variant="ghost"
+                data-id="{{item.id}}"
+                  bind:tap="onViewWeight"
+                >{{item.weightKg > 0 ? '查看体重趋势' : '记录第一次体重'}}</ui-button>
+                <ui-button
+                  size="small"
+                  block="{{false}}"
+                  variant="ghost"
+                  data-id="{{item.id}}"
+                  bind:tap="onViewCare"
+                >护理记录</ui-button>
+              </view>
           </view>
         </view>
       </ui-card>

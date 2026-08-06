@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "weight-measurement-1",
+  "dogId": "dog-1",
+  "weightKg": 10.25,
+  "measuredOn": "2026-08-03",
+  "createdAt": "2026-08-03T12:00:00.000Z"
+}

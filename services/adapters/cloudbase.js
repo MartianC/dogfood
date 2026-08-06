@@ -141,6 +141,16 @@ async function getSharedMealRecord(recordId) {
   return callRecordFunction({ action: 'get', recordId })
 }
 
+async function listWeightMeasurements(options = {}) {
+  if (!canUseCloud()) return mock.listWeightMeasurements(options)
+  return callFunction('weightRecord', { action: 'list', ...options })
+}
+
+async function listCareRecords(options = {}) {
+  if (!canUseCloud()) return mock.listCareRecords(options)
+  return callFunction('careRecord', { action: 'list', ...options })
+}
+
 module.exports = {
   login,
   getDogProfileContract,
@@ -156,6 +166,8 @@ module.exports = {
   saveSharedMealRecord,
   listSharedMealRecords,
   getSharedMealRecord,
+  listWeightMeasurements,
+  listCareRecords,
   CloudFunctionCallError,
   collectCloudErrorText
 }

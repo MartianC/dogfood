@@ -1,6 +1,6 @@
 {
   "component": true,
-  "styleIsolation": "isolated",
+  "styleIsolation": "shared",
   "usingComponents": {
     "t-calendar": "tdesign-miniprogram/calendar/calendar",
     "t-loading": "tdesign-miniprogram/loading/loading"

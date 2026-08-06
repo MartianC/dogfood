@@ -116,12 +116,22 @@ function createCalendarModel(records, options) {
   return calendarModel.createRecordCalendarModel(records, options)
 }
 
+function queryUnifiedRecordTimeline(options) {
+  return require('./unifiedRecordTimelineService').query(options)
+}
+
+function createUnifiedRecordTimelineState(options) {
+  return require('./unifiedRecordTimelineService').createUnifiedRecordTimelineState(options)
+}
+
 module.exports = {
   save,
   list,
   get,
   createMonthState,
   createCalendarModel,
+  queryUnifiedRecordTimeline,
+  createUnifiedRecordTimelineState,
   SharedMealRecordError,
   mapRecordError
 }

@@ -5,6 +5,7 @@ const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./
 const { breedAdultWeightCatalog } = require('../data/breedAdultWeightCatalog')
 const { deriveActivityLevel, estimateExpectedAdultWeight } = require('./dogProfileDerivations')
 const { estimateLifeStage, decorateDog } = require('./lifeStageEstimator')
+const { normalizeLegacyWeightKg } = require('./weightContract')
 const {
   DOG_PROFILE_SCHEMA_VERSION,
   DOGS_CACHE_SCHEMA_VERSION,
@@ -36,7 +37,7 @@ function normalizeDog(payload = {}) {
     name: String(payload.name || '').trim(),
     birthDate: String(payload.birthDate || '').trim(),
     breed: String(payload.breed || '').trim(),
-    weightKg: Number(payload.weightKg || 0),
+    weightKg: normalizeLegacyWeightKg(payload.weightKg) || 0,
     dailyMeals: Number(payload.dailyMeals || 0),
     dailyActivityHours: optionalHalfHour(payload.dailyActivityHours),
     activityLevel: deriveActivityLevel(payload.dailyActivityHours),

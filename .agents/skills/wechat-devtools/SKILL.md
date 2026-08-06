@@ -1,6 +1,6 @@
 ---
 name: wechat-devtools
-description: Use when Codex needs to interact with WeChat Developer Tools, 微信开发者工具, 微信小程序预览, 上传, build-npm, CLI, HTTP service port, miniprogram-automator automation, code quality scan/quality panel, or 代码质量扫描/代码质量面板.
+description: Use when Codex needs to interact with WeChat Developer Tools, 微信开发者工具, 微信小程序预览, 上传, build-npm, CLI, HTTP service port, miniprogram-automator automation, CloudBase 集合/索引/数据运维, code quality scan/quality panel, or 代码质量扫描/代码质量面板.
 ---
 
 # WeChat DevTools
@@ -11,6 +11,10 @@ description: Use when Codex needs to interact with WeChat Developer Tools, 微�
 
 代码质量分两层处理：先运行 skill 自带的只读静态预检；需要编译包精确结果时，再把 DevTools「代码质量」面板作为 UI-only fallback。当前已验证版本没有稳定的官方 CLI、HTTP 或 `miniprogram-automator` 扫描入口。
 
+CloudBase 数据面分为集合、索引、数据和权限四类操作。优先使用 CloudBase CLI、`@cloudbase/manager-node` 或腾讯云 API；Computer Use 只作为账号、权限或接口不可用时的兜底，不把控制台点按当作默认数据库操作路径。集合、索引和数据的完整操作清单见 [`references/cloudbase-database.md`](references/cloudbase-database.md)。
+
+所有线上写操作都必须先确认目标环境、目标集合、操作范围和是否允许写入/删除测试数据。读取 DevTools 登录状态不等于已获得腾讯云 API 或 CloudBase 管理权限；如果浏览器控制台与微信开发者工具显示的环境不一致，先核对账号和 `EnvId`，不要重复创建环境。
+
 ## 默认流程
 
 1. 定位项目绝对路径，确认存在 `project.config.json`。
@@ -20,6 +24,17 @@ description: Use when Codex needs to interact with WeChat Developer Tools, 微�
 5. 对页面级交互，优先让项目安装 `miniprogram-automator`，再使用 `scripts/automator-runner.js`；runner 会优先复用同一端口的已有会话，首次启动后只断开自动化连接，不关闭工程。
 6. 需要编译包精确结果时，先确认目标工程是否已打开：已打开则直接复用，未打开才执行 `open`，再按“代码质量扫描”小节使用 DevTools UI。
 7. 对登录、上传、退出、关闭项目、清缓存等高影响动作，先向用户确认，并在脚本命令中传入对应 `--confirm <command>`。
+
+### CloudBase 数据运维流程
+
+当任务涉及集合、索引、ACL 或线上数据时，在上述流程前后增加以下步骤：
+
+1. 先用只读方式确认 `EnvId`、集合是否存在、当前索引和 ACL；不能因为控制台列表为空就推断环境不存在。
+2. 集合创建使用 `database.createCollectionIfNotExists()` 或 `tcb api tcb CreateTable`；索引使用 `database.updateCollection()` 或 `tcb api tcb UpdateTable`；数据 CRUD 使用 `tcb db nosql execute` 或 `database.runCommands()`。
+3. 先创建集合和 ACL，再创建索引，最后才写入测试数据或执行线上 CRUD 烟测。索引操作可能异步或返回资源占用错误，必须重新读取集合结构确认完成。
+4. 测试数据必须带唯一、可清理的 smoke marker；更新和删除必须带精确过滤条件，禁止使用空过滤器清理整集合。
+5. 验证至少包括集合存在、索引名称与字段顺序、ACL、种子记录和创建/读取/更新/删除/清理结果；同时记录目标环境、请求结果和剩余数据。
+6. 生产集合、生产索引、生产 ACL、用户数据迁移和删除数据均视为外部写操作，除非用户明确授权，不得自行执行。
 
 ## 服务端口关闭
 
@@ -70,6 +85,20 @@ node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /
 
 本地静态预检不是 `wxdevtools.js` 的伪造官方命令；需要官方扫描时，先用 `open` 打开项目，再按上面的 UI-only 流程读取或重新扫描。
 
+## CloudBase 数据操作入口
+
+数据操作不要通过页面自动化或手工点按完成。先读取 [`references/cloudbase-database.md`](references/cloudbase-database.md)，按操作类型选择管理 SDK、`tcb api` 或 `tcb db nosql execute`：
+
+```bash
+# 数据查询/插入/更新/删除；执行前替换环境、集合和 smoke marker
+tcb db nosql execute --json --command '[{"TableName":"care_records","CommandType":"QUERY","Command":"{\"find\":\"care_records\",\"filter\":{\"smokeMarker\":\"replace-me\"},\"limit\":10}"}]'
+
+# 集合创建；已存在时应先检查，不要盲目重复创建
+tcb api tcb CreateTable --body '{"EnvId":"replace-env-id","TableName":"care_records"}' --json
+```
+
+`@cloudbase/manager-node` 适合把集合检查、索引幂等创建、结构读取和数据烟测写成可重复执行的 Node 脚本；密钥必须来自环境变量或临时凭证，不能写入仓库、脚本参数、日志或最终回复。对线上数据的创建、更新和删除，命令本身没有替代用户授权的确认机制，必须在执行前完成人工授权。
+
 ## 页面自动化
 
 如果用户需要点击、读取页面状态、跳转页面或验证小程序界面，使用 `scripts/automator-runner.js`。如果项目没有安装 `miniprogram-automator`，先说明需要添加开发依赖，并征得用户同意。
@@ -94,7 +123,7 @@ node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /
 
 ## 何时读取 reference
 
-需要确认 CLI 参数、HTTP 端点、服务端口错误、自动化 SDK 启动参数或代码质量扫描边界时，读取 `references/official-interfaces.md`。
+需要确认 CLI 参数、CloudBase 集合/索引/数据 API、HTTP 端点、服务端口错误、自动化 SDK 启动参数或代码质量扫描边界时，读取 `references/official-interfaces.md`；涉及数据库具体操作顺序、CRUD 命令和安全边界时，读取 `references/cloudbase-database.md`。
 
 ## 常见错误
 
@@ -120,3 +149,7 @@ node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /
 | `navigateTo` 或 `reLaunch` 不声明页面加载副作用 | 补充 `sideEffectRisk`、`intendedEffect`，风险不为 `none` 时记录用户确认 |
 | 原样输出 `pageData` | 使用 runner 的脱敏结果，并优先设置 `fields` |
 | 通过命令行传入 ticket/token/cookie | 停止，避免敏感值进入进程列表或日志 |
+| 直接用 Computer Use 创建集合或索引 | 优先使用 Manager SDK、`tcb api` 或声明式迁移；只有接口不可用或用户明确要求时才使用 UI |
+| 把 DevTools 登录状态当成 CloudBase 管理凭证 | 分别核对 DevTools 登录、腾讯云 API 凭证、目标 `EnvId` 和账号归属 |
+| 用空过滤器执行更新或删除 | 停止，补充唯一 smoke marker、业务主键和 `limit: 1`，并先执行只读查询 |
+| 写入测试数据后不清理或不核对剩余记录 | 用唯一 marker 做回收，最后查询 marker 数量并记录为 `0` 或明确保留原因 |

@@ -1,0 +1,17 @@
+{
+  "contract": "weightRecordIndexes/v1",
+  "collection": "weight_measurements",
+  "indexes": [
+    {
+      "name": "owner_dog_measured_created",
+      "unique": false,
+      "fields": [
+        { "field": "_openid", "order": "asc" },
+        { "field": "dogId", "order": "asc" },
+        { "field": "measuredOn", "order": "desc" },
+        { "field": "createdAt", "order": "desc" },
+        { "field": "_id", "order": "desc" }
+      ]
+    }
+  ]
+}

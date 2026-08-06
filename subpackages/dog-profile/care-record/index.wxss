@@ -1,0 +1,124 @@
+@import "../../../styles/tokens.wxss";
+
+.care-record-page {
+  padding-top: 24rpx;
+}
+
+.care-record-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--df-space-4);
+}
+
+.care-record-heading {
+  min-width: 0;
+}
+
+.care-record-dog-name {
+  margin-top: var(--df-space-1);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 1.45;
+}
+
+.care-record-error,
+.care-record-loading {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.care-record-error__action {
+  width: 100%;
+}
+
+.care-record-picker-value {
+  min-height: 58rpx;
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  line-height: 58rpx;
+}
+
+.care-record-filter-section {
+  margin-top: var(--df-space-5);
+}
+
+.care-record-filter-label {
+  margin-bottom: var(--df-space-2);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.care-record-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--df-space-2);
+}
+
+.care-record-filter {
+  min-height: var(--df-touch-min);
+  display: flex;
+  align-items: center;
+}
+
+.care-record-list {
+  display: grid;
+  gap: var(--df-space-3);
+  margin-top: var(--df-space-5);
+}
+
+.care-record-card {
+  min-width: 0;
+}
+
+.care-record-card__head,
+.care-record-card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--df-space-2);
+}
+
+.care-record-card__head {
+  justify-content: space-between;
+}
+
+.care-record-card__date {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.care-record-card__name {
+  margin-top: var(--df-space-3);
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 800;
+  line-height: 1.35;
+  word-break: break-all;
+}
+
+.care-record-card__next {
+  margin-top: var(--df-space-2);
+  color: var(--df-color-text-secondary);
+  font-size: var(--df-font-sm);
+  line-height: 1.5;
+}
+
+.care-record-card__notes {
+  margin-top: var(--df-space-3);
+  padding-top: var(--df-space-3);
+  border-top: 1rpx solid var(--df-color-line);
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.care-record-card__actions {
+  justify-content: flex-end;
+  margin-top: var(--df-space-4);
+}
+
+.care-record-more {
+  margin-top: var(--df-space-2);
+}

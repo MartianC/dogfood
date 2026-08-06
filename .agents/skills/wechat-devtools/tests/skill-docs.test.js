@@ -63,3 +63,22 @@ test('自动化规则要求复用已有工程会话且默认不关闭工程', ()
   assert.match(skill, /不要在每次读取或扫描前重复执行 `open`/);
   assert.match(reference, /miniProgram\.close\(\).*App\.exit.*Tool\.close/);
 });
+
+test('SKILL 覆盖 CloudBase 集合、索引和数据操作，并将 UI 限定为兜底', () => {
+  const skill = readSkillFile('SKILL.md');
+  const database = readSkillFile('references/cloudbase-database.md');
+
+  assert.match(skill, /CloudBase 数据面/);
+  assert.match(skill, /集合、索引和数据/);
+  assert.match(skill, /cloudbase-database\.md/);
+  assert.match(skill, /Computer Use 只作为.*兜底/);
+  assert.match(database, /createCollectionIfNotExists/);
+  assert.match(database, /updateCollection/);
+  assert.match(database, /runCommands/);
+  assert.match(database, /tcb db nosql execute/);
+  assert.match(database, /CreateTable/);
+  assert.match(database, /UpdateTable/);
+  assert.match(database, /smoke marker/);
+  assert.match(database, /空过滤器/);
+  assert.match(database, /不要.*SecretKey|SecretKey.*不要/);
+});

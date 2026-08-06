@@ -15,12 +15,13 @@
   --td-calendar-bg-color: var(--df-color-surface);
   --td-calendar-days-color: var(--df-color-muted);
   --td-calendar-item-suffix-color: var(--df-color-primary);
-  --td-calendar-selected-border-radius: var(--df-radius-md);
+  --td-calendar-selected-border-radius: 50%;
   --td-calendar-selected-color: var(--df-color-on-primary);
   --td-calendar-switch-mode-icon-color: var(--df-color-text-secondary);
   --td-calendar-switch-mode-icon-disabled-color: var(--df-color-line-strong);
   --td-calendar-title-color: var(--df-color-text);
   --td-loading-text-color: var(--df-color-text-secondary);
+  --record-calendar-date-size: 88rpx;
 }
 
 .record-calendar {
@@ -37,6 +38,36 @@
   z-index: 0 !important;
   margin-bottom: -116rpx;
   transform: translateY(-116rpx);
+}
+
+.record-calendar__calendar .t-calendar__months {
+  height: 560rpx !important;
+}
+
+.record-calendar__calendar .t-calendar__dates-item {
+  box-sizing: border-box;
+  width: var(--record-calendar-date-size) !important;
+  height: var(--record-calendar-date-size) !important;
+  margin: 0 auto !important;
+  border-radius: 50% !important;
+}
+
+@media screen and (max-width: 700rpx) {
+  :host {
+    --record-calendar-date-size: calc((100vw - 112rpx) / 7);
+  }
+
+  .record-calendar__calendar .t-calendar__months {
+    height: calc(
+      var(--record-calendar-date-size) +
+      var(--record-calendar-date-size) +
+      var(--record-calendar-date-size) +
+      var(--record-calendar-date-size) +
+      var(--record-calendar-date-size) +
+      var(--record-calendar-date-size) +
+      32rpx
+    ) !important;
+  }
 }
 
 .record-calendar__loading {

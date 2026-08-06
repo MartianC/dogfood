@@ -13,7 +13,11 @@
       "root": "subpackages/dog-profile",
       "pages": [
         "dog-edit/index",
-        "dog-quick-create/index"
+        "dog-quick-create/index",
+        "care-record/index",
+        "care-edit/index",
+        "weight/index",
+        "weight-edit/index"
       ]
     },
     {

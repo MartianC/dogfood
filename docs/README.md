@@ -18,6 +18,12 @@
 - `docs/微信小程序设计文档.md`：当前产品信息架构、页面职责、入口合同和验收重点。
 - `docs/小程序架构设计.md`：主包/分包边界、服务依赖方向、导航入口和自动化门禁。
 - `docs/database-structure-overview.md`：集合、索引、权限与主导航数据入口；本次导航重排不新增数据资源。
+- `docs/superpowers/specs/2026-08-04-weight-domain-and-data-contract.md`：W1.1 体重领域词汇、`weightMeasurement/v1` 合同、当前值投影、删除回退和既有 `weightKg` 兼容策略。
+- `docs/superpowers/specs/2026-08-04-weight-record-client-cloud-implementation.md`：W1.2 体重 service、adapter、云函数、事务同步、集合资源合同和 OW1 未部署边界。
+- `docs/superpowers/specs/2026-08-05-weight-trend-page-implementation.md`：W1.3 体重趋势页、历史列表、新增/编辑/删除确认和页面验证边界。
+- `docs/superpowers/specs/2026-08-04-care-domain-and-data-contract.md`：C1.1 护理四类事实、`careRecord/v1` 合同、用户填写的下次日期和单狗隔离边界。
+- `docs/superpowers/specs/2026-08-04-care-record-client-cloud-implementation.md`：C1.2 护理 service、adapter、云函数、集合资源合同和 OC1 未部署边界。
+- `docs/superpowers/specs/2026-08-05-care-record-page-implementation.md`：C1.3 护理列表、筛选、表单、删除确认和任务型路由交接。
 - `docs/ui/figma-implementation-notes.md`：D1.1、D1.2/D1.3 与运行态 TabBar 的 UI 交接和视觉验收记录。
 - 当前共享本餐主线按以下顺序阅读，发生冲突时以前一项为准：
   1. `docs/superpowers/specs/2026-07-26-shared-meal-checkin-prd.md`：已批准的产品事实来源。
@@ -37,6 +43,8 @@
 - `docs/data/nutrient-rankings-sop.md`：营养素排行的公式、过滤、版本化、空排行、导入和回滚流程。
 - `docs/data/human-recipes-sop.md`：授权菜谱的原料映射、安全过滤、运行时投影和增量发布流程。
 - `docs/data/shared-meal-record-deployment.md`：共享本餐记录云函数、集合权限、索引、只读探针、烟测和回滚契约。
+- `docs/data/weight-record-deployment.md`：W1.2 体重云函数、集合 schema、权限、索引、事务同步、分页、回滚和 OW1 授权边界。
+- `docs/data/care-record-deployment.md`：C1.2 护理云函数、集合 schema、权限、索引、分页、回滚和 OC1 授权边界。
 - `docs/domain/CONTEXT.md`：食材概念、形态、目录项、安全策略和人饭原料提及的统一领域词汇。
 
 <!-- miniapp-ui-system:docs:start -->
@@ -51,8 +59,9 @@
 ## 主线交付状态
 
 - `DOC1.1` 已将产品、架构、数据库入口和 UI 交接统一到当前运行态；旧三 Tab、旧食谱和批量描述只保留在明确的历史/兼容段。
+- `W1.2`、`W1.3`、`C1.2` 与 `C1.3` 已完成体重/护理客户端和页面代码；体重与护理页面尚未部署线上 CloudBase 资源，也未接入首页事项或统一时间轴。
 - `V1.1` 的自动检查入口为 `npm test`、`npm run check:ui`、`npm run check:main-package`、`npm run check:shared-meal-navigation`、`npm run check:project-navigation` 和 `git diff --check`。
-- V1.1 不包含体重、护理、统一时间轴、云端部署、线上数据迁移或 Git 提交。
+- V1.1 不包含体重、护理、统一时间轴、云端部署、线上数据迁移或 Git 提交；W1.2/C1.2 的线上动作仍分别等待 OW1/OC1 授权。
 
 ## 工作日志格式建议
 

@@ -68,3 +68,10 @@
   font-size: 23rpx;
   line-height: 1.45;
 }
+
+.dog-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--df-space-2);
+  margin-top: var(--df-space-2);
+}

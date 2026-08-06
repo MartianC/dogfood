@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "careRecordWrite/v1",
+  "title": "护理记录写入字段 v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "dogId",
+    "type",
+    "name",
+    "occurredOn",
+    "nextDate",
+    "notes"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "dogId": { "type": "string", "minLength": 1 },
+    "type": {
+      "enum": [
+        "vaccine",
+        "internal_deworming",
+        "external_deworming",
+        "other"
+      ]
+    },
+    "name": { "type": "string", "maxLength": 120 },
+    "occurredOn": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "nextDate": {
+      "type": ["string", "null"],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "notes": { "type": "string", "maxLength": 2000 }
+  }
+}

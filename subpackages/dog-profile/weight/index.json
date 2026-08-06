@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "体重趋势",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "ui-button": "../../../components/ui/ui-button/index",
+    "ui-card": "../../../components/ui/ui-card/index",
+    "ui-empty": "../../../components/ui/ui-empty/index",
+    "ui-field": "../../../components/ui/ui-field/index",
+    "ui-notice": "../../../components/ui/ui-notice/index",
+    "ui-tag": "../../../components/ui/ui-tag/index"
+  }
+}

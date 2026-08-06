@@ -1,0 +1,61 @@
+@import "../../../styles/tokens.wxss";
+
+.weight-edit-page {
+  padding-top: 24rpx;
+}
+
+.weight-edit-heading__description,
+.weight-edit-delete__description {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 1.5;
+}
+
+.weight-edit-heading__description {
+  margin-top: var(--df-space-2);
+}
+
+.weight-edit-status {
+  display: grid;
+  gap: var(--df-space-3);
+  margin-top: 72rpx;
+  text-align: center;
+  color: var(--df-color-muted);
+  line-height: 1.5;
+}
+
+.weight-edit-status__action {
+  margin-top: var(--df-space-2);
+}
+
+.weight-edit-section {
+  margin-top: var(--df-space-5);
+}
+
+.weight-edit-form {
+  display: grid;
+  gap: var(--df-space-3);
+}
+
+.weight-edit-control,
+.weight-edit-picker-value,
+.weight-edit-readonly {
+  min-height: 58rpx;
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  line-height: 58rpx;
+}
+
+.weight-edit-picker-value--empty {
+  color: var(--df-color-muted);
+}
+
+.weight-edit-delete {
+  margin-top: var(--df-space-5);
+}
+
+.weight-edit-delete__description {
+  margin-top: var(--df-space-2);
+  text-align: center;
+  font-size: var(--df-font-xs);
+}

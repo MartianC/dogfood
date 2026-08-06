@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "weightMeasurementWrite/v1",
+  "title": "体重测量记录写入字段 v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "dogId",
+    "weightKg",
+    "measuredOn"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "dogId": { "type": "string", "minLength": 1 },
+    "weightKg": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "multipleOf": 0.01
+    },
+    "measuredOn": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}
