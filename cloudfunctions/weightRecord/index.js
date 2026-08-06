@@ -125,9 +125,27 @@ function buildCursorCondition(database, cursor) {
 }
 
 async function getOwnedDog(database, openId, dogId) {
-  const result = await database.collection(DOG_COLLECTION_NAME).doc(dogId).get()
+  let result
+  try {
+    result = await database.collection(DOG_COLLECTION_NAME).doc(dogId).get()
+  } catch (error) {
+    fail('FORBIDDEN_DOG', '无权使用该狗狗档案')
+  }
   if (!result || !result.data || result.data._openid !== openId) {
     fail('FORBIDDEN_DOG', '无权使用该狗狗档案')
+  }
+  return result.data
+}
+
+async function getOwnedMeasurement(collection, openId, recordId) {
+  let result
+  try {
+    result = await collection.doc(String(recordId)).get()
+  } catch (error) {
+    fail('NOT_FOUND', '未找到体重测量记录')
+  }
+  if (!result || !result.data || result.data._openid !== openId) {
+    fail('NOT_FOUND', '未找到体重测量记录')
   }
   return result.data
 }
@@ -245,11 +263,12 @@ function createWeightRecordGateway({ database, openId, now = () => new Date() })
         today: dateTextInShanghai(now())
       })
       return runAtomic(database, async (transaction) => {
-        const existed = await transaction.collection(COLLECTION_NAME).doc(recordId).get()
-        if (!existed || !existed.data || existed.data._openid !== ownerId) {
-          fail('NOT_FOUND', '未找到体重测量记录')
-        }
-        const original = normalizeStoredMeasurement(existed.data)
+        const originalDocument = await getOwnedMeasurement(
+          transaction.collection(COLLECTION_NAME),
+          ownerId,
+          recordId
+        )
+        const original = normalizeStoredMeasurement(originalDocument)
         if (input.dogId !== original.dogId) {
           fail('INVALID_DOG', '不能把体重记录转移到另一只狗狗')
         }
@@ -315,21 +334,23 @@ function createWeightRecordGateway({ database, openId, now = () => new Date() })
 
     if (action === 'get') {
       const recordId = requireRecordId(event.recordId)
-      const result = await database.collection(COLLECTION_NAME).doc(recordId).get()
-      if (!result || !result.data || result.data._openid !== ownerId) {
-        fail('NOT_FOUND', '未找到体重测量记录')
-      }
-      return response({ measurement: normalizeStoredMeasurement(result.data) })
+      const document = await getOwnedMeasurement(
+        database.collection(COLLECTION_NAME),
+        ownerId,
+        recordId
+      )
+      return response({ measurement: normalizeStoredMeasurement(document) })
     }
 
     if (action === 'delete') {
       const recordId = requireRecordId(event.recordId)
       return runAtomic(database, async (transaction) => {
-        const existed = await transaction.collection(COLLECTION_NAME).doc(recordId).get()
-        if (!existed || !existed.data || existed.data._openid !== ownerId) {
-          fail('NOT_FOUND', '未找到体重测量记录')
-        }
-        const record = normalizeStoredMeasurement(existed.data)
+        const document = await getOwnedMeasurement(
+          transaction.collection(COLLECTION_NAME),
+          ownerId,
+          recordId
+        )
+        const record = normalizeStoredMeasurement(document)
         await getOwnedDog(transaction, ownerId, record.dogId)
         const latestBefore = await findLatestMeasurement(transaction, ownerId, record.dogId)
         await transaction.collection(COLLECTION_NAME).doc(recordId).remove()

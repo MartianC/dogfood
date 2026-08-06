@@ -37,7 +37,7 @@ function matches(document, condition) {
   return Object.entries(condition).every(([key, value]) => matchValue(document[key], value))
 }
 
-function fakeDatabase(initial = {}) {
+function fakeDatabase(initial = {}, { rejectMissingDocs = false } = {}) {
   const state = {
     dogs: clone(initial.dogs || []),
     weight_measurements: clone(initial.weight_measurements || [])
@@ -87,6 +87,7 @@ function fakeDatabase(initial = {}) {
           return {
             async get() {
               const item = target[name].find((candidate) => candidate._id === id)
+              if (!item && rejectMissingDocs) throw new Error('document does not exist')
               return { data: item ? clone(item) : null }
             },
             async update({ data }) {
@@ -296,6 +297,30 @@ test('云函数拒绝客户端伪造记录身份和非法游标', async () => {
   )
   await assert.rejects(
     () => gateway({ action: 'get', recordId: 'missing' }),
+    (error) => error.code === 'NOT_FOUND'
+  )
+})
+
+test('云函数将 CloudBase 缺失狗狗和记录异常归一化为稳定业务错误', async () => {
+  const database = fakeDatabase({
+    dogs: [{ _id: 'dog-1', _openid: 'owner-1', name: '布丁', weightKg: 10 }]
+  }, { rejectMissingDocs: true })
+  const gateway = createWeightRecordGateway({ database, openId: 'owner-1', now: fixedNow })
+
+  await assert.rejects(
+    () => gateway({ action: 'list', dogId: 'missing-dog' }),
+    (error) => error.code === 'FORBIDDEN_DOG'
+  )
+  await assert.rejects(
+    () => gateway({ action: 'get', recordId: 'missing-record' }),
+    (error) => error.code === 'NOT_FOUND'
+  )
+  await assert.rejects(
+    () => gateway({ action: 'replace', recordId: 'missing-record', payload: writePayload() }),
+    (error) => error.code === 'NOT_FOUND'
+  )
+  await assert.rejects(
+    () => gateway({ action: 'delete', recordId: 'missing-record' }),
     (error) => error.code === 'NOT_FOUND'
   )
 })
