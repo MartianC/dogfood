@@ -124,6 +124,18 @@ function buildCursorCondition(database, cursor) {
   ])
 }
 
+function appendDateRangeConditions(database, event, conditions) {
+  const startDate = String(event.startDate || '').trim()
+  const endDate = String(event.endDate || '').trim()
+  if (startDate && !parseDateText(startDate)) fail('INVALID_DATE_RANGE', '体重查询开始日期无效')
+  if (endDate && !parseDateText(endDate)) fail('INVALID_DATE_RANGE', '体重查询结束日期无效')
+  if (startDate && endDate && startDate >= endDate) {
+    fail('INVALID_DATE_RANGE', '体重查询日期范围无效')
+  }
+  if (startDate) conditions.push({ measuredOn: database.command.gte(startDate) })
+  if (endDate) conditions.push({ measuredOn: database.command.lt(endDate) })
+}
+
 async function getOwnedDog(database, openId, dogId) {
   let result
   try {
@@ -308,6 +320,7 @@ function createWeightRecordGateway({ database, openId, now = () => new Date() })
       const cursor = decodeCursor(event.cursor)
       const limit = normalizePageSize(event.limit)
       const conditions = [{ _openid: ownerId }, { dogId }]
+      appendDateRangeConditions(database, event, conditions)
       const cursorCondition = buildCursorCondition(database, cursor)
       if (cursorCondition) conditions.push(cursorCondition)
       const where = conditions.length === 1

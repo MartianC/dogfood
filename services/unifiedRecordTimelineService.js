@@ -28,6 +28,19 @@ function inMonth(dateKey, monthKey) {
   return Boolean(dateKey && dateKey.startsWith(`${monthKey}-`))
 }
 
+function monthDateRange(monthKey) {
+  const normalizedMonthKey = normalizeMonthKey(monthKey)
+  const match = /^(\d{4})-(\d{2})$/.exec(normalizedMonthKey)
+  const year = Number(match[1])
+  const month = Number(match[2])
+  const nextMonth = month === 12 ? 1 : month + 1
+  const nextYear = month === 12 ? year + 1 : year
+  return {
+    startDate: `${match[1]}-${match[2]}-01`,
+    endDate: `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`
+  }
+}
+
 function recordIdentity(item, index) {
   return String(item && (item.id || item._id) || `missing:${index}`)
 }
@@ -80,11 +93,13 @@ async function readMonthMeals(monthKey, listMeals, options = {}) {
 
 async function readDogSource(source, dogs, listRecords, monthKey, options = {}) {
   if (typeof listRecords !== 'function') throw new Error(`${source} 记录列表服务无效`)
+  const dateRange = monthDateRange(monthKey)
   const results = await Promise.all((dogs || []).map(async (dog) => {
     try {
       const items = await readAllPages(listRecords, {
         dogId: dog.id,
-        limit: options.pageSize || DEFAULT_PAGE_SIZE
+        limit: options.pageSize || DEFAULT_PAGE_SIZE,
+        ...dateRange
       })
       return {
         dogId: dog.id,
@@ -406,6 +421,7 @@ module.exports = {
   readAllPages,
   readMonthMeals,
   readDogSource,
+  monthDateRange,
   createUnifiedRecordTimelineService,
   createUnifiedRecordTimelineState,
   createState: createUnifiedRecordTimelineState,

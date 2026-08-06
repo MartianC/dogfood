@@ -312,8 +312,12 @@ async function getSharedMealRecord(recordId) {
 async function listWeightMeasurements(options = {}) {
   const dogId = String(options.dogId || '').trim()
   const limit = Math.min(Math.max(Number(options.limit) || 1, 1), 50)
+  const startDate = String(options.startDate || '').trim()
+  const endDate = String(options.endDate || '').trim()
   const items = storage.getSync('mockWeightMeasurements', [])
     .filter((item) => item.userId === env.mockUser.id && item.dogId === dogId)
+    .filter((item) => (!startDate || String(item.measuredOn || '') >= startDate)
+      && (!endDate || String(item.measuredOn || '') < endDate))
     .map((item) => ({
       schemaVersion: item.schemaVersion,
       id: item.id,
@@ -341,8 +345,12 @@ async function listCareRecords(options = {}) {
   const dogId = String(options.dogId || '').trim()
   const limit = Math.min(Math.max(Number(options.limit) || 20, 1), 20)
   const type = String(options.type || '').trim()
+  const startDate = String(options.startDate || '').trim()
+  const endDate = String(options.endDate || '').trim()
   const items = storage.getSync('mockCareRecords', [])
     .filter((item) => item.dogId === dogId && (!type || item.type === type))
+    .filter((item) => (!startDate || String(item.occurredOn || '') >= startDate)
+      && (!endDate || String(item.occurredOn || '') < endDate))
     .map((item) => careContract.normalizeCareRecord(item))
     .sort((left, right) => (
       String(right.occurredOn || '').localeCompare(String(left.occurredOn || ''))

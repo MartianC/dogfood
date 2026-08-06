@@ -24,6 +24,7 @@ function comparable(value) {
 function matchValue(actual, expected) {
   if (expected && typeof expected === 'object' && !Array.isArray(expected)) {
     if (Object.hasOwn(expected, '$lt')) return comparable(actual) < comparable(expected.$lt)
+    if (Object.hasOwn(expected, '$gte')) return comparable(actual) >= comparable(expected.$gte)
     if (Object.hasOwn(expected, '$gt')) return comparable(actual) > comparable(expected.$gt)
     if (Object.hasOwn(expected, '$eq')) return comparable(actual) === comparable(expected.$eq)
   }
@@ -114,6 +115,7 @@ function fakeDatabase(initial = {}, { rejectMissingDocs = false } = {}) {
       collection,
       command: {
         lt(value) { return { $lt: value } },
+        gte(value) { return { $gte: value } },
         gt(value) { return { $gt: value } },
         and(items) { return { $and: items } },
         or(items) { return { $or: items } }
@@ -210,6 +212,14 @@ test('云函数创建体重时校验归属、同步当前体重并支持稳定�
   })
   assert.deepEqual(secondPage.items.map((item) => item.id), [older.measurement.id])
   assert.equal(secondPage.nextCursor, null)
+
+  const monthPage = await gateway({
+    action: 'list',
+    dogId: 'dog-1',
+    startDate: '2026-08-02',
+    endDate: '2026-09-01'
+  })
+  assert.deepEqual(monthPage.items.map((item) => item.id), [latest.measurement.id])
 
   await assert.rejects(
     () => gateway({ action: 'create', payload: writePayload({ dogId: 'dog-outsider' }) }),

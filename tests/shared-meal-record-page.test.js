@@ -306,6 +306,36 @@ test('记录页从体重或护理任务返回时强制刷新当前月份', async
   assert.equal(calls[1].selectedDateKey, '2026-08-05')
 })
 
+test('记录页首次进入复用应用启动的预取状态，不强制刷新', async () => {
+  const timelineState = createTimelineState({
+    '2026-08': { meal: { items: [] } }
+  })
+  await timelineState.load('2026-08', { selectedDateKey: '2026-08-05' })
+  const calls = []
+  const originalLoad = timelineState.load
+  timelineState.load = async (monthKey, options = {}) => {
+    calls.push({ monthKey, ...options })
+    return originalLoad(monthKey, options)
+  }
+  const app = {
+    globalData: {
+      authReady: Promise.resolve(),
+      recordTimelineState: timelineState
+    }
+  }
+  const { definition } = loadRecordsPage({}, undefined, {}, app)
+  const page = createPageContext(definition)
+  page.now = () => new Date('2026-08-05T04:00:00.000Z')
+
+  await page.onShow()
+
+  assert.deepEqual(calls[0], {
+    monthKey: '2026-08',
+    selectedDateKey: '2026-08-05',
+    force: false
+  })
+})
+
 test('选中无记录日期保留月份数据，失败后可从当前月份重试', async () => {
   const timelineState = createTimelineState({
     '2026-07': { meal: { items: [{

@@ -127,7 +127,11 @@ Page({
 
   ensureTimelineState() {
     if (!this.timelineState) {
-      this.timelineState = sharedMealRecordService.createUnifiedRecordTimelineState()
+      const app = typeof getApp === 'function' ? getApp() : null
+      this.timelineState = app
+        && app.globalData
+        && app.globalData.recordTimelineState
+        || sharedMealRecordService.createUnifiedRecordTimelineState()
     }
     return this.timelineState
   },
@@ -198,13 +202,14 @@ Page({
 
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
     if (tabBar) tabBar.setData({ selected: 'records' })
+    const hadTimelineState = Boolean(this.timelineState)
     const state = this.ensureTimelineState().getState()
     const todayKey = shanghaiTodayKey(typeof this.now === 'function' ? this.now() : new Date())
     const selectedDateKey = state.selectedDateKey || todayKey
     await this.loadMonth(
       state.activeMonthKey || monthKeyFromDateKey(selectedDateKey),
       selectedDateKey,
-      { force: Boolean(state.activeMonthKey) }
+      { force: hadTimelineState && Boolean(state.activeMonthKey) }
     )
   },
 
