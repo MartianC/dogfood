@@ -1134,4 +1134,4 @@ F2.1 在同一独立 worktree `codex/r21-unified-record-timeline` 接入 `pages/
 - 记录行统一使用 `ui-card`、`ui-tag`、`ui-notice` 和 `ui-empty`，通过来源前缀 ID 和 `source` 事件分别进入本餐详情、体重趋势页和护理记录页。
 - `record-calendar` wrapper 将有记录日期后缀改为独立圆点，选中态使用圆形 CSS 变量；页面继续不直接使用 TDesign 标签。未新增基础组件、颜色 token 或第三方适配层。
 - 页面覆盖首次加载、月份切换、日期空态、整月空态、无狗狗、部分来源失败、全量失败、刷新/重试、多狗展开收起和长文案；R2.1 同步修正默认展开与明确全部收起状态的区分。
-- 本轮未修改 CloudBase、三类写入合同或详情页内部职责；实现和测试已从独立 worktree 合入 `weight-and-care`，并随本次提交归档。
+- 本轮未修改 CloudBase、三类写入合同或详情页内部职责；实现和测试已合入 `weight-and-care`，并随本次合并提交归档。
