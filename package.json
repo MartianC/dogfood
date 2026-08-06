@@ -11,6 +11,7 @@
     "check:main-package": "node scripts/check-main-package-unused-js.js",
     "check:ui": "node scripts/check-ui-system.js",
     "check:project-navigation": "node scripts/check-project-navigation-gate.js",
+    "check:v21-regression": "node scripts/check-v21-regression.js",
     "check:care-record-contract": "node scripts/check-care-record-contract.js",
     "sync:care-record-contract": "node scripts/sync-care-record-contract.js",
     "sync:weight-contract": "node scripts/sync-weight-contract.js",

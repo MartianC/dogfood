@@ -230,3 +230,39 @@ test('分页读取遇到重复 cursor 时安全停止', async () => {
   assert.equal(calls, 2)
   assert.deepEqual(items.map((item) => item.id), ['first', 'same'])
 })
+
+test('统一时间轴分页失败时保留已成功读取的前页记录', async () => {
+  const service = createUnifiedRecordTimelineService({
+    listDogs: async () => [{ id: 'dog-1', name: '布丁' }],
+    listMeals: async () => ({ items: [], nextCursor: null }),
+    listWeights: async ({ cursor }) => {
+      if (!cursor) {
+        return {
+          items: [{
+            id: 'weight-1',
+            dogId: 'dog-1',
+            weightKg: 8.2,
+            measuredOn: '2026-08-05',
+            createdAt: '2026-08-05T03:00:00.000Z'
+          }],
+          nextCursor: 'weight-next'
+        }
+      }
+      throw Object.assign(new Error('体重第二页读取失败'), {
+        code: 'NETWORK_ERROR',
+        retryable: true
+      })
+    },
+    listCare: async () => ({ items: [], nextCursor: null })
+  })
+
+  const model = await service.query({
+    monthKey: '2026-08',
+    selectedDateKey: '2026-08-05'
+  })
+
+  assert.equal(model.status, 'partial')
+  assert.equal(model.sources.weight.status, 'error')
+  assert.deepEqual(model.sources.weight.items.map((item) => item.id), ['weight:weight-1'])
+  assert.equal(model.sources.weight.error.message, '体重第二页读取失败')
+})

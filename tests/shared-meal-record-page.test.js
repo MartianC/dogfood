@@ -283,6 +283,29 @@ test('记录页等待应用认证初始化后再开始查询记录', async () =>
   assert.equal(loadCalls, 1)
 })
 
+test('记录页从体重或护理任务返回时强制刷新当前月份', async () => {
+  const timelineState = createTimelineState({
+    '2026-08': { meal: { items: [] } }
+  })
+  const calls = []
+  const originalLoad = timelineState.load
+  timelineState.load = async (monthKey, options = {}) => {
+    calls.push({ monthKey, ...options })
+    return originalLoad(monthKey, options)
+  }
+  const { definition } = loadRecordsPage({ createUnifiedRecordTimelineState: () => timelineState })
+  const page = createPageContext(definition)
+  page.now = () => new Date('2026-08-05T04:00:00.000Z')
+
+  await page.onShow()
+  await page.onShow()
+
+  assert.equal(calls.length, 2)
+  assert.equal(calls[0].force, false)
+  assert.equal(calls[1].force, true)
+  assert.equal(calls[1].selectedDateKey, '2026-08-05')
+})
+
 test('选中无记录日期保留月份数据，失败后可从当前月份重试', async () => {
   const timelineState = createTimelineState({
     '2026-07': { meal: { items: [{

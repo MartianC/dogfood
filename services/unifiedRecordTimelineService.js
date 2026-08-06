@@ -41,11 +41,19 @@ async function readAllPages(listRecords, options = {}) {
   let cursor = null
 
   while (true) {
-    const page = await listRecords({
-      ...options,
-      limit,
-      cursor
-    })
+    let page
+    try {
+      page = await listRecords({
+        ...options,
+        limit,
+        cursor
+      })
+    } catch (error) {
+      if (items.length && error && typeof error === 'object') {
+        error.partialItems = items.slice()
+      }
+      throw error
+    }
     const rows = Array.isArray(page && page.items) ? page.items : []
     rows.forEach((item, index) => {
       const identity = recordIdentity(item, items.length + index)
@@ -84,9 +92,12 @@ async function readDogSource(source, dogs, listRecords, monthKey, options = {}) 
         error: null
       }
     } catch (error) {
+      const partialItems = Array.isArray(error && error.partialItems)
+        ? error.partialItems.filter((item) => inMonth(sourceDateKey(source, item), monthKey))
+        : []
       return {
         dogId: dog.id,
-        items: [],
+        items: partialItems,
         error
       }
     }

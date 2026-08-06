@@ -174,10 +174,13 @@ Page({
     })
   },
 
-  async loadMonth(monthKey, selectedDateKey) {
+  async loadMonth(monthKey, selectedDateKey, options = {}) {
     if (!monthKey) return
     const state = this.ensureTimelineState()
-    const request = state.load(monthKey, { selectedDateKey })
+    const request = state.load(monthKey, {
+      selectedDateKey,
+      force: Boolean(options.force)
+    })
     this.syncTimelineView()
     try {
       await request
@@ -198,7 +201,11 @@ Page({
     const state = this.ensureTimelineState().getState()
     const todayKey = shanghaiTodayKey(typeof this.now === 'function' ? this.now() : new Date())
     const selectedDateKey = state.selectedDateKey || todayKey
-    await this.loadMonth(state.activeMonthKey || monthKeyFromDateKey(selectedDateKey), selectedDateKey)
+    await this.loadMonth(
+      state.activeMonthKey || monthKeyFromDateKey(selectedDateKey),
+      selectedDateKey,
+      { force: Boolean(state.activeMonthKey) }
+    )
   },
 
   async onCalendarSelect(event) {
