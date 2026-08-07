@@ -15,34 +15,42 @@
       <view class="section-action" bindtap="onAddDog">新增</view>
     </view>
     <view wx:if="{{dogs.length}}" class="profile-dog-list">
-      <ui-card wx:for="{{dogs}}" wx:key="id">
-        <view class="dog-panel">
-          <image class="dog-avatar" src="{{item.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
-          <view class="dog-copy">
-            <view class="dog-panel-head">
-              <text>{{item.name}}</text>
-              <text class="edit-link" data-id="{{item.id}}" bindtap="onEditDogPanel">修改</text>
-            </view>
-            <view class="dog-meta">{{item.lifeStageLabel || '档案待完善'}}｜{{item.weightKg > 0 ? item.weightKg + 'kg' : '体重未记录'}}｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
+      <view
+        wx:for="{{dogs}}"
+        wx:key="id"
+        class="dog-card"
+        data-id="{{item.id}}"
+        bindtap="onEditDogPanel"
+      >
+        <ui-card>
+          <view class="dog-panel">
+            <image class="dog-avatar" src="{{item.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+            <view class="dog-copy">
+              <view class="dog-panel-head">
+                <text>{{item.name}}</text>
+                <text class="edit-link">修改</text>
+              </view>
+              <view class="dog-meta">{{item.lifeStageLabel || '档案待完善'}}｜{{item.weightKg > 0 ? item.weightKg + 'kg' : '体重未记录'}}｜每日 {{item.dailyMeals}} 餐｜{{dietGoalLabels[item.dietGoal] || '日常'}}饮食</view>
               <view class="dog-panel__actions">
                 <ui-button
                   size="small"
-                block="{{false}}"
-                variant="ghost"
-                data-id="{{item.id}}"
-                  bind:tap="onViewWeight"
+                  block="{{false}}"
+                  variant="ghost"
+                  data-id="{{item.id}}"
+                  catch:tap="onViewWeight"
                 >{{item.weightKg > 0 ? '查看体重趋势' : '记录第一次体重'}}</ui-button>
                 <ui-button
                   size="small"
                   block="{{false}}"
                   variant="ghost"
                   data-id="{{item.id}}"
-                  bind:tap="onViewCare"
+                  catch:tap="onViewCare"
                 >护理记录</ui-button>
               </view>
+            </view>
           </view>
-        </view>
-      </ui-card>
+        </ui-card>
+      </view>
     </view>
     <empty-state wx:else title="还没有狗狗档案" description="先添加一只狗狗，生成清单时会自动换算份量。" actionText="添加狗狗" image-url="{{defaultDogAvatar}}" bind:action="onAddDog" />
   </view>
