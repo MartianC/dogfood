@@ -111,6 +111,7 @@ test('TabBar 通过 TDesign 自定义组件保留四个主路由和中央记一�
   assert.match(tabBarJs, /--td-tab-bar-height: 88rpx/)
   assert.match(tabBarJs, /--td-font-body-large: 22rpx \/ 32rpx/)
   assert.match(tabBarJs, /--td-tab-bar-border-color: #d8e1da/)
+  assert.match(tabBarJs, /--td-tab-bar-color: \$\{tabBarMutedColor\}/)
   assert.match(tabBarJs, /flex: 0 0 calc\(\(100% - 142rpx\) \/ 4\)/)
   assert.match(tabBarJs, /margin: 12rpx 0/)
   assert.match(tabBarJs, /tabBarGapStyle: 'flex: 0 0 142rpx; width: 142rpx/)
@@ -137,6 +138,7 @@ test('TabBar 通过 TDesign 自定义组件保留四个主路由和中央记一�
   assert.match(tabBarWxss, /\.app-tab-bar\s*\{[\s\S]*?position:\s*relative;/)
   assert.match(tabBarWxss, /\.app-tab-bar\s*\{[\s\S]*?height:\s*112rpx;/)
   assert.match(tabBarWxss, /\.app-tab-bar__fab-label\s*\{[\s\S]*?position:\s*absolute;/)
+  assert.match(tabBarWxss, /\.app-tab-bar__fab-label\s*\{[\s\S]*?color:\s*var\(--td-tab-bar-color\);/)
   assert.doesNotMatch(tabBarWxss, /\.app-tab-bar__fab-label\s*\{[\s\S]*?position:\s*fixed;/)
   assert.doesNotMatch(tabBarWxss, /--td-tab-bar-round-shadow/)
   assert.match(tabBarWxss, /width:\s*40rpx/)
@@ -179,11 +181,11 @@ test('TabBar 在有无底部安全区的机型中保持稳定容器几何', () =
 
   assert.equal(
     getContainerStyle({ windowWidth: 390, screenHeight: 844, safeArea: { bottom: 810 } }),
-    '--df-tab-bar-safe-area-bottom: 65rpx;height: 177rpx'
+    '--df-tab-bar-safe-area-bottom: 65rpx;--td-tab-bar-color: #6f7b73;height: 177rpx'
   )
   assert.equal(
     getContainerStyle({ windowWidth: 360, screenHeight: 800, safeArea: { bottom: 800 } }),
-    '--df-tab-bar-safe-area-bottom: 0rpx;height: 112rpx'
+    '--df-tab-bar-safe-area-bottom: 0rpx;--td-tab-bar-color: #6f7b73;height: 112rpx'
   )
 })
 

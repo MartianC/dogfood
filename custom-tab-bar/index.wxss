@@ -45,7 +45,7 @@
   bottom: calc(20rpx + var(--df-tab-bar-safe-area-bottom));
   z-index: 2;
   transform: translateX(-50%);
-  color: var(--df-color-primary);
+  color: var(--td-tab-bar-color);
   font-size: 22rpx;
   line-height: 32rpx;
   white-space: nowrap;

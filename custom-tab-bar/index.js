@@ -1,4 +1,5 @@
 const sharedMealEntryService = require('../services/sharedMealEntryService')
+const tabBarMutedColor = '#6f7b73'
 
 function getWindowInfo() {
   try {
@@ -19,6 +20,7 @@ function getTabBarContainerStyle() {
   const safeAreaBottom = Math.round(safeAreaBottomPx * 750 / windowWidth)
   return [
     `--df-tab-bar-safe-area-bottom: ${safeAreaBottom}rpx`,
+    `--td-tab-bar-color: ${tabBarMutedColor}`,
     `height: ${112 + safeAreaBottom}rpx`
   ].join(';')
 }
@@ -34,7 +36,7 @@ const tabBarStyle = [
   '--td-tab-bar-bg-color: #ffffff',
   '--td-tab-bar-border-color: #d8e1da',
   '--td-tab-bar-active-color: #25684a',
-  '--td-tab-bar-color: #6f7b73',
+  `--td-tab-bar-color: ${tabBarMutedColor}`,
   '--td-tab-bar-hover-bg-color: #eef3ef',
   '--td-font-body-large: 22rpx / 32rpx PingFang SC, Microsoft YaHei, Arial Regular',
   '--td-tab-bar-height: 88rpx',

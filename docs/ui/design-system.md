@@ -79,7 +79,7 @@ TDesign 适配范围：
 - `components/vendor/recipe-empty`：包装 `Empty/Button`。
 - `components/vendor/record-calendar`：包装页面内嵌 `Calendar/Loading`，固定单选年月切换并将 TDesign 时间戳收口为日期事件。
 
-第三方组件主题必须映射 `--df-*` 语义色。因小程序组件样式隔离，`custom-tab-bar/index.js` 的 `tabBarStyle` 保存一份与本文件同步的 TDesign CSS 变量字符串；修改主色、表面色或弱色时必须同步更新。
+第三方组件主题必须映射 `--df-*` 语义色。因小程序组件样式隔离，`custom-tab-bar/index.js` 的 `tabBarStyle` 保存一份与本文件同步的 TDesign CSS 变量字符串；根容器同时注入 `--td-tab-bar-color`，供 TDesign TabBar 和中央原生动作标签共用同一弱色语义。修改主色、表面色或弱色时必须同步更新。
 
 按下态规则：自研 `ui-button` 显式使用 `hover-class="ui-button--pressed"`，按 variant 映射 `primary-pressed`、`primary-soft-pressed`、`surface-pressed` 和 `warning-pressed`。TDesign Button/Fab 适配层必须同时覆盖 `--td-brand-color-active`、`--td-brand-color-light-active` 及对应的 `--td-button-*-active-*` 变量，禁止回退到 TDesign 默认蓝色。
 
@@ -96,7 +96,7 @@ TabBar 图文比例：导航栏固定贴合屏幕底边，使用 `surface` 表�
 | `app.json tabBar.backgroundColor` | `#ffffff` | `--df-color-surface` |
 | `app.json tabBar.color` | `#6f7b73` | `--df-color-muted` |
 | `app.json tabBar.selectedColor` | `#25684a` | `--df-color-primary` |
-| `custom-tab-bar/index.js tabBarStyle` | `#ffffff / #d8e1da / #25684a / #6f7b73` | `surface / line / primary / muted` |
+| `custom-tab-bar/index.js tabBarStyle / tabBarContainerStyle` | `#ffffff / #d8e1da / #25684a / #6f7b73` | `surface / line / primary / muted` |
 
 `pages/plan/index/index.js` 的分享图使用 `SHARE_COLORS` 常量集中映射 `surface`、`text`、`primary`、`textSecondary`、`muted`，并与本文件 token 保持一致。
 
