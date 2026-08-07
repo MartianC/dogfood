@@ -241,10 +241,10 @@ test('狗狗档案标准化保留头像字段', () => {
     ageStage: 'adult',
     weightKg: 12,
     dailyMeals: 2,
-    avatarUrl: '/assets/dogs/default-dog.jpg'
+    avatarUrl: '/assets/dogs/dog-head-profile.svg'
   })
 
-  assert.equal(dog.avatarUrl, '/assets/dogs/default-dog.jpg')
+  assert.equal(dog.avatarUrl, '/assets/dogs/dog-head-profile.svg')
 })
 
 test('狗狗档案卡片只展示派生阶段并为旧档案保留待完善状态', () => {

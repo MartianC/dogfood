@@ -21,7 +21,7 @@ function loadProfilePage({ authState = 'guest', user = null } = {}) {
           getCurrentUser: () => user
         }
       }
-      if (request === '../../../utils/assets') return { defaultDogAvatar: '/assets/dogs/default-dog.jpg' }
+      if (request === '../../../utils/assets') return { defaultDogAvatar: '/assets/dogs/dog-head-profile.svg' }
       throw new Error(`测试未提供依赖：${request}`)
     },
     module: { exports: {} },

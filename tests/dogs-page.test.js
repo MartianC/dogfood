@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..')
 function loadDogsPage({
   authService,
   dogService,
-  assets = { defaultDogAvatar: '/assets/dogs/default-dog.jpg' },
+  assets = { defaultDogAvatar: '/assets/dogs/dog-head-profile.svg' },
   wx = { navigateTo() {} }
 }) {
   const source = fs.readFileSync(path.join(root, 'pages/dogs/index.js'), 'utf8')
