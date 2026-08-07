@@ -3,7 +3,6 @@
   "styleIsolation": "isolated",
   "usingComponents": {
     "t-checkbox": "tdesign-miniprogram/checkbox/checkbox",
-    "t-icon": "tdesign-miniprogram/icon/icon",
     "t-loading": "tdesign-miniprogram/loading/loading"
   }
 }

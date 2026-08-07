@@ -38,19 +38,9 @@
 }
 
 .recipe-menu-indicator__icon {
-  color: var(--df-color-text);
-}
-
-.recipe-menu-indicator--primary .recipe-menu-indicator__icon {
-  color: var(--df-color-primary);
-}
-
-.recipe-menu-indicator--warning .recipe-menu-indicator__icon {
-  color: var(--df-color-warning);
-}
-
-.recipe-menu-indicator--muted .recipe-menu-indicator__icon {
-  color: var(--df-color-muted);
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .recipe-menu-indicator--loading {

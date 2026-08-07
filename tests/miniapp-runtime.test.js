@@ -122,7 +122,7 @@ test('小程序图片兜底资源存在', () => {
   })
 })
 
-test('小程序图片资源不超过 200K', () => {
+test('小程序图片资源合计不超过 200K', () => {
   const roots = ['assets']
   const imageFiles = []
 
@@ -133,17 +133,15 @@ test('小程序图片资源不超过 200K', () => {
         collectImages(entryPath)
         return
       }
-      if (/\.(png|jpe?g|gif|webp)$/i.test(entry.name)) {
+      if (/\.(png|jpe?g|gif|webp|svg)$/i.test(entry.name)) {
         imageFiles.push(entryPath)
       }
     })
   }
 
   roots.forEach((root) => collectImages(path.join(__dirname, '..', root)))
-  imageFiles.forEach((file) => {
-    const relativePath = path.relative(path.join(__dirname, '..'), file)
-    assert.ok(fs.statSync(file).size <= 200 * 1024, `${relativePath} 超过 200K`)
-  })
+  const totalSize = imageFiles.reduce((sum, file) => sum + fs.statSync(file).size, 0)
+  assert.ok(totalSize <= 200 * 1024, `图片资源合计 ${(totalSize / 1024).toFixed(1)}K，超过 200K`)
 })
 
 test('分包服务文件显式进入开发者工具打包清单', () => {

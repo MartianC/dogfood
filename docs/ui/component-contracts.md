@@ -20,9 +20,9 @@
 | `components/vendor/recipe-fab` | `Fab` | event `tap` |
 | `components/vendor/recipe-empty` | `Empty`、`Button` | props `icon/title/description/actionText`；event `action` |
 | `components/vendor/recipe-ingredient-search` | `Search` | props `value/loading/placeholder/actionText`；events `change/action`；页面负责决定默认、结果和无结果状态 |
-| `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input`、`Icon` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
+| `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
 | `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
-| `components/vendor/recipe-menu-indicator` | `Checkbox`、`Icon`、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`kind` 支持 `checkbox/icon/loading/loading-compact`，紧凑 Loading 不保留 44pt 占位；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，Icon 和 Loading 仅展示；不读取菜谱服务 |
+| `components/vendor/recipe-menu-indicator` | `Checkbox`、本地 SVG、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`kind` 支持 `checkbox/icon/loading/loading-compact`，紧凑 Loading 不保留 44pt 占位；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，SVG 和 Loading 仅展示；不读取菜谱服务 |
 | `components/vendor/record-calendar` | `Calendar`、`Loading` | props `value/calendarDays/loading`；固定 `use-popup=false`、`type=single`、`switch-mode=year-month`、无确认按钮；events `select/panelchange` 只返回稳定日期或年月；日期下方圆点仅表示当天至少一条记录，不读取记录服务 |
 
 vendor 适配层只负责第三方 API、主题和基础状态转换，不读取业务服务，不执行页面跳转，不保存食谱数据。
@@ -81,7 +81,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 | --- | --- | --- |
 | prop | `variant` | `neutral | good | warning`，默认 `neutral` |
 | prop | `size` | `small | medium | large`，默认 `medium`；`large` 用于搜索页的常用食材胶囊 |
-| prop | `removable` | 是否显示可移除形态，默认 `false`；内部关闭图标适配 TDesign Icon |
+| prop | `removable` | 是否显示可移除形态，默认 `false`；内部关闭图标使用本地 SVG |
 | prop | `eventValue` | 移除时随事件回传的稳定业务值 |
 | event | `remove` | 点击可移除 Tag 时触发，`detail.eventValue` 返回业务值 |
 | slot | 默认 | 标签文案 |

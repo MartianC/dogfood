@@ -748,10 +748,11 @@ test('菜单页按 Figma 拆分 Checkbox 与 Chevron，并只在 vendor 适配�
   )
 
   assert.match(vendorTemplate, /<t-checkbox\b/)
-  assert.match(vendorTemplate, /<t-icon\b/)
+  assert.match(vendorTemplate, /<image\b/)
+  assert.doesNotMatch(vendorTemplate, /<t-icon\b/)
   assert.match(vendorTemplate, /<t-loading\b/)
   assert.equal(vendorConfig.usingComponents['t-checkbox'], 'tdesign-miniprogram/checkbox/checkbox')
-  assert.equal(vendorConfig.usingComponents['t-icon'], 'tdesign-miniprogram/icon/icon')
+  assert.equal(vendorConfig.usingComponents['t-icon'], undefined)
   assert.equal(vendorConfig.usingComponents['t-loading'], 'tdesign-miniprogram/loading/loading')
 })
 

@@ -96,6 +96,8 @@ TabBar 图文比例：导航栏固定贴合屏幕底边，使用 `surface` 表�
 | `app.json tabBar.backgroundColor` | `#ffffff` | `--df-color-surface` |
 | `app.json tabBar.color` | `#6f7b73` | `--df-color-muted` |
 | `app.json tabBar.selectedColor` | `#25684a` | `--df-color-primary` |
+
+独立 SVG 图标位于 `assets/icons/tdesign/`，用于替代 TDesign 全量字体包。图标文件中的固定颜色必须与语义 token 同步：默认图标对应 `--df-color-text`，搜索和清除对应 `--df-color-muted`，选中和添加对应 `--df-color-primary`，移除对应 `--df-color-warning`，主操作按钮内加号使用白色。新增 TDesign 图标名称时，必须同时增加对应 SVG 和 `tests/tdesign-local-icons.test.js` 清单；`npm install` 后由 `scripts/patch-tdesign-icons.js` 自动把第三方 Icon 渲染器切换到本地资源。
 | `custom-tab-bar/index.js tabBarStyle / tabBarContainerStyle` | `#ffffff / #d8e1da / #25684a / #6f7b73` | `surface / line / primary / muted` |
 
 `pages/plan/index/index.js` 的分享图使用 `SHARE_COLORS` 常量集中映射 `surface`、`text`、`primary`、`textSecondary`、`muted`，并与本文件 token 保持一致。
