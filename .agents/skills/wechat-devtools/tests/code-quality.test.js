@@ -97,23 +97,57 @@ test('压缩和按需注入配置逐项映射官方规则', (t) => {
   assert.equal(getRule(report, 'LAZYCODE_LOADING_OPEN').status, 'fail')
 })
 
-test('大资源和 AppSecret 只输出文件路径，不输出敏感值', (t) => {
+test('图片和音频按资源总量执行 200 K 阈值', (t) => {
   const fixture = createProject()
   t.after(() => fs.rmSync(fixture.root, { recursive: true, force: true }))
   write(
     fixture.project,
-    'miniprogram/assets/oversize.png',
-    Buffer.alloc(ASSET_LIMIT_BYTES + 1)
+    'miniprogram/assets/first.png',
+    Buffer.alloc(120 * 1024)
   )
+  write(
+    fixture.project,
+    'miniprogram/assets/second.mp3',
+    Buffer.alloc(81 * 1024)
+  )
+
+  const assetRule = getRule(
+    createCodeQualityChecker(fixture.project).run(),
+    'IMAGE_AND_AUDIO_LIMIT'
+  )
+
+  assert.equal(assetRule.status, 'fail')
+  assert.match(assetRule.summary, /合计 201\.0 K，超过 200 K/)
+  assert.deepEqual(assetRule.details, [
+    'assets/first.png (120.0 K)',
+    'assets/second.mp3 (81.0 K)'
+  ])
+})
+
+test('图片和音频资源总量恰好 200 K 时通过', (t) => {
+  const fixture = createProject()
+  t.after(() => fs.rmSync(fixture.root, { recursive: true, force: true }))
+  write(fixture.project, 'miniprogram/assets/first.png', Buffer.alloc(120 * 1024))
+  write(fixture.project, 'miniprogram/assets/second.mp3', Buffer.alloc(80 * 1024))
+
+  const assetRule = getRule(
+    createCodeQualityChecker(fixture.project).run(),
+    'IMAGE_AND_AUDIO_LIMIT'
+  )
+
+  assert.equal(assetRule.status, 'pass')
+  assert.match(assetRule.summary, /合计 200\.0 K，未超过 200 K/)
+})
+
+test('AppSecret 只输出文件路径，不输出敏感值', (t) => {
+  const fixture = createProject()
+  t.after(() => fs.rmSync(fixture.root, { recursive: true, force: true }))
   const secret = '0123456789abcdef0123456789abcdef'
   write(fixture.project, 'miniprogram/config/private.js', `appSecret = '${secret}'\n`)
 
   const report = createCodeQualityChecker(fixture.project).run()
-  const assetRule = getRule(report, 'IMAGE_AND_AUDIO_LIMIT')
   const secretRule = getRule(report, 'CONTAINS_APPSECRET')
 
-  assert.equal(assetRule.status, 'fail')
-  assert.match(assetRule.details[0], /assets\/oversize\.png/)
   assert.equal(secretRule.status, 'fail')
   assert.deepEqual(secretRule.details, ['config/private.js'])
   assert.doesNotMatch(JSON.stringify(report), new RegExp(secret))

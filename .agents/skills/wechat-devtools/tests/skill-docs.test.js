@@ -19,6 +19,8 @@ test('SKILL 强制在小程序改动交付前运行本地代码质量预检', ()
   assert.match(skill, /check-code-quality\.js/);
   assert.match(skill, /交付前必须运行/);
   assert.match(skill, /13 条规则/);
+  assert.match(skill, /图片与音频.*合计.*200 K|200 K.*图片与音频.*合计/);
+  assert.match(skill, /不是单文件|不按单文件/);
   assert.match(skill, /退出码为 `1`/);
   assert.match(skill, /UI-only|仅限 UI|只通过 UI/);
   assert.match(skill, /重新扫描/);
@@ -49,6 +51,7 @@ test('官方接口参考记录 13 条规则与官方扫描边界', () => {
   assert.match(reference, /CONTAINS_OTHER_PKG_JS/);
   assert.match(reference, /直接父依赖/);
   assert.match(reference, /compiledPkg/);
+  assert.match(reference, /IMAGE_AND_AUDIO_LIMIT.*合计不超过 200 K/);
   assert.match(reference, /code-analyse/);
   assert.match(reference, /不要|不能|不得/);
 });
