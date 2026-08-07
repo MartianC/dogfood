@@ -7,11 +7,16 @@ const path = require('node:path')
 const {
   createBoundaryChecker,
   collectReachableMainJavaScript,
+  findMainPackageCrossPackageRequires,
   findUnusedMainPackageJavaScript
 } = require('../scripts/check-main-package-unused-js')
 
 test('根目录普通 JS 均由主包真实页面或组件使用', () => {
   assert.deepEqual(findUnusedMainPackageJavaScript(), [])
+})
+
+test('主包运行时代码不直接引用尚未加载的分包模块', () => {
+  assert.deepEqual(findMainPackageCrossPackageRequires(), [])
 })
 
 test('跨分包共享服务生成到各自分包且不在主包保留运行时入口', () => {
