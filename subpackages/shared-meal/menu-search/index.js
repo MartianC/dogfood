@@ -1,3 +1,4 @@
+const dogService = require('../../../services/dogService')
 const humanRecipeService = require('../services/humanRecipeService')
 const {
   canSearchIngredient,
@@ -5,9 +6,14 @@ const {
 } = require('../services/ingredientOperationRules')
 const {
   restoreDraft,
+  getDraftRecoveryDecision,
   createDraftFromMenus,
-  saveDraft
+  saveDraft,
+  saveDogSelectionDraft
 } = require('../services/sharedMealDraftService')
+const {
+  evaluateSharedMealDogEligibility
+} = require('../services/sharedMealDogEligibility')
 const {
   MENU_SEARCH_SESSION_VERSION,
   createMenuSearchSession,
@@ -172,8 +178,14 @@ Page({
     errorScope: ''
   },
 
-  onLoad(options = {}) {
-    const draftId = String(options.draftId || '')
+  async onLoad(options = {}) {
+    let draftId = String(options.draftId || '')
+    const dogId = String(options.dogId || '')
+    if (!draftId && dogId) {
+      this.setData({ loading: true })
+      draftId = await this.prepareSingleDogEntry(dogId)
+      if (!draftId) return false
+    }
     this.setData({ draftId })
     const restored = restoreDraft(draftId)
     const storedState = restored.status === 'restored'
@@ -206,6 +218,28 @@ Page({
       return Promise.resolve(true)
     }
     return this.searchRecipes('')
+  },
+
+  async prepareSingleDogEntry(dogId) {
+    const recoveryDecision = getDraftRecoveryDecision()
+    if (recoveryDecision.status !== 'none') {
+      wx.redirectTo({ url: '/subpackages/shared-meal/dog-select/index' })
+      return ''
+    }
+
+    try {
+      const dogs = await dogService.listDogs()
+      const dog = dogs.find((item) => String(item && item.id || '') === dogId)
+      const eligibility = dog && evaluateSharedMealDogEligibility(dog)
+      if (!dog || !eligibility || eligibility.status !== 'eligible') {
+        wx.redirectTo({ url: '/subpackages/shared-meal/dog-select/index' })
+        return ''
+      }
+      return saveDogSelectionDraft(dog).id
+    } catch (error) {
+      wx.redirectTo({ url: '/subpackages/shared-meal/dog-select/index' })
+      return ''
+    }
   },
 
   buildStoredMenuSearchState() {
@@ -421,7 +455,11 @@ Page({
   },
 
   onToggleRecipeSelection(event) {
-    const recipeId = String(event.currentTarget.dataset.recipeId || '')
+    const recipeId = String(
+      (event.detail && event.detail.recipeId)
+      || (event.currentTarget && event.currentTarget.dataset.recipeId)
+      || ''
+    )
     const session = this.ensureMenuSearchSession()
     const recipe = session.recipes.find((item) => item.id === recipeId)
     if (!recipe) return false
@@ -445,7 +483,11 @@ Page({
   },
 
   onToggleRecipeExpansion(event) {
-    const recipeId = String(event.currentTarget.dataset.recipeId || '')
+    const recipeId = String(
+      (event.detail && event.detail.recipeId)
+      || (event.currentTarget && event.currentTarget.dataset.recipeId)
+      || ''
+    )
     const nextSession = toggleExpandedMenuRecipe(this.ensureMenuSearchSession(), recipeId)
     this.applyMenuSearchSession(nextSession)
     if (nextSession.expandedRecipeId !== recipeId) return Promise.resolve(false)

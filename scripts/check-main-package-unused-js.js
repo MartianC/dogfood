@@ -407,8 +407,22 @@ function createBoundaryChecker(projectRoot = DEFAULT_PROJECT_ROOT) {
     return collectPlainMainJavaScript().filter((file) => !reachable.has(file))
   }
 
+  function findMainPackageCrossPackageRequires() {
+    const requireMap = staticRequireMap()
+    return Object.entries(requireMap).flatMap(([file, requests]) => {
+      if (file.startsWith('subpackages/')) return []
+      return requests.flatMap((request) => {
+        const dependency = resolveJavaScript(file, request)
+        return dependency.startsWith('subpackages/')
+          ? [`${file} -> ${dependency}`]
+          : []
+      })
+    }).sort()
+  }
+
   return {
     collectReachableMainJavaScript,
+    findMainPackageCrossPackageRequires,
     findUnusedMainPackageJavaScript
   }
 }
@@ -417,16 +431,22 @@ const defaultChecker = createBoundaryChecker()
 
 if (require.main === module) {
   const unused = defaultChecker.findUnusedMainPackageJavaScript()
+  const crossPackageRequires = defaultChecker.findMainPackageCrossPackageRequires()
   if (unused.length) {
     console.error(`发现 ${unused.length} 个主包未使用 JS：`)
     unused.forEach((file) => console.error(`- ${file}`))
-    process.exit(1)
   }
+  if (crossPackageRequires.length) {
+    console.error(`发现 ${crossPackageRequires.length} 条主包跨包引用：`)
+    crossPackageRequires.forEach((item) => console.error(`- ${item}`))
+  }
+  if (unused.length || crossPackageRequires.length) process.exit(1)
   console.log('未发现主包未使用 JS。')
 }
 
 module.exports = {
   createBoundaryChecker,
   collectReachableMainJavaScript: defaultChecker.collectReachableMainJavaScript,
+  findMainPackageCrossPackageRequires: defaultChecker.findMainPackageCrossPackageRequires,
   findUnusedMainPackageJavaScript: defaultChecker.findUnusedMainPackageJavaScript
 }

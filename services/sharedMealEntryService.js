@@ -2,6 +2,7 @@ const authService = require('./authService')
 const dogService = require('./dogService')
 
 const SHARED_MEAL_FLOW_PATH = '/subpackages/shared-meal/dog-select/index'
+const SHARED_MEAL_MENU_PATH = '/subpackages/shared-meal/menu-search/index'
 const QUICK_CREATE_PATH = '/subpackages/dog-profile/dog-quick-create/index'
 
 let activeEntry = null
@@ -37,6 +38,13 @@ async function runEntry() {
     const url = buildQuickCreateUrl()
     navigateTo(url)
     return { status: 'profile-required', navigated: true, url }
+  }
+
+  // 单狗直接打开分包选菜页，由分包在加载后完成资格检查和草稿初始化。
+  if (dogs.length === 1) {
+    const url = `${SHARED_MEAL_MENU_PATH}?dogId=${encodeURIComponent(String(dogs[0].id || ''))}`
+    navigateTo(url)
+    return { status: 'menu-started', navigated: true, url }
   }
 
   navigateTo(SHARED_MEAL_FLOW_PATH)
