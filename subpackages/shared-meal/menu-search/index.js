@@ -455,7 +455,11 @@ Page({
   },
 
   onToggleRecipeSelection(event) {
-    const recipeId = String(event.currentTarget.dataset.recipeId || '')
+    const recipeId = String(
+      (event.detail && event.detail.recipeId)
+      || (event.currentTarget && event.currentTarget.dataset.recipeId)
+      || ''
+    )
     const session = this.ensureMenuSearchSession()
     const recipe = session.recipes.find((item) => item.id === recipeId)
     if (!recipe) return false
@@ -479,7 +483,11 @@ Page({
   },
 
   onToggleRecipeExpansion(event) {
-    const recipeId = String(event.currentTarget.dataset.recipeId || '')
+    const recipeId = String(
+      (event.detail && event.detail.recipeId)
+      || (event.currentTarget && event.currentTarget.dataset.recipeId)
+      || ''
+    )
     const nextSession = toggleExpandedMenuRecipe(this.ensureMenuSearchSession(), recipeId)
     this.applyMenuSearchSession(nextSession)
     if (nextSession.expandedRecipeId !== recipeId) return Promise.resolve(false)

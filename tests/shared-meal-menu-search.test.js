@@ -730,22 +730,33 @@ test('选择 1 至 3 道菜时摘要同步更新，确认后全部菜单写入�
   }
 })
 
-test('菜单页按 Figma 拆分 Checkbox 与 Chevron，并只在 vendor 适配层使用 TDesign', () => {
+test('菜单页使用紧凑卡片、独立选择与展开操作，并只在 vendor 适配层使用 TDesign', () => {
   const pageRoot = path.join(root, 'subpackages/shared-meal/menu-search')
   const template = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
   const config = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
   const vendorRoot = path.join(root, 'components/vendor/recipe-menu-indicator')
   const vendorTemplate = fs.readFileSync(path.join(vendorRoot, 'index.wxml'), 'utf8')
   const vendorConfig = JSON.parse(fs.readFileSync(path.join(vendorRoot, 'index.json'), 'utf8'))
+  const pageStyles = fs.readFileSync(path.join(pageRoot, 'index.wxss'), 'utf8')
 
-  assert.match(template, /bind:change="onToggleRecipeSelection"/)
-  assert.match(template, /bindtap="onToggleRecipeExpansion"/)
+  assert.match(template, /<ui-card\b/)
+  assert.match(template, /catchtap="onToggleRecipeSelection"/)
+  assert.match(template, /catchtap="onToggleRecipeExpansion"/)
   assert.doesNotMatch(template, /bindtap="onSelectRecipe"|onToggleComponent/)
   assert.doesNotMatch(template, /<t-[a-z-]+/)
   assert.equal(
     config.usingComponents['recipe-menu-indicator'],
     '../../../components/vendor/recipe-menu-indicator/index'
   )
+  assert.equal(config.usingComponents['ui-card'], '../../../components/ui/ui-card/index')
+  assert.match(template, /<ui-card padding="none">\s*<view class="shared-meal-menu-result-list">/s)
+  assert.match(pageStyles, /\.shared-meal-menu-result-list\s*{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*var\(--df-radius-lg\)/s)
+  assert.match(pageStyles, /\.shared-meal-menu-result__detail\s*{[^}]*background:\s*var\(--df-color-surface-muted\)/s)
+  assert.match(pageStyles, /\.shared-meal-menu-result__detail\s*{[^}]*padding:\s*var\(--df-space-2\) var\(--df-space-3\)/s)
+  assert.match(pageStyles, /\.shared-meal-menu-detail-groups\s*{[^}]*gap:\s*var\(--df-space-1\)/s)
+  assert.match(pageStyles, /\.shared-meal-menu-result__top\s*{[^}]*min-height:\s*108rpx/s)
+  assert.match(pageStyles, /\.shared-meal-menu-selection-summary\s*{[^}]*right:\s*0;[^}]*bottom:\s*0;[^}]*left:\s*0;/s)
+  assert.match(pageStyles, /border-top:\s*1rpx solid var\(--df-color-line\)/)
 
   assert.match(vendorTemplate, /<t-checkbox\b/)
   assert.match(vendorTemplate, /<image\b/)

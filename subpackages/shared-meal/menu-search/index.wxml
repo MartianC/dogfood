@@ -42,80 +42,80 @@
         <text wx:else> · {{recipes.length}} 道菜</text>
       </view>
 
-      <view
-        wx:for="{{recipes}}"
-        wx:key="id"
-        class="shared-meal-menu-result"
-      >
-        <ui-card padding="medium">
-          <view class="shared-meal-menu-result__top">
-            <recipe-menu-indicator
-              kind="checkbox"
-              checked="{{item.isSelected}}"
-              data-recipe-id="{{item.id}}"
-              bind:change="onToggleRecipeSelection"
-            />
-
-            <view class="shared-meal-menu-result__content">
-              <view class="shared-meal-menu-result__name">{{item.title}}</view>
+      <ui-card padding="none">
+        <view class="shared-meal-menu-result-list">
+          <view
+            wx:for="{{recipes}}"
+            wx:key="id"
+            class="shared-meal-menu-result"
+          >
+            <view class="shared-meal-menu-result__top">
               <view
-                class="shared-meal-menu-result__summary"
+                class="shared-meal-menu-result__selection"
                 data-recipe-id="{{item.id}}"
-                bindtap="onToggleRecipeExpansion"
-                aria-role="button"
-                aria-expanded="{{item.isExpanded}}"
-                aria-label="{{item.isExpanded ? '收起' : '展开'}}{{item.title}}原料"
+                catchtap="onToggleRecipeSelection"
+                aria-label="{{item.isSelected ? '取消选择' : '选择'}}{{item.title}}"
               >
-                <text class="shared-meal-menu-result__meta">{{item.mappingSummary}}</text>
-                <recipe-menu-indicator
-                  kind="icon"
-                  icon="{{item.isExpanded ? 'chevron-down' : 'chevron-right'}}"
-                />
+                <recipe-menu-indicator kind="checkbox" checked="{{item.isSelected}}" />
+              </view>
+              <view class="shared-meal-menu-result__content">
+                <view class="shared-meal-menu-result__name">{{item.title}}</view>
+                <view
+                  class="shared-meal-menu-result__summary"
+                  data-recipe-id="{{item.id}}"
+                  catchtap="onToggleRecipeExpansion"
+                  aria-role="button"
+                  aria-expanded="{{item.isExpanded}}"
+                  aria-label="{{item.isExpanded ? '收起' : '展开'}}{{item.title}}原料"
+                >
+                  <text class="shared-meal-menu-result__meta">{{item.mappingSummary}}</text>
+                  <recipe-menu-indicator kind="icon" icon="{{item.isExpanded ? 'chevron-down' : 'chevron-right'}}" />
+                </view>
               </view>
             </view>
-          </view>
 
-          <view wx:if="{{item.isExpanded}}" class="shared-meal-menu-result__detail">
-            <block wx:if="{{item.detailLoading}}">
-              <recipe-menu-indicator kind="loading" text="正在读取原料" />
-            </block>
+            <view wx:if="{{item.isExpanded}}" class="shared-meal-menu-result__detail">
+              <block wx:if="{{item.detailLoading}}">
+                <recipe-menu-indicator kind="loading" text="正在读取原料" />
+              </block>
 
-            <block wx:elif="{{item.detailError}}">
-              <view class="shared-meal-menu-detail-error">
-                <text>原料详情暂时没加载出来</text>
-                <ui-button
-                  variant="ghost"
-                  size="small"
-                  block="{{false}}"
-                  data-recipe-id="{{item.id}}"
-                  bind:tap="onRetryRecipeDetail"
-                >重试</ui-button>
-              </view>
-            </block>
-
-            <block wx:else>
-              <view class="shared-meal-menu-detail-groups">
-                <view class="shared-meal-menu-detail-group">
-                  <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--allowed">
-                    狗狗可以吃
-                  </text>
-                  <text class="shared-meal-menu-detail-group__value">
-                    {{item.allowedIngredientText}}
-                  </text>
+              <block wx:elif="{{item.detailError}}">
+                <view class="shared-meal-menu-detail-error">
+                  <text>原料详情暂时没加载出来</text>
+                  <ui-button
+                    variant="ghost"
+                    size="small"
+                    block="{{false}}"
+                    data-recipe-id="{{item.id}}"
+                    bind:tap="onRetryRecipeDetail"
+                  >重试</ui-button>
                 </view>
-                <view class="shared-meal-menu-detail-group">
-                  <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--blocked">
-                    狗狗不能吃
-                  </text>
-                  <text class="shared-meal-menu-detail-group__value">
-                    {{item.blockedIngredientText}}
-                  </text>
+              </block>
+
+              <block wx:else>
+                <view class="shared-meal-menu-detail-groups">
+                  <view class="shared-meal-menu-detail-group">
+                    <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--allowed">
+                      狗狗可以吃
+                    </text>
+                    <text class="shared-meal-menu-detail-group__value">
+                      {{item.allowedIngredientText}}
+                    </text>
+                  </view>
+                  <view class="shared-meal-menu-detail-group">
+                    <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--blocked">
+                      狗狗不能吃
+                    </text>
+                    <text class="shared-meal-menu-detail-group__value">
+                      {{item.blockedIngredientText}}
+                    </text>
+                  </view>
                 </view>
-              </view>
-            </block>
+              </block>
+            </view>
           </view>
-        </ui-card>
-      </view>
+        </view>
+      </ui-card>
 
       <view wx:if="{{loadingMore}}" class="shared-meal-menu-pagination">
         <recipe-menu-indicator kind="loading" text="正在加载更多菜谱" />
