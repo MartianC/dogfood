@@ -1,11 +1,14 @@
 @import "../styles/tokens.wxss";
 
 :host {
+  display: block;
   position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 100;
+  background-color: var(--df-color-surface);
+  overflow: visible;
   pointer-events: none;
   --td-brand-color: var(--df-color-primary);
   --td-brand-color-active: var(--df-color-primary-pressed);
@@ -20,12 +23,13 @@
 }
 
 .app-tab-bar {
+  position: relative;
   box-sizing: border-box;
   width: 100%;
-  margin: 0 auto calc(56rpx + constant(safe-area-inset-bottom));
-  margin: 0 auto calc(56rpx + env(safe-area-inset-bottom));
+  height: 112rpx;
+  margin: 0;
+  background-color: var(--df-color-surface);
   pointer-events: auto;
-  --td-tab-bar-round-shadow: var(--df-shadow-card);
 }
 
 .app-tab-bar__icon {
@@ -36,10 +40,9 @@
 }
 
 .app-tab-bar__fab-label {
-  position: fixed;
+  position: absolute;
   left: 50%;
-  bottom: calc(76rpx + constant(safe-area-inset-bottom));
-  bottom: calc(76rpx + env(safe-area-inset-bottom));
+  bottom: calc(20rpx + var(--df-tab-bar-safe-area-bottom));
   z-index: 2;
   transform: translateX(-50%);
   color: var(--df-color-primary);

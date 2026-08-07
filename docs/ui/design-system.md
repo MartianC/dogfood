@@ -73,7 +73,7 @@
 
 TDesign 适配范围：
 
-- `custom-tab-bar`：包装 `TabBar/TabBarItem`，固定使用 `theme=tag`、`shape=round`，通过公开 icon slot 使用本地图标。
+- `custom-tab-bar`：包装 `TabBar/TabBarItem`，固定使用 `theme=normal`、`shape=normal`，通过公开 icon slot 使用本地图标；底部安全区启用 TDesign 内置 `safe-area-inset-bottom`，由组件根节点填充白色安全区。
 - `components/vendor/recipe-create-popup`：包装 `Popup/Cell/Input/Button`。
 - `components/vendor/recipe-fab`：包装 `Fab`。
 - `components/vendor/recipe-empty`：包装 `Empty/Button`。
@@ -83,7 +83,7 @@ TDesign 适配范围：
 
 按下态规则：自研 `ui-button` 显式使用 `hover-class="ui-button--pressed"`，按 variant 映射 `primary-pressed`、`primary-soft-pressed`、`surface-pressed` 和 `warning-pressed`。TDesign Button/Fab 适配层必须同时覆盖 `--td-brand-color-active`、`--td-brand-color-light-active` 及对应的 `--td-button-*-active-*` 变量，禁止回退到 TDesign 默认蓝色。
 
-TabBar 图文比例：外框按 D1.1 设计稿为 `343 × 64pt`；四个 item 在中央 Fab 两侧分为左右两组，中间保留独立间隙。图标 slot 固定 `40rpx`（20 px），标签使用 `22rpx / 32rpx`（11 px），图标下方保留 `4rpx` 间距。320pt 窄屏按同一组结构收缩 item 宽度，不得恢复四项均匀铺满并让 Fab 覆盖 item。
+TabBar 图文比例：导航栏固定贴合屏幕底边，使用 `surface` 表面和 `line` 顶部分隔线，不使用圆角或悬浮阴影。TDesign `TabBar` 开启 `safe-area-inset-bottom`，由组件内部通过 `wx.getWindowInfo()` 将安全区加入白色根节点；项目容器同步计算同一安全区，仅用于 Fab 和文案相对定位，不再依赖越过微信宿主边界的自绘安全区层。四个 item 在独立中央“记一顿”动作两侧分为左右两组，中间保留独立间隙；每个 item 内容高度为 `88rpx`，上下外间距为 `12rpx`。图标 slot 固定 `40rpx`（20 px），标签使用 `22rpx / 32rpx`（11 px），图标下方保留 `4rpx` 间距。中央 Fab 仍为独立的 `96rpx` 主操作，内容区应在它上方额外预留 `28rpx`。320pt 窄屏按同一组结构收缩 item 宽度，不得恢复四项均匀铺满并让 Fab 覆盖 item。
 
 ## JSON 和 Canvas 同步规则
 
@@ -96,7 +96,7 @@ TabBar 图文比例：外框按 D1.1 设计稿为 `343 × 64pt`；四个 item �
 | `app.json tabBar.backgroundColor` | `#ffffff` | `--df-color-surface` |
 | `app.json tabBar.color` | `#6f7b73` | `--df-color-muted` |
 | `app.json tabBar.selectedColor` | `#25684a` | `--df-color-primary` |
-| `custom-tab-bar/index.js tabBarStyle` | `#ffffff / #e3f0e8 / #25684a / #6f7b73` | `surface / primary-soft / primary / muted` |
+| `custom-tab-bar/index.js tabBarStyle` | `#ffffff / #d8e1da / #25684a / #6f7b73` | `surface / line / primary / muted` |
 
 `pages/plan/index/index.js` 的分享图使用 `SHARE_COLORS` 常量集中映射 `surface`、`text`、`primary`、`textSecondary`、`muted`，并与本文件 token 保持一致。
 

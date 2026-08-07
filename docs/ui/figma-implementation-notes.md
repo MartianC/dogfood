@@ -1,5 +1,12 @@
 # 食谱模块 Figma 实施交接
 
+## 2026-08-07 TabBar 运行态样式调整
+
+- 用户要求将底部 TabBar 从悬浮胶囊改为贴合底边的普通方形栏；该运行态调整覆盖下方 D1.1 的历史外框尺寸与圆角变体描述。
+- `custom-tab-bar` 继续包装 TDesign `TabBar/TabBarItem`，但固定使用 `theme=normal`、`shape=normal`，启用 `surface` 表面、`line` 顶部分隔线和底部安全区，不保留圆角、悬浮外边距或阴影。
+- 四个目的地、左右分组和独立中央“记一顿”动作保持不变；Fab 仍为 48pt 圆形操作，但随贴底栏上移。一级页面的 `with-tab-bar` 预留随之调整为 `132rpx + safe-area-inset-bottom`，避免长列表末项被 Fab 遮挡。
+- 安全区由 TDesign `TabBar` 内置 `safe-area-inset-bottom` 承接，直接扩展其白色根节点，避免自定义组件宿主裁剪外层填充层；`custom-tab-bar` 仍使用 `wx.getWindowInfo()` 计算同一安全区并以内联高度和 CSS 变量供 Fab、文案相对定位，避免不同设备的窗口安全区造成相对栏顶位置漂移。
+
 ## 2026-08-03 H04 首页主任务卡样式校正
 
 - 首页 H04 主任务卡按设计稿改用 `ui-card` 的 `plain` surface，保留 `large` 内边距和项目卡片边框/阴影；主绿色只用于“今天的下一步”眉题和 `ui-button` 主操作。
@@ -11,7 +18,7 @@
 ## 2026-08-02 DOC1/V1 主线导航实现交接
 
 - 当前一级导航为“首页 / 记录 / 狗狗 / 我的”，中央“记一顿”使用 TDesign Fab，保持独立的 48 × 48pt 主操作和无选中态语义；四个真实目的地由 `custom-tab-bar` 包装 TDesign `TabBar/TabBarItem`。
-- 工程实现保持 D1.1 的 `theme=tag`、`shape=round`、左右两组 Tab 与中央间隙、主色 `#25684A`、按下态 `#1D523A`、底部安全区和 `with-tab-bar` 内容预留。Fab 的主题变量同时下沉到内部 Button，避免回退为 TDesign 默认蓝色。
+- 工程实现保持 D1.1 的左右两组 Tab 与中央间隙、主色 `#25684A`、按下态 `#1D523A`、底部安全区和 `with-tab-bar` 内容预留；运行态使用 `theme=normal`、`shape=normal` 的方形栏。Fab 的主题变量同时下沉到内部 Button，避免回退为 TDesign 默认蓝色。
 - 首页实现覆盖游客、无档案、可恢复草稿、今天无记录、今天有记录和数据失败；狗狗页只迁入原“我的”的档案内容；“我的”只保留账号卡；记录页保留本餐月历与详情模型。体重、护理和统一记录时间轴不属于本次视觉交付。
 - 首页的记餐入口、记录空态和中央动作均调用 `sharedMealEntryService.startSharedMeal()`；首页在“今天有记录”时仍可将主任务导向记录回看。任务型子页面不重复显示 TabBar 或中央动作。旧食谱、批量和兼容深链保留代码访问，但不进入当前主导航。
 - V1.1 视觉验收覆盖 320pt、375/390pt、长狗名、长菜单名、多狗、长列表、底部安全区和页面内容不被导航遮挡；临时截图和 `.design-check/` 产物不进入仓库。
