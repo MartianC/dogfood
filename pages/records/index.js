@@ -202,15 +202,26 @@ Page({
 
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
     if (tabBar) tabBar.setData({ selected: 'records' })
-    const hadTimelineState = Boolean(this.timelineState)
+    const hasShownTimeline = Boolean(this.hasShownTimeline)
+    const needsTimelineRefresh = Boolean(this.needsTimelineRefresh)
+    this.hasShownTimeline = true
+    this.needsTimelineRefresh = false
     const state = this.ensureTimelineState().getState()
+    if (hasShownTimeline && state.activeMonthKey && !needsTimelineRefresh) {
+      this.syncTimelineView()
+      return
+    }
     const todayKey = shanghaiTodayKey(typeof this.now === 'function' ? this.now() : new Date())
     const selectedDateKey = state.selectedDateKey || todayKey
     await this.loadMonth(
       state.activeMonthKey || monthKeyFromDateKey(selectedDateKey),
       selectedDateKey,
-      { force: hadTimelineState && Boolean(state.activeMonthKey) }
+      { force: needsTimelineRefresh && Boolean(state.activeMonthKey) }
     )
+  },
+
+  refreshTimelineOnReturn() {
+    this.needsTimelineRefresh = true
   },
 
   async onCalendarSelect(event) {
@@ -279,10 +290,12 @@ Page({
         url: `/subpackages/shared-meal/record-detail/index?recordId=${encodeURIComponent(sourceId)}`
       })
     } else if (source === 'weight' && dogId) {
+      this.refreshTimelineOnReturn()
       wx.navigateTo({
         url: `/subpackages/dog-profile/weight/index?dogId=${encodeURIComponent(dogId)}`
       })
     } else if (source === 'care' && dogId) {
+      this.refreshTimelineOnReturn()
       wx.navigateTo({
         url: `/subpackages/dog-profile/care-record/index?dogId=${encodeURIComponent(dogId)}`
       })
@@ -290,10 +303,12 @@ Page({
   },
 
   onAddDog() {
+    this.refreshTimelineOnReturn()
     wx.navigateTo({ url: '/subpackages/dog-profile/dog-edit/index' })
   },
 
   onCreateMeal() {
+    this.refreshTimelineOnReturn()
     return sharedMealEntryService.startSharedMeal()
   }
 })

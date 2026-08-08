@@ -115,6 +115,4 @@
       description="{{homeState.status === 'guest' ? '登录后可以查看真实的本餐快照。' : homeState.recentSummary.description}}"
     />
   </view>
-
-  <ui-notice variant="neutral">本功能只评估并记录单餐，不提供长期完整性结论。</ui-notice>
 </view>
