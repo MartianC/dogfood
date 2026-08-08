@@ -9,10 +9,6 @@
 .profile-avatar {
   width: 96rpx;
   height: 96rpx;
-  flex: 0 0 96rpx;
-  border-radius: 24rpx;
-  border: 1rpx solid var(--df-color-line-strong);
-  background: var(--df-color-surface-muted);
   display: block;
 }
 

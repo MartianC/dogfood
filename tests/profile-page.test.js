@@ -4,7 +4,12 @@ const fs = require('node:fs')
 const path = require('node:path')
 const vm = require('node:vm')
 
-function loadProfilePage({ authState = 'guest', user = null } = {}) {
+function loadProfilePage({
+  authState = 'guest',
+  user = null,
+  saveAvatar = async (avatarUrl) => avatarUrl,
+  updateCurrentUserProfile = async (profile) => ({ ...user, ...profile })
+} = {}) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'pages/profile/index/index.js'), 'utf8')
   let definition
   const context = {
@@ -18,15 +23,20 @@ function loadProfilePage({ authState = 'guest', user = null } = {}) {
       if (request === '../../../services/authService') {
         return {
           getAuthState: () => authState,
-          getCurrentUser: () => user
+          getCurrentUser: () => user,
+          updateCurrentUserProfile
         }
       }
-      if (request === '../../../utils/assets') return { defaultDogAvatar: '/assets/dogs/dog-head-profile.svg' }
+      if (request === '../../../services/userProfileService') return { saveAvatar }
+      if (request === '../../../utils/assets') {
+        return { defaultUserAvatar: '/assets/profile/default-user-avatar.svg' }
+      }
       throw new Error(`测试未提供依赖：${request}`)
     },
     module: { exports: {} },
     exports: {},
-    Promise
+    Promise,
+    wx: { showToast() {} }
   }
   vm.runInNewContext(`(function () { ${source}\n })()`, context, { filename: 'pages/profile/index/index.js' })
   return definition
@@ -50,6 +60,46 @@ test('我的页面只同步账号状态，不请求狗狗档案', async () => {
   assert.equal(viewData.user, user)
 })
 
+test('登录用户选择微信头像后持久化并立即更新账号卡', async () => {
+  const user = { id: 'user-1', nickname: '小明', avatarUrl: '' }
+  const calls = []
+  const definition = loadProfilePage({
+    authState: 'logged-in',
+    user,
+    async saveAvatar(tempFilePath, userId) {
+      calls.push(['save', tempFilePath, userId])
+      return 'cloud://user-avatars/user-1/avatar'
+    },
+    async updateCurrentUserProfile(profile) {
+      calls.push(['update', profile])
+      return { ...user, ...profile }
+    }
+  })
+  let viewData
+
+  await definition.onChooseAvatar.call({
+    data: { authState: 'logged-in', user },
+    setData(data) { viewData = data }
+  }, { detail: { avatarUrl: 'wxfile://tmp-avatar' } })
+
+  assert.deepEqual(calls[0], ['save', 'wxfile://tmp-avatar', 'user-1'])
+  assert.equal(calls[1][0], 'update')
+  assert.equal(calls[1][1].avatarUrl, 'cloud://user-avatars/user-1/avatar')
+  assert.equal(viewData.user.avatarUrl, 'cloud://user-avatars/user-1/avatar')
+  assert.equal(viewData.avatarUrl, 'cloud://user-avatars/user-1/avatar')
+})
+
+test('微信头像加载失败时回退到默认用户 SVG', () => {
+  const definition = loadProfilePage()
+  let viewData
+
+  definition.onAvatarError.call({
+    setData(data) { viewData = data }
+  })
+
+  assert.equal(viewData.avatarUrl, '')
+})
+
 test('我的页面只保留账号卡，不暴露狗狗或旧兼容入口', () => {
   const root = path.join(__dirname, '..', 'pages/profile/index')
   const js = fs.readFileSync(path.join(root, 'index.js'), 'utf8')
@@ -57,9 +107,14 @@ test('我的页面只保留账号卡，不暴露狗狗或旧兼容入口', () =>
   const json = JSON.parse(fs.readFileSync(path.join(root, 'index.json'), 'utf8'))
 
   assert.doesNotMatch(js, /dogService|onLogin|onAddDog|onEditDog|onHistory|onCustomRecipes/)
-  assert.doesNotMatch(wxml, /dogs|dog-profile|empty-state|ui-button|历史清单|自定义食谱/)
-  assert.deepEqual(Object.keys(json.usingComponents).sort(), ['ui-card', 'ui-tag'])
+  assert.doesNotMatch(wxml, /dogs|dog-profile|empty-state|历史清单|自定义食谱/)
+  assert.deepEqual(Object.keys(json.usingComponents).sort(), ['ui-button', 'ui-card', 'ui-tag'])
   assert.match(wxml, /profile-card/)
   assert.match(wxml, /ui-card/)
   assert.match(wxml, /ui-tag/)
+  assert.match(wxml, /<ui-button/)
+  assert.match(wxml, /openType="chooseAvatar"/)
+  assert.match(wxml, /defaultUserAvatar/)
+  assert.match(wxml, /bind:error="onAvatarError"/)
+  assert.ok(fs.existsSync(path.join(__dirname, '..', 'assets/profile/default-user-avatar.svg')))
 })

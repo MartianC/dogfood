@@ -33,17 +33,20 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
-| prop | `variant` | `primary | secondary | outline | warning | warning-outline | ghost`，默认 `primary`；`outline` 为主题色描边操作，`warning-outline` 为警示色描边操作 |
+| prop | `variant` | `primary | secondary | outline | warning | warning-outline | ghost | avatar`，默认 `primary`；`outline` 为主题色描边操作，`warning-outline` 为警示色描边操作；`avatar` 为 `96rpx` 方形头像选择按钮 |
 | prop | `size` | `small | medium | large | xlarge`，默认 `large`；`xlarge` 高度为 `96rpx`，用于设计稿明确要求的 48pt 主操作 |
 | prop | `disabled` | 禁用态，默认 `false` |
 | prop | `loading` | 加载态，默认 `false` |
 | prop | `block` | 是否撑满容器，默认 `true`；`false` 时按内容渲染为小操作按钮 |
 | prop | `openType` | 透传小程序 button `open-type` |
+| prop | `ariaLabel` | 透传按钮无障碍标签 |
 | prop | `eventValue` | 可选事件值，会随 `tap` 事件放入 `detail.eventValue` |
 | event | `tap` | 非禁用、非加载时触发 |
+| event | `chooseavatar` | `openType="chooseAvatar"` 选择成功后透传微信头像临时路径 |
 | slot | 默认 | 按钮文案或少量内联内容 |
 
 `ui-button` 的组件 host 为块级；默认 `block=true` 时内部按钮撑满父容器。需要“删除”“修改”这类窄操作时使用 `block=false`，不要用外层固定宽度强行覆盖按钮宽度。
+头像选择使用 `variant="avatar"`、`block="{{false}}"` 和 `openType="chooseAvatar"`，页面监听 `chooseavatar`，不得绕过 UI Kernel 直接声明原生按钮。
 
 ## ui-card
 
