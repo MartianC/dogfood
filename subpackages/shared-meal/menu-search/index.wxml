@@ -36,11 +36,6 @@
     </block>
 
     <block wx:else>
-      <view wx:if="{{recipes.length}}" class="shared-meal-menu-results__heading">
-        <text>搜索结果</text>
-        <text wx:if="{{expandedRecipeId}}"> · 已展开 1 道</text>
-        <text wx:else> · {{recipes.length}} 道菜</text>
-      </view>
 
       <ui-card padding="none">
         <view class="shared-meal-menu-result-list">
