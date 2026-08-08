@@ -60,25 +60,35 @@
           <view class="weight-chart-summary__label">从 {{chartStartDateText}} 到 {{chartEndDateText}}</view>
           <view class="weight-chart-summary__range">{{chartMinLabel}} — {{chartMaxLabel}}</view>
         </view>
-        <view class="weight-chart" aria-label="体重变化折线图">
-          <view class="weight-chart__grid weight-chart__grid--top" aria-hidden="true"></view>
-          <view class="weight-chart__grid weight-chart__grid--middle" aria-hidden="true"></view>
-          <view class="weight-chart__grid weight-chart__grid--bottom" aria-hidden="true"></view>
-          <view
-            wx:for="{{chartSegments}}"
-            wx:key="id"
-            class="weight-chart__segment"
-            style="{{item.style}}"
-            aria-hidden="true"
-          ></view>
-          <view
-            wx:for="{{chartPoints}}"
-            wx:key="id"
-            class="weight-chart__point {{item.isLatest ? 'weight-chart__point--latest' : ''}}"
-            style="{{item.style}}"
-            aria-label="{{item.dateText}} {{item.weightText}}"
-          >
-            <view class="weight-chart__dot"></view>
+        <view
+          class="weight-chart-layout"
+          aria-label="体重变化折线图，纵轴从 {{chartAxisMinLabel}} 到 {{chartAxisMaxLabel}}"
+        >
+          <view class="weight-chart-y-axis" aria-hidden="true">
+            <text class="weight-chart-y-axis__label">{{chartAxisMaxLabel}}</text>
+            <text class="weight-chart-y-axis__label">{{chartAxisMiddleLabel}}</text>
+            <text class="weight-chart-y-axis__label">{{chartAxisMinLabel}}</text>
+          </view>
+          <view class="weight-chart">
+            <view class="weight-chart__grid weight-chart__grid--top" aria-hidden="true"></view>
+            <view class="weight-chart__grid weight-chart__grid--middle" aria-hidden="true"></view>
+            <view class="weight-chart__grid weight-chart__grid--bottom" aria-hidden="true"></view>
+            <view
+              wx:for="{{chartSegments}}"
+              wx:key="id"
+              class="weight-chart__segment"
+              style="{{item.style}}"
+              aria-hidden="true"
+            ></view>
+            <view
+              wx:for="{{chartPoints}}"
+              wx:key="id"
+              class="weight-chart__point {{item.isLatest ? 'weight-chart__point--latest' : ''}}"
+              style="{{item.style}}"
+              aria-label="{{item.dateText}} {{item.weightText}}"
+            >
+              <view class="weight-chart__dot"></view>
+            </view>
           </view>
         </view>
         <view class="weight-chart-axis" aria-hidden="true">

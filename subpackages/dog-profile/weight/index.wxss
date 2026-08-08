@@ -129,10 +129,36 @@
   font-weight: 800;
 }
 
+.weight-chart-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 12rpx;
+  margin-top: 40rpx;
+}
+
+.weight-chart-y-axis {
+  display: flex;
+  flex: none;
+  width: 72rpx;
+  height: 300rpx;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.weight-chart-y-axis__label {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 .weight-chart {
   position: relative;
+  flex: none;
+  width: 536rpx;
   height: 300rpx;
-  margin: 40rpx 12rpx 0;
+  box-sizing: border-box;
   border-left: 1rpx solid var(--df-color-line-strong);
   border-bottom: 1rpx solid var(--df-color-line-strong);
   background: var(--df-color-surface-muted);
@@ -188,7 +214,7 @@
 .weight-chart-axis {
   display: flex;
   justify-content: space-between;
-  margin: var(--df-space-2) 12rpx 0;
+  margin: var(--df-space-2) 0 0 84rpx;
   color: var(--df-color-muted);
   font-size: var(--df-font-xs);
 }

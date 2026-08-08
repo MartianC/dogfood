@@ -51,6 +51,9 @@ function emptyDogView() {
     chartSegments: [],
     chartMinLabel: '',
     chartMaxLabel: '',
+    chartAxisMinLabel: '',
+    chartAxisMiddleLabel: '',
+    chartAxisMaxLabel: '',
     chartStartDateText: '',
     chartEndDateText: ''
   }
