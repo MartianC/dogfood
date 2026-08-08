@@ -79,7 +79,7 @@ page {
 .shared-meal-menu-result__summary {
   display: flex;
   min-width: 0;
-  min-height: 56rpx;
+  min-height: 46rpx;
   align-items: center;
   justify-content: space-between;
   gap: var(--df-space-2);
@@ -100,7 +100,7 @@ page {
   box-sizing: border-box;
   min-width: 0;
   margin: 0 0 var(--df-space-3);
-  padding: var(--df-space-2) var(--df-space-3);
+  padding: var(--df-space-3) var(--df-space-5);
   border-radius: var(--df-radius-lg);
   background: var(--df-color-surface-muted);
 }
@@ -118,7 +118,7 @@ page {
   align-items: flex-start;
   gap: var(--df-space-3);
   font-size: 26rpx;
-  line-height: 36rpx;
+  line-height: 56rpx;
 }
 
 .shared-meal-menu-detail-group__label {
