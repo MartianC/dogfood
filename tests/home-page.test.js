@@ -5,6 +5,7 @@ const path = require('node:path')
 const vm = require('node:vm')
 
 const homeStateModel = require('../services/homeStateModel')
+const homeStartupTiming = require('../services/homeStartupTiming')
 
 const FIXED_NOW = new Date('2026-08-02T04:00:00.000Z')
 
@@ -13,8 +14,10 @@ function loadHomePage({
   recordService,
   homeItemService = { listForDogs: async () => [] },
   authState = 'guest',
+  authReady = Promise.resolve(),
   draft = null,
   now = FIXED_NOW,
+  globalData = {},
   wx = {}
 }) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.js'), 'utf8')
@@ -25,6 +28,7 @@ function loadHomePage({
     '../../services/sharedMealRecordService': recordService,
     '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'flow-started' }) },
     '../../services/homeItemService': homeItemService,
+    '../../services/homeStartupTiming': homeStartupTiming,
     '../../services/homeDraftSummaryService': {
       getDraftSummary() { return draft }
     },
@@ -36,7 +40,7 @@ function loadHomePage({
   let definition
   const context = {
     Page(page) { definition = page },
-    getApp() { return { globalData: { authReady: Promise.resolve() } } },
+    getApp() { return { globalData: { authReady, ...globalData } } },
     require(request) {
       if (!Object.prototype.hasOwnProperty.call(dependencies, request)) {
         throw new Error(`测试未提供依赖：${request}`)
@@ -85,6 +89,100 @@ test('游客首页不请求档案、记录或草稿，仍展示登录主任务',
   assert.equal(viewData.homeState.status, homeStateModel.HOME_STATUS.GUEST)
   assert.equal(viewData.homeState.primaryTask.label, '登录并继续')
   assert.equal(viewData.latestRecord, null)
+})
+
+test('H1：认证未决时首页首帧使用中性加载态', () => {
+  let resolveAuth
+  const authReady = new Promise((resolve) => { resolveAuth = resolve })
+  const definition = loadHomePage({
+    authReady,
+    dogService: { listDogs: async () => [] },
+    recordService: { list: async () => ({ items: [] }) }
+  })
+
+  // authReady 尚未完成时只检查 Page 注册时的首帧 data，避免测试等待永不结束的 Promise。
+  assert.equal(definition.data.authState, 'unknown')
+  assert.equal(definition.data.homeState.primaryTask.label, '正在准备首页')
+  assert.equal(definition.data.homeState.status, 'initializing')
+  assert.doesNotMatch(definition.data.homeState.primaryTask.description, /登录并继续|登录后/)
+  void resolveAuth
+})
+
+test('认证完成后首页显示已登录用户的主任务', async () => {
+  let resolveAuth
+  const authReady = new Promise((resolve) => { resolveAuth = resolve })
+  const definition = loadHomePage({
+    authReady,
+    authState: 'logged-in',
+    dogService: { listDogs: async () => [] },
+    recordService: { list: async () => ({ items: [] }) }
+  })
+  const updates = []
+  const pending = definition.onShow.call({
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  })
+
+  resolveAuth()
+  await pending
+  assert.equal(updates.at(-1).authState, 'logged-in')
+  assert.notEqual(updates.at(-1).homeState.status, homeStateModel.HOME_STATUS.GUEST)
+  assert.notEqual(updates.at(-1).homeState.primaryTask.label, '登录并继续')
+})
+
+test('H2：记录请求延迟时首页先渲染认证后的阶段性主任务', async () => {
+  let releaseRecords
+  const recordsReady = new Promise((resolve) => { releaseRecords = resolve })
+  const definition = loadHomePage({
+    authState: 'logged-in',
+    dogService: { listDogs: async () => [] },
+    recordService: { list: async () => recordsReady }
+  })
+  const updates = []
+  const pending = definition.onShow.call({
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  })
+
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.equal(updates.length, 1, '记录接口未返回时应先渲染首页外壳')
+  assert.equal(updates[0].homeState.primaryTask.label, '新增狗狗档案')
+  releaseRecords({ items: [] })
+  await pending
+  assert.equal(updates.length, 2)
+})
+
+test('H2：认证后的全局狗狗缓存和草稿摘要同步进入首页外壳', async () => {
+  let releaseRecords
+  const recordsReady = new Promise((resolve) => { releaseRecords = resolve })
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    globalData: { authState: 'has-profile', dogs: [{ id: 'cached-dog', name: '缓存狗狗' }] },
+    dogService: { listDogs: async () => [{ id: 'remote-dog', name: '远端狗狗' }] },
+    recordService: { list: async () => recordsReady },
+    draft: {
+      id: 'draft-1',
+      dog: { id: 'cached-dog', name: '缓存狗狗' },
+      humanMenus: [{ title: '鸡肉饭' }],
+      mealTime: FIXED_NOW.toISOString()
+    }
+  })
+  const updates = []
+  const page = {
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  }
+  // 测试 harness 的 getApp 只暴露 authReady；该断言通过草稿验证同步外壳路径。
+  const pending = definition.onShow.call(page)
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.equal(updates.length, 1)
+  assert.equal(updates[0].homeState.status, homeStateModel.HOME_STATUS.DRAFT)
+  assert.equal(updates[0].homeState.draft.dogName, '缓存狗狗')
+  releaseRecords({ items: [] })
+  await pending
 })
 
 test('已登录首页在记录服务失败时展示稳定错误降级，仍保留记一顿入口', async () => {
@@ -257,6 +355,8 @@ test('首页 WXML 覆盖六类模型状态并保留 UI Kernel 与底部安全区
   const wxss = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.wxss'), 'utf8')
 
   assert.match(wxml, /homeState\.status/)
+  assert.match(wxml, /homeState\.status !== 'initializing'/)
+  assert.match(wxml, /homeState\.status === 'initializing'/)
   assert.match(wxml, /homeState\.primaryTask/)
   assert.match(wxml, /homeState\.todaySummary/)
   assert.match(wxml, /homeState\.draft/)

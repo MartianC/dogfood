@@ -4,14 +4,20 @@ const sharedMealRecordService = require('../../services/sharedMealRecordService'
 const sharedMealEntryService = require('../../services/sharedMealEntryService')
 const homeDraftSummaryService = require('../../services/homeDraftSummaryService')
 const homeItemService = require('../../services/homeItemService')
+const { createHomeStartupTiming } = require('../../services/homeStartupTiming')
 const {
   HOME_STATUS,
+  HOME_LOAD_STATUS,
   PRIMARY_TASK_TYPE,
   buildHomeState,
   recordView,
   shanghaiDateKey
 } = require('../../services/homeStateModel')
 const { MAIN_TABS } = require('../../services/navigationMigrationService')
+
+// 记录首页创建时间，后续批次在认证、外壳和数据就绪时补齐其余时间点。
+const homeStartupTiming = createHomeStartupTiming()
+homeStartupTiming.mark('page-created')
 
 function todayText(now = new Date()) {
   const dateKey = shanghaiDateKey(now)
@@ -25,7 +31,11 @@ function latestRecordView(record) {
 }
 
 function initialHomeState() {
-  return buildHomeState({ authState: 'guest' })
+  // 认证未决期间不使用 guest 状态，避免首帧闪现游客文案或触发游客分支。
+  return buildHomeState({
+    authState: 'unknown',
+    loadStatus: HOME_LOAD_STATUS.INITIALIZING
+  })
 }
 
 function recordsForToday(records, now) {
@@ -39,9 +49,25 @@ function currentNow(page) {
   return typeof page.now === 'function' ? page.now() : new Date()
 }
 
+/**
+ * 根据认证完成时已经可用的全局快照构建首页外壳。
+ *
+ * 外壳只负责首屏主任务和本地草稿，不读取远端记录或事项，避免网络请求
+ * 阻塞已登录用户看到可操作的首页。远端结果随后会通过完整状态覆盖它。
+ */
+function buildHomeShell({ authState, dogs, draft, now }) {
+  return buildHomeState({
+    authState,
+    dogs,
+    draft,
+    loadStatus: HOME_LOAD_STATUS.PARTIAL,
+    now
+  })
+}
+
 Page({
   data: {
-    authState: 'guest',
+    authState: 'unknown',
     dogs: [],
     todayText: todayText(),
     latestRecord: null,
@@ -54,10 +80,13 @@ Page({
     const app = getApp()
     if (app.globalData.authReady) await app.globalData.authReady
 
+    // 认证完成即刻记录时间点，并消费 app.js 已注入的认证/狗狗缓存。
+    homeStartupTiming.mark('auth-ready')
+
     const requestToken = (this._homeLoadToken || 0) + 1
     this._homeLoadToken = requestToken
     const now = currentNow(this)
-    const authStateBeforeLoad = authService.getAuthState()
+    const authStateBeforeLoad = app.globalData.authState || authService.getAuthState()
 
     if (authStateBeforeLoad === HOME_STATUS.GUEST) {
       const homeState = buildHomeState({ authState: 'guest', now })
@@ -71,22 +100,47 @@ Page({
       return homeState
     }
 
-    let dogs = []
+    const cachedDogs = Array.isArray(app.globalData.dogs) ? app.globalData.dogs : []
+    const draft = homeDraftSummaryService.getDraftSummary()
+    const shellState = buildHomeShell({
+      authState: authStateBeforeLoad,
+      dogs: cachedDogs,
+      draft,
+      now
+    })
+    if (requestToken !== this._homeLoadToken) return shellState
+    this.setData({
+      authState: shellState.authState,
+      dogs: cachedDogs,
+      todayText: todayText(now),
+      latestRecord: null,
+      homeState: shellState
+    })
+    homeStartupTiming.mark('shell-ready')
+
+    let dogs = cachedDogs
     let records = []
     let homeItems = []
     const errors = {}
 
-    try {
-      dogs = await dogService.listDogs()
-    } catch (error) {
-      errors.profile = error
+    // 狗狗档案和本餐记录互不依赖，必须并行读取；用 Promise.resolve 包裹
+    // 调用也能把服务实现中的同步异常纳入 allSettled 的分项错误。
+    const [dogsResult, recordsResult] = await Promise.allSettled([
+      Promise.resolve().then(() => dogService.listDogs()),
+      Promise.resolve().then(() => sharedMealRecordService.list({ limit: 20 }))
+    ])
+
+    if (dogsResult.status === 'fulfilled') {
+      dogs = Array.isArray(dogsResult.value) ? dogsResult.value : []
+    } else {
+      errors.profile = dogsResult.reason
     }
 
-    try {
-      const result = await sharedMealRecordService.list({ limit: 20 })
+    if (recordsResult.status === 'fulfilled') {
+      const result = recordsResult.value
       records = Array.isArray(result && result.items) ? result.items : []
-    } catch (error) {
-      errors.records = error
+    } else {
+      errors.records = recordsResult.reason
     }
 
     if (dogs.length) {
@@ -97,7 +151,6 @@ Page({
       }
     }
 
-    const draft = homeDraftSummaryService.getDraftSummary()
     const homeState = buildHomeState({
       authState: authService.getAuthState(),
       dogs,
@@ -117,6 +170,7 @@ Page({
       latestRecord: homeState.recentRecord,
       homeState
     })
+    homeStartupTiming.mark('home-ready')
     return homeState
   },
 
@@ -173,5 +227,6 @@ Page({
 module.exports = {
   todayText,
   latestRecordView,
-  recordsForToday
+  recordsForToday,
+  buildHomeShell
 }

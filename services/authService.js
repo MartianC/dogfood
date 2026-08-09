@@ -1,7 +1,7 @@
 const env = require('../config/env')
 const storage = require('../utils/storage')
 const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./adapters/mock')
-const { DOGS_CACHE_SCHEMA_VERSION } = require('./dogProfileContract')
+const { isDogsCacheValid } = require('./dogProfileContract')
 
 let authState = 'guest'
 let currentUser = null
@@ -24,7 +24,8 @@ async function initAuth() {
   }
   currentUser = storage.getSync('currentUser', env.mockUser)
   const dogsCache = storage.getCache('dogsCache')
-  const dogs = dogsCache && dogsCache.profileSchemaVersion === DOGS_CACHE_SCHEMA_VERSION
+  // 缓存是首屏展示快照，不替代服务端事实；版本或过期时交给后续刷新读取。
+  const dogs = isDogsCacheValid(dogsCache)
     ? dogsCache.items
     : []
   setAuth(currentUser, dogs)

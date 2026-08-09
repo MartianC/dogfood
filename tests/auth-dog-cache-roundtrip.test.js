@@ -5,6 +5,8 @@ const path = require('node:path')
 
 const authService = require('../services/authService')
 const dogService = require('../services/dogService')
+const cloudbaseAdapter = require('../services/adapters/cloudbase')
+const { DOGS_CACHE_MAX_AGE_MS } = require('../services/dogProfileContract')
 const storage = require('../utils/storage')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const {
@@ -69,6 +71,64 @@ test('authService 接受 dogsCache/v3 并显式拒绝旧版本', async () => {
   } finally {
     storage.removeSync('access_token')
     storage.removeSync('currentUser')
+    storage.removeSync('dogsCache')
+  }
+})
+
+test('authService 不展示过期或结构不完整的 dogsCache 快照', async () => {
+  storage.setSync('access_token', 'token')
+  storage.setSync('currentUser', { id: 'user-1' })
+  try {
+    storage.setSync('dogsCache', {
+      profileSchemaVersion: 3,
+      items: [{ id: 'expired-dog' }],
+      updatedAt: new Date(Date.now() - DOGS_CACHE_MAX_AGE_MS - 1).toISOString()
+    })
+    assert.deepEqual((await authService.initAuth()).dogs, [])
+
+    storage.setSync('dogsCache', {
+      profileSchemaVersion: 3,
+      items: { id: 'not-an-array' },
+      updatedAt: new Date().toISOString()
+    })
+    assert.deepEqual((await authService.initAuth()).dogs, [])
+  } finally {
+    storage.removeSync('access_token')
+    storage.removeSync('currentUser')
+    storage.removeSync('dogsCache')
+  }
+})
+
+test('远端刷新成功覆盖 dogsCache，失败时保留有效展示快照', async () => {
+  const cachedDog = {
+    id: 'cached-dog',
+    name: '缓存布丁',
+    breed: 'shiba-inu',
+    birthDate: '2020-01-01',
+    weightKg: 10,
+    dailyMeals: 2,
+    dailyActivityHours: 1,
+    bodyCondition: 'ideal',
+    specialNutritionNeeds: {}
+  }
+  storage.setSync('dogsCache', {
+    profileSchemaVersion: 3,
+    items: [cachedDog],
+    updatedAt: new Date().toISOString()
+  })
+  const originalListDogs = cloudbaseAdapter.listDogs
+  try {
+    cloudbaseAdapter.listDogs = async () => [{ ...cachedDog, id: 'remote-dog', name: '远端布丁' }]
+    const refreshed = await dogService.listDogs()
+    assert.equal(refreshed[0].id, 'remote-dog')
+    assert.equal(storage.getSync('dogsCache').items[0].id, 'remote-dog')
+
+    cloudbaseAdapter.listDogs = async () => { throw new Error('网络不可用') }
+    const fallback = await dogService.listDogs()
+    assert.equal(fallback[0].id, 'remote-dog')
+    assert.equal(storage.getSync('dogsCache').items[0].id, 'remote-dog')
+  } finally {
+    cloudbaseAdapter.listDogs = originalListDogs
     storage.removeSync('dogsCache')
   }
 })
