@@ -12,14 +12,14 @@ const homeStartupTiming = require('../services/homeStartupTiming')
 const FIXED_NOW = new Date('2026-08-02T04:00:00.000Z')
 const HOME_SOURCE = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.js'), 'utf8')
 
-function loadHomePage({ dogs, authState, records, draft = null }) {
+function loadHomePage({ dogs, authState, records, draft = null, listDogs, listRecords, listHomeItems }) {
   let definition
   const dependencies = {
-    '../../services/dogService': { listDogs: async () => dogs },
+    '../../services/dogService': { listDogs: listDogs || (async () => dogs) },
     '../../services/authService': { getAuthState: () => authState },
-    '../../services/sharedMealRecordService': { list: async () => records },
+    '../../services/sharedMealRecordService': { list: listRecords || (async () => records) },
     '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'started' }) },
-    '../../services/homeItemService': { listForDogs: async () => [] },
+    '../../services/homeItemService': { listForDogs: listHomeItems || (async () => []) },
     '../../services/homeStartupTiming': homeStartupTiming,
     '../../services/homeDraftSummaryService': { getDraftSummary: () => draft },
     '../../services/homeStateModel': homeStateModel,
@@ -132,4 +132,81 @@ test('H2：认证快照无狗狗且存在草稿时，记录接口未返回前先
 
   releaseRecords({ items: [] })
   await pending
+})
+
+test('H3：狗狗档案与本餐记录请求并行启动，任一失败不阻塞另一块读取', async () => {
+  let releaseDogs
+  let releaseRecords
+  let dogsStarted = false
+  let recordsStarted = false
+  const pendingDogs = new Promise((resolve) => { releaseDogs = resolve })
+  const pendingRecords = new Promise((resolve, reject) => { releaseRecords = reject })
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    dogs: [],
+    records: [],
+    listDogs: async () => {
+      dogsStarted = true
+      return pendingDogs
+    },
+    listRecords: async () => {
+      recordsStarted = true
+      return pendingRecords
+    }
+  })
+  const updates = []
+  const page = {
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  }
+  const pending = definition.onShow.call(page)
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.equal(dogsStarted, true)
+  assert.equal(recordsStarted, true)
+
+  releaseDogs([{ id: 'dog-h3', name: '布丁' }])
+  releaseRecords(new Error('记录读取失败'))
+  const result = await pending
+  assert.equal(result.status, 'data-error')
+  assert.deepEqual(updates.at(-1).dogs, [{ id: 'dog-h3', name: '布丁' }])
+})
+
+test('H3：连续 onShow 时旧请求完成不得覆盖较新的首页结果', async () => {
+  let resolveFirstDogs
+  let resolveFirstRecords
+  const firstDogs = new Promise((resolve) => { resolveFirstDogs = resolve })
+  const firstRecords = new Promise((resolve) => { resolveFirstRecords = resolve })
+  let dogCall = 0
+  let recordCall = 0
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    dogs: [],
+    records: [],
+    listDogs: async () => {
+      dogCall += 1
+      if (dogCall === 1) return firstDogs
+      return [{ id: 'new-dog', name: '新狗' }]
+    },
+    listRecords: async () => {
+      recordCall += 1
+      if (recordCall === 1) return firstRecords
+      return { items: [] }
+    }
+  })
+  const updates = []
+  const page = {
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  }
+  const first = definition.onShow.call(page)
+  await new Promise((resolve) => setImmediate(resolve))
+  const second = definition.onShow.call(page)
+  await second
+  // 第二次结果已提交后，才让第一次请求返回，验证 token 保护最终状态。
+  resolveFirstDogs([{ id: 'old-dog', name: '旧狗' }])
+  resolveFirstRecords({ items: [] })
+  await first
+
+  const finalUpdate = updates.at(-1)
+  assert.deepEqual(finalUpdate.dogs, [{ id: 'new-dog', name: '新狗' }])
 })

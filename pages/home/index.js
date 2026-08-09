@@ -123,17 +123,24 @@ Page({
     let homeItems = []
     const errors = {}
 
-    try {
-      dogs = await dogService.listDogs()
-    } catch (error) {
-      errors.profile = error
+    // 狗狗档案和本餐记录互不依赖，必须并行读取；用 Promise.resolve 包裹
+    // 调用也能把服务实现中的同步异常纳入 allSettled 的分项错误。
+    const [dogsResult, recordsResult] = await Promise.allSettled([
+      Promise.resolve().then(() => dogService.listDogs()),
+      Promise.resolve().then(() => sharedMealRecordService.list({ limit: 20 }))
+    ])
+
+    if (dogsResult.status === 'fulfilled') {
+      dogs = Array.isArray(dogsResult.value) ? dogsResult.value : []
+    } else {
+      errors.profile = dogsResult.reason
     }
 
-    try {
-      const result = await sharedMealRecordService.list({ limit: 20 })
+    if (recordsResult.status === 'fulfilled') {
+      const result = recordsResult.value
       records = Array.isArray(result && result.items) ? result.items : []
-    } catch (error) {
-      errors.records = error
+    } else {
+      errors.records = recordsResult.reason
     }
 
     if (dogs.length) {

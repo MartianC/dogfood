@@ -9,6 +9,7 @@ const { normalizeLegacyWeightKg } = require('./weightContract')
 const {
   DOG_PROFILE_SCHEMA_VERSION,
   DOGS_CACHE_SCHEMA_VERSION,
+  isDogsCacheValid,
   normalizeSpecialNutritionNeeds,
   validateSpecialNutritionNeeds
 } = require('./dogProfileContract')
@@ -125,7 +126,7 @@ async function ensureDogProfileWriteCapability() {
 
 function readDogsCache() {
   const cached = storage.getCache('dogsCache')
-  return cached && cached.profileSchemaVersion === DOGS_CACHE_SCHEMA_VERSION
+  return isDogsCacheValid(cached)
     ? cached
     : null
 }
