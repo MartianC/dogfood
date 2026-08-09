@@ -95,6 +95,40 @@ test('保存与读取返回运行时派生字段且编辑不会清空隐藏数�
   assert.equal(listed.expectedAdultWeightKg, 10.5)
 })
 
+test('并发读取狗狗档案共享 in-flight 请求，避免冷启动重复访问', async () => {
+  storage.removeSync('dogsCache')
+  storage.setSync('mockDogs', [{
+    id: 'concurrent-dog',
+    name: '并发布丁',
+    birthDate: '2020-01-01',
+    breed: 'shiba-inu',
+    weightKg: 8,
+    dailyMeals: 2,
+    dailyActivityHours: 1,
+    bodyCondition: 'ideal',
+    specialNutritionNeeds: {}
+  }])
+  const originalListDogs = mockDogAdapter.listDogs
+  let calls = 0
+  mockDogAdapter.listDogs = async () => {
+    calls += 1
+    await new Promise((resolve) => setTimeout(resolve, 10))
+    return originalListDogs()
+  }
+  try {
+    const [first, second] = await Promise.all([
+      dogService.listDogs(),
+      dogService.listDogs()
+    ])
+    assert.equal(calls, 1)
+    assert.deepEqual(first, second)
+  } finally {
+    mockDogAdapter.listDogs = originalListDogs
+    storage.removeSync('mockDogs')
+    storage.removeSync('dogsCache')
+  }
+})
+
 test('读取旧档案只兼容活动水平，不反推伪造活动时长', async () => {
   storage.setSync('mockDogs', [{
     id: 'legacy-dog',

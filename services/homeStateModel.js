@@ -530,8 +530,24 @@ function createTodaySummary(status, todayRecords, todayNames, error) {
   }
 }
 
-function createRecentSummary(recentRecords) {
+function createRecentSummary(recentRecords, sectionStatus = 'ready') {
   const recentRecord = recentRecords[0] || null
+  if (sectionStatus === 'loading') {
+    return {
+      status: 'loading',
+      title: '正在加载最近一顿',
+      description: '本餐记录返回后会显示保存时快照。',
+      record: null
+    }
+  }
+  if (sectionStatus === 'error') {
+    return {
+      status: 'error',
+      title: '最近一顿暂时无法读取',
+      description: '稍后重试；记一顿入口仍然可用。',
+      record: null
+    }
+  }
   return {
     status: recentRecord ? 'available' : 'empty',
     title: '最近一顿',
@@ -557,6 +573,9 @@ function buildHomeState(input = {}) {
   const recentRecords = normalizeRecords(source.recentRecords)
   const error = errorView()
   const hasError = authState !== 'guest' && hasDataError(source)
+  const recordsError = isErrorLike(source.errors && source.errors.records)
+  const homeItemsError = isErrorLike(source.errors && source.errors.homeItems)
+  const sectionLoading = loadStatus === HOME_LOAD_STATUS.INITIALIZING || loadStatus === HOME_LOAD_STATUS.PARTIAL
   const draft = draftView(source.draft, source.now || new Date())
   let status = HOME_STATUS.TODAY_EMPTY
 
@@ -574,13 +593,21 @@ function buildHomeState(input = {}) {
     source.homeItems
   )
   const todayNames = todayDogNames(todayRecords)
-  const recent = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST || status === HOME_STATUS.INITIALIZING
+  const recent = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST || status === HOME_STATUS.INITIALIZING || recordsError
     ? []
     : recentRecords
 
   const visibleHomeIssues = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST || status === HOME_STATUS.INITIALIZING
     ? []
     : homeIssues
+  const todaySummary = createTodaySummary(status, todayRecords, todayNames, error)
+  if (sectionLoading && status !== HOME_STATUS.GUEST && status !== HOME_STATUS.INITIALIZING) {
+    todaySummary.status = recordsError ? 'error' : 'loading'
+    todaySummary.title = recordsError ? '今天的记录暂时无法读取' : '正在加载今天的记录'
+    todaySummary.description = recordsError ? error.description : '本餐记录返回后会显示今天的摘要。'
+    todaySummary.count = 0
+    todaySummary.dogNames = []
+  }
 
   return {
     status,
@@ -593,13 +620,15 @@ function buildHomeState(input = {}) {
       todayNames,
       error
     }),
-    todaySummary: createTodaySummary(status, todayRecords, todayNames, error),
+    todaySummary,
     profileIssues: visibleHomeIssues,
     homeIssues: visibleHomeIssues,
     draft: status === HOME_STATUS.DRAFT ? draft : null,
     recentRecords: recent,
     recentRecord: recent[0] || null,
-    recentSummary: createRecentSummary(recent),
+    recentSummary: createRecentSummary(recent, recordsError || status === HOME_STATUS.DATA_ERROR ? 'error' : sectionLoading ? 'loading' : 'ready'),
+    // 事项独立于主任务和本餐记录，失败时只降级这一块。
+    homeItemsStatus: homeItemsError ? 'error' : sectionLoading ? 'loading' : visibleHomeIssues.length ? 'available' : 'empty',
     error: status === HOME_STATUS.DATA_ERROR ? error : null
   }
 }
