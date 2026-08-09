@@ -49,6 +49,22 @@ function currentNow(page) {
   return typeof page.now === 'function' ? page.now() : new Date()
 }
 
+/**
+ * 根据认证完成时已经可用的全局快照构建首页外壳。
+ *
+ * 外壳只负责首屏主任务和本地草稿，不读取远端记录或事项，避免网络请求
+ * 阻塞已登录用户看到可操作的首页。远端结果随后会通过完整状态覆盖它。
+ */
+function buildHomeShell({ authState, dogs, draft, now }) {
+  return buildHomeState({
+    authState,
+    dogs,
+    draft,
+    loadStatus: HOME_LOAD_STATUS.PARTIAL,
+    now
+  })
+}
+
 Page({
   data: {
     authState: 'unknown',
@@ -64,10 +80,13 @@ Page({
     const app = getApp()
     if (app.globalData.authReady) await app.globalData.authReady
 
+    // 认证完成即刻记录时间点，并消费 app.js 已注入的认证/狗狗缓存。
+    homeStartupTiming.mark('auth-ready')
+
     const requestToken = (this._homeLoadToken || 0) + 1
     this._homeLoadToken = requestToken
     const now = currentNow(this)
-    const authStateBeforeLoad = authService.getAuthState()
+    const authStateBeforeLoad = app.globalData.authState || authService.getAuthState()
 
     if (authStateBeforeLoad === HOME_STATUS.GUEST) {
       const homeState = buildHomeState({ authState: 'guest', now })
@@ -81,7 +100,25 @@ Page({
       return homeState
     }
 
-    let dogs = []
+    const cachedDogs = Array.isArray(app.globalData.dogs) ? app.globalData.dogs : []
+    const draft = homeDraftSummaryService.getDraftSummary()
+    const shellState = buildHomeShell({
+      authState: authStateBeforeLoad,
+      dogs: cachedDogs,
+      draft,
+      now
+    })
+    if (requestToken !== this._homeLoadToken) return shellState
+    this.setData({
+      authState: shellState.authState,
+      dogs: cachedDogs,
+      todayText: todayText(now),
+      latestRecord: null,
+      homeState: shellState
+    })
+    homeStartupTiming.mark('shell-ready')
+
+    let dogs = cachedDogs
     let records = []
     let homeItems = []
     const errors = {}
@@ -107,7 +144,6 @@ Page({
       }
     }
 
-    const draft = homeDraftSummaryService.getDraftSummary()
     const homeState = buildHomeState({
       authState: authService.getAuthState(),
       dogs,
@@ -127,6 +163,7 @@ Page({
       latestRecord: homeState.recentRecord,
       homeState
     })
+    homeStartupTiming.mark('home-ready')
     return homeState
   },
 
@@ -183,5 +220,6 @@ Page({
 module.exports = {
   todayText,
   latestRecordView,
-  recordsForToday
+  recordsForToday,
+  buildHomeShell
 }

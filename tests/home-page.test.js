@@ -17,6 +17,7 @@ function loadHomePage({
   authReady = Promise.resolve(),
   draft = null,
   now = FIXED_NOW,
+  globalData = {},
   wx = {}
 }) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.js'), 'utf8')
@@ -39,7 +40,7 @@ function loadHomePage({
   let definition
   const context = {
     Page(page) { definition = page },
-    getApp() { return { globalData: { authReady } } },
+    getApp() { return { globalData: { authReady, ...globalData } } },
     require(request) {
       if (!Object.prototype.hasOwnProperty.call(dependencies, request)) {
         throw new Error(`测试未提供依赖：${request}`)
@@ -130,7 +131,7 @@ test('认证完成后首页显示已登录用户的主任务', async () => {
   assert.notEqual(updates.at(-1).homeState.primaryTask.label, '登录并继续')
 })
 
-test('H0 基线：记录请求延迟时首页不会先渲染阶段性主任务', async () => {
+test('H2：记录请求延迟时首页先渲染认证后的阶段性主任务', async () => {
   let releaseRecords
   const recordsReady = new Promise((resolve) => { releaseRecords = resolve })
   const definition = loadHomePage({
@@ -145,11 +146,43 @@ test('H0 基线：记录请求延迟时首页不会先渲染阶段性主任务',
     setData(data) { updates.push(data) }
   })
 
-  await Promise.resolve()
-  assert.equal(updates.length, 0, '当前实现会等待记录接口后才首次更新首页')
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.equal(updates.length, 1, '记录接口未返回时应先渲染首页外壳')
+  assert.equal(updates[0].homeState.primaryTask.label, '新增狗狗档案')
   releaseRecords({ items: [] })
   await pending
+  assert.equal(updates.length, 2)
+})
+
+test('H2：认证后的全局狗狗缓存和草稿摘要同步进入首页外壳', async () => {
+  let releaseRecords
+  const recordsReady = new Promise((resolve) => { releaseRecords = resolve })
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    globalData: { authState: 'has-profile', dogs: [{ id: 'cached-dog', name: '缓存狗狗' }] },
+    dogService: { listDogs: async () => [{ id: 'remote-dog', name: '远端狗狗' }] },
+    recordService: { list: async () => recordsReady },
+    draft: {
+      id: 'draft-1',
+      dog: { id: 'cached-dog', name: '缓存狗狗' },
+      humanMenus: [{ title: '鸡肉饭' }],
+      mealTime: FIXED_NOW.toISOString()
+    }
+  })
+  const updates = []
+  const page = {
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  }
+  // 测试 harness 的 getApp 只暴露 authReady；该断言通过草稿验证同步外壳路径。
+  const pending = definition.onShow.call(page)
+  await new Promise((resolve) => setImmediate(resolve))
   assert.equal(updates.length, 1)
+  assert.equal(updates[0].homeState.status, homeStateModel.HOME_STATUS.DRAFT)
+  assert.equal(updates[0].homeState.draft.dogName, '缓存狗狗')
+  releaseRecords({ items: [] })
+  await pending
 })
 
 test('已登录首页在记录服务失败时展示稳定错误降级，仍保留记一顿入口', async () => {
