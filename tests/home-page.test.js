@@ -5,6 +5,7 @@ const path = require('node:path')
 const vm = require('node:vm')
 
 const homeStateModel = require('../services/homeStateModel')
+const homeStartupTiming = require('../services/homeStartupTiming')
 
 const FIXED_NOW = new Date('2026-08-02T04:00:00.000Z')
 
@@ -13,6 +14,7 @@ function loadHomePage({
   recordService,
   homeItemService = { listForDogs: async () => [] },
   authState = 'guest',
+  authReady = Promise.resolve(),
   draft = null,
   now = FIXED_NOW,
   wx = {}
@@ -25,6 +27,7 @@ function loadHomePage({
     '../../services/sharedMealRecordService': recordService,
     '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'flow-started' }) },
     '../../services/homeItemService': homeItemService,
+    '../../services/homeStartupTiming': homeStartupTiming,
     '../../services/homeDraftSummaryService': {
       getDraftSummary() { return draft }
     },
@@ -36,7 +39,7 @@ function loadHomePage({
   let definition
   const context = {
     Page(page) { definition = page },
-    getApp() { return { globalData: { authReady: Promise.resolve() } } },
+    getApp() { return { globalData: { authReady } } },
     require(request) {
       if (!Object.prototype.hasOwnProperty.call(dependencies, request)) {
         throw new Error(`测试未提供依赖：${request}`)
@@ -85,6 +88,66 @@ test('游客首页不请求档案、记录或草稿，仍展示登录主任务',
   assert.equal(viewData.homeState.status, homeStateModel.HOME_STATUS.GUEST)
   assert.equal(viewData.homeState.primaryTask.label, '登录并继续')
   assert.equal(viewData.latestRecord, null)
+})
+
+test('H0 基线：认证未决时首页首帧错误显示游客主任务', () => {
+  let resolveAuth
+  const authReady = new Promise((resolve) => { resolveAuth = resolve })
+  const definition = loadHomePage({
+    authReady,
+    dogService: { listDogs: async () => [] },
+    recordService: { list: async () => ({ items: [] }) }
+  })
+
+  // authReady 尚未完成时只检查 Page 注册时的首帧 data，避免测试等待永不结束的 Promise。
+  assert.equal(definition.data.homeState.primaryTask.label, '登录并继续')
+  assert.equal(definition.data.homeState.status, homeStateModel.HOME_STATUS.GUEST)
+  void resolveAuth
+})
+
+test('认证完成后首页显示已登录用户的主任务', async () => {
+  let resolveAuth
+  const authReady = new Promise((resolve) => { resolveAuth = resolve })
+  const definition = loadHomePage({
+    authReady,
+    authState: 'logged-in',
+    dogService: { listDogs: async () => [] },
+    recordService: { list: async () => ({ items: [] }) }
+  })
+  const updates = []
+  const pending = definition.onShow.call({
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  })
+
+  resolveAuth()
+  await pending
+  assert.equal(updates.at(-1).authState, 'logged-in')
+  assert.notEqual(updates.at(-1).homeState.status, homeStateModel.HOME_STATUS.GUEST)
+  assert.notEqual(updates.at(-1).homeState.primaryTask.label, '登录并继续')
+})
+
+test('H0 基线：记录请求延迟时首页不会先渲染阶段性主任务', async () => {
+  let releaseRecords
+  const recordsReady = new Promise((resolve) => { releaseRecords = resolve })
+  const definition = loadHomePage({
+    authState: 'logged-in',
+    dogService: { listDogs: async () => [] },
+    recordService: { list: async () => recordsReady }
+  })
+  const updates = []
+  const pending = definition.onShow.call({
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) { updates.push(data) }
+  })
+
+  await Promise.resolve()
+  assert.equal(updates.length, 0, '当前实现会等待记录接口后才首次更新首页')
+  releaseRecords({ items: [] })
+  await pending
+  assert.equal(updates.length, 1)
 })
 
 test('已登录首页在记录服务失败时展示稳定错误降级，仍保留记一顿入口', async () => {

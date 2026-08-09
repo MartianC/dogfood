@@ -4,6 +4,7 @@ const sharedMealRecordService = require('../../services/sharedMealRecordService'
 const sharedMealEntryService = require('../../services/sharedMealEntryService')
 const homeDraftSummaryService = require('../../services/homeDraftSummaryService')
 const homeItemService = require('../../services/homeItemService')
+const { createHomeStartupTiming } = require('../../services/homeStartupTiming')
 const {
   HOME_STATUS,
   PRIMARY_TASK_TYPE,
@@ -12,6 +13,10 @@ const {
   shanghaiDateKey
 } = require('../../services/homeStateModel')
 const { MAIN_TABS } = require('../../services/navigationMigrationService')
+
+// 记录首页创建时间，后续批次在认证、外壳和数据就绪时补齐其余时间点。
+const homeStartupTiming = createHomeStartupTiming()
+homeStartupTiming.mark('page-created')
 
 function todayText(now = new Date()) {
   const dateKey = shanghaiDateKey(now)
