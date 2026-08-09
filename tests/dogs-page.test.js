@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..')
 function loadDogsPage({
   authService,
   dogService,
-  assets = { defaultDogAvatar: '/assets/dogs/default-dog.jpg' },
+  assets = { defaultDogAvatar: '/assets/dogs/dog-head-profile.svg' },
   wx = { navigateTo() {} }
 }) {
   const source = fs.readFileSync(path.join(root, 'pages/dogs/index.js'), 'utf8')
@@ -92,6 +92,11 @@ test('狗狗页提供体重和护理入口，但不提前接入统一时间轴',
   assert.match(wxml, /wx:for="\{\{dogs\}\}"/)
   assert.match(`${js}\n${wxml}`, /体重趋势|记录第一次体重/)
   assert.match(`${js}\n${wxml}`, /护理记录|care-record/)
+  assert.match(wxml, /class="dog-card"[\s\S]*data-id="\{\{item\.id\}\}"[\s\S]*bindtap="onEditDogPanel"/)
+  assert.match(wxml, /catch:tap="onViewWeight"/)
+  assert.match(wxml, /catch:tap="onViewCare"/)
+  assert.match(wxml, /<text class="edit-link">修改<\/text>/)
+  assert.doesNotMatch(wxml, /class="edit-link"[^>]+bind(?:tap|:tap)=/)
   assert.doesNotMatch(`${js}\n${wxml}`, /疫苗|驱虫|统一时间轴/)
   assert.doesNotMatch(wxml, /navigator[^>]+pages\/dogs|bind:tap="onViewDog"/)
 })

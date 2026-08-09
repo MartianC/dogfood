@@ -37,6 +37,11 @@ test('体重趋势模型按测量日期倒序展示，并从最近测量计算�
   assert.equal(view.historyItems[2].changeText, '')
   assert.equal(view.chartPoints.length, 3)
   assert.equal(view.chartSegments.length, 2)
+  assert.equal(view.chartMinLabel, '7.8 kg')
+  assert.equal(view.chartMaxLabel, '8.2 kg')
+  assert.equal(view.chartAxisMinLabel, '7.3 kg')
+  assert.equal(view.chartAxisMiddleLabel, '8 kg')
+  assert.equal(view.chartAxisMaxLabel, '8.7 kg')
 })
 
 test('没有历史测量时保留旧档案当前体重，但不伪造测量日期', () => {
@@ -58,6 +63,9 @@ test('体重趋势空态不生成占位折线，合并分页结果时按 ID 去�
     segments: [],
     minLabel: '',
     maxLabel: '',
+    axisMinLabel: '',
+    axisMiddleLabel: '',
+    axisMaxLabel: '',
     startDateText: '',
     endDateText: ''
   })
@@ -68,4 +76,25 @@ test('体重趋势空态不生成占位折线，合并分页结果时按 ID 去�
   )
   assert.deepEqual(merged.map((item) => item.id), ['m-2', 'm-1'])
   assert.equal(merged[1].weightKg, 7.9)
+})
+
+test('体重趋势折线段的终点与下一测量点对齐', () => {
+  const chart = chartModel([
+    measurement('m-3', '2026-08-09', 14.5),
+    measurement('m-2', '2026-08-02', 13),
+    measurement('m-1', '2026-07-05', 11.5)
+  ])
+  const firstSegment = chart.segments[0].style
+  const match = /left: ([\d.]+)%; top: ([\d.]+)%; width: ([\d.]+)%; transform: rotate\((-?[\d.]+)deg\)/.exec(firstSegment)
+  assert.ok(match)
+
+  const left = Number(match[1])
+  const top = Number(match[2])
+  const width = Number(match[3])
+  const angle = Number(match[4]) * Math.PI / 180
+  const aspectRatio = 300 / 536
+  const endX = left + width * Math.cos(angle)
+  const endY = top + width * Math.sin(angle) / aspectRatio
+  assert.ok(Math.abs(endX - chart.points[1].x) < 0.1)
+  assert.ok(Math.abs(endY - chart.points[1].y) < 0.1)
 })

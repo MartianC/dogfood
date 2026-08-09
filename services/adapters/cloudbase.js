@@ -72,6 +72,12 @@ async function login() {
   return callFunction('login', {})
 }
 
+async function updateUserProfile(profile) {
+  if (!canUseCloud()) return mock.updateUserProfile(profile)
+  const result = await callFunction('login', { action: 'updateProfile', profile })
+  return result.user
+}
+
 async function listDogs() {
   if (!canUseCloud()) return mock.listDogs()
   return callFunction('dogProfile', { action: 'list' })
@@ -153,6 +159,7 @@ async function listCareRecords(options = {}) {
 
 module.exports = {
   login,
+  updateUserProfile,
   getDogProfileContract,
   listDogs,
   createDog,

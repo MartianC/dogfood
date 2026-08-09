@@ -4,7 +4,22 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
 
-exports.main = async () => {
+function normalizeAvatarUrl(value) {
+  return typeof value === 'string' ? value.trim().slice(0, 2048) : ''
+}
+
+function toClientUser(user) {
+  return {
+    id: user._id,
+    openId: user.openId,
+    nickname: user.nickname,
+    avatarUrl: user.avatarUrl || '',
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt
+  }
+}
+
+exports.main = async (event = {}) => {
   const wxContext = cloud.getWXContext()
   const openId = wxContext.OPENID
   const now = new Date()
@@ -14,12 +29,22 @@ exports.main = async () => {
   let user
   if (existed.data.length) {
     user = existed.data[0]
+    if (event.action === 'updateProfile') {
+      const avatarUrl = normalizeAvatarUrl(event.profile && event.profile.avatarUrl)
+      await users.doc(user._id).update({
+        data: { avatarUrl, updatedAt: now }
+      })
+      user = { ...user, avatarUrl, updatedAt: now }
+    }
   } else {
+    const avatarUrl = event.action === 'updateProfile'
+      ? normalizeAvatarUrl(event.profile && event.profile.avatarUrl)
+      : ''
     const result = await users.add({
       data: {
         openId,
         nickname: '狗饭用户',
-        avatarUrl: '',
+        avatarUrl,
         createdAt: now,
         updatedAt: now
       }
@@ -28,7 +53,7 @@ exports.main = async () => {
       _id: result._id,
       openId,
       nickname: '狗饭用户',
-      avatarUrl: '',
+      avatarUrl,
       createdAt: now,
       updatedAt: now
     }
@@ -36,13 +61,6 @@ exports.main = async () => {
 
   return {
     token: openId,
-    user: {
-      id: user._id,
-      openId: user.openId,
-      nickname: user.nickname,
-      avatarUrl: user.avatarUrl,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    }
+    user: toClientUser(user)
   }
 }

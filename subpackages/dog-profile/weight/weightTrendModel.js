@@ -3,6 +3,12 @@ const {
   sortWeightMeasurements
 } = require('../../../services/weightContract')
 
+// 趋势图的绘图区由 72rpx 纵轴、12rpx 间距和 536rpx 绘图区组成，高度为 300rpx。
+// 线段的角度和长度必须按这个高宽比换算，否则 CSS 旋转后会偏离目标点。
+const CHART_PLOT_WIDTH_RPX = 536
+const CHART_PLOT_HEIGHT_RPX = 300
+const CHART_PLOT_ASPECT_RATIO = CHART_PLOT_HEIGHT_RPX / CHART_PLOT_WIDTH_RPX
+
 function finiteNumber(value) {
   const number = Number(value)
   return Number.isFinite(number) ? number : null
@@ -86,12 +92,20 @@ function chartModel(measurements) {
       segments: [],
       minLabel: '',
       maxLabel: '',
+      axisMinLabel: '',
+      axisMiddleLabel: '',
+      axisMaxLabel: '',
       startDateText: '',
       endDateText: ''
     }
   }
 
   const bounds = chartBounds(chronological)
+  const dataWeights = chronological
+    .map((item) => finiteNumber(item.weightKg))
+    .filter((value) => value !== null)
+  const dataMin = Math.min(...dataWeights)
+  const dataMax = Math.max(...dataWeights)
   const range = Math.max(bounds.max - bounds.min, 0.1)
   const points = chronological.map((item, index) => {
     const x = chronological.length === 1 ? 50 : index / (chronological.length - 1) * 100
@@ -116,8 +130,9 @@ function chartModel(measurements) {
     const y2 = point.y
     const dx = x2 - x1
     const dy = y2 - y1
-    const width = Math.sqrt(dx * dx + dy * dy * 0.64)
-    const angle = Math.atan2(dy * 0.8, dx) * 180 / Math.PI
+    const verticalDelta = dy * CHART_PLOT_ASPECT_RATIO
+    const width = Math.sqrt(dx * dx + verticalDelta * verticalDelta)
+    const angle = Math.atan2(verticalDelta, dx) * 180 / Math.PI
     return {
       id: `${previous.id}-${point.id}`,
       style: segmentStyle(x1, y1, width, angle)
@@ -127,8 +142,11 @@ function chartModel(measurements) {
   return {
     points,
     segments,
-    minLabel: weightText(bounds.min),
-    maxLabel: weightText(bounds.max),
+    minLabel: weightText(dataMin),
+    maxLabel: weightText(dataMax),
+    axisMinLabel: weightText(bounds.min),
+    axisMiddleLabel: weightText((bounds.min + bounds.max) / 2),
+    axisMaxLabel: weightText(bounds.max),
     startDateText: shortDateText(chronological[0].measuredOn),
     endDateText: shortDateText(chronological[chronological.length - 1].measuredOn)
   }
@@ -168,6 +186,9 @@ function buildWeightView({ dog = {}, measurements = [] } = {}) {
     chartSegments: chart.segments,
     chartMinLabel: chart.minLabel,
     chartMaxLabel: chart.maxLabel,
+    chartAxisMinLabel: chart.axisMinLabel,
+    chartAxisMiddleLabel: chart.axisMiddleLabel,
+    chartAxisMaxLabel: chart.axisMaxLabel,
     chartStartDateText: chart.startDateText,
     chartEndDateText: chart.endDateText
   }

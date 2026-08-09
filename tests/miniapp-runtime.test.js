@@ -111,8 +111,7 @@ test('小程序图片兜底资源存在', () => {
     'assets/recipes/fish-rice.jpg',
     'assets/recipes/beef-broccoli.jpg',
     'assets/recipes/dog-food-bowl.jpg',
-    'assets/dogs/default-dog.jpg',
-    'assets/dogs/default-dog-alt.jpg'
+    'assets/dogs/dog-head-profile.svg'
   ]
 
   expected.forEach((assetPath) => {

@@ -36,6 +36,15 @@ async function login() {
   }
 }
 
+async function updateUserProfile(profile = {}) {
+  const user = {
+    ...storage.getSync('mockUser', env.mockUser),
+    avatarUrl: typeof profile.avatarUrl === 'string' ? profile.avatarUrl : ''
+  }
+  storage.setSync('mockUser', user)
+  return user
+}
+
 async function listDogs() {
   return storage.getSync('mockDogs', [])
 }
@@ -366,6 +375,7 @@ async function listCareRecords(options = {}) {
 
 module.exports = {
   login,
+  updateUserProfile,
   getDogProfileContract,
   listDogs,
   createDog,

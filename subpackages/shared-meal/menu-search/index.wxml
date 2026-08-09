@@ -36,11 +36,6 @@
     </block>
 
     <block wx:else>
-      <view wx:if="{{recipes.length}}" class="shared-meal-menu-results__heading">
-        <text>搜索结果</text>
-        <text wx:if="{{expandedRecipeId}}"> · 已展开 1 道</text>
-        <text wx:else> · {{recipes.length}} 道菜</text>
-      </view>
 
       <ui-card padding="none">
         <view class="shared-meal-menu-result-list">
@@ -95,20 +90,12 @@
               <block wx:else>
                 <view class="shared-meal-menu-detail-groups">
                   <view class="shared-meal-menu-detail-group">
-                    <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--allowed">
-                      狗狗可以吃
-                    </text>
-                    <text class="shared-meal-menu-detail-group__value">
-                      {{item.allowedIngredientText}}
-                    </text>
+                    <text class=" shared-meal-menu-detail-group__label--allowed">狗狗可以吃</text>
+                    <text class="shared-meal-menu-detail-group__value">{{item.allowedIngredientText}}</text>
                   </view>
                   <view class="shared-meal-menu-detail-group">
-                    <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--blocked">
-                      狗狗不能吃
-                    </text>
-                    <text class="shared-meal-menu-detail-group__value">
-                      {{item.blockedIngredientText}}
-                    </text>
+                    <text class="shared-meal-menu-detail-group__label shared-meal-menu-detail-group__label--blocked">狗狗不能吃</text>
+                    <text class="shared-meal-menu-detail-group__value">{{item.blockedIngredientText}}</text>
                   </view>
                 </view>
               </block>

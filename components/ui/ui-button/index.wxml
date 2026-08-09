@@ -3,8 +3,10 @@
   disabled="{{disabled || loading}}"
   loading="{{loading}}"
   open-type="{{openType}}"
+  aria-label="{{ariaLabel}}"
   hover-class="ui-button--pressed"
   bindtap="handleTap"
+  bindchooseavatar="handleChooseAvatar"
 >
   <slot />
 </button>

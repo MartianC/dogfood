@@ -48,6 +48,25 @@ async function login() {
   }
 }
 
+async function updateCurrentUserProfile(profile = {}) {
+  if (!currentUser) return null
+  const nextProfile = {
+    avatarUrl: typeof profile.avatarUrl === 'string' ? profile.avatarUrl : currentUser.avatarUrl || ''
+  }
+  const localUser = { ...currentUser, ...nextProfile }
+  currentUser = localUser
+  storage.setSync('currentUser', localUser)
+
+  try {
+    const remoteUser = await adapter.updateUserProfile(nextProfile)
+    currentUser = { ...localUser, ...(remoteUser || {}) }
+    storage.setSync('currentUser', currentUser)
+  } catch (error) {
+    // 本机缓存仍可使用；远端同步失败不应撤销用户刚选择的头像。
+  }
+  return currentUser
+}
+
 function logout() {
   storage.removeSync('access_token')
   storage.removeSync('currentUser')
@@ -70,6 +89,7 @@ function getCurrentUser() {
 module.exports = {
   initAuth,
   login,
+  updateCurrentUserProfile,
   logout,
   refreshState,
   getAuthState,

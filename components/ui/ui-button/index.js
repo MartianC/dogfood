@@ -6,6 +6,7 @@ Component({
     disabled: { type: Boolean, value: false },
     loading: { type: Boolean, value: false },
     openType: { type: String, value: '' },
+    ariaLabel: { type: String, value: '' },
     eventValue: { type: String, value: '' },
   },
   methods: {
@@ -15,6 +16,10 @@ Component({
         ...event.detail,
         eventValue: this.properties.eventValue,
       })
+    },
+    handleChooseAvatar(event) {
+      if (this.properties.disabled || this.properties.loading) return
+      this.triggerEvent('chooseavatar', event.detail)
     },
   },
 })
