@@ -7,6 +7,7 @@ const homeItemService = require('../../services/homeItemService')
 const { createHomeStartupTiming } = require('../../services/homeStartupTiming')
 const {
   HOME_STATUS,
+  HOME_LOAD_STATUS,
   PRIMARY_TASK_TYPE,
   buildHomeState,
   recordView,
@@ -30,7 +31,11 @@ function latestRecordView(record) {
 }
 
 function initialHomeState() {
-  return buildHomeState({ authState: 'guest' })
+  // 认证未决期间不使用 guest 状态，避免首帧闪现游客文案或触发游客分支。
+  return buildHomeState({
+    authState: 'unknown',
+    loadStatus: HOME_LOAD_STATUS.INITIALIZING
+  })
 }
 
 function recordsForToday(records, now) {
@@ -46,7 +51,7 @@ function currentNow(page) {
 
 Page({
   data: {
-    authState: 'guest',
+    authState: 'unknown',
     dogs: [],
     todayText: todayText(),
     latestRecord: null,

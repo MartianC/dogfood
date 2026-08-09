@@ -13,7 +13,12 @@
       <view class="home-primary__eyebrow">当前主任务</view>
       <view class="home-primary__title">{{homeState.primaryTask.label}}</view>
       <view class="home-primary__description">{{homeState.primaryTask.description}}</view>
-      <ui-button variant="primary" bind:tap="onPrimaryTask">{{homeState.primaryTask.label}}</ui-button>
+      <view wx:if="{{homeState.status === 'initializing'}}" class="home-primary__loading" aria-live="polite">请稍候</view>
+      <ui-button
+        wx:if="{{homeState.status !== 'initializing'}}"
+        variant="primary"
+        bind:tap="onPrimaryTask"
+      >{{homeState.primaryTask.label}}</ui-button>
     </view>
   </ui-card>
 
@@ -88,7 +93,7 @@
     <view class="home-section__head">
       <view class="df-heading-lg">最近一顿</view>
       <view
-        wx:if="{{homeState.status !== 'guest'}}"
+        wx:if="{{homeState.status !== 'guest' && homeState.status !== 'initializing'}}"
         class="home-section__action"
         aria-role="button"
         aria-label="查看全部本餐记录"

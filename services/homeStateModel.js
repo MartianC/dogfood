@@ -1,12 +1,21 @@
 const { shanghaiDateKey } = require('./sharedMealRecordCalendarModel')
 
 const HOME_STATUS = Object.freeze({
+  INITIALIZING: 'initializing',
   GUEST: 'guest',
   DATA_ERROR: 'data-error',
   DRAFT: 'draft',
   PROFILE_REQUIRED: 'profile-required',
   TODAY_EMPTY: 'today-empty',
   TODAY_HAS_RECORDS: 'today-has-records'
+})
+
+// 启动生命周期与业务状态分离，避免用 guest 代表示认证尚未完成。
+const HOME_LOAD_STATUS = Object.freeze({
+  INITIALIZING: 'initializing',
+  READY: 'ready',
+  PARTIAL: 'partial',
+  ERROR: 'error'
 })
 
 const PRIMARY_TASK_TYPE = Object.freeze({
@@ -400,6 +409,14 @@ function subjectText(names) {
 
 function createPrimaryTask(status, context) {
   const { draft, todayRecords, todayNames, error } = context
+  if (status === HOME_STATUS.INITIALIZING) {
+    return {
+      type: null,
+      label: '正在准备首页',
+      description: '正在确认登录状态，请稍候。',
+      preserveMealIntent: false
+    }
+  }
   if (status === HOME_STATUS.GUEST) {
     return {
       type: PRIMARY_TASK_TYPE.LOGIN_AND_CONTINUE,
@@ -450,6 +467,15 @@ function createPrimaryTask(status, context) {
 }
 
 function createTodaySummary(status, todayRecords, todayNames, error) {
+  if (status === HOME_STATUS.INITIALIZING) {
+    return {
+      status: 'loading',
+      title: '正在准备今天的记录',
+      description: '确认登录状态后加载首页内容。',
+      count: 0,
+      dogNames: []
+    }
+  }
   if (status === HOME_STATUS.GUEST) {
     return {
       status: 'unavailable',
@@ -518,7 +544,14 @@ function createRecentSummary(recentRecords) {
 
 function buildHomeState(input = {}) {
   const source = isObject(input) ? input : {}
-  const authState = text(source.authState, 'guest')
+  const providedAuthState = text(source.authState)
+  const authState = ['guest', 'logged-in', 'has-profile'].includes(providedAuthState)
+    ? providedAuthState
+    : 'unknown'
+  const requestedLoadStatus = text(source.loadStatus || source.dataStatus)
+  const loadStatus = requestedLoadStatus || (
+    authState === 'unknown' ? HOME_LOAD_STATUS.INITIALIZING : HOME_LOAD_STATUS.READY
+  )
   const dogs = asArray(source.dogs || source.profiles)
   const todayRecords = normalizeRecords(source.todayRecords)
   const recentRecords = normalizeRecords(source.recentRecords)
@@ -527,7 +560,8 @@ function buildHomeState(input = {}) {
   const draft = draftView(source.draft, source.now || new Date())
   let status = HOME_STATUS.TODAY_EMPTY
 
-  if (authState === 'guest') status = HOME_STATUS.GUEST
+  if (loadStatus === HOME_LOAD_STATUS.INITIALIZING || authState === 'unknown') status = HOME_STATUS.INITIALIZING
+  else if (authState === 'guest') status = HOME_STATUS.GUEST
   else if (hasError) status = HOME_STATUS.DATA_ERROR
   else if (draft) status = HOME_STATUS.DRAFT
   else if (dogs.length === 0) status = HOME_STATUS.PROFILE_REQUIRED
@@ -540,11 +574,11 @@ function buildHomeState(input = {}) {
     source.homeItems
   )
   const todayNames = todayDogNames(todayRecords)
-  const recent = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST
+  const recent = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST || status === HOME_STATUS.INITIALIZING
     ? []
     : recentRecords
 
-  const visibleHomeIssues = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST
+  const visibleHomeIssues = status === HOME_STATUS.DATA_ERROR || status === HOME_STATUS.GUEST || status === HOME_STATUS.INITIALIZING
     ? []
     : homeIssues
 
@@ -552,6 +586,7 @@ function buildHomeState(input = {}) {
     status,
     state: status,
     authState,
+    loadStatus,
     primaryTask: createPrimaryTask(status, {
       draft,
       todayRecords,
@@ -571,6 +606,7 @@ function buildHomeState(input = {}) {
 
 module.exports = {
   HOME_STATUS,
+  HOME_LOAD_STATUS,
   PRIMARY_TASK_TYPE,
   PROFILE_ISSUE_COPY,
   buildHomeState,

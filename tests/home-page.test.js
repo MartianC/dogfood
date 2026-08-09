@@ -90,7 +90,7 @@ test('游客首页不请求档案、记录或草稿，仍展示登录主任务',
   assert.equal(viewData.latestRecord, null)
 })
 
-test('H0 基线：认证未决时首页首帧错误显示游客主任务', () => {
+test('H1：认证未决时首页首帧使用中性加载态', () => {
   let resolveAuth
   const authReady = new Promise((resolve) => { resolveAuth = resolve })
   const definition = loadHomePage({
@@ -100,8 +100,10 @@ test('H0 基线：认证未决时首页首帧错误显示游客主任务', () =>
   })
 
   // authReady 尚未完成时只检查 Page 注册时的首帧 data，避免测试等待永不结束的 Promise。
-  assert.equal(definition.data.homeState.primaryTask.label, '登录并继续')
-  assert.equal(definition.data.homeState.status, homeStateModel.HOME_STATUS.GUEST)
+  assert.equal(definition.data.authState, 'unknown')
+  assert.equal(definition.data.homeState.primaryTask.label, '正在准备首页')
+  assert.equal(definition.data.homeState.status, 'initializing')
+  assert.doesNotMatch(definition.data.homeState.primaryTask.description, /登录并继续|登录后/)
   void resolveAuth
 })
 
@@ -320,6 +322,8 @@ test('首页 WXML 覆盖六类模型状态并保留 UI Kernel 与底部安全区
   const wxss = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.wxss'), 'utf8')
 
   assert.match(wxml, /homeState\.status/)
+  assert.match(wxml, /homeState\.status !== 'initializing'/)
+  assert.match(wxml, /homeState\.status === 'initializing'/)
   assert.match(wxml, /homeState\.primaryTask/)
   assert.match(wxml, /homeState\.todaySummary/)
   assert.match(wxml, /homeState\.draft/)

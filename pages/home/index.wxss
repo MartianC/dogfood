@@ -43,6 +43,10 @@
   gap: var(--df-space-3);
 }
 
+.home-primary--initializing {
+  opacity: 0.78;
+}
+
 .home-primary__eyebrow {
   color: var(--df-color-primary);
   font-size: var(--df-font-sm);
@@ -60,6 +64,11 @@
 .home-primary__description {
   color: var(--df-color-muted);
   line-height: 1.5;
+}
+
+.home-primary__loading {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
 }
 
 .home-error {
