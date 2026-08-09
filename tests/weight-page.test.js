@@ -164,6 +164,8 @@ test('体重页面注册任务型分包路由并复用 UI Kernel，不直接使�
   assert.ok(dogProfile.pages.includes('weight/index'))
   assert.ok(dogProfile.pages.includes('weight-edit/index'))
   assert.match(wxml, /weight-chart/)
+  assert.match(wxml, /weight-chart-y-axis/)
+  assert.match(wxml, /chartAxisMiddleLabel/)
   assert.match(wxml, /ui-empty|ui-notice|ui-card/)
   assert.match(editWxml, /删除这次测量|回退规则/)
   assert.doesNotMatch(`${wxml}\n${editWxml}`, /<t-[a-z-]+/)

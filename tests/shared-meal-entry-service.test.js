@@ -55,7 +55,7 @@ test('游客登录成功后恢复原记餐意图并进入现有流程', async ()
       loginCalls += 1
       return true
     },
-    dogs: [{ id: 'dog-1' }]
+    dogs: [{ id: 'dog-1' }, { id: 'dog-2' }]
   })
 
   const result = await service.startSharedMeal()
@@ -78,6 +78,31 @@ test('登录失败时停留在原页面且不读取档案', async () => {
   assert.deepEqual(navigations, [])
 })
 
+test('单只狗狗直接进入选菜页并传递狗狗 ID', async () => {
+  const { service, navigations } = loadEntryService({
+    authState: 'has-profile',
+    dogs: [{ id: 'dog-1' }]
+  })
+
+  const result = await service.startSharedMeal()
+
+  assert.equal(result.status, 'menu-started')
+  assert.equal(result.url, '/subpackages/shared-meal/menu-search/index?dogId=dog-1')
+  assert.deepEqual(navigations, [result.url])
+})
+
+test('单只狗狗的档案分支由选菜分包继续处理', async () => {
+  const { service, navigations } = loadEntryService({
+    authState: 'has-profile',
+    dogs: [{ id: 'dog-1', eligibility: { status: 'incomplete', reasonCodes: [] } }]
+  })
+
+  const result = await service.startSharedMeal()
+
+  assert.equal(result.status, 'menu-started')
+  assert.deepEqual(navigations, ['/subpackages/shared-meal/menu-search/index?dogId=dog-1'])
+})
+
 test('已登录但无档案时进入快速建档并保留记餐返回地址', async () => {
   const { service, navigations } = loadEntryService({ authState: 'logged-in', dogs: [] })
 
@@ -90,8 +115,7 @@ test('已登录但无档案时进入快速建档并保留记餐返回地址', as
   )
 })
 
-test('已有档案时不在统一入口读取资格或草稿，统一交给选狗页', async () => {
-  const source = fs.readFileSync(servicePath, 'utf8')
+test('多只已有档案时统一交给选狗页显式选择', async () => {
   const { service, navigations } = loadEntryService({
     authState: 'has-profile',
     dogs: [{ id: 'dog-1' }, { id: 'dog-2' }]
@@ -99,7 +123,6 @@ test('已有档案时不在统一入口读取资格或草稿，统一交给选�
 
   await service.startSharedMeal()
 
-  assert.doesNotMatch(source, /sharedMealDogEligibility|sharedMealDraftService|restartDraft|clearDraft/)
   assert.deepEqual(navigations, ['/subpackages/shared-meal/dog-select/index'])
 })
 
@@ -110,7 +133,7 @@ test('连续点击复用同一次入口请求，避免重复登录和重复导�
     loginCalls += 1
     return new Promise((resolve) => { resolveLogin = resolve })
   }
-  const { service, navigations } = loadEntryService({ login, dogs: [{ id: 'dog-1' }] })
+  const { service, navigations } = loadEntryService({ login, dogs: [{ id: 'dog-1' }, { id: 'dog-2' }] })
 
   const first = service.startSharedMeal()
   const second = service.startSharedMeal()

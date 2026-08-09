@@ -27,7 +27,7 @@
                 class="shared-meal-compose-amount-input"
                 type="digit"
                 value="{{item.amountInput}}"
-                placeholder="—"
+                placeholder=" "
                 data-index="{{item.index}}"
                 bindblur="onIngredientAmountInput"
                 aria-label="{{item.name}}本餐克重"

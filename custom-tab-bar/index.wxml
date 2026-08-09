@@ -1,12 +1,12 @@
-<view class="app-tab-bar">
+<view class="app-tab-bar" style="{{tabBarContainerStyle}}">
   <t-tab-bar
     value="{{selected}}"
-    theme="tag"
-    shape="round"
+    theme="normal"
+    shape="normal"
     fixed="{{false}}"
     split="{{false}}"
-    bordered="{{false}}"
-    safe-area-inset-bottom="{{false}}"
+    bordered="{{true}}"
+    safe-area-inset-bottom="{{true}}"
     custom-style="{{tabBarStyle}}"
     bind:change="onChange"
   >

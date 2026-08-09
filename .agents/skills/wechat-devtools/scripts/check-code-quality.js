@@ -580,11 +580,13 @@ function createCodeQualityChecker(projectPath) {
     return aliases.filter((alias) => !used.has(alias)).sort()
   }
 
-  function findLargeAssets() {
+  function collectImageAudioAssets() {
     return files
       .filter((file) => ASSET_EXTENSIONS.has(path.extname(file.path).toLowerCase()))
-      .filter((file) => file.size > ASSET_LIMIT_BYTES)
-      .map((file) => `${file.path} (${(file.size / 1024).toFixed(1)} K)`)
+      .map((file) => ({
+        path: file.path,
+        size: file.size
+      }))
   }
 
   function findAppSecrets() {
@@ -653,12 +655,19 @@ function createCodeQualityChecker(projectPath) {
         : '项目未声明插件'
     ))
 
-    const largeAssets = findLargeAssets()
+    const imageAudioAssets = collectImageAudioAssets()
+    const imageAudioTotalBytes = imageAudioAssets.reduce((total, file) => total + file.size, 0)
+    const imageAudioTotalKilobytes = (imageAudioTotalBytes / 1024).toFixed(1)
+    const imageAudioOverLimit = imageAudioTotalBytes > ASSET_LIMIT_BYTES
     findings.push(result(
       'IMAGE_AND_AUDIO_LIMIT',
-      largeAssets.length ? 'fail' : 'pass',
-      largeAssets.length ? `发现 ${largeAssets.length} 个超过 200 K 的资源` : '未发现超过 200 K 的图片或音频资源',
-      largeAssets
+      imageAudioOverLimit ? 'fail' : 'pass',
+      imageAudioOverLimit
+        ? `图片和音频资源合计 ${imageAudioTotalKilobytes} K，超过 200 K`
+        : `图片和音频资源合计 ${imageAudioTotalKilobytes} K，未超过 200 K`,
+      imageAudioOverLimit
+        ? imageAudioAssets.map((file) => `${file.path} (${(file.size / 1024).toFixed(1)} K)`)
+        : []
     ))
 
     const unusedPlugins = findUnusedPlugins()

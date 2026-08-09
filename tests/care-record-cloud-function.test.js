@@ -38,6 +38,9 @@ function fakeDatabase({ rejectMissingDocs = false } = {}) {
       if (expected && typeof expected === 'object' && '$lt' in expected) {
         return document[key] < expected.$lt
       }
+      if (expected && typeof expected === 'object' && '$gte' in expected) {
+        return document[key] >= expected.$gte
+      }
       return document[key] === expected
     })
   }
@@ -99,7 +102,8 @@ function fakeDatabase({ rejectMissingDocs = false } = {}) {
     command: {
       and: (items) => ({ $and: items }),
       or: (items) => ({ $or: items }),
-      lt: (value) => ({ $lt: value })
+      lt: (value) => ({ $lt: value }),
+      gte: (value) => ({ $gte: value })
     }
   }
 }
@@ -143,6 +147,14 @@ test('护理云函数创建、列表筛选、游标分页、更新和删除遵�
   })
   assert.deepEqual(secondPage.items.map((item) => item.id), ['care-3'])
   assert.equal(secondPage.nextCursor, null)
+
+  const monthPage = await gateway({
+    action: 'list',
+    dogId: 'dog-1',
+    startDate: '2026-07-01',
+    endDate: '2026-08-01'
+  })
+  assert.deepEqual(monthPage.items.map((item) => item.id), ['care-2', 'care-1'])
 
   const filtered = await gateway({ action: 'list', dogId: 'dog-1', type: 'vaccine' })
   assert.deepEqual(filtered.items.map((item) => item.id), ['care-1'])

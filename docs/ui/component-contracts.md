@@ -20,9 +20,9 @@
 | `components/vendor/recipe-fab` | `Fab` | event `tap` |
 | `components/vendor/recipe-empty` | `Empty`、`Button` | props `icon/title/description/actionText`；event `action` |
 | `components/vendor/recipe-ingredient-search` | `Search` | props `value/loading/placeholder/actionText`；events `change/action`；页面负责决定默认、结果和无结果状态 |
-| `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input`、`Icon` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
+| `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
 | `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
-| `components/vendor/recipe-menu-indicator` | `Checkbox`、`Icon`、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`kind` 支持 `checkbox/icon/loading/loading-compact`，紧凑 Loading 不保留 44pt 占位；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，Icon 和 Loading 仅展示；不读取菜谱服务 |
+| `components/vendor/recipe-menu-indicator` | `Checkbox`、本地 SVG、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`kind` 支持 `checkbox/icon/loading/loading-compact`，紧凑 Loading 不保留 44pt 占位；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，SVG 和 Loading 仅展示；不读取菜谱服务 |
 | `components/vendor/record-calendar` | `Calendar`、`Loading` | props `value/calendarDays/loading`；固定 `use-popup=false`、`type=single`、`switch-mode=year-month`、无确认按钮；events `select/panelchange` 只返回稳定日期或年月；日期下方圆点仅表示当天至少一条记录，不读取记录服务 |
 
 vendor 适配层只负责第三方 API、主题和基础状态转换，不读取业务服务，不执行页面跳转，不保存食谱数据。
@@ -33,17 +33,20 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
-| prop | `variant` | `primary | secondary | outline | warning | warning-outline | ghost`，默认 `primary`；`outline` 为主题色描边操作，`warning-outline` 为警示色描边操作 |
+| prop | `variant` | `primary | secondary | outline | warning | warning-outline | ghost | avatar`，默认 `primary`；`outline` 为主题色描边操作，`warning-outline` 为警示色描边操作；`avatar` 为 `96rpx` 方形头像选择按钮 |
 | prop | `size` | `small | medium | large | xlarge`，默认 `large`；`xlarge` 高度为 `96rpx`，用于设计稿明确要求的 48pt 主操作 |
 | prop | `disabled` | 禁用态，默认 `false` |
 | prop | `loading` | 加载态，默认 `false` |
 | prop | `block` | 是否撑满容器，默认 `true`；`false` 时按内容渲染为小操作按钮 |
 | prop | `openType` | 透传小程序 button `open-type` |
+| prop | `ariaLabel` | 透传按钮无障碍标签 |
 | prop | `eventValue` | 可选事件值，会随 `tap` 事件放入 `detail.eventValue` |
 | event | `tap` | 非禁用、非加载时触发 |
+| event | `chooseavatar` | `openType="chooseAvatar"` 选择成功后透传微信头像临时路径 |
 | slot | 默认 | 按钮文案或少量内联内容 |
 
 `ui-button` 的组件 host 为块级；默认 `block=true` 时内部按钮撑满父容器。需要“删除”“修改”这类窄操作时使用 `block=false`，不要用外层固定宽度强行覆盖按钮宽度。
+头像选择使用 `variant="avatar"`、`block="{{false}}"` 和 `openType="chooseAvatar"`，页面监听 `chooseavatar`，不得绕过 UI Kernel 直接声明原生按钮。
 
 ## ui-card
 
@@ -81,7 +84,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 | --- | --- | --- |
 | prop | `variant` | `neutral | good | warning`，默认 `neutral` |
 | prop | `size` | `small | medium | large`，默认 `medium`；`large` 用于搜索页的常用食材胶囊 |
-| prop | `removable` | 是否显示可移除形态，默认 `false`；内部关闭图标适配 TDesign Icon |
+| prop | `removable` | 是否显示可移除形态，默认 `false`；内部关闭图标使用本地 SVG |
 | prop | `eventValue` | 移除时随事件回传的稳定业务值 |
 | event | `remove` | 点击可移除 Tag 时触发，`detail.eventValue` 返回业务值 |
 | slot | 默认 | 标签文案 |

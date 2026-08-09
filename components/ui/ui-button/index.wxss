@@ -45,6 +45,18 @@
   font-size: 24rpx;
 }
 
+.ui-button--avatar {
+  width: 96rpx;
+  min-width: 96rpx;
+  min-height: 96rpx;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 24rpx;
+  color: var(--df-color-text);
+  background: var(--df-color-surface-muted);
+  border-color: var(--df-color-line-strong);
+}
+
 .ui-button--xlarge {
   min-height: max(96rpx, 48px);
   border-radius: max(var(--df-radius-lg), 12px);
@@ -120,4 +132,8 @@
 
 .ui-button[disabled] {
   opacity: 0.56;
+}
+
+.ui-button--avatar[disabled] {
+  opacity: 1;
 }

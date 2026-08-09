@@ -2,6 +2,7 @@
 
 .shared-meal-dog-page {
   display: grid;
+  align-content: start;
   gap: var(--df-space-3);
 }
 
@@ -13,6 +14,7 @@
 
 .shared-meal-dog-list {
   display: grid;
+  align-content: start;
   gap: var(--df-space-3);
 }
 

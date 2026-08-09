@@ -293,6 +293,36 @@ test('记录页从体重或护理任务返回时强制刷新当前月份', async
     calls.push({ monthKey, ...options })
     return originalLoad(monthKey, options)
   }
+  const { definition } = loadRecordsPage(
+    { createUnifiedRecordTimelineState: () => timelineState },
+    undefined,
+    { navigateTo() {} }
+  )
+  const page = createPageContext(definition)
+  page.now = () => new Date('2026-08-05T04:00:00.000Z')
+
+  await page.onShow()
+  page.onOpenRecord({
+    currentTarget: { dataset: { source: 'weight', dogId: 'dog-1' } }
+  })
+  await page.onShow()
+
+  assert.equal(calls.length, 2)
+  assert.equal(calls[0].force, false)
+  assert.equal(calls[1].force, true)
+  assert.equal(calls[1].selectedDateKey, '2026-08-05')
+})
+
+test('记录页普通 Tab 往返时复用当前月份，不重复刷新', async () => {
+  const timelineState = createTimelineState({
+    '2026-08': { meal: { items: [] } }
+  })
+  const calls = []
+  const originalLoad = timelineState.load
+  timelineState.load = async (monthKey, options = {}) => {
+    calls.push({ monthKey, ...options })
+    return originalLoad(monthKey, options)
+  }
   const { definition } = loadRecordsPage({ createUnifiedRecordTimelineState: () => timelineState })
   const page = createPageContext(definition)
   page.now = () => new Date('2026-08-05T04:00:00.000Z')
@@ -300,10 +330,37 @@ test('记录页从体重或护理任务返回时强制刷新当前月份', async
   await page.onShow()
   await page.onShow()
 
-  assert.equal(calls.length, 2)
-  assert.equal(calls[0].force, false)
-  assert.equal(calls[1].force, true)
-  assert.equal(calls[1].selectedDateKey, '2026-08-05')
+  assert.equal(calls.length, 1)
+})
+
+test('记录页首次进入复用应用启动的预取状态，不强制刷新', async () => {
+  const timelineState = createTimelineState({
+    '2026-08': { meal: { items: [] } }
+  })
+  await timelineState.load('2026-08', { selectedDateKey: '2026-08-05' })
+  const calls = []
+  const originalLoad = timelineState.load
+  timelineState.load = async (monthKey, options = {}) => {
+    calls.push({ monthKey, ...options })
+    return originalLoad(monthKey, options)
+  }
+  const app = {
+    globalData: {
+      authReady: Promise.resolve(),
+      recordTimelineState: timelineState
+    }
+  }
+  const { definition } = loadRecordsPage({}, undefined, {}, app)
+  const page = createPageContext(definition)
+  page.now = () => new Date('2026-08-05T04:00:00.000Z')
+
+  await page.onShow()
+
+  assert.deepEqual(calls[0], {
+    monthKey: '2026-08',
+    selectedDateKey: '2026-08-05',
+    force: false
+  })
 })
 
 test('选中无记录日期保留月份数据，失败后可从当前月份重试', async () => {

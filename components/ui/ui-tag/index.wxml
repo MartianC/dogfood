@@ -7,7 +7,12 @@
 >
   <view class="ui-tag ui-tag--{{variant}} ui-tag--{{size}} ui-tag--removable-pill">
     <slot />
-    <t-icon t-class="ui-tag__remove-icon" name="close" size="32rpx" />
+    <image
+      class="ui-tag__remove-icon"
+      src="/assets/icons/tdesign/close-primary.svg"
+      mode="aspectFit"
+      aria-hidden="true"
+    />
   </view>
 </view>
 

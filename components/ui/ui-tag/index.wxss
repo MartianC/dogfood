@@ -63,5 +63,6 @@
 
 .ui-tag__remove-icon {
   flex: 0 0 auto;
-  color: var(--df-color-primary);
+  width: 32rpx;
+  height: 32rpx;
 }

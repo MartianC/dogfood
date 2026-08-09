@@ -52,6 +52,8 @@ CloudBase 数据面分为集合、索引、数据和权限四类操作。优先�
 
 其中“主包内不应存在主包未使用的 JS 文件”按官方依赖图的直接父依赖语义实现：主包 JS 若被编译图收录、只由分包侧到达，且没有任何主包 JS、页面或组件直接父节点，则失败。不要把“所有分包入口遍历后可达”当成通过条件。
 
+“图片和音频资源”规则检查的是候选代码包内全部图片与音频资源的累计大小：合计必须不超过 `200 K`，不是单文件上限。即使每个文件都小于 `200 K`，累计超过阈值仍应判定失败。本地预检按 `miniprogramRoot`、`packOptions.ignore/include` 和默认排除规则收集候选资源并累计；官方最终结果以 `compiledPkg` 为准。
+
 ```bash
 node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /absolute/project
 node /absolute/path/to/wechat-devtools/scripts/check-code-quality.js --project /absolute/project --json
@@ -140,6 +142,7 @@ tcb api tcb CreateTable --body '{"EnvId":"replace-env-id","TableName":"care_reco
 | 每个测试前都执行 `open`，或先 `open` 再 `preview` / `build-npm` | 已打开工程直接复用；`preview` / `build-npm` 直接执行 |
 | 每个自动化状态都 `launch()`，结束再 `close()` | 同一端口先 `connect()`，仅首次 `launch()`，结束只 `disconnect()` |
 | 小程序改动完成后只运行项目测试或包体检查 | 额外运行 `scripts/check-code-quality.js`，修复所有确定失败项 |
+| 把图片与音频 `200 K` 规则理解成单文件上限 | 按候选代码包内全部图片与音频资源合计计算；单文件都小于阈值也可能失败 |
 | 把本地静态预检说成官方扫描 | 预检只负责可稳定复现规则；编译包精确结果仍使用 UI-only fallback |
 | 把代码质量扫描当成官方 CLI 命令 | 官方扫描是 UI-only fallback；先 `open` 项目，再读取「代码质量」面板 |
 | 为了代码质量结果封装内部 `code-analyse` | 不要封装；它不是代码质量面板的稳定接口 |

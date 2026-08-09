@@ -1,7 +1,6 @@
 <view class="page with-bottom-action dog-profile-page">
   <view class="section dog-profile-section">
-    <ui-card>
-      <view class="dog-profile-form">
+    <view class="dog-profile-form">
         <view class="dog-profile-avatar" aria-role="button" aria-label="选择狗狗头像" bindtap="onChooseAvatar">
           <image class="dog-profile-avatar__image" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
         </view>
@@ -112,7 +111,6 @@
           </view>
         </ui-field>
       </view>
-    </ui-card>
   </view>
 
   <view wx:if="{{id}}" class="dog-profile-delete-action">

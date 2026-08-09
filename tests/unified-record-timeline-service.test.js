@@ -6,7 +6,8 @@ const path = require('node:path')
 const {
   createUnifiedRecordTimelineService,
   createUnifiedRecordTimelineState,
-  readAllPages
+  readAllPages,
+  monthDateRange
 } = require('../services/unifiedRecordTimelineService')
 
 const dogs = [
@@ -21,6 +22,17 @@ test('统一记录时间轴的默认数据源不直接依赖狗狗分包 service
   )
   assert.doesNotMatch(source, /subpackages\/dog-profile\/services\/(?:weight|care)(?:Record)?Service/)
   assert.match(source, /dogRecordQueryService/)
+})
+
+test('统一记录来源查询使用当月左闭右开日期范围', () => {
+  assert.deepEqual(monthDateRange('2026-08'), {
+    startDate: '2026-08-01',
+    endDate: '2026-09-01'
+  })
+  assert.deepEqual(monthDateRange('2026-12'), {
+    startDate: '2026-12-01',
+    endDate: '2027-01-01'
+  })
 })
 
 test('R2.1 按月份读取三类独立服务，分页后过滤月份并保留来源状态', async () => {
@@ -114,6 +126,15 @@ test('R2.1 按月份读取三类独立服务，分页后过滤月份并保留来
   ])
   assert.deepEqual(calls.weight.map((call) => call.dogId).sort(), ['dog-1', 'dog-1', 'dog-2'])
   assert.deepEqual(calls.care.map((call) => call.dogId).sort(), ['dog-1', 'dog-2'])
+  assert.deepEqual(calls.weight[0], {
+    dogId: 'dog-1',
+    limit: 20,
+    startDate: '2026-08-01',
+    endDate: '2026-09-01',
+    cursor: null
+  })
+  assert.equal(calls.care[0].startDate, '2026-08-01')
+  assert.equal(calls.care[0].endDate, '2026-09-01')
 })
 
 test('单个狗狗来源失败时保留成功狗狗记录并返回 partial 状态', async () => {

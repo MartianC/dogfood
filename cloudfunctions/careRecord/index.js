@@ -101,6 +101,27 @@ function pageLimit(value) {
     : MAX_PAGE_SIZE
 }
 
+function validDateText(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+  if (!match) return false
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])))
+  return date.getUTCFullYear() === Number(match[1])
+    && date.getUTCMonth() === Number(match[2]) - 1
+    && date.getUTCDate() === Number(match[3])
+}
+
+function appendDateRangeConditions(database, event, conditions) {
+  const startDate = String(event.startDate || '').trim()
+  const endDate = String(event.endDate || '').trim()
+  if (startDate && !validDateText(startDate)) fail('INVALID_DATE_RANGE', '护理查询开始日期无效')
+  if (endDate && !validDateText(endDate)) fail('INVALID_DATE_RANGE', '护理查询结束日期无效')
+  if (startDate && endDate && startDate >= endDate) {
+    fail('INVALID_DATE_RANGE', '护理查询日期范围无效')
+  }
+  if (startDate) conditions.push({ occurredOn: database.command.gte(startDate) })
+  if (endDate) conditions.push({ occurredOn: database.command.lt(endDate) })
+}
+
 function createCareRecordGateway({ database, openId }) {
   const collection = database.collection(COLLECTION_NAME)
   return async function gateway(event = {}) {
@@ -153,6 +174,7 @@ function createCareRecordGateway({ database, openId }) {
       const cursor = decodeCursor(event.cursor)
       const conditions = [{ _openid: openId }, { dogId }]
       if (type) conditions.push({ type })
+      appendDateRangeConditions(database, event, conditions)
       if (cursor) {
         conditions.push(database.command.or([
           { occurredOn: database.command.lt(cursor.occurredOn) },

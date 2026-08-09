@@ -2,6 +2,7 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
+const vm = require('node:vm')
 
 const mealPlanService = require('../services/mealPlanService')
 const dogService = require('../services/dogService')
@@ -96,19 +97,32 @@ test('TabBar 通过 TDesign 自定义组件保留四个主路由和中央记一�
   assert.equal(tabBarJson.usingComponents['t-tab-bar'], 'tdesign-miniprogram/tab-bar/tab-bar')
   assert.equal(tabBarJson.usingComponents['t-tab-bar-item'], 'tdesign-miniprogram/tab-bar-item/tab-bar-item')
   assert.equal(tabBarJson.usingComponents['t-fab'], 'tdesign-miniprogram/fab/fab')
-  assert.match(tabBarWxml, /theme="tag"/)
-  assert.match(tabBarWxml, /shape="round"/)
+  assert.match(tabBarWxml, /theme="normal"/)
+  assert.match(tabBarWxml, /shape="normal"/)
+  assert.match(tabBarWxml, /bordered="\{\{true\}\}"/)
+  assert.match(tabBarWxml, /safe-area-inset-bottom="\{\{true\}\}"/)
+  assert.match(tabBarWxml, /class="app-tab-bar" style="\{\{tabBarContainerStyle\}\}"/)
+  assert.doesNotMatch(tabBarWxml, /theme="tag"|shape="round"/)
   assert.match(tabBarWxml, /data-action-id="start-shared-meal"/)
   assert.match(tabBarWxml, /aria-label="记一顿"/)
   assert.match(tabBarWxml, /class="app-tab-bar__fab-label"/)
+  assert.doesNotMatch(tabBarWxml, /class="app-tab-bar__safe-area"/)
   assert.match(tabBarWxml, /bind:click="onStartSharedMeal"/)
-  assert.match(tabBarJs, /--td-tab-bar-height: 80rpx/)
+  assert.match(tabBarJs, /--td-tab-bar-height: 88rpx/)
   assert.match(tabBarJs, /--td-font-body-large: 22rpx \/ 32rpx/)
-  assert.match(tabBarJs, /padding: 0 16rpx/)
+  assert.match(tabBarJs, /--td-tab-bar-border-color: #d8e1da/)
+  assert.match(tabBarJs, /--td-tab-bar-color: \$\{tabBarMutedColor\}/)
   assert.match(tabBarJs, /flex: 0 0 calc\(\(100% - 142rpx\) \/ 4\)/)
-  assert.match(tabBarJs, /margin: 24rpx 0/)
+  assert.match(tabBarJs, /margin: 12rpx 0/)
   assert.match(tabBarJs, /tabBarGapStyle: 'flex: 0 0 142rpx; width: 142rpx/)
-  assert.match(tabBarJs, /bottom: calc\(136rpx \+ env\(safe-area-inset-bottom\)\)/)
+  assert.match(tabBarJs, /position: absolute/)
+  assert.match(tabBarJs, /bottom: calc\(64rpx \+ var\(--df-tab-bar-safe-area-bottom\)\)/)
+  assert.match(tabBarJs, /getWindowInfo\(\)/)
+  assert.match(tabBarJs, /screenHeight - info\.safeArea\.bottom/)
+  assert.match(tabBarJs, /safeAreaBottomPx \* 750 \/ windowWidth/)
+  assert.match(tabBarJs, /height: \$\{112 \+ safeAreaBottom\}rpx/)
+  assert.match(tabBarJs, /tabBarContainerStyle: getTabBarContainerStyle\(\)/)
+  assert.match(tabBarJs, /resize\(\)\s*\{[\s\S]*tabBarContainerStyle: getTabBarContainerStyle\(\)/)
   assert.match(tabBarJs, /sharedMealEntryService\.startSharedMeal\(\)/)
   assert.match(tabBarJs, /value: 'dogs'/)
   assert.match(tabBarJs, /width: 96rpx/)
@@ -119,13 +133,60 @@ test('TabBar 通过 TDesign 自定义组件保留四个主路由和中央记一�
   assert.match(tabBarJs, /--td-button-primary-active-bg-color:\s*#1d523a/)
   assert.match(tabBarJs, /--td-button-primary-bg-color: var\(--df-color-primary\)/)
   assert.match(tabBarWxss, /width:\s*100%/)
+  assert.match(tabBarWxss, /:host\s*\{[\s\S]*?background-color:\s*var\(--df-color-surface\);/)
+  assert.match(tabBarWxss, /\.app-tab-bar\s*\{[\s\S]*?margin:\s*0;/)
+  assert.match(tabBarWxss, /\.app-tab-bar\s*\{[\s\S]*?position:\s*relative;/)
+  assert.match(tabBarWxss, /\.app-tab-bar\s*\{[\s\S]*?height:\s*112rpx;/)
+  assert.match(tabBarWxss, /\.app-tab-bar__fab-label\s*\{[\s\S]*?position:\s*absolute;/)
+  assert.match(tabBarWxss, /\.app-tab-bar__fab-label\s*\{[\s\S]*?color:\s*var\(--td-tab-bar-color\);/)
+  assert.doesNotMatch(tabBarWxss, /\.app-tab-bar__fab-label\s*\{[\s\S]*?position:\s*fixed;/)
+  assert.doesNotMatch(tabBarWxss, /--td-tab-bar-round-shadow/)
   assert.match(tabBarWxss, /width:\s*40rpx/)
   assert.match(tabBarWxss, /margin-bottom:\s*4rpx/)
-  assert.match(tabBarWxss, /env\(safe-area-inset-bottom\)/)
+  assert.match(tabBarWxss, /var\(--df-tab-bar-safe-area-bottom\)/)
+  assert.match(tabBarWxss, /:host\s*\{[\s\S]*?overflow:\s*visible;/)
   assert.match(tabBarJs, /wx\.switchTab/)
+
+  const appWxss = fs.readFileSync(path.join(__dirname, '..', 'app.wxss'), 'utf8')
+  assert.match(appWxss, /\.page\.with-tab-bar\s*\{[\s\S]*?padding-bottom: calc\(132rpx \+ env\(safe-area-inset-bottom\)\);/)
 
   const routes = Array.from(tabBarJs.matchAll(/path:\s*'([^']+)'/g), (match) => match[1])
   assert.deepEqual(routes, appJson.tabBar.list.map((item) => `/${item.pagePath}`))
+})
+
+test('TabBar 在有无底部安全区的机型中保持稳定容器几何', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'custom-tab-bar/index.js'), 'utf8')
+  const getContainerStyle = (windowInfo) => {
+    let definition = null
+    vm.runInNewContext(source, {
+      Component(options) {
+        definition = options
+      },
+      Number,
+      Math,
+      require() {
+        return { startSharedMeal() {} }
+      },
+      wx: {
+        getWindowInfo() {
+          return windowInfo
+        },
+        getSystemInfoSync() {
+          return windowInfo
+        }
+      }
+    })
+    return definition.data.tabBarContainerStyle
+  }
+
+  assert.equal(
+    getContainerStyle({ windowWidth: 390, screenHeight: 844, safeArea: { bottom: 810 } }),
+    '--df-tab-bar-safe-area-bottom: 65rpx;--td-tab-bar-color: #6f7b73;height: 177rpx'
+  )
+  assert.equal(
+    getContainerStyle({ windowWidth: 360, screenHeight: 800, safeArea: { bottom: 800 } }),
+    '--df-tab-bar-safe-area-bottom: 0rpx;--td-tab-bar-color: #6f7b73;height: 112rpx'
+  )
 })
 
 test('四个 Tab 页面在显示时同步 TDesign 选中态', () => {
@@ -180,10 +241,10 @@ test('狗狗档案标准化保留头像字段', () => {
     ageStage: 'adult',
     weightKg: 12,
     dailyMeals: 2,
-    avatarUrl: '/assets/dogs/default-dog.jpg'
+    avatarUrl: '/assets/dogs/dog-head-profile.svg'
   })
 
-  assert.equal(dog.avatarUrl, '/assets/dogs/default-dog.jpg')
+  assert.equal(dog.avatarUrl, '/assets/dogs/dog-head-profile.svg')
 })
 
 test('狗狗档案卡片只展示派生阶段并为旧档案保留待完善状态', () => {

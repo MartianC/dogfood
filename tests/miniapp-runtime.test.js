@@ -2,6 +2,7 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
+const vm = require('node:vm')
 
 test('小程序运行时食谱数据通过 JS 模块加载', () => {
   const recipesModulePath = path.join(__dirname, '..', 'data', 'recipes.js')
@@ -24,6 +25,66 @@ test('app.js 不直接 require JSON 数据文件', () => {
 
   assert.doesNotMatch(appSource, /require\(['"].*\.json['"]\)/)
   assert.match(appSource, /require\(['"]\.\/data\/recipes['"]\)/)
+})
+
+test('应用认证完成后启动记录页当月后台预取，且不等待预取请求完成', async () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8')
+  let definition
+  let loadCall = null
+  let resolvePrefetch
+  const prefetch = new Promise((resolve) => {
+    resolvePrefetch = resolve
+  })
+  const context = {
+    App(app) { definition = app },
+    require(request) {
+      if (request === './services/authService') {
+        return {
+          async initAuth() {
+            return { authState: 'has-profile', user: { id: 'user-1' }, dogs: [{ id: 'dog-1' }] }
+          }
+        }
+      }
+      if (request === './services/mealPlanService') {
+        return { syncPendingPlans: async () => ({ syncedCount: 0, remainingCount: 0 }) }
+      }
+      if (request === './services/unifiedRecordTimelineService') {
+        return {
+          createUnifiedRecordTimelineState() {
+            return {
+              load(monthKey, options) {
+                loadCall = { monthKey, options }
+                return prefetch
+              }
+            }
+          }
+        }
+      }
+      if (request === './config/env') return { useCloudBase: false }
+      if (request === './data/recipes') return []
+      throw new Error(`测试未提供依赖：${request}`)
+    },
+    Date,
+    Promise,
+    Number,
+    String,
+    console
+  }
+  vm.runInNewContext(source, context, { filename: 'app.js' })
+
+  const instance = {
+    globalData: { ...definition.globalData },
+    startRecordTimelinePrefetch: definition.startRecordTimelinePrefetch
+  }
+  const auth = await definition.initApp.call(instance)
+
+  assert.equal(auth.authState, 'has-profile')
+  assert.ok(loadCall)
+  assert.match(loadCall.monthKey, /^\d{4}-\d{2}$/)
+  assert.match(loadCall.options.selectedDateKey, /^\d{4}-\d{2}-\d{2}$/)
+  assert.equal(instance.globalData.recordTimelineState != null, true)
+  resolvePrefetch({ cached: false })
+  await instance.globalData.recordTimelinePrefetch
 })
 
 test('app.json 启用组件按需注入', () => {
@@ -50,8 +111,7 @@ test('小程序图片兜底资源存在', () => {
     'assets/recipes/fish-rice.jpg',
     'assets/recipes/beef-broccoli.jpg',
     'assets/recipes/dog-food-bowl.jpg',
-    'assets/dogs/default-dog.jpg',
-    'assets/dogs/default-dog-alt.jpg'
+    'assets/dogs/dog-head-profile.svg'
   ]
 
   expected.forEach((assetPath) => {
@@ -61,7 +121,7 @@ test('小程序图片兜底资源存在', () => {
   })
 })
 
-test('小程序图片资源不超过 200K', () => {
+test('小程序图片资源合计不超过 200K', () => {
   const roots = ['assets']
   const imageFiles = []
 
@@ -72,17 +132,15 @@ test('小程序图片资源不超过 200K', () => {
         collectImages(entryPath)
         return
       }
-      if (/\.(png|jpe?g|gif|webp)$/i.test(entry.name)) {
+      if (/\.(png|jpe?g|gif|webp|svg)$/i.test(entry.name)) {
         imageFiles.push(entryPath)
       }
     })
   }
 
   roots.forEach((root) => collectImages(path.join(__dirname, '..', root)))
-  imageFiles.forEach((file) => {
-    const relativePath = path.relative(path.join(__dirname, '..'), file)
-    assert.ok(fs.statSync(file).size <= 200 * 1024, `${relativePath} 超过 200K`)
-  })
+  const totalSize = imageFiles.reduce((sum, file) => sum + fs.statSync(file).size, 0)
+  assert.ok(totalSize <= 200 * 1024, `图片资源合计 ${(totalSize / 1024).toFixed(1)}K，超过 200K`)
 })
 
 test('分包服务文件显式进入开发者工具打包清单', () => {

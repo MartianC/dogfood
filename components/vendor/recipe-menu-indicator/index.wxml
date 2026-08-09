@@ -15,10 +15,11 @@
   style="width: {{iconSize}}; height: {{iconSize}};"
   aria-hidden="true"
 >
-  <t-icon
-    t-class="recipe-menu-indicator__icon"
-    name="{{icon}}"
-    size="{{iconSize}}"
+  <image
+    class="recipe-menu-indicator__icon"
+    src="{{iconSrc}}"
+    mode="aspectFit"
+    aria-hidden="true"
   />
 </view>
 

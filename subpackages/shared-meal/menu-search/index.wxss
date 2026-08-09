@@ -8,8 +8,8 @@ page {
   display: flex;
   flex-direction: column;
   gap: var(--df-space-6);
-  padding-bottom: calc(400rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(400rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(328rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(328rpx + env(safe-area-inset-bottom));
 }
 
 .shared-meal-menu-results {
@@ -26,16 +26,37 @@ page {
   line-height: 40rpx;
 }
 
+.shared-meal-menu-result-list {
+  overflow: hidden;
+  border-radius: var(--df-radius-lg);
+}
+
 .shared-meal-menu-result {
   min-width: 0;
+  padding: 0 var(--df-space-5);
+  border-bottom: 1rpx solid var(--df-color-line);
+  background: var(--df-color-surface);
+}
+
+.shared-meal-menu-result:last-child {
+  border-bottom: 0;
 }
 
 .shared-meal-menu-result__top {
   display: flex;
-  height: 136rpx;
   min-width: 0;
+  min-height: 108rpx;
   align-items: center;
-  gap: var(--df-space-3);
+  gap: var(--df-space-2);
+}
+
+.shared-meal-menu-result__selection {
+  display: flex;
+  width: var(--df-touch-min);
+  min-width: var(--df-touch-min);
+  height: var(--df-touch-min);
+  align-items: center;
+  justify-content: center;
 }
 
 .shared-meal-menu-result__content {
@@ -46,12 +67,11 @@ page {
 }
 
 .shared-meal-menu-result__name {
-  height: 48rpx;
   overflow: hidden;
   color: var(--df-color-text);
-  font-size: 34rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  line-height: 48rpx;
+  line-height: 44rpx;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -59,10 +79,10 @@ page {
 .shared-meal-menu-result__summary {
   display: flex;
   min-width: 0;
-  min-height: var(--df-touch-min);
+  min-height: 46rpx;
   align-items: center;
   justify-content: space-between;
-  gap: var(--df-space-3);
+  gap: var(--df-space-2);
 }
 
 .shared-meal-menu-result__meta {
@@ -71,7 +91,7 @@ page {
   overflow: hidden;
   color: var(--df-color-muted);
   font-size: 26rpx;
-  line-height: 40rpx;
+  line-height: 36rpx;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -79,17 +99,17 @@ page {
 .shared-meal-menu-result__detail {
   box-sizing: border-box;
   min-width: 0;
-  margin-top: var(--df-space-3);
-  padding: var(--df-space-5);
-  border-radius: var(--df-radius-xl);
-  background: var(--df-color-bg);
+  margin: 0 0 var(--df-space-3);
+  padding: var(--df-space-3) var(--df-space-5);
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface-muted);
 }
 
 .shared-meal-menu-detail-groups {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: var(--df-space-3);
+  gap: var(--df-space-1);
 }
 
 .shared-meal-menu-detail-group {
@@ -98,11 +118,11 @@ page {
   align-items: flex-start;
   gap: var(--df-space-3);
   font-size: 26rpx;
-  line-height: 40rpx;
+  line-height: 56rpx;
 }
 
 .shared-meal-menu-detail-group__label {
-  flex: 0 0 152rpx;
+  flex: 0 0 136rpx;
   font-weight: 600;
 }
 
@@ -171,18 +191,18 @@ page {
 .shared-meal-menu-selection-summary {
   position: fixed;
   z-index: 20;
-  right: 32rpx;
-  bottom: 32rpx;
-  bottom: env(safe-area-inset-bottom);
-  left: 32rpx;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
-  height: 320rpx;
+  min-height: 280rpx;
   box-sizing: border-box;
   flex-direction: column;
   gap: var(--df-space-3);
-  padding: var(--df-space-5);
-  border: 2rpx solid var(--df-color-line);
-  border-radius: var(--df-radius-xl);
+  padding: var(--df-space-4) var(--df-space-6);
+  padding-bottom: calc(var(--df-space-4) + constant(safe-area-inset-bottom));
+  padding-bottom: calc(var(--df-space-4) + env(safe-area-inset-bottom));
+  border-top: 1rpx solid var(--df-color-line);
   background: var(--df-color-surface);
 }
 
@@ -233,7 +253,6 @@ page {
 }
 
 .shared-meal-menu-selection-summary__confirm {
-  height: 96rpx;
+  height: 88rpx;
   box-sizing: border-box;
-  padding-top: var(--df-space-2);
 }

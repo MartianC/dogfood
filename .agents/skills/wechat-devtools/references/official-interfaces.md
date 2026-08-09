@@ -52,7 +52,7 @@
 - 应用包内可见 `js/common/miniprogram-builder/common/code-analyse/index.js`，但它是构建器依赖图分析模块；另有 `code-analyse-viewer`/`ide.codeAnalyse.send`，显示为「代码依赖分析」，也不等同于截图里的「代码质量」面板。
 - 当前项目和 DevTools 缓存中没有发现可复用的 `miniprogram-analyse-result.json` 扫描产物。
 
-2026-07-30 复核 DevTools 随附规则清单，当前共有 13 条：
+2026-07-30 复核 DevTools 随附规则清单，当前共有 13 条；2026-08-07 使用官方面板再次验证 `IMAGE_AND_AUDIO_LIMIT` 为编译包内图片与音频资源累计阈值：移除 272.3 KiB WOFF 后，剩余资源合计约 236.3 KiB 时仍失败，降至 194.4 KiB 后通过。
 
 | 类别 | 规则名 | 官方阈值或配置 |
 | --- | --- | --- |
@@ -73,6 +73,7 @@
 官方实现细节：
 
 - 主包体积和资源体积针对 `compiledPkg`，不能用工作树目录大小替代。
+- `IMAGE_AND_AUDIO_LIMIT` 对 `compiledPkg` 内全部图片与音频资源求和后比较 `200 K`，不是检查单个文件是否超过 `200 K`。本地预检只能按打包配置近似候选资源集合，官方面板仍是最终依据。
 - `CONTAINS_OTHER_PKG_JS` 在编译依赖图中筛选位于主包的 `Js` 节点；节点只要存在任意位于主包的直接父依赖就不报告。`scripts/check-code-quality.js` 复现这一直接父依赖语义，并用源码入口近似编译图收录范围。
 - `CONTAINS_UNUSED_COMPONENTS` 还会读取 WXML `useTags`、递归模板引用、`componentPlaceholder` 和包级声明；简单扫描组件目录会产生误报。
 - `CONTAINS_APPSECRET` 会把候选值发给官方服务确认；本地脚本只做高置信字面量预警，不输出候选内容。

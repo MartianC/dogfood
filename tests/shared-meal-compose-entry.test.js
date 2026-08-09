@@ -70,11 +70,18 @@ test('选狗主路径进入带独立选择、展开和确认操作的规范菜�
 
   assert.match(dogSelect, /shared-meal\/menu-search\/index\?draftId=/)
   assert.doesNotMatch(dogSelect, /dog-select\/menu-search\/index\?draftId=/)
-  assert.match(template, /kind="checkbox"/)
-  assert.match(template, /bindtap="onToggleRecipeExpansion"/)
+  assert.match(template, /<ui-card\b/)
+  assert.match(template, /catchtap="onToggleRecipeExpansion"/)
   assert.match(template, /选好菜单，继续/)
   assert.match(menuSearch, /createDraftFromMenus/)
   assert.match(menuSearch, /compose\/index\?draftId=/)
+})
+
+test('选狗页内容和狗狗卡片按内容高度从顶部连续排列', () => {
+  const styles = read('subpackages/shared-meal/dog-select/index.wxss')
+
+  assert.match(styles, /\.shared-meal-dog-page\s*\{[^}]*align-content:\s*start/s)
+  assert.match(styles, /\.shared-meal-dog-list\s*\{[^}]*align-content:\s*start/s)
 })
 
 test('旧菜单路由只兼容跳转到 canonical 页面并保留草稿 ID', () => {
