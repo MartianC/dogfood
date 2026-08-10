@@ -106,6 +106,7 @@ const fixtures = {
         mapping_rule: 'internal-rule',
         internalOnly: '不得泄漏',
         components: [{
+          canonical_name_zh: '番茄',
           display_name_zh: '番茄（生）',
           policy_status: 'allowed',
           internalOnly: '不得泄漏'
@@ -163,7 +164,7 @@ test('搜索只解析 active recipe_version，并以稳定游标批量返回原�
     amount_raw: '2 个',
     mapping_status: 'matched',
     components: [{
-      display_name_zh: '番茄（生）',
+      canonical_name_zh: '番茄',
       policy_status: 'allowed'
     }]
   }])

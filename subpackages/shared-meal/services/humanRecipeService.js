@@ -18,8 +18,8 @@ function normalizeComponent(component = {}) {
     variantId: String(component.variant_id || component.variantId || ''),
     foodId: String(component.food_id || component.foodId || ''),
     displayName: String(
-      component.display_name_zh
-      || component.canonical_name_zh
+      component.canonical_name_zh
+      || component.display_name_zh
       || component.displayName
       || ''
     ),

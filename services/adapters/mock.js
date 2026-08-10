@@ -241,9 +241,9 @@ async function searchHumanRecipes(options = {}) {
         mapping_status: String(ingredient.mapping_status || 'unmatched'),
         components: Array.isArray(ingredient.components)
           ? ingredient.components.map((component) => ({
-            display_name_zh: String(
-              component.display_name_zh
-              || component.canonical_name_zh
+            canonical_name_zh: String(
+              component.canonical_name_zh
+              || component.display_name_zh
               || ''
             ),
             policy_status: String(component.policy_status || 'unknown')
