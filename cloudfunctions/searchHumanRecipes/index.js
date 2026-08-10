@@ -6,7 +6,6 @@ function normalizeLimit(value) {
 
 function encodeCursor(document) {
   return encodeURIComponent(JSON.stringify({
-    sortKey: String(document.sortKey || ''),
     id: String(document._id || '')
   }))
 }
@@ -15,10 +14,10 @@ function decodeCursor(value) {
   if (!value) return null
   try {
     const parsed = JSON.parse(decodeURIComponent(String(value)))
-    if (!parsed || typeof parsed.sortKey !== 'string' || typeof parsed.id !== 'string') {
+    if (!parsed || typeof parsed.id !== 'string' || !parsed.id) {
       throw new Error('游标字段缺失')
     }
-    return parsed
+    return { id: parsed.id }
   } catch (error) {
     throw new Error('菜谱分页游标无效')
   }
@@ -89,19 +88,15 @@ function createSearchHumanRecipes(database) {
       })
     }
     if (cursor) {
-      conditions.push(database.command.or([
-        { sortKey: database.command.gt(cursor.sortKey) },
-        { sortKey: cursor.sortKey, _id: database.command.gt(cursor.id) }
-      ]))
+      conditions.push({ _id: database.command.gt(cursor.id) })
     }
     const condition = conditions.length === 1
       ? conditions[0]
       : database.command.and(conditions)
     const result = await database.collection('human_recipes')
       .where(condition)
-      .orderBy('sortKey', 'asc')
       .orderBy('_id', 'asc')
-      .limit(limit + 1)
+      .limit(limit)
       .get()
     const rows = Array.isArray(result.data) ? result.data : []
     const page = rows.slice(0, limit)
@@ -109,7 +104,7 @@ function createSearchHumanRecipes(database) {
       contract: 'searchHumanRecipes/v1',
       recipeVersion,
       items: page.map(normalizeRecipe),
-      nextCursor: rows.length > limit ? encodeCursor(page[page.length - 1]) : null
+      nextCursor: page.length === limit ? encodeCursor(page[page.length - 1]) : null
     }
     if (Buffer.byteLength(JSON.stringify(response), 'utf8') > 256 * 1024) {
       throw new Error('菜谱搜索响应超过 256 KB 合同预算')

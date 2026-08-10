@@ -5,7 +5,7 @@ module.exports = {
   mockUser: {
     id: 'mock_user',
     openId: 'mock_openid',
-    nickname: '狗饭体验用户',
+    nickname: '爪饭体验用户',
     avatarUrl: ''
   }
 }

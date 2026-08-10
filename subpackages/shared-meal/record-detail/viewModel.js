@@ -40,7 +40,7 @@ function dogModel(record) {
   if (lifeStageLabel) profileParts.push(lifeStageLabel)
   if (activity !== '') profileParts.push(`日均 ${activity} 小时`)
   return {
-    heading: `${String(dog.name || '狗狗').trim() || '狗狗'}的一顿饭`,
+    heading: `${String(dog.name || '爱宠').trim() || '爱宠'}的一顿饭`,
     mealTimeText: shanghaiMealTimeText(record && record.mealTime),
     profileText: profileParts.join(' · ') || '档案快照信息不完整'
   }

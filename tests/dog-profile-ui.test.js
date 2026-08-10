@@ -51,7 +51,7 @@ test('完整与快速建档只收集出生日期、品种和日均活动时长',
 
     assert.match(wxml, /mode="date"/)
     assert.match(wxml, /label="出生日期"/)
-    assert.match(wxml, /label="狗狗品种"/)
+    assert.match(wxml, /label="爱宠品种"/)
     assert.match(wxml, /<slider[^>]*min="0"[^>]*max="6"[^>]*step="0\.5"/)
     assert.match(wxml, /dog-profile-activity-slider__band--low/)
     assert.match(wxml, /dog-profile-activity-slider__band--general/)

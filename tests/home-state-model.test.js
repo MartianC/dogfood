@@ -3,6 +3,7 @@ const assert = require('node:assert/strict')
 
 const {
   HOME_STATUS,
+  HOME_LOAD_STATUS,
   PRIMARY_TASK_TYPE,
   buildHomeState,
   buildProfileIssues,
@@ -27,6 +28,39 @@ function record({ id, dogName = '布丁', menu = '番茄炒蛋', mealTime = '202
     dogMealItems: [{ name: '番茄' }]
   }
 }
+
+test('认证未决时使用启动态，不把未知认证误判为游客', () => {
+  const state = buildHomeState({
+    loadStatus: HOME_LOAD_STATUS.INITIALIZING,
+    authState: 'unknown',
+    dogs: [dog],
+    todayRecords: [record()],
+    recentRecords: [record({ id: 'recent-1' })]
+  })
+
+  assert.equal(state.status, HOME_STATUS.INITIALIZING)
+  assert.equal(state.state, HOME_STATUS.INITIALIZING)
+  assert.equal(state.authState, 'unknown')
+  assert.equal(state.loadStatus, HOME_LOAD_STATUS.INITIALIZING)
+  assert.notEqual(state.status, HOME_STATUS.GUEST)
+  assert.equal(state.primaryTask.type, null)
+  assert.doesNotMatch(state.primaryTask.label, /登录并继续/)
+  assert.doesNotMatch(state.todaySummary.title, /登录后/)
+  assert.equal(state.recentRecord, null)
+})
+
+test('未提供认证状态时默认保持启动态，认证完成为游客后才显示游客态', () => {
+  const initializing = buildHomeState()
+  assert.equal(initializing.authState, 'unknown')
+  assert.equal(initializing.loadStatus, HOME_LOAD_STATUS.INITIALIZING)
+  assert.equal(initializing.status, HOME_STATUS.INITIALIZING)
+
+  const guest = buildHomeState({ authState: 'guest' })
+  assert.equal(guest.authState, 'guest')
+  assert.equal(guest.loadStatus, HOME_LOAD_STATUS.READY)
+  assert.equal(guest.status, HOME_STATUS.GUEST)
+  assert.equal(guest.primaryTask.type, PRIMARY_TASK_TYPE.LOGIN_AND_CONTINUE)
+})
 
 test('游客状态只保留登录主任务，不展示或伪造历史数据', () => {
   const state = buildHomeState({

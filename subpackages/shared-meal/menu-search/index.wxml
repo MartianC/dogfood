@@ -2,7 +2,7 @@
   <recipe-ingredient-search
     value="{{searchValue}}"
     loading="{{loading}}"
-    placeholder="搜索已经决定的菜，如“番茄炖牛肉”"
+    placeholder="今天大人们吃什么菜？"
     action-text="取消"
     bind:change="onSearchChange"
     bind:action="onSearchAction"

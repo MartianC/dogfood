@@ -5,7 +5,7 @@
   </view>
 
   <view wx:if="{{dogs.length > 1}}" class="weight-dog-switcher">
-    <ui-field label="当前狗狗">
+    <ui-field label="当前爱宠">
       <picker range="{{dogs}}" range-key="name" value="{{dogIndex}}" bindchange="onDogChange">
         <view class="weight-picker-value">{{dogName}}</view>
       </picker>
@@ -30,7 +30,7 @@
 
   <block wx:elif="{{loadStatus === 'empty'}}">
     <view class="weight-page__empty-dog">
-      <ui-empty title="还没有狗狗档案" description="添加狗狗后，就可以记录每次实际称量。" actionText="添加狗狗" bind:action="onAddDog" />
+        <ui-empty title="还没有爱宠档案" description="添加爱宠后，就可以记录每次实际称量。" actionText="添加爱宠" bind:action="onAddDog" />
     </view>
   </block>
 

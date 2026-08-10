@@ -33,7 +33,7 @@
     "cloudfunctions/sharedMealRecord/schema/record.schema.json",
     "contracts/shared-meal/shared-meal-ingredient-v1.schema.json"
   ],
-  "tabs": ["首页", "记录", "狗狗", "我的"],
+  "tabs": ["首页", "记录", "爱宠", "我的"],
   "legacyCompatibility": "routes-retained-not-primary",
   "legacyPaths": [
     "pages/recipes/list/index",

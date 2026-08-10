@@ -47,7 +47,7 @@ Page({
     if (this.data.hasDanger) {
       wx.showModal({
         title: '确认继续',
-        content: '这道食谱和狗狗档案存在明显冲突，建议换一道更合适的食谱。',
+        content: '这道食谱和爱宠档案存在明显冲突，建议换一道更合适的食谱。',
         confirmText: '仍然继续',
         success: (res) => {
           if (res.confirm) {

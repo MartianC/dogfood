@@ -29,9 +29,9 @@
 
       <ui-empty
         wx:if="{{dogCount === 0 && !dogsLoadError}}"
-        title="先添加狗狗档案"
-        description="添加狗狗后，记录会按日期集中展示。"
-        actionText="添加狗狗"
+        title="先添加爱宠档案"
+        description="添加爱宠后，记录会按日期集中展示。"
+        actionText="添加爱宠"
         bind:action="onAddDog"
       />
 
@@ -119,6 +119,12 @@
             </view>
           </ui-card>
         </view>
+
+        <ui-empty
+          wx:if="{{!selectedRecords.length}}"
+          title="这一天还没有记录"
+          description="选择日历中有圆点的日期查看记录。"
+        />
 
       </block>
     </block>

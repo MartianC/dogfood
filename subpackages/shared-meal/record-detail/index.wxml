@@ -29,7 +29,7 @@
     </view>
 
     <view class="shared-meal-detail-section">
-      <view class="shared-meal-detail-section__heading">狗狗这顿吃了什么</view>
+      <view class="shared-meal-detail-section__heading">爱宠这顿吃了什么</view>
       <ui-card padding="large">
         <view wx:for="{{record.dogMealItems}}" wx:key="id" class="shared-meal-detail-ingredient">
           <view class="shared-meal-detail-ingredient__amount">{{item.amountText}}</view>

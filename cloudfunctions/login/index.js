@@ -43,7 +43,7 @@ exports.main = async (event = {}) => {
     const result = await users.add({
       data: {
         openId,
-        nickname: '狗饭用户',
+        nickname: '爪饭用户',
         avatarUrl,
         createdAt: now,
         updatedAt: now
@@ -52,7 +52,7 @@ exports.main = async (event = {}) => {
     user = {
       _id: result._id,
       openId,
-      nickname: '狗饭用户',
+      nickname: '爪饭用户',
       avatarUrl,
       createdAt: now,
       updatedAt: now

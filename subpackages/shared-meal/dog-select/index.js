@@ -13,7 +13,7 @@ const {
 } = require('../services/sharedMealDraftService')
 
 const REASON_TEXT = {
-  under_eight_weeks: '狗狗还不到 8 周，不适合使用当前自动创建流程。',
+  under_eight_weeks: '爱宠还不到 8 周，不适合使用当前自动创建流程。',
   diagnosed_disease: '已确诊疾病需要兽医或宠物营养专业人士提供针对性建议。',
   pregnant: '妊娠期需要兽医或宠物营养专业人士提供针对性建议。',
   lactating: '哺乳期需要兽医或宠物营养专业人士提供针对性建议。',
@@ -114,7 +114,7 @@ Page({
           draftId: draft.id,
           recoveryStatus: 'resumable',
           recoveryVisible: true,
-          recoveryDogName: String(draft.dog.name || '这只狗狗'),
+          recoveryDogName: String(draft.dog.name || '这只爱宠'),
           recoveryMenuSummary: formatRecoveryMenuSummary(draft.humanMenus),
           recoveryTimeText: formatRecoveryTime(draft.mealTime)
         })
@@ -138,14 +138,14 @@ Page({
     } catch (error) {
       this.setData({
         loading: false,
-        errorText: '狗狗档案加载失败，请稍后重试。'
+        errorText: '爱宠档案加载失败，请稍后重试。'
       })
     }
   },
 
   continueAfterProfileUpdate(restored, currentDog) {
     if (restored.status !== 'restored' || !currentDog) {
-      this.setData({ errorText: '没有找到草稿对应的狗狗档案，请重新选择。' })
+      this.setData({ errorText: '没有找到草稿对应的爱宠档案，请重新选择。' })
       return
     }
     if (currentDog.eligibility.status === 'blocked') {
@@ -158,7 +158,7 @@ Page({
       return
     }
     if (currentDog.eligibility.status === 'incomplete') {
-      this.setData({ errorText: '狗狗档案仍需完善，请检查后再继续。' })
+      this.setData({ errorText: '爱宠档案仍需完善，请检查后再继续。' })
       return
     }
     refreshDraftDog(currentDog)

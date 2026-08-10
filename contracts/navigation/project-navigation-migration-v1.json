@@ -25,7 +25,7 @@
     "tabBar": [
       { "id": "home", "label": "首页", "pagePath": "pages/home/index", "position": 0 },
       { "id": "records", "label": "记录", "pagePath": "pages/records/index", "position": 1 },
-      { "id": "dogs", "label": "狗狗", "pagePath": "pages/dogs/index", "position": 3 },
+      { "id": "dogs", "label": "爱宠", "pagePath": "pages/dogs/index", "position": 3 },
       { "id": "profile", "label": "我的", "pagePath": "pages/profile/index/index", "position": 4 }
     ],
     "centralAction": {

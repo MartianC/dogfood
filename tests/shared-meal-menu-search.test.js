@@ -752,7 +752,7 @@ test('菜单页使用紧凑卡片、独立选择与展开操作，并只在 vend
   assert.match(template, /<ui-card padding="none">\s*<view class="shared-meal-menu-result-list">/s)
   assert.match(pageStyles, /\.shared-meal-menu-result-list\s*{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*var\(--df-radius-lg\)/s)
   assert.match(pageStyles, /\.shared-meal-menu-result__detail\s*{[^}]*background:\s*var\(--df-color-surface-muted\)/s)
-  assert.match(pageStyles, /\.shared-meal-menu-result__detail\s*{[^}]*padding:\s*var\(--df-space-2\) var\(--df-space-3\)/s)
+  assert.match(pageStyles, /\.shared-meal-menu-result__detail\s*{[^}]*padding:\s*var\(--df-space-3\) var\(--df-space-5\)/s)
   assert.match(pageStyles, /\.shared-meal-menu-detail-groups\s*{[^}]*gap:\s*var\(--df-space-1\)/s)
   assert.match(pageStyles, /\.shared-meal-menu-result__top\s*{[^}]*min-height:\s*108rpx/s)
   assert.match(pageStyles, /\.shared-meal-menu-selection-summary\s*{[^}]*right:\s*0;[^}]*bottom:\s*0;[^}]*left:\s*0;/s)

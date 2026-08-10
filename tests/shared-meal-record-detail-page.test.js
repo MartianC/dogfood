@@ -66,7 +66,7 @@ test('详情页结构覆盖 R01–R04 且不提供照片或重算入口', () => 
   assert.match(js, /createSharedMealRecordDetailModel/)
   assert.match(wxml, /保存时的本餐评估/)
   assert.match(wxml, /当时的人饭菜单/)
-  assert.match(wxml, /狗狗这顿吃了什么/)
+  assert.match(wxml, /爱宠这顿吃了什么/)
   assert.match(wxml, /保存快照/)
   assert.match(wxml, /wx:if="\{\{record\.hasNote\}\}"/)
   assert.match(wxml, /record\.assessment\.energy\.tone/)

@@ -1,8 +1,10 @@
 <view class="page with-tab-bar home-page" aria-label="首页">
   <view class="home-header">
     <view class="home-header__date df-caption">{{todayText}}</view>
-    <view class="home-header__title df-heading-xl">今天接下来做什么？</view>
-    <view class="home-header__copy df-body">记录今天和狗狗共享的一顿饭，按这次的菜单单独称量。</view>
+    <view class="home-header__title df-heading-xl">今天我们吃什么？</view>
+    <!--
+    <view class="home-header__copy df-body">记录今天和爱宠共享的一顿饭，按这次的菜单单独称量。</view>
+    -->
   </view>
 
   <ui-card
@@ -13,7 +15,12 @@
       <view class="home-primary__eyebrow">当前主任务</view>
       <view class="home-primary__title">{{homeState.primaryTask.label}}</view>
       <view class="home-primary__description">{{homeState.primaryTask.description}}</view>
-      <ui-button variant="primary" bind:tap="onPrimaryTask">{{homeState.primaryTask.label}}</ui-button>
+      <view wx:if="{{homeState.status === 'initializing'}}" class="home-primary__loading" aria-live="polite">请稍候</view>
+      <ui-button
+        wx:if="{{homeState.status !== 'initializing'}}"
+        variant="primary"
+        bind:tap="onPrimaryTask"
+      >{{homeState.primaryTask.label}}</ui-button>
     </view>
   </ui-card>
 
@@ -36,6 +43,7 @@
       <view class="home-summary">
         <view class="home-summary__title">{{homeState.todaySummary.title}}</view>
         <view class="home-summary__description">{{homeState.todaySummary.description}}</view>
+        <view wx:if="{{homeState.todaySummary.status === 'error'}}" class="home-section__state home-section__state--error">记录暂时不可用，可以稍后重试。</view>
         <view wx:if="{{homeState.todaySummary.count}}" class="home-summary__dogs">
           <text wx:for="{{homeState.todaySummary.dogNames}}" wx:key="*this" class="home-summary__dog">{{item}}</text>
         </view>
@@ -55,40 +63,35 @@
     </ui-card>
   </view>
 
-  <view wx:if="{{homeState.profileIssues.length}}" class="home-section">
+  <view wx:if="{{homeState.authState !== 'guest' && homeState.authState !== 'unknown'}}" class="home-section home-items">
     <view class="home-section__head">
-      <view class="df-heading-lg">狗狗事项</view>
+      <view class="df-heading-lg">体重与护理</view>
       <view class="home-section__hint">最多显示 3 条</view>
     </view>
-    <view class="home-issue-list">
-      <ui-card
-        wx:for="{{homeState.profileIssues}}"
-        wx:key="key"
-        padding="small"
-      >
-        <view
-          class="home-issue"
-          data-dog-id="{{item.dogId}}"
-          data-action="{{item.action}}"
-          aria-role="button"
-          aria-label="{{item.dogName}}，{{item.title}}"
-          bind:tap="onOpenProfileIssue"
-        >
+    <ui-card padding="small">
+      <view wx:if="{{homeState.homeItemsStatus === 'loading'}}" class="home-section__state" aria-live="polite">正在加载体重与护理事项</view>
+      <view wx:elif="{{homeState.homeItemsStatus === 'error'}}" class="home-section__state home-section__state--error">
+        <view>体重与护理事项暂时无法读取</view>
+        <ui-button variant="secondary" size="small" bind:tap="onRetryHome">重新加载</ui-button>
+      </view>
+      <view wx:elif="{{homeState.homeItemsStatus === 'empty'}}" class="home-section__state">暂无需要处理的事项</view>
+      <view wx:else class="home-issue-list">
+        <view wx:for="{{homeState.profileIssues}}" wx:key="key" class="home-issue home-issue--compact" data-dog-id="{{item.dogId}}" data-action="{{item.action}}" aria-role="button" bind:tap="onOpenProfileIssue">
           <view class="home-issue__copy">
             <view class="home-issue__title">{{item.dogName}} · {{item.title}}</view>
             <view class="home-issue__description">{{item.description}}</view>
           </view>
           <view class="home-issue__chevron" aria-hidden="true">›</view>
         </view>
-      </ui-card>
-    </view>
+      </view>
+    </ui-card>
   </view>
 
   <view class="home-section home-recent">
     <view class="home-section__head">
       <view class="df-heading-lg">最近一顿</view>
       <view
-        wx:if="{{homeState.status !== 'guest'}}"
+        wx:if="{{homeState.status !== 'guest' && homeState.status !== 'initializing'}}"
         class="home-section__action"
         aria-role="button"
         aria-label="查看全部本餐记录"
@@ -109,10 +112,7 @@
         <view class="home-record__chevron" aria-hidden="true">›</view>
       </view>
     </ui-card>
-    <ui-empty
-      wx:else
-      title="{{homeState.status === 'guest' ? '登录后查看最近记录' : homeState.recentSummary.title}}"
-      description="{{homeState.status === 'guest' ? '登录后可以查看真实的本餐快照。' : homeState.recentSummary.description}}"
-    />
+    <ui-empty wx:elif="{{homeState.recentSummary.status === 'empty'}}" title="{{homeState.status === 'guest' ? '登录后查看最近记录' : homeState.recentSummary.title}}" description="{{homeState.status === 'guest' ? '登录后可以查看真实的本餐快照。' : homeState.recentSummary.description}}" />
+    <view wx:else class="home-section__state {{homeState.recentSummary.status === 'error' ? 'home-section__state--error' : ''}}" aria-live="polite">{{homeState.recentSummary.title}}<view class="home-section__state-copy">{{homeState.recentSummary.description}}</view></view>
   </view>
 </view>

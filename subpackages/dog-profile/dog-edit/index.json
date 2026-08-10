@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "狗狗档案",
+  "navigationBarTitleText": "爱宠档案",
   "usingComponents": {
     "ui-button": "../../../components/ui/ui-button/index",
     "ui-card": "../../../components/ui/ui-card/index",

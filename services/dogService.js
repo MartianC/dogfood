@@ -9,12 +9,16 @@ const { normalizeLegacyWeightKg } = require('./weightContract')
 const {
   DOG_PROFILE_SCHEMA_VERSION,
   DOGS_CACHE_SCHEMA_VERSION,
+  isDogsCacheValid,
   normalizeSpecialNutritionNeeds,
   validateSpecialNutritionNeeds
 } = require('./dogProfileContract')
 
 const BREEDS = new Set(breedAdultWeightCatalog.map((item) => item.value))
 const BODY_CONDITIONS = new Set(['thin', 'ideal', 'overweight'])
+
+// 冷启动期间首页与记录时间轴可能同时读取狗狗档案；共享同一个请求，避免重复访问云端。
+let listDogsInFlight = null
 
 function hasOwn(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key)
@@ -125,7 +129,7 @@ async function ensureDogProfileWriteCapability() {
 
 function readDogsCache() {
   const cached = storage.getCache('dogsCache')
-  return cached && cached.profileSchemaVersion === DOGS_CACHE_SCHEMA_VERSION
+  return isDogsCacheValid(cached)
     ? cached
     : null
 }
@@ -139,16 +143,24 @@ function writeDogsCache(dogs) {
 }
 
 async function listDogs() {
+  if (listDogsInFlight) return listDogsInFlight
   const cached = readDogsCache()
+  listDogsInFlight = (async () => {
+    try {
+      const dogs = (await adapter.listDogs()).map((dog) => decorateSavedDog(dog))
+      writeDogsCache(dogs)
+      authService.refreshState(dogs)
+      return dogs
+    } catch (error) {
+      const fallback = cached ? cached.items.map((dog) => decorateSavedDog(dog)) : []
+      authService.refreshState(fallback)
+      return fallback
+    }
+  })()
   try {
-    const dogs = (await adapter.listDogs()).map((dog) => decorateSavedDog(dog))
-    writeDogsCache(dogs)
-    authService.refreshState(dogs)
-    return dogs
-  } catch (error) {
-    const fallback = cached ? cached.items.map((dog) => decorateSavedDog(dog)) : []
-    authService.refreshState(fallback)
-    return fallback
+    return await listDogsInFlight
+  } finally {
+    listDogsInFlight = null
   }
 }
 

@@ -38,10 +38,10 @@ function selectedDogIndex(dogs, dogId, fallback = 0) {
 function emptyDogView() {
   return {
     dogId: '',
-    dogName: '狗狗',
+    dogName: '爱宠',
     currentWeightText: '未记录',
-    currentMeasuredOnText: '还没有狗狗档案',
-    currentWeightSourceText: '先添加一只狗狗',
+    currentMeasuredOnText: '还没有爱宠档案',
+    currentWeightSourceText: '先添加一只爱宠',
     recordCount: 0,
     recordCountText: '0 次测量',
     hasMeasurements: false,
@@ -64,7 +64,7 @@ Page({
     dogs: [],
     dogId: '',
     dogIndex: 0,
-    dogName: '狗狗',
+    dogName: '爱宠',
     measurements: [],
     nextCursor: null,
     loadStatus: 'loading',
@@ -110,7 +110,7 @@ Page({
         dogs,
         dogId: dog.id,
         dogIndex,
-        dogName: dog.name || '狗狗'
+        dogName: dog.name || '爱宠'
       })
       await this.loadRecords(dog, { statusAlreadySet: true })
     } catch (error) {
@@ -130,7 +130,7 @@ Page({
       this.setData({
         ...view,
         dogId: dog.id,
-        dogName: dog.name || '狗狗',
+        dogName: dog.name || '爱宠',
         measurements: result.items,
         nextCursor: result.nextCursor,
         loadStatus: 'ready',
@@ -146,7 +146,7 @@ Page({
     if (!Number.isInteger(index) || !this.data.dogs[index]) return
     const dog = this.data.dogs[index]
     this.requestedDogId = dog.id
-    this.setData({ dogIndex: index, dogId: dog.id, dogName: dog.name || '狗狗' })
+    this.setData({ dogIndex: index, dogId: dog.id, dogName: dog.name || '爱宠' })
     await this.loadRecords(dog)
   },
 

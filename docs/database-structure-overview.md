@@ -56,7 +56,7 @@ CloudBase 公共只读投影
 |---|---|---|
 | `_id` | string | CloudBase 主键 |
 | `openId` | string，业务上唯一 | 微信 openid；当前代码用它查询用户 |
-| `nickname` | string | 默认“狗饭用户” |
+| `nickname` | string | 默认“爪饭用户” |
 | `avatarUrl` | string | 默认空字符串 |
 | `createdAt` | Date | 首次创建 |
 | `updatedAt` | Date | 当前实现登录时不会更新，建议后续统一 |

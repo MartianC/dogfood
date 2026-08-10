@@ -174,7 +174,7 @@ test('F1.5 保留记录页确认文案并通过统一记餐入口启动', async 
   const { definition } = loadRecordsPage({}, entryService)
 
   assert.equal(pageJson.navigationBarTitleText, '记录')
-  assert.match(pageWxml, /先添加狗狗档案/)
+  assert.match(pageWxml, /先添加爱宠档案/)
   assert.match(pageWxml, /保存第一顿后，日历会显示每天的记录/)
   assert.match(pageWxml, /<ui-button bind:tap="onCreateMeal">记录第一顿<\/ui-button>/)
   assert.doesNotMatch(pageWxml, /subpackages\/shared-meal\/dog-select\/index/)

@@ -2,16 +2,16 @@
   <view class="care-record-head">
     <view class="care-record-heading">
       <view class="df-heading-lg">护理记录</view>
-      <view class="care-record-dog-name">{{dogName || '选择狗狗后查看记录'}}</view>
+      <view class="care-record-dog-name">{{dogName || '选择爱宠后查看记录'}}</view>
     </view>
     <ui-button size="medium" block="{{false}}" bind:tap="onAdd">添加记录</ui-button>
   </view>
 
   <view wx:if="{{errorCode === 'NO_DOG'}}" class="section">
     <ui-empty
-      title="还没有狗狗档案"
-      description="先添加一只狗狗，再记录护理事实。"
-      action-text="添加狗狗"
+      title="还没有爱宠档案"
+      description="先添加一只爱宠，再记录护理事实。"
+      action-text="添加爱宠"
       bind:action="onAddDog"
     />
   </view>
@@ -24,7 +24,7 @@
   </view>
 
   <view wx:else class="section">
-    <ui-field wx:if="{{dogs.length > 1}}" label="当前狗狗">
+    <ui-field wx:if="{{dogs.length > 1}}" label="当前爱宠">
       <picker range="{{dogs}}" range-key="name" value="{{dogIndex}}" bindchange="onDogChange">
         <view class="care-record-picker-value">{{dogName}}</view>
       </picker>

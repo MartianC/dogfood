@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "狗饭",
+  "navigationBarTitleText": "爪饭",
   "usingComponents": {
     "ui-button": "../../components/ui/ui-button/index",
     "ui-card": "../../components/ui/ui-card/index",

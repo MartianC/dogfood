@@ -39,7 +39,7 @@ const expectedContractPaths = [
   'cloudfunctions/sharedMealRecord/schema/record.schema.json',
   'contracts/shared-meal/shared-meal-ingredient-v1.schema.json',
 ]
-const expectedTabs = ['首页', '记录', '狗狗', '我的']
+const expectedTabs = ['首页', '记录', '爱宠', '我的']
 const expectedLegacyPaths = [
   'pages/recipes/list/index',
   'pages/recipes/detail/index',

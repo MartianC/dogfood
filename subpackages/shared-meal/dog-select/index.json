@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "选择这次的狗狗",
+  "navigationBarTitleText": "选择这次的爱宠",
   "usingComponents": {
     "recipe-menu-indicator": "../../../components/vendor/recipe-menu-indicator/index",
     "ui-button": "../../../components/ui/ui-button/index",

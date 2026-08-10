@@ -23,7 +23,10 @@ function matches(document, condition) {
   })
 }
 
-function createDatabase(fixtures) {
+function createDatabase(fixtures, options = {}) {
+  const maxQueryLimit = Number.isFinite(options.maxQueryLimit)
+    ? options.maxQueryLimit
+    : Infinity
   const calls = []
   const database = {
     command: {
@@ -62,7 +65,7 @@ function createDatabase(fixtures) {
             }
             return 0
           })
-          return { data: rows.slice(0, maximum) }
+          return { data: rows.slice(0, Math.min(maximum, maxQueryLimit)) }
         }
       }
       return query
@@ -139,7 +142,7 @@ const fixtures = {
   ]
 }
 
-test('搜索只解析 active recipe_version，并以 sortKey + _id 稳定游标批量返回原料', async () => {
+test('搜索只解析 active recipe_version，并以稳定游标批量返回原料', async () => {
   const { database, calls } = createDatabase(fixtures)
   const search = createSearchHumanRecipes(database)
 
@@ -173,6 +176,31 @@ test('搜索只解析 active recipe_version，并以 sortKey + _id 稳定游标�
   )
   assert.equal(calls.filter((call) => call.name === 'human_recipes').length, 2)
   assert.equal(calls.some((call) => call.name === 'canine_ingredient_policies'), false)
+})
+
+test('搜索在云数据库单次最多返回 20 条时仍能继续读取第 21 条', async () => {
+  const cappedFixtures = {
+    data_releases: fixtures.data_releases,
+    human_recipes: Array.from({ length: 21 }, (_, index) => {
+      const recipe = {
+        ...fixtures.human_recipes[0],
+        _id: `recipe-${String(index).padStart(2, '0')}`,
+        title: `菜谱 ${index}`
+      }
+      delete recipe.sortKey
+      return recipe
+    })
+  }
+  const { database } = createDatabase(cappedFixtures, { maxQueryLimit: 20 })
+  const search = createSearchHumanRecipes(database)
+
+  const first = await search({ limit: 20 })
+  const second = await search({ limit: 20, cursor: first.nextCursor })
+
+  assert.equal(first.items.length, 20)
+  assert.ok(first.nextCursor)
+  assert.deepEqual(second.items.map((item) => item.id), ['recipe-20'])
+  assert.equal(second.nextCursor, null)
 })
 
 test('云端与 Mock 搜索摘要键集合一致且最大页响应不携带内部投影', async () => {

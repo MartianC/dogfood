@@ -26,6 +26,7 @@ App({
     authReady: null,
     recordTimelineState: null,
     recordTimelinePrefetch: null,
+    recordTimelinePrefetchTimer: null,
     redirectFrom: null,
     latestPlan: null
   },
@@ -54,9 +55,16 @@ App({
     const timelineService = require('./services/unifiedRecordTimelineService')
     const state = timelineService.createUnifiedRecordTimelineState()
     this.globalData.recordTimelineState = state
-    this.globalData.recordTimelinePrefetch = state.load(todayKey.slice(0, 7), {
+    // 让首页先消费认证/狗狗快照并发起主任务请求；记录时间轴仅在当前事件循环空闲后预取。
+    // 预取失败被隔离为 null，不得阻塞首页启动或记录页后续的独立加载。
+    const run = () => state.load(todayKey.slice(0, 7), {
       selectedDateKey: todayKey
     }).catch(() => null)
+    const timer = typeof setTimeout === 'function'
+      ? new Promise((resolve) => setTimeout(() => resolve(run()), 0))
+      : Promise.resolve().then(run)
+    this.globalData.recordTimelinePrefetch = timer
+    this.globalData.recordTimelinePrefetchTimer = timer
     return this.globalData.recordTimelinePrefetch
   },
 

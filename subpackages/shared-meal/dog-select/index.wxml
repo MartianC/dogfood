@@ -1,5 +1,5 @@
 <view class="page shared-meal-dog-page">
-  <ui-notice variant="neutral">一次只为一只狗狗创建本餐；多狗家庭请明确选择。</ui-notice>
+  <ui-notice variant="neutral">一次只为一只爱宠创建本餐；多宠家庭请明确选择。</ui-notice>
   <ui-notice wx:if="{{blockedText}}" variant="warning">
     <view class="shared-meal-dog-warning">适用范围提示：{{blockedText}}</view>
     <view>当前不会生成狗饭创建结果，请咨询兽医或宠物营养专业人士。</view>
@@ -7,13 +7,13 @@
   <ui-notice wx:if="{{errorText}}" variant="warning">{{errorText}}</ui-notice>
 
   <block wx:if="{{loading}}">
-    <view class="shared-meal-dog-loading">正在读取狗狗档案</view>
+    <view class="shared-meal-dog-loading">正在读取爱宠档案</view>
   </block>
   <block wx:elif="{{!dogs.length}}">
     <ui-empty
-      title="还没有狗狗档案"
+      title="还没有爱宠档案"
       description="先建档，再开始记录这顿饭。"
-      actionText="创建狗狗档案"
+      actionText="创建爱宠档案"
       bind:action="onCreateDog"
     />
   </block>
@@ -91,7 +91,7 @@
           <view class="shared-meal-recovery-menu">内容损坏或版本已失效</view>
           <view class="shared-meal-recovery-time">不会进入原来的编辑内容</view>
         </view>
-        <view class="shared-meal-recovery-description">为避免带入不完整内容，请重新开始并重新选择狗狗和菜单。</view>
+        <view class="shared-meal-recovery-description">为避免带入不完整内容，请重新开始并重新选择爱宠和菜单。</view>
         <view class="shared-meal-recovery-actions">
           <ui-button size="xlarge" bind:tap="onRestartRecovery">重新开始</ui-button>
         </view>
