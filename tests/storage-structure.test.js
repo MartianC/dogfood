@@ -69,6 +69,7 @@ test('小程序配置包含四个新主 Tab、记录页和旧兼容路由', () =
 test('TabBar 使用本地图标资源', () => {
   const appJsonPath = path.join(__dirname, '..', 'app.json')
   const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'))
+  const customTabBarSource = fs.readFileSync(path.join(__dirname, '..', 'custom-tab-bar/index.js'), 'utf8')
 
   appJson.tabBar.list.forEach((item) => {
     assert.match(item.iconPath, /^assets\/tabbar\/.+\.png$/)
@@ -79,6 +80,20 @@ test('TabBar 使用本地图标资源', () => {
       assert.ok(fs.existsSync(fullPath), `${iconPath} 不存在`)
       assert.ok(fs.statSync(fullPath).size > 0, `${iconPath} 是空文件`)
       assert.ok(fs.statSync(fullPath).size < 40 * 1024, `${iconPath} 超过小程序 tabBar 建议大小`)
+    })
+  })
+
+  ;['home', 'records', 'dogs', 'profile'].forEach((iconName) => {
+    ;[
+      [`assets/tabbar/${iconName}.svg`, '#6f7b73'],
+      [`assets/tabbar/${iconName}-active.svg`, '#25684a']
+    ].forEach(([iconPath, expectedColor]) => {
+      const fullPath = path.join(__dirname, '..', iconPath)
+      assert.match(customTabBarSource, new RegExp(`/${iconPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`))
+      assert.ok(fs.existsSync(fullPath), `${iconPath} 不存在`)
+      assert.ok(fs.statSync(fullPath).size > 0, `${iconPath} 是空文件`)
+      assert.ok(fs.statSync(fullPath).size < 40 * 1024, `${iconPath} 超过小程序 tabBar 建议大小`)
+      assert.match(fs.readFileSync(fullPath, 'utf8'), new RegExp(expectedColor, 'i'))
     })
   })
 })

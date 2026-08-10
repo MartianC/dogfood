@@ -26,10 +26,10 @@ function getTabBarContainerStyle() {
 }
 
 const items = [
-  { value: 'home', label: '首页', iconPath: '/assets/tabbar/home.png', selectedIconPath: '/assets/tabbar/home-active.png', path: '/pages/home/index' },
-  { value: 'records', label: '记录', iconPath: '/assets/tabbar/records.png', selectedIconPath: '/assets/tabbar/records-active.png', path: '/pages/records/index' },
-  { value: 'dogs', label: '爱宠', iconPath: '/assets/tabbar/dogs.png', selectedIconPath: '/assets/tabbar/dogs-active.png', path: '/pages/dogs/index' },
-  { value: 'profile', label: '我的', iconPath: '/assets/tabbar/profile.png', selectedIconPath: '/assets/tabbar/profile-active.png', path: '/pages/profile/index/index' }
+  { value: 'home', label: '首页', iconPath: '/assets/tabbar/home.svg', selectedIconPath: '/assets/tabbar/home-active.svg', path: '/pages/home/index' },
+  { value: 'records', label: '记录', iconPath: '/assets/tabbar/records.svg', selectedIconPath: '/assets/tabbar/records-active.svg', path: '/pages/records/index' },
+  { value: 'dogs', label: '爱宠', iconPath: '/assets/tabbar/dogs.svg', selectedIconPath: '/assets/tabbar/dogs-active.svg', path: '/pages/dogs/index' },
+  { value: 'profile', label: '我的', iconPath: '/assets/tabbar/profile.svg', selectedIconPath: '/assets/tabbar/profile-active.svg', path: '/pages/profile/index/index' }
 ]
 
 const tabBarStyle = [
