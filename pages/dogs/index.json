@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "狗狗",
+  "navigationBarTitleText": "爱宠",
   "usingComponents": {
     "empty-state": "../../components/empty-state/index",
     "ui-button": "../../components/ui/ui-button/index",

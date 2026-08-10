@@ -28,7 +28,7 @@ function getTabBarContainerStyle() {
 const items = [
   { value: 'home', label: '首页', iconPath: '/assets/tabbar/home.png', selectedIconPath: '/assets/tabbar/home-active.png', path: '/pages/home/index' },
   { value: 'records', label: '记录', iconPath: '/assets/tabbar/records.png', selectedIconPath: '/assets/tabbar/records-active.png', path: '/pages/records/index' },
-  { value: 'dogs', label: '狗狗', iconPath: '/assets/tabbar/dogs.png', selectedIconPath: '/assets/tabbar/dogs-active.png', path: '/pages/dogs/index' },
+  { value: 'dogs', label: '爱宠', iconPath: '/assets/tabbar/dogs.png', selectedIconPath: '/assets/tabbar/dogs-active.png', path: '/pages/dogs/index' },
   { value: 'profile', label: '我的', iconPath: '/assets/tabbar/profile.png', selectedIconPath: '/assets/tabbar/profile-active.png', path: '/pages/profile/index/index' }
 ]
 

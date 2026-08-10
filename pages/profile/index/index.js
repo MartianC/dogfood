@@ -2,10 +2,18 @@ const authService = require('../../../services/authService')
 const userProfileService = require('../../../services/userProfileService')
 const assets = require('../../../utils/assets')
 
+function getDisplayNickname(user) {
+  const nickname = user && user.nickname
+  if (nickname === '狗饭用户') return '爪饭用户'
+  if (nickname === '狗饭体验用户') return '爪饭体验用户'
+  return nickname || '微信用户'
+}
+
 Page({
   data: {
     authState: 'guest',
     user: null,
+    displayNickname: '微信用户',
     avatarUrl: '',
     defaultUserAvatar: assets.defaultUserAvatar
   },
@@ -19,6 +27,7 @@ Page({
     this.setData({
       authState: authService.getAuthState(),
       user,
+      displayNickname: getDisplayNickname(user),
       avatarUrl: user && user.avatarUrl ? user.avatarUrl : ''
     })
   },

@@ -85,7 +85,7 @@ function recordView(record = {}) {
   return {
     ...record,
     timeText: parts ? `${pad(parts.hours)}:${pad(parts.minutes)}` : '时间待确认',
-    dogName: record.dogSnapshot && record.dogSnapshot.name || '狗狗',
+    dogName: record.dogSnapshot && record.dogSnapshot.name || '爱宠',
     menuText: menus.join('、') || '未命名人饭菜单',
     ingredientCount: (record.dogMealItems || []).length
   }
@@ -166,7 +166,7 @@ Page({
       hasBlockingError,
       sourceNoticeText: sourceNoticeText(model),
       errorText: model && dogsLoadError
-        ? '狗狗档案暂时无法读取，请重新加载。'
+        ? '爱宠档案暂时无法读取，请重新加载。'
         : model && allSourcesFailed
           ? '吃饭、体重和护理记录暂时无法读取，请重新加载。'
           : state.error && state.error.message

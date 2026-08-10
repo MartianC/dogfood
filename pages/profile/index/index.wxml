@@ -12,7 +12,7 @@
         <image class="profile-avatar" src="{{avatarUrl || defaultUserAvatar}}" mode="aspectFill" bind:error="onAvatarError" />
       </ui-button>
       <view class="profile-main">
-        <view class="profile-title">{{authState === 'guest' ? '游客模式' : (user.nickname || '微信用户')}}</view>
+        <view class="profile-title">{{authState === 'guest' ? '游客模式' : displayNickname}}</view>
         <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案和本餐记录' : '本餐记录会保存到当前账号'}}</view>
       </view>
       <ui-tag variant="{{authState === 'guest' ? 'neutral' : 'good'}}" size="small">{{authState === 'guest' ? '未登录' : '已登录'}}</ui-tag>

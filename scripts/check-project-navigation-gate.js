@@ -8,7 +8,7 @@ const contractRelativePath = 'contracts/navigation/project-navigation-migration-
 const targetTabs = [
   { id: 'home', label: '首页', pagePath: 'pages/home/index', position: 0 },
   { id: 'records', label: '记录', pagePath: 'pages/records/index', position: 1 },
-  { id: 'dogs', label: '狗狗', pagePath: 'pages/dogs/index', position: 3 },
+  { id: 'dogs', label: '爱宠', pagePath: 'pages/dogs/index', position: 3 },
   { id: 'profile', label: '我的', pagePath: 'pages/profile/index/index', position: 4 }
 ]
 const centralAction = {
@@ -73,7 +73,7 @@ function validateProjectNavigationContract(contract, projectRoot = root) {
   )
 
   const target = contract.target || {}
-  assertCondition(sameJson(target.tabBar, targetTabs), '项目导航目标必须是首页、记录、狗狗、我的四个目的地')
+  assertCondition(sameJson(target.tabBar, targetTabs), '项目导航目标必须是首页、记录、爱宠、我的四个目的地')
   assertCondition(sameJson(target.centralAction, centralAction), '中央记餐动作契约已被篡改')
   assertCondition(sameJson(target.registrationOrder, targetTabs.map((item) => item.pagePath)), '目标页面注册顺序不一致')
 
@@ -149,7 +149,7 @@ function validateNavigationImplementation({ appConfig, contract, sources }) {
     pagePath: item.pagePath
   }))
   const expectedAppTabs = targetTabs.map((item) => ({ label: item.label, pagePath: item.pagePath }))
-  assertCondition(sameJson(appTabs, expectedAppTabs), 'app.json 必须注册首页、记录、狗狗、我的四个真实 Tab')
+  assertCondition(sameJson(appTabs, expectedAppTabs), 'app.json 必须注册首页、记录、爱宠、我的四个真实 Tab')
 
   const customItems = extractTabItems(sources.customTabBarJs)
   const expectedCustomItems = targetTabs.map((item) => ({

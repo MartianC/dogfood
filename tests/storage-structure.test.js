@@ -39,7 +39,7 @@ test('小程序配置包含四个新主 Tab、记录页和旧兼容路由', () =
 
   assert.deepEqual(
     appJson.tabBar.list.map((item) => item.text),
-    ['首页', '记录', '狗狗', '我的']
+    ['首页', '记录', '爱宠', '我的']
   )
   assert.ok(appJson.pages.includes('pages/home/index'))
   assert.ok(appJson.pages.includes('pages/records/index'))

@@ -58,6 +58,21 @@ test('我的页面只同步账号状态，不请求狗狗档案', async () => {
   assert.equal(selected, 'profile')
   assert.equal(viewData.authState, 'logged-in')
   assert.equal(viewData.user, user)
+  assert.equal(viewData.displayNickname, '小明')
+})
+
+test('我的页面将旧品牌默认昵称显示为爪饭用户', async () => {
+  const definition = loadProfilePage({
+    authState: 'logged-in',
+    user: { nickname: '狗饭用户', avatarUrl: '' }
+  })
+  let viewData
+
+  await definition.onShow.call({
+    setData(data) { viewData = data }
+  })
+
+  assert.equal(viewData.displayNickname, '爪饭用户')
 })
 
 test('登录用户选择微信头像后持久化并立即更新账号卡', async () => {

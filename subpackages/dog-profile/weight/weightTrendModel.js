@@ -168,7 +168,7 @@ function buildWeightView({ dog = {}, measurements = [] } = {}) {
   }))
 
   return {
-    dogName: dog.name || '狗狗',
+    dogName: dog.name || '爱宠',
     currentWeightText: weightText(current.weightKg),
     currentMeasuredOnText: current.measuredOn
       ? `最近测量：${dateText(current.measuredOn)}`

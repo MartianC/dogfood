@@ -1,12 +1,12 @@
 <view class="page with-bottom-action dog-profile-page">
   <view class="section dog-profile-section">
     <view class="dog-profile-form">
-        <view class="dog-profile-avatar" aria-role="button" aria-label="选择狗狗头像" bindtap="onChooseAvatar">
+        <view class="dog-profile-avatar" aria-role="button" aria-label="选择爱宠头像" bindtap="onChooseAvatar">
           <image class="dog-profile-avatar__image" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
         </view>
 
         <view class="dog-profile-pair">
-          <ui-field label="狗狗名字">
+          <ui-field label="爱宠名字">
             <input class="dog-profile-control" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
           </ui-field>
           <ui-field label="出生日期" errorText="{{birthDateError}}">
@@ -18,7 +18,7 @@
           </ui-field>
         </view>
 
-        <ui-field label="狗狗品种" errorText="{{breedError}}">
+        <ui-field label="爱宠品种" errorText="{{breedError}}">
           <picker range="{{breedOptions}}" range-key="label" value="{{breedIndex}}" bindchange="onBreed">
             <view class="dog-profile-picker-value {{form.breed ? '' : 'dog-profile-picker-value--empty'}}">
               {{form.breed ? breedOptions[breedIndex].label : '请选择'}}

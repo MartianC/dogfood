@@ -92,7 +92,7 @@ test('门禁拒绝三 Tab 基线，避免 N1.1 提前切换或漏注册狗狗 Ta
 
   assert.throws(
     () => validateNavigationImplementation(fixture),
-    /app\.json 必须注册首页、记录、狗狗、我的四个真实 Tab/
+    /app\.json 必须注册首页、记录、爱宠、我的四个真实 Tab/
   )
 })
 

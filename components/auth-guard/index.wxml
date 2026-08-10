@@ -1,9 +1,9 @@
 <view wx:if="{{authState !== 'has-profile'}}">
   <ui-card>
-    <view class="auth-title">生成专属清单需要先添加狗狗档案</view>
-    <view class="auth-desc">添加后会按狗狗体重、每日餐数和制作周期自动换算食材份量。</view>
+    <view class="auth-title">生成专属清单需要先添加爱宠档案</view>
+    <view class="auth-desc">添加后会按爱宠体重、每日餐数和制作周期自动换算食材份量。</view>
     <view class="auth-action">
-      <ui-button bind:tap="onLogin">微信登录并添加狗狗</ui-button>
+      <ui-button bind:tap="onLogin">微信登录并添加爱宠</ui-button>
     </view>
   </ui-card>
 </view>

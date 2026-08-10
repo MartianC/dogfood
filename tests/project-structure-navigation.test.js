@@ -25,7 +25,7 @@ test('狗狗 canonical 页面注册并成为第四个真实 Tab', () => {
 
   assert.deepEqual(config.pages.slice(0, targetPaths.length), targetPaths)
   assert.equal(config.pages.filter((page) => page === 'pages/dogs/index').length, 1)
-  assert.deepEqual(config.tabBar.list.map((item) => item.text), ['首页', '记录', '狗狗', '我的'])
+  assert.deepEqual(config.tabBar.list.map((item) => item.text), ['首页', '记录', '爱宠', '我的'])
   assert.equal(config.tabBar.list.some((item) => item.pagePath === 'pages/dogs/index'), true)
 
   for (const extension of ['js', 'json', 'wxml', 'wxss']) {

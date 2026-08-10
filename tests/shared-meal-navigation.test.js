@@ -3,10 +3,10 @@ const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
 
-test('主导航为首页、记录、狗狗、我的且旧路由只保留兼容读取', () => {
+test('主导航为首页、记录、爱宠、我的且旧路由只保留兼容读取', () => {
   const root = path.resolve(__dirname, '..')
   const config = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
-  assert.deepEqual(config.tabBar.list.map((item) => item.text), ['首页', '记录', '狗狗', '我的'])
+  assert.deepEqual(config.tabBar.list.map((item) => item.text), ['首页', '记录', '爱宠', '我的'])
   assert.ok(config.pages.includes('pages/recipes/list/index'))
   assert.ok(config.pages.includes('pages/plan/index/index'))
   assert.ok(config.tabBar.list.every((item) => !/recipes|plan/.test(item.pagePath)))

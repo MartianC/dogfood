@@ -79,7 +79,7 @@ Page({
           contextLoaded: true,
           loading: false,
           errorCode: 'NO_DOG',
-          errorMessage: '请先添加狗狗档案'
+          errorMessage: '请先添加爱宠档案'
         })
         return
       }
@@ -90,7 +90,7 @@ Page({
         dogs,
         dogIndex,
         dogId: dog.id,
-        dogName: dog.name || '这只狗狗',
+        dogName: dog.name || '这只爱宠',
         contextLoaded: true
       })
       await this.reloadRecords()
@@ -177,7 +177,7 @@ Page({
     const dogIndex = Number(event.detail.value)
     const dog = this.data.dogs[dogIndex]
     if (!dog) return
-    this.setData({ dogIndex, dogId: dog.id, dogName: dog.name || '这只狗狗' })
+    this.setData({ dogIndex, dogId: dog.id, dogName: dog.name || '这只爱宠' })
     return this.reloadRecords({ selectedType: '' })
   },
 

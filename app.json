@@ -47,7 +47,7 @@
     }
   ],
   "window": {
-    "navigationBarTitleText": "狗饭",
+    "navigationBarTitleText": "爪饭",
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f4f8f3"
@@ -73,7 +73,7 @@
       },
       {
         "pagePath": "pages/dogs/index",
-        "text": "狗狗",
+        "text": "爱宠",
         "iconPath": "assets/tabbar/dogs.png",
         "selectedIconPath": "assets/tabbar/dogs-active.png"
       },

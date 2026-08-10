@@ -87,7 +87,7 @@ test('狗狗页提供体重和护理入口，但不提前接入统一时间轴',
   const js = fs.readFileSync(path.join(root, 'pages/dogs/index.js'), 'utf8')
 
   assert.match(wxml, /登录后管理狗狗档案/)
-  assert.match(wxml, /狗狗档案/)
+  assert.match(wxml, /爱宠档案/)
   assert.match(wxml, /还没有狗狗档案/)
   assert.match(wxml, /wx:for="\{\{dogs\}\}"/)
   assert.match(`${js}\n${wxml}`, /体重趋势|记录第一次体重/)

@@ -1,8 +1,10 @@
 <view class="page with-tab-bar home-page" aria-label="首页">
   <view class="home-header">
     <view class="home-header__date df-caption">{{todayText}}</view>
-    <view class="home-header__title df-heading-xl">今天接下来做什么？</view>
-    <view class="home-header__copy df-body">记录今天和狗狗共享的一顿饭，按这次的菜单单独称量。</view>
+    <view class="home-header__title df-heading-xl">今天我们吃什么？</view>
+    <!--
+    <view class="home-header__copy df-body">记录今天和爱宠共享的一顿饭，按这次的菜单单独称量。</view>
+    -->
   </view>
 
   <ui-card

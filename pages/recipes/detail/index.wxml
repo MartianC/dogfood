@@ -34,7 +34,7 @@
   </view>
 
   <view class="section">
-    <ui-notice>食谱详情只展示通用比例，选择制作周期后再按狗狗体重和每日餐数换算克重。</ui-notice>
+    <ui-notice>食谱详情只展示通用比例，选择制作周期后再按爱宠体重和每日餐数换算克重。</ui-notice>
   </view>
 
   <view class="bottom-action">
@@ -44,10 +44,10 @@
   <view wx:if="{{showAuthSheet}}" class="modal-mask" bindtap="onCloseAuthSheet">
     <view class="sheet" catchtap="noop">
       <view class="sheet-eyebrow df-caption">生成专属清单</view>
-      <view class="sheet-title">先添加狗狗档案</view>
-      <view class="sheet-desc">添加后会按狗狗体重、每日餐数和制作周期换算总量，并提醒过敏或忌口食材。</view>
+      <view class="sheet-title">先添加爱宠档案</view>
+      <view class="sheet-desc">添加后会按爱宠体重、每日餐数和制作周期换算总量，并提醒过敏或忌口食材。</view>
       <view class="sheet-action">
-        <ui-button bind:tap="onAuthAndCreate">微信登录并添加狗狗</ui-button>
+        <ui-button bind:tap="onAuthAndCreate">微信登录并添加爱宠</ui-button>
       </view>
     </view>
   </view>
