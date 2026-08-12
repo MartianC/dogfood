@@ -1,0 +1,2227 @@
+{
+  "report_contract": "standardIngredientSourceSelection/v1",
+  "catalog_version": "2026-08-11-v1",
+  "selection_policy_id": "readyToCookNutritionSource/v1",
+  "concept_count": 97,
+  "selected_source_count": 97,
+  "concepts_with_multiple_candidates": 10,
+  "items": [
+    {
+      "concept_id": "ingredient_chicken_breast",
+      "canonical_name_zh": "鸡胸肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_chicken_breast_raw_skinless",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2646170,
+      "selected_description": "Chicken, breast, boneless, skinless, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 0,
+        "skin_rank": 0,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2646170
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_chicken_thigh",
+      "canonical_name_zh": "鸡大腿肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_chicken_thigh_raw_skinless",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2646171,
+      "selected_description": "Chicken, thigh, boneless, skinless, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 0,
+        "skin_rank": 0,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2646171
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_turkey_ground",
+      "canonical_name_zh": "火鸡肉末",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_turkey_ground_raw_93",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2514747,
+      "selected_description": "Turkey, ground, 93% lean/ 7% fat, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2514747
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_beef_ground",
+      "canonical_name_zh": "牛肉末",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_beef_ground_raw_90",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2514743,
+      "selected_description": "Beef, ground, 90% lean meat / 10% fat, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2514743
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_beef_tenderloin",
+      "canonical_name_zh": "牛里脊",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_beef_tenderloin_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2727573,
+      "selected_description": "Beef, tenderloin steak, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 18,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2727573
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_pork_ground",
+      "canonical_name_zh": "猪肉末",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_pork_ground_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2514745,
+      "selected_description": "Pork, ground, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2514745
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_pork_tenderloin",
+      "canonical_name_zh": "猪里脊",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_pork_tenderloin_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2646169,
+      "selected_description": "Pork, loin, tenderloin, boneless, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 0,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2646169
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_lamb_ground",
+      "canonical_name_zh": "羊肉末",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_lamb_ground_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2727570,
+      "selected_description": "Lamb, ground, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 18,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2727570
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_chicken_liver",
+      "canonical_name_zh": "鸡肝",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_chicken_liver_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171060,
+      "selected_description": "Chicken, liver, all classes, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 113,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 171060
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_chicken_liver_simmered",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 171061,
+          "description": "Chicken, liver, all classes, cooked, simmered",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 113,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 171061
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_chicken_heart",
+      "canonical_name_zh": "鸡心",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_chicken_heart_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171458,
+      "selected_description": "Chicken, heart, all classes, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 69,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 171458
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_chicken_heart_simmered",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 171059,
+          "description": "Chicken, heart, all classes, cooked, simmered",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 69,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 171059
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_liver",
+      "canonical_name_zh": "牛肝",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_beef_liver_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169451,
+      "selected_description": "Beef, variety meats and by-products, liver, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 113,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 169451
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_beef_liver_braised",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 168626,
+          "description": "Beef, variety meats and by-products, liver, cooked, braised",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 113,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 168626
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_heart",
+      "canonical_name_zh": "牛心",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_beef_heart_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168625,
+      "selected_description": "Beef, variety meats and by-products, heart, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 84,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 168625
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_beef_heart_simmered",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 169448,
+          "description": "Beef, variety meats and by-products, heart, cooked, simmered",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 91,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 169448
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_kidney",
+      "canonical_name_zh": "牛肾",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_beef_kidney_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169449,
+      "selected_description": "Beef, variety meats and by-products, kidneys, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 87,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 169449
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_beef_kidney_simmered",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 169450,
+          "description": "Beef, variety meats and by-products, kidneys, cooked, simmered",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 90,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 169450
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_liver",
+      "canonical_name_zh": "猪肝",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_pork_liver_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 167862,
+      "selected_description": "Pork, fresh, variety meats and by-products, liver, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 75,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 167862
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_pork_liver_braised",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 167863,
+          "description": "Pork, fresh, variety meats and by-products, liver, cooked, braised",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 75,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 167863
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_heart",
+      "canonical_name_zh": "猪心",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_pork_heart_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168267,
+      "selected_description": "Pork, fresh, variety meats and by-products, heart, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 86,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 168267
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_pork_heart_braised",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 168268,
+          "description": "Pork, fresh, variety meats and by-products, heart, cooked, braised",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 74,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 168268
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_kidney",
+      "canonical_name_zh": "猪肾",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_pork_kidney_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168270,
+      "selected_description": "Pork, fresh, variety meats and by-products, kidneys, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 74,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 168270
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_pork_kidney_braised",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 167860,
+          "description": "Pork, fresh, variety meats and by-products, kidneys, cooked, braised",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 74,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 167860
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_lamb_liver",
+      "canonical_name_zh": "羊肝",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_lamb_liver_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 172531,
+      "selected_description": "Lamb, variety meats and by-products, liver, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 62,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 172531
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_lamb_liver_braised",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 172532,
+          "description": "Lamb, variety meats and by-products, liver, cooked, braised",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 4,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 1,
+            "nutrient_count": 74,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 172532
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_salmon",
+      "canonical_name_zh": "三文鱼",
+      "candidate_count": 2,
+      "selected_variant_id": "variant_salmon_atlantic_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2684441,
+      "selected_description": "Fish, salmon, Atlantic, farm raised, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 39,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2684441
+      },
+      "rejected_candidates": [
+        {
+          "variant_id": "variant_salmon_sockeye_raw",
+          "source_version": "foundation",
+          "fdc_id": 2684440,
+          "description": "Fish, salmon, sockeye, wild caught, raw",
+          "score": {
+            "processed_penalty": 0,
+            "preparation_rank": 0,
+            "bone_rank": 1,
+            "skin_rank": 1,
+            "peel_rank": 1,
+            "source_rank": 0,
+            "nutrient_count": 39,
+            "existing_default_tiebreaker": false,
+            "fdc_id": 2684440
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_cod",
+      "canonical_name_zh": "鳕鱼",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_cod_atlantic_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2684444,
+      "selected_description": "Fish, cod, Atlantic, wild caught, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 39,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2684444
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_tilapia",
+      "canonical_name_zh": "罗非鱼",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_tilapia_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2684442,
+      "selected_description": "Fish, tilapia, farm raised, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 39,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2684442
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_shrimp",
+      "canonical_name_zh": "虾",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_shrimp_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2684443,
+      "selected_description": "Crustaceans, shrimp, farm raised, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2684443
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_tuna",
+      "canonical_name_zh": "金枪鱼",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_tuna_yellowfin_frozen",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2747673,
+      "selected_description": "Tuna, ahi or yellowfin, frozen, wild caught",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 2,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 18,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2747673
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_whole_egg",
+      "canonical_name_zh": "鸡蛋",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_whole_egg_grade_a",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 748967,
+      "selected_description": "Eggs, Grade A, Large, egg whole",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 3,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 97,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 748967
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_egg_white",
+      "canonical_name_zh": "蛋白",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_egg_white_grade_a",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 747997,
+      "selected_description": "Eggs, Grade A, Large, egg white",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 3,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 31,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 747997
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_egg_yolk",
+      "canonical_name_zh": "蛋黄",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_egg_yolk_grade_a",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 748236,
+      "selected_description": "Eggs, Grade A, Large, egg yolk",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 3,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 48,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 748236
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_broccoli",
+      "canonical_name_zh": "西兰花",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_broccoli_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 321900,
+      "selected_description": "Broccoli, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 107,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 321900
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_carrot",
+      "canonical_name_zh": "胡萝卜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_carrot_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2258586,
+      "selected_description": "Carrots, mature, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 25,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2258586
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_pumpkin",
+      "canonical_name_zh": "南瓜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_pumpkin_raw_peeled",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2727578,
+      "selected_description": "Squash, pie pumpkin, peeled, seeded, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 0,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2727578
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_butternut_squash",
+      "canonical_name_zh": "奶油南瓜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_butternut_squash_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2685570,
+      "selected_description": "Squash, winter, butternut, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 21,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2685570
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_sweet_potato",
+      "canonical_name_zh": "红薯",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_sweet_potato_raw_peeled",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346404,
+      "selected_description": "Sweet potatoes, orange flesh, without skin, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 0,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 35,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346404
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_potato",
+      "canonical_name_zh": "土豆",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_potato_russet_raw_peeled",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346401,
+      "selected_description": "Potatoes, russet, without skin, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 0,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 35,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346401
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_spinach",
+      "canonical_name_zh": "菠菜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_spinach_baby",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 1750352,
+      "selected_description": "Spinach, baby",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 37,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 1750352
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_kale",
+      "canonical_name_zh": "羽衣甘蓝",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_kale_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 323505,
+      "selected_description": "Kale, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 51,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 323505
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_bok_choy",
+      "canonical_name_zh": "小白菜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_bok_choy_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2685572,
+      "selected_description": "Cabbage, bok choy, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 21,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2685572
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_green_cabbage",
+      "canonical_name_zh": "绿甘蓝",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_green_cabbage_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346407,
+      "selected_description": "Cabbage, green, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 23,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346407
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_cauliflower",
+      "canonical_name_zh": "菜花",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_cauliflower_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2685573,
+      "selected_description": "Cauliflower, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 21,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2685573
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_zucchini",
+      "canonical_name_zh": "西葫芦",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_zucchini_raw_with_skin",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2685568,
+      "selected_description": "Squash, summer, green, zucchini, includes skin, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 21,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2685568
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_celery",
+      "canonical_name_zh": "西芹",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_celery_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346405,
+      "selected_description": "Celery, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 20,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346405
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_cucumber",
+      "canonical_name_zh": "黄瓜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_cucumber_raw_with_peel",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346406,
+      "selected_description": "Cucumber, with peel, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 2,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346406
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_tomato",
+      "canonical_name_zh": "番茄",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_tomato_grape_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 321360,
+      "selected_description": "Tomatoes, grape, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 54,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 321360
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_apple",
+      "canonical_name_zh": "苹果",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_apple_fuji_raw_with_skin",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 1105897,
+      "selected_description": "Apples, fuji, with skin, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 2,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 31,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 1105897
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_blueberry",
+      "canonical_name_zh": "蓝莓",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_blueberry_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2263889,
+      "selected_description": "Blueberries, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 26,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2263889
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_strawberry",
+      "canonical_name_zh": "草莓",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_strawberry_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2263887,
+      "selected_description": "Strawberries, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 31,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2263887
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_pear",
+      "canonical_name_zh": "梨",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_pear_anjou_raw_with_skin",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2710836,
+      "selected_description": "Pear, Anjou, green, with skin, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 2,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 26,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2710836
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_banana",
+      "canonical_name_zh": "香蕉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_banana_ripe_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 790991,
+      "selected_description": "Bananas, ripe and slightly ripe, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 43,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 790991
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_watermelon",
+      "canonical_name_zh": "西瓜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_watermelon_seedless_flesh_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2747675,
+      "selected_description": "Watermelon, seedless, flesh only, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 21,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2747675
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_brown_rice",
+      "canonical_name_zh": "糙米",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_brown_rice_long_grain_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2512380,
+      "selected_description": "Rice, brown, long grain, unenriched, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 29,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2512380
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_white_rice",
+      "canonical_name_zh": "白米",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_white_rice_long_grain_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169756,
+      "selected_description": "Rice, white, long-grain, regular, raw, unenriched",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 89,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 169756
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_oats",
+      "canonical_name_zh": "燕麦",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_oats_rolled_old_fashioned",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346396,
+      "selected_description": "Oats, whole grain, rolled, old fashioned",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 29,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346396
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_quinoa",
+      "canonical_name_zh": "藜麦",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_quinoa_uncooked",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168874,
+      "selected_description": "Quinoa, uncooked",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 104,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 168874
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_barley",
+      "canonical_name_zh": "大麦",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_barley_pearled_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 170284,
+      "selected_description": "Barley, pearled, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 89,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 170284
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_millet",
+      "canonical_name_zh": "小米",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_millet_whole_grain",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2512379,
+      "selected_description": "Millet, whole grain",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 30,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2512379
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_buckwheat",
+      "canonical_name_zh": "荞麦",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_buckwheat_whole_grain",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2512378,
+      "selected_description": "Buckwheat, whole grain",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 30,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2512378
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_lentils",
+      "canonical_name_zh": "小扁豆",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_lentils_dry",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2644283,
+      "selected_description": "Lentils, dry",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 19,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2644283
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_chickpeas",
+      "canonical_name_zh": "鹰嘴豆",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_chickpeas_dry",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2644282,
+      "selected_description": "Chickpeas, (garbanzo beans, bengal gram), dry",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 19,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2644282
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_green_peas",
+      "canonical_name_zh": "青豌豆",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_green_peas_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 170419,
+      "selected_description": "Peas, green, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 100,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 170419
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_green_beans",
+      "canonical_name_zh": "四季豆",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_green_beans_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346400,
+      "selected_description": "Beans, snap, green, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 31,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346400
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_canola_oil",
+      "canonical_name_zh": "菜籽油",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_canola_oil",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 748278,
+      "selected_description": "Oil, canola",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 38,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 748278
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_olive_oil",
+      "canonical_name_zh": "橄榄油",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_olive_oil_extra_virgin",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 748608,
+      "selected_description": "Oil, olive, extra virgin",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 30,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 748608
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_corn_oil",
+      "canonical_name_zh": "玉米油",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_corn_oil",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 748323,
+      "selected_description": "Oil, corn",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 38,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 748323
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_soybean_oil",
+      "canonical_name_zh": "大豆油",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_soybean_oil",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 748366,
+      "selected_description": "Oil, soybean",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 38,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 748366
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_coconut_oil",
+      "canonical_name_zh": "椰子油",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_coconut_oil",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 330458,
+      "selected_description": "Oil, coconut",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 89,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 330458
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_chicken_meat",
+      "canonical_name_zh": "鸡肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_chicken_meat_raw_skinless",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171052,
+      "selected_description": "Chicken, broilers or fryers, meat only, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 0,
+        "skin_rank": 0,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 92,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 171052
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_beef_meat",
+      "canonical_name_zh": "牛肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_beef_meat_raw_lean",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 174760,
+      "selected_description": "Beef, composite of trimmed retail cuts, separable lean only, trimmed to 0\" fat, all grades, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 118,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 174760
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_pork_meat",
+      "canonical_name_zh": "猪肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_pork_meat_raw_lean",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168220,
+      "selected_description": "Pork, fresh, composite of trimmed retail cuts (leg, loin, shoulder), separable lean only, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 110,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 168220
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_lamb_meat",
+      "canonical_name_zh": "羊肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_lamb_meat_raw_lean",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 174307,
+      "selected_description": "Lamb, composite of trimmed retail cuts, separable lean only, trimmed to 1/4\" fat, choice, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 65,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 174307
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_duck_meat",
+      "canonical_name_zh": "鸭肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_duck_meat_raw_skinless",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 172410,
+      "selected_description": "Duck, domesticated, meat only, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 0,
+        "skin_rank": 0,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 92,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 172410
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_turkey_breast",
+      "canonical_name_zh": "火鸡胸肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_turkey_breast_raw_skinless",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 174515,
+      "selected_description": "Turkey, retail parts, breast, meat only, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 0,
+        "skin_rank": 0,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 118,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 174515
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_pork_loin",
+      "canonical_name_zh": "猪外脊",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_pork_loin_raw_boneless",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2646168,
+      "selected_description": "Pork, loin, boneless, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 0,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 22,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2646168
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_beef_top_sirloin",
+      "canonical_name_zh": "牛上腰肉",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_beef_top_sirloin_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2727574,
+      "selected_description": "Beef, top sirloin steak, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 18,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2727574
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_lamb_stew_meat",
+      "canonical_name_zh": "炖羊肉块",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_lamb_stew_meat_raw_lean",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 172508,
+      "selected_description": "Lamb, cubed for stew or kabob (leg and shoulder), separable lean only, trimmed to 1/4\" fat, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 65,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 172508
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_chicken_gizzard",
+      "canonical_name_zh": "鸡胗",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_chicken_gizzard_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171456,
+      "selected_description": "Chicken, gizzard, all classes, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 84,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 171456
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_beef_spleen",
+      "canonical_name_zh": "牛脾",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_beef_spleen_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169454,
+      "selected_description": "Beef, variety meats and by-products, spleen, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 74,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 169454
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_pork_spleen",
+      "canonical_name_zh": "猪脾",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_pork_spleen_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 167865,
+      "selected_description": "Pork, fresh, variety meats and by-products, spleen, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 74,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 167865
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_lamb_kidney",
+      "canonical_name_zh": "羊肾",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_lamb_kidney_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 174354,
+      "selected_description": "Lamb, variety meats and by-products, kidneys, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 68,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 174354
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_mackerel",
+      "canonical_name_zh": "鲭鱼",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_mackerel_atlantic_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 175119,
+      "selected_description": "Fish, mackerel, Atlantic, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 175119
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_herring",
+      "canonical_name_zh": "鲱鱼",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_herring_atlantic_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 175116,
+      "selected_description": "Fish, herring, Atlantic, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 175116
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_sardine",
+      "canonical_name_zh": "沙丁鱼",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_sardine_atlantic_canned_oil_with_bone",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 175139,
+      "selected_description": "Fish, sardine, Atlantic, canned in oil, drained solids with bone",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 6,
+        "bone_rank": 2,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 175139
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_plain_greek_yogurt",
+      "canonical_name_zh": "原味希腊酸奶",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_plain_greek_yogurt_whole_milk",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2259794,
+      "selected_description": "Yogurt, Greek, plain, whole milk",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 5,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 47,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2259794
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_cottage_cheese",
+      "canonical_name_zh": "茅屋奶酪",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_cottage_cheese_full_fat",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346384,
+      "selected_description": "Cottage cheese, full fat, large or small curd",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 5,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 35,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346384
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_sweet_corn",
+      "canonical_name_zh": "甜玉米",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_sweet_corn_raw_kernels",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2710826,
+      "selected_description": "Corn, sweet, yellow and white kernels,  fresh, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 30,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2710826
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_spaghetti",
+      "canonical_name_zh": "意大利面",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_spaghetti_whole_grain_dry",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2759000,
+      "selected_description": "Pasta, dry, whole grain, spaghetti ",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 16,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2759000
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_tofu",
+      "canonical_name_zh": "豆腐",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_tofu_firm_calcium_set",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 172475,
+      "selected_description": "Tofu, raw, firm, prepared with calcium sulfate",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 62,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 172475
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_black_beans",
+      "canonical_name_zh": "黑芸豆",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_black_beans_boiled_unsalted",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 173735,
+      "selected_description": "Beans, black, mature seeds, cooked, boiled, without salt",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 4,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 173735
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_kidney_beans",
+      "canonical_name_zh": "红腰豆",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_kidney_beans_boiled_unsalted",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 173740,
+      "selected_description": "Beans, kidney, all types, mature seeds, cooked, boiled, without salt",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 4,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 98,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 173740
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_bell_pepper",
+      "canonical_name_zh": "甜椒",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_bell_pepper_orange_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2258591,
+      "selected_description": "Peppers, bell, orange, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 25,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2258591
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_asparagus",
+      "canonical_name_zh": "芦笋",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_asparagus_green_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2710823,
+      "selected_description": "Asparagus, green, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 23,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2710823
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_romaine_lettuce",
+      "canonical_name_zh": "罗马生菜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_romaine_lettuce_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346389,
+      "selected_description": "Lettuce, romaine, green, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 23,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2346389
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_mango",
+      "canonical_name_zh": "芒果",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_mango_ataulfo_raw_peeled",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2710834,
+      "selected_description": "Mango, Ataulfo, peeled, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 0,
+        "source_rank": 0,
+        "nutrient_count": 27,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2710834
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_cantaloupe",
+      "canonical_name_zh": "甜瓜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_cantaloupe_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 327198,
+      "selected_description": "Melons, cantaloupe, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 63,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 327198
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_peach",
+      "canonical_name_zh": "桃子",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_peach_yellow_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 325430,
+      "selected_description": "Peaches, yellow, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 65,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 325430
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_orange",
+      "canonical_name_zh": "橙子",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_orange_navel_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 746771,
+      "selected_description": "Oranges, raw, navels",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 59,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 746771
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_cranberry",
+      "canonical_name_zh": "蔓越莓",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_cranberry_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171722,
+      "selected_description": "Cranberries, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 106,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 171722
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_onion",
+      "canonical_name_zh": "洋葱",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_onion_raw",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 170000,
+      "selected_description": "Onions, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 118,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 170000
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_garlic",
+      "canonical_name_zh": "大蒜",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_garlic_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 1104647,
+      "selected_description": "Garlic, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 13,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 1104647
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_grape",
+      "canonical_name_zh": "葡萄",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_grape_green_seedless_raw",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2263891,
+      "selected_description": "Grapes, green, seedless, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 26,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2263891
+      },
+      "rejected_candidates": []
+    },
+    {
+      "concept_id": "ingredient_raisin",
+      "canonical_name_zh": "葡萄干",
+      "candidate_count": 1,
+      "selected_variant_id": "variant_raisin_dark_seedless",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2758980,
+      "selected_description": "Raisins, dark, seedless",
+      "selected_score": {
+        "processed_penalty": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 23,
+        "existing_default_tiebreaker": true,
+        "fdc_id": 2758980
+      },
+      "rejected_candidates": []
+    }
+  ]
+}

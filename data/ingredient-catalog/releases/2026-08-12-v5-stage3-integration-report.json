@@ -1,0 +1,237 @@
+{
+  "report_contract": "recipeIngredientStage3IntegrationReport/v1",
+  "policy_id": "recipeIngredientStage3CatalogIntegration/v1",
+  "catalog_version": "2026-08-12-v5",
+  "base_concept_count": 200,
+  "final_concept_count": 211,
+  "selected_group_count": 13,
+  "selected_occurrence_count": 1021,
+  "added_concept_count": 11,
+  "extended_concept_count": 2,
+  "duplicate_selected_source_count": 0,
+  "model_selected_group_count": 0,
+  "model_isolated_group_count": 4,
+  "added_concepts": [
+    {
+      "concept_id": "ingredient_stage3_12a5fb4bdcdc8eae",
+      "canonical_name_zh": "培根",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 168382
+    },
+    {
+      "concept_id": "ingredient_stage3_bf9065be71c939e8",
+      "canonical_name_zh": "面条",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169731
+    },
+    {
+      "concept_id": "ingredient_stage3_5bbad9ccf31bc823",
+      "canonical_name_zh": "绿豆",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 174256
+    },
+    {
+      "concept_id": "ingredient_stage3_83afd7b114008a17",
+      "canonical_name_zh": "樱桃",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 171718
+    },
+    {
+      "concept_id": "ingredient_stage3_0e32e5c9179737e8",
+      "canonical_name_zh": "长豆",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169222
+    },
+    {
+      "concept_id": "ingredient_stage3_b1aaa4c7a1fa2579",
+      "canonical_name_zh": "榛子",
+      "source_version": "foundation",
+      "fdc_id": 2515375
+    },
+    {
+      "concept_id": "ingredient_stage3_8799dc926bd9f80b",
+      "canonical_name_zh": "覆盆子",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 168209
+    },
+    {
+      "concept_id": "ingredient_stage3_5dc20040d1d4cdc1",
+      "canonical_name_zh": "黑莓",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 171710
+    },
+    {
+      "concept_id": "ingredient_stage3_c28b395c975568ab",
+      "canonical_name_zh": "意大利细面",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169729
+    },
+    {
+      "concept_id": "ingredient_stage3_9a3ade59883cf876",
+      "canonical_name_zh": "木薯",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169985
+    },
+    {
+      "concept_id": "ingredient_stage3_7a9076073781f9c0",
+      "canonical_name_zh": "野鸡",
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 174473
+    }
+  ],
+  "extended_concepts": [
+    {
+      "concept_id": "ingredient_auto_model_b7e62f4a72d712bd",
+      "added_alias": "奶油"
+    },
+    {
+      "concept_id": "ingredient_duck_meat",
+      "added_alias": "鸭子"
+    }
+  ],
+  "decisions": [
+    {
+      "cleaned_name": "培根",
+      "occurrence_count": 401,
+      "candidate_id": "source_cluster_cf1dfdc9a4371670",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_12a5fb4bdcdc8eae",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168382,
+      "selected_description": "Bacon, pre-sliced, reduced/low sodium, unprepared"
+    },
+    {
+      "cleaned_name": "奶油",
+      "occurrence_count": 211,
+      "candidate_id": "source_cluster_770632802f247b08",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "mapped_existing_source",
+      "concept_id": "ingredient_auto_model_b7e62f4a72d712bd",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346386,
+      "selected_description": "Cream, heavy"
+    },
+    {
+      "cleaned_name": "面条",
+      "occurrence_count": 203,
+      "candidate_id": "source_cluster_76d20cea7bf6a2f7",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_bf9065be71c939e8",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169731,
+      "selected_description": "Noodles, egg, dry, enriched"
+    },
+    {
+      "cleaned_name": "绿豆",
+      "occurrence_count": 94,
+      "candidate_id": "source_cluster_af2e1a6f96e6461f",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_5bbad9ccf31bc823",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 174256,
+      "selected_description": "Mung beans, mature seeds, raw"
+    },
+    {
+      "cleaned_name": "樱桃",
+      "occurrence_count": 57,
+      "candidate_id": "source_cluster_a9bdbd51ebfb5056",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_83afd7b114008a17",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171718,
+      "selected_description": "Cherries, sour, red, frozen, unsweetened (Includes foods for USDA's Food Distribution Program)"
+    },
+    {
+      "cleaned_name": "鸭子",
+      "occurrence_count": 35,
+      "candidate_id": "source_cluster_3c676e33b6709a55",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "mapped_existing_source",
+      "concept_id": "ingredient_duck_meat",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 172410,
+      "selected_description": "Duck, domesticated, meat only, raw"
+    },
+    {
+      "cleaned_name": "长豆",
+      "occurrence_count": 8,
+      "candidate_id": "source_cluster_ea7bf6b3e8a0c98b",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_0e32e5c9179737e8",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169222,
+      "selected_description": "Yardlong bean, raw"
+    },
+    {
+      "cleaned_name": "榛子",
+      "occurrence_count": 3,
+      "candidate_id": "source_cluster_831fb680fd7b5d64",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_b1aaa4c7a1fa2579",
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2515375,
+      "selected_description": "Nuts, hazelnuts or filberts, raw"
+    },
+    {
+      "cleaned_name": "覆盆子",
+      "occurrence_count": 3,
+      "candidate_id": "source_cluster_fc3656d70440e810",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_8799dc926bd9f80b",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168209,
+      "selected_description": "Raspberries, frozen, red, unsweetened"
+    },
+    {
+      "cleaned_name": "黑莓",
+      "occurrence_count": 3,
+      "candidate_id": "source_cluster_6825bcc7d71b58dd",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_5dc20040d1d4cdc1",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171710,
+      "selected_description": "Blackberries, frozen, unsweetened"
+    },
+    {
+      "cleaned_name": "意大利细面",
+      "occurrence_count": 1,
+      "candidate_id": "source_cluster_21bca40ecc4f4daf",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_c28b395c975568ab",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169729,
+      "selected_description": "Pasta, fresh-refrigerated, spinach, as purchased"
+    },
+    {
+      "cleaned_name": "木薯",
+      "occurrence_count": 1,
+      "candidate_id": "source_cluster_8722d3f3d7e7232b",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_9a3ade59883cf876",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169985,
+      "selected_description": "Cassava, raw"
+    },
+    {
+      "cleaned_name": "野鸡",
+      "occurrence_count": 1,
+      "candidate_id": "source_cluster_5221178ce835af52",
+      "decision_method": "deterministic_unique_after_identity_gate",
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage3_7a9076073781f9c0",
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 174473,
+      "selected_description": "Pheasant, raw, meat only"
+    }
+  ]
+}

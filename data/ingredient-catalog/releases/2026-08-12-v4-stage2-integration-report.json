@@ -1,0 +1,104 @@
+{
+  "report_contract": "stage2SourceDecisionCatalogIntegration/v1",
+  "integration_policy_id": "stage2SourceDecisionCatalogIntegration/v1",
+  "catalog_version": "2026-08-12-v4",
+  "base_concept_count": 191,
+  "final_concept_count": 200,
+  "added_concept_count": 9,
+  "extended_concept_count": 2,
+  "selected_source_count": 200,
+  "added_concepts": [
+    {
+      "concept_id": "ingredient_stage2_6cbee448242c123d",
+      "canonical_name_zh": "冬瓜",
+      "aliases": [],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 170069
+    },
+    {
+      "concept_id": "ingredient_stage2_ab0309955f029f6a",
+      "canonical_name_zh": "椰浆",
+      "aliases": [],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 170172
+    },
+    {
+      "concept_id": "ingredient_stage2_b0fef621727ff82a",
+      "canonical_name_zh": "菠萝",
+      "aliases": [],
+      "source_version": "foundation",
+      "fdc_id": 2346398
+    },
+    {
+      "concept_id": "ingredient_stage2_f464d7d71c06e47a",
+      "canonical_name_zh": "柠檬",
+      "aliases": [],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 167746
+    },
+    {
+      "concept_id": "ingredient_stage2_edb8f30ddf374568",
+      "canonical_name_zh": "可可粉",
+      "aliases": [],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169593
+    },
+    {
+      "concept_id": "ingredient_stage2_b0df7aca2b149480",
+      "canonical_name_zh": "酸奶",
+      "aliases": [],
+      "source_version": "foundation",
+      "fdc_id": 330137
+    },
+    {
+      "concept_id": "ingredient_stage2_8825e76530f87ff5",
+      "canonical_name_zh": "牛奶",
+      "aliases": [
+        "低脂牛奶",
+        "全脂牛奶",
+        "纯牛奶",
+        "脱脂牛奶",
+        "鲜奶",
+        "鲜牛奶"
+      ],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 172217
+    },
+    {
+      "concept_id": "ingredient_stage2_6d4b28b7f7eefe07",
+      "canonical_name_zh": "木耳",
+      "aliases": [
+        "干木耳",
+        "黑木耳"
+      ],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169237
+    },
+    {
+      "concept_id": "ingredient_stage2_d0c04f4b1951e4ae",
+      "canonical_name_zh": "芝麻",
+      "aliases": [
+        "白芝麻",
+        "黑芝麻"
+      ],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169412
+    }
+  ],
+  "extended_concepts": [
+    {
+      "concept_id": "ingredient_sweet_corn",
+      "canonical_name_zh": "甜玉米",
+      "added_aliases": [
+        "玉米"
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_model_3ab4489e89e7aa18",
+      "canonical_name_zh": "淀粉",
+      "added_aliases": [
+        "玉米淀粉"
+      ]
+    }
+  ]
+}

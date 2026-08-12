@@ -18,6 +18,7 @@
 
 - Foundation SQLite：`/Users/cyr/Documents/Codex/2026-07-07/ge/outputs/fooddata_foundation.sqlite`
 - SR Legacy CSV：`/Users/cyr/Documents/Documents/Dogfood/FoodData_Central_sr_legacy_food_csv_2018-04`
+- SR Legacy 中文名称 SQLite：`data/usda-localized-names/releases/sr-legacy-2018-04-zh-CN-v1.sqlite`
 - 人饭菜谱 CSV：`/Users/cyr/Documents/Documents/Dogfood/capu_data_5w/caipu_1.csv`
 
 路径仅作为本地构建参数，不写死在脚本中。
@@ -30,12 +31,15 @@ USDA 数据在主库中标记为 `public_domain`。人饭菜谱授权已经由�
 python3 scripts/fooddata/build_ingredient_data_sqlite.py \
   --foundation-sqlite /Users/cyr/Documents/Codex/2026-07-07/ge/outputs/fooddata_foundation.sqlite \
   --sr-legacy-dir /Users/cyr/Documents/Documents/Dogfood/FoodData_Central_sr_legacy_food_csv_2018-04 \
+  --sr-localized-names-sqlite data/usda-localized-names/releases/sr-legacy-2018-04-zh-CN-v1.sqlite \
   --recipes-csv /Users/cyr/Documents/Documents/Dogfood/capu_data_5w/caipu_1.csv \
   --out-sqlite fooddata-cloudbase-export/2026-07-21-ingredient-data/ingredient_data.sqlite \
   --release-id 2026-07-21-initial
 ```
 
 输出目录已由 `.gitignore` 忽略。构建器拒绝覆盖已有 SQLite；需要重建时必须先明确处理旧产物，避免误删人工审核结果。
+
+SR Legacy 中文名称由 Apple 系统翻译生成，版本化 SQLite 中的 `food_localized_name` 与 Foundation 同名表字段完全一致。构建器要求7,793个 `fdc_id` 与 SR Legacy `food.csv` 一一对应，然后按 SR 来源版本写入统一的 `source_localized_name`。机器译名置信度为0.65，只属于来源本地化层；“犹太人的耳朵”等直译不得直接作为标准食材名。
 
 构建完成后，用版本化种子写入首批标准食材概念、别名和营养形态：
 
@@ -44,6 +48,139 @@ python3 scripts/fooddata/seed_ingredient_catalog.py \
   --sqlite fooddata-cloudbase-export/2026-07-22-v2-final/ingredient_data.sqlite \
   --seed data/ingredient-catalog/releases/2026-07-22-v2.json
 ```
+
+从 `catalog_schema_version=2` 起，先从菜谱频次自动清洗原料写法、聚合别名并发现高置信标准概念。跨 USDA 分类、英文身份冲突和未匹配项自动隔离，不依赖人工逐条审核：
+
+```bash
+python3 scripts/fooddata/discover_standard_ingredient_concepts.py \
+  --sqlite fooddata-cloudbase-export/<batch>/ingredient_data.sqlite \
+  --base-seed data/ingredient-catalog/releases/<base_catalog_version>.json \
+  --candidate-version <candidate_version> \
+  --out-candidate-seed data/ingredient-catalog/releases/<catalog_version>-candidates.json \
+  --report data/ingredient-catalog/releases/<catalog_version>-discovery-report.json
+```
+
+随后必须通过自动选择器把同一概念的营养来源候选收敛为唯一烹调基准。选择器优先生鲜、去骨、去皮、无调味且可直接烹调的记录，并保存全部候选评分和降级原因：
+
+```bash
+python3 scripts/fooddata/select_preferred_ingredient_sources.py \
+  --sqlite fooddata-cloudbase-export/<batch>/ingredient_data.sqlite \
+  --candidate-seed data/ingredient-catalog/releases/<candidate_version>.json \
+  --catalog-version <catalog_version> \
+  --out-seed data/ingredient-catalog/releases/<catalog_version>.json \
+  --report data/ingredient-catalog/releases/<catalog_version>-selection-report.json
+```
+
+菜谱写法进入概念发现前使用 `recipeIngredientNormalization/v3` 确定性清洗。调味料和油排除，水和加工助剂分流；油类只允许完整词或受控别名匹配，避免“牛油”误伤“牛油果”。v3进一步回填发酵辅料、腌制调味品和裸上位词，并为熟制原料保留 `mention_preparation_state` 与 `nutrition_status`。剩余未解决项按清洗后身份聚合，再由 `recipeIngredientModelAssist/v1` 生成紧凑模型批次。模型不判断安全或营养来源，也不直接写数据库。
+
+阶段一可使用 `scripts/fooddata/run_recipe_ingredient_stage1.py` 独立执行。执行器从当前 SQLite 读取菜谱原料、已批准别名和中文来源名，生成不可覆盖的 `stage-1-decisions.json`、`stage-1-unresolved.json` 与 `stage-1-baseline-report.json`；报告固定记录模型调用数和外部 API token 成本为0，并为决定和未决产物记录 SHA-256，支持重复运行校验。
+
+阶段一未决项先由 `scripts/fooddata/route_recipe_ingredient_stage1_unresolved.py` 保存为来源精确、上位词歧义、辅料漏判、调味料漏判、状态换算、品牌复合食品和来源身份候选7个互斥队列。阶段二再由 `scripts/fooddata/cluster_source_food_identities.py` 解析全部英文来源档案的基础身份、物种、部位、加工状态、骨皮状态和附加处理，并从同一身份簇中选择唯一烹调基准来源。
+
+阶段二不信任中文机器译名本身。只有受控中英身份约束、来源类别和英文身份簇同时一致时才生成决定；其他中文桥接只保存为 `bridge_only_unverified` 候选。缺少营养明细的来源仍进入身份簇，但不能进入营养来源决定。
+
+```bash
+python3 scripts/fooddata/route_recipe_ingredient_stage1_unresolved.py \
+  --unresolved fooddata-cloudbase-export/<stage1>/stage-1-unresolved.json \
+  --out-dir fooddata-cloudbase-export/<stage1-routing>
+
+python3 scripts/fooddata/cluster_source_food_identities.py \
+  --sqlite fooddata-cloudbase-export/<catalog>/ingredient_data.sqlite \
+  --catalog data/ingredient-catalog/releases/<catalog_version>.json \
+  --source-exact fooddata-cloudbase-export/<stage1-routing>/source_exact.json \
+  --identity-candidates fooddata-cloudbase-export/<stage1-routing>/identity_candidate.json \
+  --out-dir fooddata-cloudbase-export/<stage2>
+```
+
+阶段二唯一来源决定通过 `scripts/fooddata/integrate_stage2_source_decisions.py` 合并为新的完整目录。合并器只接受受控中文标准名；既有来源只能给原概念补别名，新来源必须生成稳定概念和形态ID。生成后执行目录结构校验，重复来源、跨概念别名冲突或一概念多来源都会整体失败。
+
+```bash
+python3 scripts/fooddata/integrate_stage2_source_decisions.py \
+  --base-catalog data/ingredient-catalog/releases/<base_catalog>.json \
+  --stage2-decisions fooddata-cloudbase-export/<stage2>/mapping-decisions.json \
+  --catalog-version <catalog_version> \
+  --out-catalog data/ingredient-catalog/releases/<catalog_version>.json \
+  --report data/ingredient-catalog/releases/<catalog_version>-stage2-integration-report.json
+```
+
+阶段三只接收阶段二留下的2至5个受控候选。候选准备器先用身份门禁生成确定性唯一决定、模型批次和隔离项；本地模型对每组候选执行正序、倒序两次判断，只有两次结果完全一致且返回候选集合内的来源簇ID时才可合并。模型返回 `ambiguous`、两次分歧、缺项、越界ID或自由文本时统一隔离。
+
+```bash
+python3 scripts/fooddata/prepare_recipe_ingredient_stage3.py \
+  --stage2-candidates fooddata-cloudbase-export/<stage2>/mapping-candidates.json \
+  --source-clusters fooddata-cloudbase-export/<stage2>/source-identity-clusters.json \
+  --out-dir fooddata-cloudbase-export/<stage3>
+
+python3 scripts/fooddata/run_recipe_ingredient_stage3_lmstudio.py \
+  --model-batches fooddata-cloudbase-export/<stage3>/model-batches.jsonl \
+  --out-dir fooddata-cloudbase-export/<stage3>/model-results-local \
+  --model <local_model_id>
+
+python3 scripts/fooddata/integrate_recipe_ingredient_stage3.py \
+  --sqlite fooddata-cloudbase-export/<stage2_catalog>/ingredient_data.sqlite \
+  --base-catalog data/ingredient-catalog/releases/<base_catalog>.json \
+  --stage3-candidates fooddata-cloudbase-export/<stage3>/mapping-candidates.json \
+  --deterministic-decisions fooddata-cloudbase-export/<stage3>/deterministic-decisions.json \
+  --model-consensus fooddata-cloudbase-export/<stage3>/model-results-local/consensus.json \
+  --source-clusters fooddata-cloudbase-export/<stage2>/source-identity-clusters.json \
+  --catalog-version <catalog_version> \
+  --out-catalog data/ingredient-catalog/releases/<catalog_version>.json \
+  --report data/ingredient-catalog/releases/<catalog_version>-stage3-integration-report.json
+```
+
+2026-08-12 的正式阶段三从30个身份组中确定性接收13组，模型处理4组且全部双次一致隔离，另有13组在模型前隔离。最终 `2026-08-12-v6` 新增11个概念并为2个既有概念补别名，共211个概念、728个别名和211个唯一来源；严格覆盖率由55.45%提升到56.27%。本地模型使用1,530 token，外部API成本为0。`2026-08-12-v5` 的水果和意面来源选择存在已修复问题，不能用于后续构建或发布。
+
+阶段四用版本化中英身份词典分频次波次扩充目录。执行器要求词典完整覆盖阈值内的全部 `identity_candidate`：既有别名必须引用当前概念ID；新概念必须给出受控中文标准名、允许的来源分类和英文描述正则；其余项目必须保存隔离原因。任何遗漏、额外项、重复分配、来源占用或跨概念别名冲突都会整体失败。
+
+```bash
+python3 scripts/fooddata/integrate_recipe_ingredient_stage4.py \
+  --sqlite fooddata-cloudbase-export/<base_catalog>/ingredient_data.sqlite \
+  --base-catalog data/ingredient-catalog/releases/<base_catalog>.json \
+  --identity-candidates fooddata-cloudbase-export/<stage1-routing>/identity_candidate.json \
+  --lexicon data/ingredient-identity-lexicon/releases/<lexicon_version>.json \
+  --catalog-version <catalog_version> \
+  --minimum-occurrences 100 \
+  --out-catalog data/ingredient-catalog/releases/<catalog_version>.json \
+  --report data/ingredient-catalog/releases/<catalog_version>-stage4-integration-report.json
+```
+
+2026-08-12 的 Wave A 使用 `2026-08-12-wave-a-v1` 词典处理57项、9,525次提及：24项、3,761次通过，33项、5,764次隔离；新增15个概念并补充7个既有概念别名。最终 `2026-08-12-v7` 包含226个概念、754个别名和226个唯一来源，严格覆盖率由56.27%提升到58.96%。鸡爪因不存在生鲜档案而降级使用唯一水煮来源；该状态不得在运行时解释为生重营养。
+
+本地模型结果必须经过 `recipeIngredientModelResultIntegration/v1` 门禁后才能生成目录候选。门禁要求模型基础名与清洗名保持足够字面一致，并且能够唯一落到既有目录概念或 Foundation / SR Legacy 中文来源；裸动物、上位词、模型近形误判和受控动物身份冲突继续隔离。模型结果不能绕过 `readyToCookNutritionSource/v1` 唯一来源选择器。
+
+```bash
+python3 scripts/fooddata/run_recipe_ingredient_lmstudio_batches.py \
+  --model-batches fooddata-cloudbase-export/<normalization_batch>/model-batches.jsonl \
+  --out-dir fooddata-cloudbase-export/<normalization_batch>/model-results-local \
+  --chunk-size 50
+
+python3 scripts/fooddata/integrate_recipe_ingredient_model_results.py \
+  --sqlite fooddata-cloudbase-export/<source_batch>/ingredient_data.sqlite \
+  --base-seed data/ingredient-catalog/releases/<base_catalog_version>.json \
+  --model-batches fooddata-cloudbase-export/<normalization_batch>/model-batches.jsonl \
+  --model-results-dir fooddata-cloudbase-export/<normalization_batch>/model-results-local \
+  --candidate-version <candidate_version> \
+  --out-candidate-seed data/ingredient-catalog/releases/<catalog_version>-candidates.json \
+  --report data/ingredient-catalog/releases/<catalog_version>-integration-report.json
+```
+
+LM Studio 执行器按分片即时落盘并复用已存在分片，中断后可原命令续跑。本地模型不产生外部 API token 费用；`manifest.json` 只在全部批次一一完成后生成，合并器缺少 manifest 时拒绝继续。
+
+全量候选完成唯一来源选择并写入新 SQLite 后，覆盖率统一用版本化脚本复算。分母只排除调味料和油；水、加工助剂、歧义词及其他尚未映射项仍计入分母，避免通过扩大排除范围虚增覆盖率。
+
+```bash
+python3 scripts/fooddata/report_recipe_ingredient_coverage.py \
+  --sqlite fooddata-cloudbase-export/<catalog_version>/ingredient_data.sqlite \
+  --report fooddata-cloudbase-export/<catalog_version>/recipe-ingredient-coverage.json
+```
+
+真实50,000条菜谱运行结果：33,930种写法中，12,300种调味料/油写法被零 token 排除，663种由目录别名确定性匹配，23种命中来源名称，74种属于烹饪辅料，31种替代和36种组合被结构化拆分，4,265种歧义项隔离。剩余16,538种模型候选聚合为15,675个身份组；只发送聚合频次至少5次的1,851组，共38批、覆盖84,159次原料提及，预计约307,560 token。13,824个长尾身份组继续延后，不产生 token 消耗。
+
+2026-08-11 的本地正式执行把5个大批在运行时拆成38个可续跑分片，1,851组全部一一返回，外部 API token 成本为0。模型给出1,057个 `resolved` 提议；经过当前调味料/油与辅料规则、字面一致、动物/品类身份和来源档案门禁后，134组并入既有概念，自动新增60个概念，1,559组继续隔离。目录由131个概念扩展至191个概念、694个别名和191个唯一营养来源。
+
+按相同严格分母（只排除调味料和油）比较，v2覆盖35,911 / 149,278次提及，即24.06%；v3覆盖68,508 / 149,278次提及，即45.89%，提升21.84个百分点。水、加工助剂、来源中文名但未形成标准概念的项目和其余未映射项均保留在分母中。
+
+v3之后剩余原料的真实缺口口径、来源基础身份聚类、受控候选模型、熟制状态换算，以及13,824个低频长尾身份组的L0至L3分层、频次波次和停止条件，见 [`docs/data/recipe-ingredient-gap-mapping-plan.md`](data/recipe-ingredient-gap-mapping-plan.md)。
 
 种子脚本会校验每个 `source_version + fdc_id` 的原始英文描述和营养记录，任何一条不匹配都会整体回滚。
 
@@ -89,7 +226,7 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 
 - `data_releases.jsonl`：1 条 staging 版本文档，不会自动切换活动版本。
 - `food_nutrition_profiles.jsonl`：8,262 条一食物一文档的营养快照。
-- `ingredient_catalog.jsonl`：107 条一食材形态一文档的狗饭常用食材搜索目录。
+- `ingredient_catalog.jsonl`：历史活动版本为107条一形态一文档；单来源目录从下一版本起为一标准食材一文档。
 - `canine_ingredient_policies.jsonl`：119 条概念或形态级完整策略快照。
 - `nutrient_rankings.jsonl`：44 条一营养素一文档的安全过滤排行，共180个排行项。
 - `human_recipes.jsonl`：历史 v1 为6,082条旧规则投影；新生成的 v2 仅要求至少一个已映射且非 `blocked` 组件，历史文件不就地改写。
@@ -129,7 +266,10 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 | 原料与分量长度不一致的菜谱 | 9 |
 | 当前标准食材概念 | 97 |
 | 当前审核别名（含标准名称） | 164 |
-| 当前食材形态/目录项 | 107 |
+| 当前线上活动形态/目录项（历史多形态版本） | 107 |
+| 下一版单来源目录项 | 97 |
+| 自动发现后的本地 v2 标准概念/目录项 | 131 |
+| 本地 v2 标准名称之外的别名 | 256 |
 | 当前概念级安全策略 | 97 |
 | 当前形态级策略覆盖 | 22 |
 | 当前安全策略文档 | 119 |
@@ -155,7 +295,7 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 | `source_food` | 来源隔离的 USDA 食物记录 |
 | `source_nutrient` | 来源隔离的营养素字典 |
 | `source_food_nutrient` | 来源隔离的营养明细 |
-| `source_localized_name` | Foundation 中文名称和别名 |
+| `source_localized_name` | Foundation 中文名称及 SR Legacy 系统机器译名；按来源版本隔离 |
 | `source_food_category` | SR Legacy 分类 |
 | `source_sr_legacy_food` | SR Legacy NDB 编号映射 |
 
@@ -175,7 +315,7 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 | --- | --- |
 | `ingredient_concept` | 用户理解的标准食材概念 |
 | `ingredient_alias` | 审核过的别名到概念映射 |
-| `ingredient_variant` | 生熟、部位等营养形态及 USDA 来源记录 |
+| `ingredient_variant` | 标准食材与唯一烹调基准营养来源的技术绑定；历史版本兼容多形态 |
 | `canine_ingredient_policy` | 概念或形态级犬食安全策略 |
 | `nutrient_ranking` | 营养素排行版本、兼容版本、公式和覆盖统计 |
 | `nutrient_ranking_item` | 经过安全过滤的食材名次、数值和计算组成 |
@@ -185,6 +325,10 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 | `review_task` | 歧义、复合、安全关键等人工审核队列 |
 
 首批基线保存在 `data/ingredient-catalog/initial-v1.json`；当前完整快照是 `data/ingredient-catalog/releases/2026-07-22-v2.json`，包含 97 个概念、164 个审核别名和 107 个形态，其中 66 个形态引用 Foundation，41 个形态引用 SR Legacy。新增范围包括常用肉类与上位食材、内脏、鱼类、奶制品、主食、豆类、蔬果，以及洋葱、大蒜、葡萄和葡萄干四个安全拦截概念。当前 `canine_ingredient_policy` 由版本化策略种子生成，未知项仍显式保存为 `unknown`，不自动推断允许。所有审核数据必须来自可版本控制的种子文件，不能只在 SQLite 或云控制台中手工维护。
+
+下一版单来源快照是 `data/ingredient-catalog/releases/2026-08-11-v1.json`：97个概念、164个别名、97个唯一烹调基准营养来源。它由 `readyToCookNutritionSource/v1` 从上一版候选自动生成；10个原多候选概念均收敛为一个来源，完整选择记录位于同目录的 `2026-08-11-v1-selection-report.json`。该快照尚未生成兼容策略和云端发布，不代表线上活动版本已经切换。
+
+自动发现后的本地快照是 `data/ingredient-catalog/releases/2026-08-11-v2.json`：以 v1 为基础，从33,930种菜谱写法中自动发现34个新概念，最终包含131个概念、256个标准名称之外的别名和131个唯一来源。已匹配既有概念的写法覆盖41,796次原料提及，新概念覆盖6,528次；唯一来源冲突项“意大利细面”被隔离。候选、发现报告和选择报告与最终快照保存在同一目录。该版本仍是本地产物，尚未生成兼容安全策略、菜谱映射或 CloudBase staging 包。
 
 后续填充、修正或下线目录项必须遵循 [`ingredient_catalog` 持续填充 SOP](data/ingredient-catalog-sop.md)。每一批使用新的完整目录快照和新建的离线 SQLite；不能把下一批种子直接叠加到上一批 SQLite，也不能绕过 staging 在云端手工补记录。
 

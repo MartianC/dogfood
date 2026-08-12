@@ -1,0 +1,2850 @@
+{
+  "catalog_version": "2026-08-11-v2-candidate",
+  "review_note": "狗饭常用范围第二批完整快照；仅确认名称、概念和 USDA 营养形态映射，犬食安全策略尚未审核。新增常用肉类、内脏、鱼类、奶制品、主食、豆类、蔬果及常见安全拦截概念。",
+  "items": [
+    {
+      "concept_id": "ingredient_chicken_breast",
+      "canonical_name_zh": "鸡胸肉",
+      "category_code": "meat",
+      "subcategory_code": "poultry",
+      "aliases": [
+        "鸡胸",
+        "新鲜鸡胸肉",
+        "鲜鸡胸",
+        "鸡胸肉片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_chicken_breast_raw_skinless",
+          "display_name_zh": "鸡胸肉（生，去皮去骨）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2646170,
+          "description_contains": "Chicken, breast, boneless, skinless, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_chicken_thigh",
+      "canonical_name_zh": "鸡大腿肉",
+      "category_code": "meat",
+      "subcategory_code": "poultry",
+      "aliases": [
+        "鸡腿肉",
+        "鲜鸡腿肉",
+        "鸡腿肉块"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_chicken_thigh_raw_skinless",
+          "display_name_zh": "鸡大腿肉（生，去皮去骨）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2646171,
+          "description_contains": "Chicken, thigh, boneless, skinless, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_turkey_ground",
+      "canonical_name_zh": "火鸡肉末",
+      "category_code": "meat",
+      "subcategory_code": "poultry",
+      "aliases": [
+        "火鸡肉馅"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_turkey_ground_raw_93",
+          "display_name_zh": "火鸡肉末（生，93%瘦肉）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2514747,
+          "description_contains": "Turkey, ground, 93% lean",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_ground",
+      "canonical_name_zh": "牛肉末",
+      "category_code": "meat",
+      "subcategory_code": "beef",
+      "aliases": [
+        "牛肉馅",
+        "牛绞肉"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_beef_ground_raw_90",
+          "display_name_zh": "牛肉末（生，90%瘦肉）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2514743,
+          "description_contains": "Beef, ground, 90% lean",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_tenderloin",
+      "canonical_name_zh": "牛里脊",
+      "category_code": "meat",
+      "subcategory_code": "beef",
+      "aliases": [
+        "牛柳",
+        "新鲜牛里脊",
+        "牛里脊末",
+        "牛里脊片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_beef_tenderloin_raw",
+          "display_name_zh": "牛里脊（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2727573,
+          "description_contains": "tenderloin steak, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_ground",
+      "canonical_name_zh": "猪肉末",
+      "category_code": "meat",
+      "subcategory_code": "pork",
+      "aliases": [
+        "猪肉馅",
+        "猪绞肉"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pork_ground_raw",
+          "display_name_zh": "猪肉末（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2514745,
+          "description_contains": "Pork, ground, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_tenderloin",
+      "canonical_name_zh": "猪里脊",
+      "category_code": "meat",
+      "subcategory_code": "pork",
+      "aliases": [
+        "猪柳",
+        "猪柳丁",
+        "猪里脊切丝",
+        "猪里脊末"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pork_tenderloin_raw",
+          "display_name_zh": "猪里脊（生，去骨）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2646169,
+          "description_contains": "Pork, loin, tenderloin, boneless, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_lamb_ground",
+      "canonical_name_zh": "羊肉末",
+      "category_code": "meat",
+      "subcategory_code": "lamb",
+      "aliases": [
+        "羊肉馅",
+        "羊绞肉"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_lamb_ground_raw",
+          "display_name_zh": "羊肉末（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2727570,
+          "description_contains": "Lamb, ground, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_chicken_liver",
+      "canonical_name_zh": "鸡肝",
+      "category_code": "organ",
+      "subcategory_code": "liver",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_chicken_liver_raw",
+          "display_name_zh": "鸡肝（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 171060,
+          "description_contains": "Chicken, liver, all classes, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_chicken_heart",
+      "canonical_name_zh": "鸡心",
+      "category_code": "organ",
+      "subcategory_code": "heart",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_chicken_heart_raw",
+          "display_name_zh": "鸡心（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 171458,
+          "description_contains": "Chicken, heart, all classes, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_liver",
+      "canonical_name_zh": "牛肝",
+      "category_code": "organ",
+      "subcategory_code": "liver",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_beef_liver_raw",
+          "display_name_zh": "牛肝（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 169451,
+          "description_contains": "Beef, variety meats and by-products, liver, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_heart",
+      "canonical_name_zh": "牛心",
+      "category_code": "organ",
+      "subcategory_code": "heart",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_beef_heart_raw",
+          "display_name_zh": "牛心（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 168625,
+          "description_contains": "Beef, variety meats and by-products, heart, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_kidney",
+      "canonical_name_zh": "牛肾",
+      "category_code": "organ",
+      "subcategory_code": "kidney",
+      "aliases": [
+        "牛腰子"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_beef_kidney_raw",
+          "display_name_zh": "牛肾（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 169449,
+          "description_contains": "Beef, variety meats and by-products, kidneys, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_liver",
+      "canonical_name_zh": "猪肝",
+      "category_code": "organ",
+      "subcategory_code": "liver",
+      "aliases": [
+        "鲜猪肝",
+        "新鲜猪肝"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pork_liver_raw",
+          "display_name_zh": "猪肝（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 167862,
+          "description_contains": "Pork, fresh, variety meats and by-products, liver, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_heart",
+      "canonical_name_zh": "猪心",
+      "category_code": "organ",
+      "subcategory_code": "heart",
+      "aliases": [
+        "新鲜猪心"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pork_heart_raw",
+          "display_name_zh": "猪心（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 168267,
+          "description_contains": "Pork, fresh, variety meats and by-products, heart, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_kidney",
+      "canonical_name_zh": "猪肾",
+      "category_code": "organ",
+      "subcategory_code": "kidney",
+      "aliases": [
+        "猪腰子"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pork_kidney_raw",
+          "display_name_zh": "猪肾（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 168270,
+          "description_contains": "Pork, fresh, variety meats and by-products, kidneys, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_lamb_liver",
+      "canonical_name_zh": "羊肝",
+      "category_code": "organ",
+      "subcategory_code": "liver",
+      "aliases": [
+        "鲜羊肝"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_lamb_liver_raw",
+          "display_name_zh": "羊肝（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 172531,
+          "description_contains": "Lamb, variety meats and by-products, liver, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_salmon",
+      "canonical_name_zh": "三文鱼",
+      "category_code": "fish",
+      "subcategory_code": "salmon",
+      "aliases": [
+        "鲑鱼",
+        "三文鱼块",
+        "三文鱼片",
+        "三文鱼碎"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_salmon_atlantic_raw",
+          "display_name_zh": "大西洋三文鱼（生，养殖）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2684441,
+          "description_contains": "Fish, salmon, Atlantic, farm raised, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_cod",
+      "canonical_name_zh": "鳕鱼",
+      "category_code": "fish",
+      "subcategory_code": "white_fish",
+      "aliases": [
+        "鳕鱼块"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_cod_atlantic_raw",
+          "display_name_zh": "大西洋鳕鱼（生，野生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2684444,
+          "description_contains": "Fish, cod, Atlantic, wild caught, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_tilapia",
+      "canonical_name_zh": "罗非鱼",
+      "category_code": "fish",
+      "subcategory_code": "white_fish",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_tilapia_raw",
+          "display_name_zh": "罗非鱼（生，养殖）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2684442,
+          "description_contains": "Fish, tilapia, farm raised, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_shrimp",
+      "canonical_name_zh": "虾",
+      "category_code": "seafood",
+      "subcategory_code": "crustacean",
+      "aliases": [
+        "鲜虾"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_shrimp_raw",
+          "display_name_zh": "虾（生，养殖）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2684443,
+          "description_contains": "Crustaceans, shrimp, farm raised, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_tuna",
+      "canonical_name_zh": "金枪鱼",
+      "category_code": "fish",
+      "subcategory_code": "tuna",
+      "aliases": [
+        "吞拿鱼"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_tuna_yellowfin_frozen",
+          "display_name_zh": "黄鳍金枪鱼（冷冻，野生）",
+          "preparation_state": "frozen",
+          "source_version": "foundation",
+          "fdc_id": 2747673,
+          "description_contains": "Tuna, ahi or yellowfin, frozen, wild caught",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_whole_egg",
+      "canonical_name_zh": "鸡蛋",
+      "category_code": "egg",
+      "subcategory_code": "whole_egg",
+      "aliases": [
+        "全蛋",
+        "鲜鸡蛋",
+        "新鲜鸡蛋",
+        "鸡蛋丁",
+        "鸡蛋丝",
+        "鸡蛋碎"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_whole_egg_grade_a",
+          "display_name_zh": "鸡蛋（A 级大号全蛋）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 748967,
+          "description_contains": "Eggs, Grade A, Large, egg whole",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_egg_white",
+      "canonical_name_zh": "蛋白",
+      "category_code": "egg",
+      "subcategory_code": "egg_white",
+      "aliases": [
+        "鸡蛋白",
+        "新鲜蛋白",
+        "蛋白块"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_egg_white_grade_a",
+          "display_name_zh": "蛋白（A 级大号鸡蛋）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 747997,
+          "description_contains": "Eggs, Grade A, Large, egg white",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_egg_yolk",
+      "canonical_name_zh": "蛋黄",
+      "category_code": "egg",
+      "subcategory_code": "egg_yolk",
+      "aliases": [
+        "鸡蛋黄"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_egg_yolk_grade_a",
+          "display_name_zh": "蛋黄（A 级大号鸡蛋）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 748236,
+          "description_contains": "Eggs, Grade A, Large, egg yolk",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_broccoli",
+      "canonical_name_zh": "西兰花",
+      "category_code": "vegetable",
+      "subcategory_code": "cruciferous",
+      "aliases": [
+        "青花菜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_broccoli_raw",
+          "display_name_zh": "西兰花（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 321900,
+          "description_contains": "Broccoli, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_carrot",
+      "canonical_name_zh": "胡萝卜",
+      "category_code": "vegetable",
+      "subcategory_code": "root",
+      "aliases": [
+        "胡萝卜丝",
+        "胡萝卜丁",
+        "胡萝卜片",
+        "胡萝卜碎",
+        "胡萝卜末",
+        "胡萝卜切丝",
+        "胡萝卜块"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_carrot_raw",
+          "display_name_zh": "胡萝卜（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2258586,
+          "description_contains": "Carrots, mature, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pumpkin",
+      "canonical_name_zh": "南瓜",
+      "category_code": "vegetable",
+      "subcategory_code": "squash",
+      "aliases": [
+        "倭瓜",
+        "南瓜丁",
+        "南瓜片",
+        "新鲜南瓜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pumpkin_raw_peeled",
+          "display_name_zh": "南瓜（生，去皮去籽）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2727578,
+          "description_contains": "Squash, pie pumpkin, peeled, seeded, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_butternut_squash",
+      "canonical_name_zh": "奶油南瓜",
+      "category_code": "vegetable",
+      "subcategory_code": "squash",
+      "aliases": [
+        "奶油瓜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_butternut_squash_raw",
+          "display_name_zh": "奶油南瓜（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2685570,
+          "description_contains": "Squash, winter, butternut, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_sweet_potato",
+      "canonical_name_zh": "红薯",
+      "category_code": "carb",
+      "subcategory_code": "tuber",
+      "aliases": [
+        "地瓜",
+        "甘薯"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_sweet_potato_raw_peeled",
+          "display_name_zh": "红薯（生，去皮）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346404,
+          "description_contains": "Sweet potatoes, orange flesh, without skin, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_potato",
+      "canonical_name_zh": "土豆",
+      "category_code": "carb",
+      "subcategory_code": "tuber",
+      "aliases": [
+        "马铃薯",
+        "土豆丝",
+        "土豆片",
+        "土豆丁",
+        "土豆切块",
+        "土豆块",
+        "土豆末",
+        "土豆碎",
+        "新鲜土豆"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_potato_russet_raw_peeled",
+          "display_name_zh": "褐皮土豆（生，去皮）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346401,
+          "description_contains": "Potatoes, russet, without skin, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_spinach",
+      "canonical_name_zh": "菠菜",
+      "category_code": "vegetable",
+      "subcategory_code": "leafy_green",
+      "aliases": [
+        "嫩菠菜",
+        "新鲜菠菜",
+        "新鲜嫩菠菜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_spinach_baby",
+          "display_name_zh": "嫩菠菜",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 1750352,
+          "description_contains": "Spinach, baby",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_kale",
+      "canonical_name_zh": "羽衣甘蓝",
+      "category_code": "vegetable",
+      "subcategory_code": "leafy_green",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_kale_raw",
+          "display_name_zh": "羽衣甘蓝（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 323505,
+          "description_contains": "Kale, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_bok_choy",
+      "canonical_name_zh": "小白菜",
+      "category_code": "vegetable",
+      "subcategory_code": "leafy_green",
+      "aliases": [
+        "青菜",
+        "新鲜青菜",
+        "青菜丝"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_bok_choy_raw",
+          "display_name_zh": "小白菜（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2685572,
+          "description_contains": "Cabbage, bok choy, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_green_cabbage",
+      "canonical_name_zh": "绿甘蓝",
+      "category_code": "vegetable",
+      "subcategory_code": "cruciferous",
+      "aliases": [
+        "卷心菜",
+        "包菜",
+        "包菜丝",
+        "新鲜包菜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_green_cabbage_raw",
+          "display_name_zh": "绿甘蓝（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346407,
+          "description_contains": "Cabbage, green, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_cauliflower",
+      "canonical_name_zh": "菜花",
+      "category_code": "vegetable",
+      "subcategory_code": "cruciferous",
+      "aliases": [
+        "花椰菜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_cauliflower_raw",
+          "display_name_zh": "菜花（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2685573,
+          "description_contains": "Cauliflower, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_zucchini",
+      "canonical_name_zh": "西葫芦",
+      "category_code": "vegetable",
+      "subcategory_code": "squash",
+      "aliases": [
+        "西葫芦丝"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_zucchini_raw_with_skin",
+          "display_name_zh": "西葫芦（生，带皮）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2685568,
+          "description_contains": "Squash, summer, green, zucchini, includes skin, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_celery",
+      "canonical_name_zh": "西芹",
+      "category_code": "vegetable",
+      "subcategory_code": "stem",
+      "aliases": [
+        "芹菜",
+        "芹菜末",
+        "芹菜段",
+        "西芹丝",
+        "西芹末",
+        "西芹碎",
+        "新鲜芹菜",
+        "芹菜丁",
+        "芹菜丝",
+        "芹菜碎",
+        "西芹丁"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_celery_raw",
+          "display_name_zh": "西芹（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346405,
+          "description_contains": "Celery, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_cucumber",
+      "canonical_name_zh": "黄瓜",
+      "category_code": "vegetable",
+      "subcategory_code": "gourd",
+      "aliases": [
+        "青瓜",
+        "黄瓜丝",
+        "黄瓜丁",
+        "黄瓜片",
+        "青瓜丝",
+        "青瓜片",
+        "青瓜切丁",
+        "黄瓜切片",
+        "黄瓜碎"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_cucumber_raw_with_peel",
+          "display_name_zh": "黄瓜（生，带皮）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346406,
+          "description_contains": "Cucumber, with peel, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_tomato",
+      "canonical_name_zh": "番茄",
+      "category_code": "vegetable",
+      "subcategory_code": "fruit_vegetable",
+      "aliases": [
+        "西红柿",
+        "西红柿丁",
+        "新鲜番茄",
+        "番茄丁",
+        "番茄片",
+        "鲜番茄",
+        "番茄碎"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_tomato_grape_raw",
+          "display_name_zh": "葡萄番茄（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 321360,
+          "description_contains": "Tomatoes, grape, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_apple",
+      "canonical_name_zh": "苹果",
+      "category_code": "fruit",
+      "subcategory_code": "pome",
+      "aliases": [
+        "苹果片",
+        "苹果丁",
+        "新鲜苹果"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_apple_fuji_raw_with_skin",
+          "display_name_zh": "富士苹果（生，带皮）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 1105897,
+          "description_contains": "Apples, fuji, with skin, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_blueberry",
+      "canonical_name_zh": "蓝莓",
+      "category_code": "fruit",
+      "subcategory_code": "berry",
+      "aliases": [
+        "新鲜蓝莓",
+        "鲜蓝莓"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_blueberry_raw",
+          "display_name_zh": "蓝莓（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2263889,
+          "description_contains": "Blueberries, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_strawberry",
+      "canonical_name_zh": "草莓",
+      "category_code": "fruit",
+      "subcategory_code": "berry",
+      "aliases": [
+        "新鲜草莓",
+        "鲜草莓",
+        "新鲜草莓切片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_strawberry_raw",
+          "display_name_zh": "草莓（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2263887,
+          "description_contains": "Strawberries, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pear",
+      "canonical_name_zh": "梨",
+      "category_code": "fruit",
+      "subcategory_code": "pome",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_pear_anjou_raw_with_skin",
+          "display_name_zh": "安茹梨（生，带皮）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2710836,
+          "description_contains": "Pear, Anjou, green, with skin, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_banana",
+      "canonical_name_zh": "香蕉",
+      "category_code": "fruit",
+      "subcategory_code": "tropical",
+      "aliases": [
+        "香蕉片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_banana_ripe_raw",
+          "display_name_zh": "香蕉（成熟，生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 790991,
+          "description_contains": "Bananas, ripe and slightly ripe, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_watermelon",
+      "canonical_name_zh": "西瓜",
+      "category_code": "fruit",
+      "subcategory_code": "melon",
+      "aliases": [
+        "西瓜块"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_watermelon_seedless_flesh_raw",
+          "display_name_zh": "无籽西瓜果肉（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2747675,
+          "description_contains": "Watermelon, seedless, flesh only, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_brown_rice",
+      "canonical_name_zh": "糙米",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_brown_rice_long_grain_raw",
+          "display_name_zh": "长粒糙米（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2512380,
+          "description_contains": "Rice, brown, long grain, unenriched, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_white_rice",
+      "canonical_name_zh": "白米",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [
+        "大米"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_white_rice_long_grain_raw",
+          "display_name_zh": "长粒白米（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 169756,
+          "description_contains": "Rice, white, long-grain, regular, raw, unenriched",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_oats",
+      "canonical_name_zh": "燕麦",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [
+        "燕麦片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_oats_rolled_old_fashioned",
+          "display_name_zh": "全谷物燕麦片",
+          "preparation_state": "dry",
+          "source_version": "foundation",
+          "fdc_id": 2346396,
+          "description_contains": "Oats, whole grain, rolled, old fashioned",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_quinoa",
+      "canonical_name_zh": "藜麦",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_quinoa_uncooked",
+          "display_name_zh": "藜麦（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 168874,
+          "description_contains": "Quinoa, uncooked",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_barley",
+      "canonical_name_zh": "大麦",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [
+        "珍珠大麦"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_barley_pearled_raw",
+          "display_name_zh": "珍珠大麦（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 170284,
+          "description_contains": "Barley, pearled, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_millet",
+      "canonical_name_zh": "小米",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_millet_whole_grain",
+          "display_name_zh": "全谷物小米",
+          "preparation_state": "dry",
+          "source_version": "foundation",
+          "fdc_id": 2512379,
+          "description_contains": "Millet, whole grain",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_buckwheat",
+      "canonical_name_zh": "荞麦",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_buckwheat_whole_grain",
+          "display_name_zh": "整粒荞麦",
+          "preparation_state": "dry",
+          "source_version": "foundation",
+          "fdc_id": 2512378,
+          "description_contains": "Buckwheat, whole grain",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_lentils",
+      "canonical_name_zh": "小扁豆",
+      "category_code": "legume",
+      "subcategory_code": "pulse",
+      "aliases": [
+        "扁豆",
+        "新鲜扁豆"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_lentils_dry",
+          "display_name_zh": "小扁豆（干）",
+          "preparation_state": "dry",
+          "source_version": "foundation",
+          "fdc_id": 2644283,
+          "description_contains": "Lentils, dry",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_chickpeas",
+      "canonical_name_zh": "鹰嘴豆",
+      "category_code": "legume",
+      "subcategory_code": "pulse",
+      "aliases": [
+        "鸡豆"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_chickpeas_dry",
+          "display_name_zh": "鹰嘴豆（干）",
+          "preparation_state": "dry",
+          "source_version": "foundation",
+          "fdc_id": 2644282,
+          "description_contains": "Chickpeas, (garbanzo beans, bengal gram), dry",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_green_peas",
+      "canonical_name_zh": "青豌豆",
+      "category_code": "legume",
+      "subcategory_code": "fresh_legume",
+      "aliases": [
+        "青豆",
+        "豌豆",
+        "鲜豌豆",
+        "新鲜豌豆",
+        "冷冻青豆",
+        "速冻豌豆",
+        "速冻青豆",
+        "青豆丁"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_green_peas_raw",
+          "display_name_zh": "青豌豆（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 170419,
+          "description_contains": "Peas, green, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_green_beans",
+      "canonical_name_zh": "四季豆",
+      "category_code": "legume",
+      "subcategory_code": "fresh_legume",
+      "aliases": [
+        "绿豆角",
+        "菜豆",
+        "四季豆丁"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_green_beans_raw",
+          "display_name_zh": "四季豆（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346400,
+          "description_contains": "Beans, snap, green, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_canola_oil",
+      "canonical_name_zh": "菜籽油",
+      "category_code": "oil",
+      "subcategory_code": "plant_oil",
+      "aliases": [
+        "芥花籽油"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_canola_oil",
+          "display_name_zh": "菜籽油",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 748278,
+          "description_contains": "Oil, canola",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_olive_oil",
+      "canonical_name_zh": "橄榄油",
+      "category_code": "oil",
+      "subcategory_code": "plant_oil",
+      "aliases": [
+        "特级初榨橄榄油"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_olive_oil_extra_virgin",
+          "display_name_zh": "特级初榨橄榄油",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 748608,
+          "description_contains": "Oil, olive, extra virgin",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_corn_oil",
+      "canonical_name_zh": "玉米油",
+      "category_code": "oil",
+      "subcategory_code": "plant_oil",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_corn_oil",
+          "display_name_zh": "玉米油",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 748323,
+          "description_contains": "Oil, corn",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_soybean_oil",
+      "canonical_name_zh": "大豆油",
+      "category_code": "oil",
+      "subcategory_code": "plant_oil",
+      "aliases": [
+        "豆油"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_soybean_oil",
+          "display_name_zh": "大豆油",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 748366,
+          "description_contains": "Oil, soybean",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_coconut_oil",
+      "canonical_name_zh": "椰子油",
+      "category_code": "oil",
+      "subcategory_code": "plant_oil",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_coconut_oil",
+          "display_name_zh": "椰子油",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 330458,
+          "description_contains": "Oil, coconut",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_chicken_meat",
+      "canonical_name_zh": "鸡肉",
+      "category_code": "meat",
+      "subcategory_code": "poultry",
+      "aliases": [
+        "鸡肉丁",
+        "鸡肉丝",
+        "鸡肉块",
+        "新鲜鸡肉片",
+        "鸡肉切块",
+        "鸡肉末",
+        "鸡肉片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_chicken_meat_raw_skinless",
+          "display_name_zh": "鸡肉（生，去皮）",
+          "preparation_state": "raw",
+          "skin_bone_state": "skinless",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 171052,
+          "description_contains": "Chicken, broilers or fryers, meat only, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_meat",
+      "canonical_name_zh": "牛肉",
+      "category_code": "meat",
+      "subcategory_code": "beef",
+      "aliases": [
+        "牛肉丝",
+        "牛肉片",
+        "新鲜牛肉",
+        "牛肉碎",
+        "牛肉丁",
+        "牛肉块",
+        "鲜牛肉",
+        "新鲜牛肉片",
+        "鲜牛肉片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_beef_meat_raw_lean",
+          "display_name_zh": "牛肉（生，瘦肉）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 174760,
+          "description_contains": "Beef, composite of trimmed retail cuts, separable lean only, trimmed to 0\" fat, all grades, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_meat",
+      "canonical_name_zh": "猪肉",
+      "category_code": "meat",
+      "subcategory_code": "pork",
+      "aliases": [
+        "猪肉丝",
+        "猪肉片",
+        "猪肉碎",
+        "鲜猪肉",
+        "猪肉丁",
+        "新鲜猪肉"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pork_meat_raw_lean",
+          "display_name_zh": "猪肉（生，瘦肉）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 168220,
+          "description_contains": "Pork, fresh, composite of trimmed retail cuts (leg, loin, shoulder), separable lean only, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_lamb_meat",
+      "canonical_name_zh": "羊肉",
+      "category_code": "meat",
+      "subcategory_code": "lamb",
+      "aliases": [
+        "羊肉片",
+        "羊肉丁"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_lamb_meat_raw_lean",
+          "display_name_zh": "羊肉（生，瘦肉）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 174307,
+          "description_contains": "Lamb, composite of trimmed retail cuts, separable lean only, trimmed to 1/4\" fat, choice, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_duck_meat",
+      "canonical_name_zh": "鸭肉",
+      "category_code": "meat",
+      "subcategory_code": "poultry",
+      "aliases": [
+        "鸭肉切片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_duck_meat_raw_skinless",
+          "display_name_zh": "鸭肉（生，去皮）",
+          "preparation_state": "raw",
+          "skin_bone_state": "skinless",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 172410,
+          "description_contains": "Duck, domesticated, meat only, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_turkey_breast",
+      "canonical_name_zh": "火鸡胸肉",
+      "category_code": "meat",
+      "subcategory_code": "poultry",
+      "aliases": [
+        "火鸡胸"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_turkey_breast_raw_skinless",
+          "display_name_zh": "火鸡胸肉（生，去皮）",
+          "preparation_state": "raw",
+          "part_or_cut": "breast",
+          "skin_bone_state": "skinless",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 174515,
+          "description_contains": "Turkey, retail parts, breast, meat only, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_loin",
+      "canonical_name_zh": "猪外脊",
+      "category_code": "meat",
+      "subcategory_code": "pork",
+      "aliases": [
+        "猪大里脊",
+        "猪腰肉"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_pork_loin_raw_boneless",
+          "display_name_zh": "猪外脊（生，去骨）",
+          "preparation_state": "raw",
+          "part_or_cut": "loin",
+          "skin_bone_state": "boneless",
+          "source_version": "foundation",
+          "fdc_id": 2646168,
+          "description_contains": "Pork, loin, boneless, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_top_sirloin",
+      "canonical_name_zh": "牛上腰肉",
+      "category_code": "meat",
+      "subcategory_code": "beef",
+      "aliases": [
+        "牛西冷"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_beef_top_sirloin_raw",
+          "display_name_zh": "牛上腰肉（生）",
+          "preparation_state": "raw",
+          "part_or_cut": "top_sirloin",
+          "source_version": "foundation",
+          "fdc_id": 2727574,
+          "description_contains": "Beef, top sirloin steak, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_lamb_stew_meat",
+      "canonical_name_zh": "炖羊肉块",
+      "category_code": "meat",
+      "subcategory_code": "lamb",
+      "aliases": [
+        "羊肉块"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_lamb_stew_meat_raw_lean",
+          "display_name_zh": "炖羊肉块（生，瘦肉）",
+          "preparation_state": "raw",
+          "part_or_cut": "leg_and_shoulder",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 172508,
+          "description_contains": "Lamb, cubed for stew or kabob (leg and shoulder), separable lean only, trimmed to 1/4\" fat, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_chicken_gizzard",
+      "canonical_name_zh": "鸡胗",
+      "category_code": "organ",
+      "subcategory_code": "gizzard",
+      "aliases": [
+        "鸡肫",
+        "鸡胃",
+        "新鲜鸡胗"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_chicken_gizzard_raw",
+          "display_name_zh": "鸡胗（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 171456,
+          "description_contains": "Chicken, gizzard, all classes, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_beef_spleen",
+      "canonical_name_zh": "牛脾",
+      "category_code": "organ",
+      "subcategory_code": "spleen",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_beef_spleen_raw",
+          "display_name_zh": "牛脾（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 169454,
+          "description_contains": "Beef, variety meats and by-products, spleen, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_pork_spleen",
+      "canonical_name_zh": "猪脾",
+      "category_code": "organ",
+      "subcategory_code": "spleen",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_pork_spleen_raw",
+          "display_name_zh": "猪脾（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 167865,
+          "description_contains": "Pork, fresh, variety meats and by-products, spleen, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_lamb_kidney",
+      "canonical_name_zh": "羊肾",
+      "category_code": "organ",
+      "subcategory_code": "kidney",
+      "aliases": [
+        "羊腰子"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_lamb_kidney_raw",
+          "display_name_zh": "羊肾（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 174354,
+          "description_contains": "Lamb, variety meats and by-products, kidneys, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_mackerel",
+      "canonical_name_zh": "鲭鱼",
+      "category_code": "fish",
+      "subcategory_code": "oily_fish",
+      "aliases": [
+        "青花鱼"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_mackerel_atlantic_raw",
+          "display_name_zh": "大西洋鲭鱼（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 175119,
+          "description_contains": "Fish, mackerel, Atlantic, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_herring",
+      "canonical_name_zh": "鲱鱼",
+      "category_code": "fish",
+      "subcategory_code": "oily_fish",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_herring_atlantic_raw",
+          "display_name_zh": "大西洋鲱鱼（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 175116,
+          "description_contains": "Fish, herring, Atlantic, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_sardine",
+      "canonical_name_zh": "沙丁鱼",
+      "category_code": "fish",
+      "subcategory_code": "oily_fish",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_sardine_atlantic_canned_oil_with_bone",
+          "display_name_zh": "大西洋沙丁鱼（油浸罐装，带骨）",
+          "preparation_state": "canned",
+          "skin_bone_state": "with_bone",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 175139,
+          "description_contains": "Fish, sardine, Atlantic, canned in oil, drained solids with bone",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_plain_greek_yogurt",
+      "canonical_name_zh": "原味希腊酸奶",
+      "category_code": "dairy",
+      "subcategory_code": "fermented_dairy",
+      "aliases": [
+        "希腊酸奶"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_plain_greek_yogurt_whole_milk",
+          "display_name_zh": "原味希腊酸奶（全脂）",
+          "preparation_state": "fermented",
+          "source_version": "foundation",
+          "fdc_id": 2259794,
+          "description_contains": "Yogurt, Greek, plain, whole milk",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_cottage_cheese",
+      "canonical_name_zh": "茅屋奶酪",
+      "category_code": "dairy",
+      "subcategory_code": "fresh_cheese",
+      "aliases": [
+        "乡村奶酪",
+        "颗粒奶酪"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_cottage_cheese_full_fat",
+          "display_name_zh": "茅屋奶酪（全脂）",
+          "preparation_state": "fresh_cheese",
+          "source_version": "foundation",
+          "fdc_id": 2346384,
+          "description_contains": "Cottage cheese, full fat, large or small curd",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_sweet_corn",
+      "canonical_name_zh": "甜玉米",
+      "category_code": "carb",
+      "subcategory_code": "grain",
+      "aliases": [
+        "玉米粒",
+        "鲜玉米粒",
+        "新鲜甜玉米",
+        "速冻甜玉米",
+        "鲜甜玉米"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_sweet_corn_raw_kernels",
+          "display_name_zh": "甜玉米粒（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2710826,
+          "description_contains": "Corn, sweet, yellow and white kernels",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_spaghetti",
+      "canonical_name_zh": "意大利面",
+      "category_code": "carb",
+      "subcategory_code": "pasta",
+      "aliases": [
+        "意面",
+        "直条意面",
+        "意大利面片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_spaghetti_whole_grain_dry",
+          "display_name_zh": "全麦意大利面（干）",
+          "preparation_state": "dry",
+          "source_version": "foundation",
+          "fdc_id": 2759000,
+          "description_contains": "Pasta, dry, whole grain, spaghetti",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_tofu",
+      "canonical_name_zh": "豆腐",
+      "category_code": "legume",
+      "subcategory_code": "soy_product",
+      "aliases": [
+        "老豆腐",
+        "鲜豆腐",
+        "豆腐丝",
+        "新鲜豆腐",
+        "豆腐块",
+        "新鲜老豆腐",
+        "豆腐片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_tofu_firm_calcium_set",
+          "display_name_zh": "硬豆腐（石膏点制）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 172475,
+          "description_contains": "Tofu, raw, firm, prepared with calcium sulfate",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_black_beans",
+      "canonical_name_zh": "黑芸豆",
+      "category_code": "legume",
+      "subcategory_code": "pulse",
+      "aliases": [
+        "黑龟豆"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_black_beans_boiled_unsalted",
+          "display_name_zh": "黑芸豆（煮熟，无盐）",
+          "preparation_state": "boiled",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 173735,
+          "description_contains": "Beans, black, mature seeds, cooked, boiled, without salt",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_kidney_beans",
+      "canonical_name_zh": "红腰豆",
+      "category_code": "legume",
+      "subcategory_code": "pulse",
+      "aliases": [
+        "红芸豆"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_kidney_beans_boiled_unsalted",
+          "display_name_zh": "红腰豆（煮熟，无盐）",
+          "preparation_state": "boiled",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 173740,
+          "description_contains": "Beans, kidney, all types, mature seeds, cooked, boiled, without salt",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_bell_pepper",
+      "canonical_name_zh": "甜椒",
+      "category_code": "vegetable",
+      "subcategory_code": "fruit_vegetable",
+      "aliases": [
+        "彩椒",
+        "彩椒丁",
+        "彩椒丝",
+        "彩椒末",
+        "彩椒片",
+        "彩椒碎",
+        "甜椒丝"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_bell_pepper_orange_raw",
+          "display_name_zh": "橙色甜椒（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2258591,
+          "description_contains": "Peppers, bell, orange, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_asparagus",
+      "canonical_name_zh": "芦笋",
+      "category_code": "vegetable",
+      "subcategory_code": "stem",
+      "aliases": [
+        "新鲜芦笋",
+        "鲜芦笋"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_asparagus_green_raw",
+          "display_name_zh": "绿芦笋（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2710823,
+          "description_contains": "Asparagus, green, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_romaine_lettuce",
+      "canonical_name_zh": "罗马生菜",
+      "category_code": "vegetable",
+      "subcategory_code": "leafy_green",
+      "aliases": [
+        "长叶生菜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_romaine_lettuce_raw",
+          "display_name_zh": "罗马生菜（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346389,
+          "description_contains": "Lettuce, romaine, green, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_mango",
+      "canonical_name_zh": "芒果",
+      "category_code": "fruit",
+      "subcategory_code": "tropical",
+      "aliases": [
+        "芒果丁",
+        "新鲜芒果",
+        "芒果块",
+        "芒果片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_mango_ataulfo_raw_peeled",
+          "display_name_zh": "阿陶尔福芒果（生，去皮）",
+          "preparation_state": "raw",
+          "skin_bone_state": "peeled",
+          "source_version": "foundation",
+          "fdc_id": 2710834,
+          "description_contains": "Mango, Ataulfo, peeled, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_cantaloupe",
+      "canonical_name_zh": "甜瓜",
+      "category_code": "fruit",
+      "subcategory_code": "melon",
+      "aliases": [
+        "香瓜"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_cantaloupe_raw",
+          "display_name_zh": "甜瓜（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 327198,
+          "description_contains": "Melons, cantaloupe, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_peach",
+      "canonical_name_zh": "桃子",
+      "category_code": "fruit",
+      "subcategory_code": "stone_fruit",
+      "aliases": [
+        "桃"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_peach_yellow_raw",
+          "display_name_zh": "黄桃（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 325430,
+          "description_contains": "Peaches, yellow, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_orange",
+      "canonical_name_zh": "橙子",
+      "category_code": "fruit",
+      "subcategory_code": "citrus",
+      "aliases": [
+        "脐橙",
+        "橙子片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_orange_navel_raw",
+          "display_name_zh": "脐橙（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 746771,
+          "description_contains": "Oranges, raw, navels",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_cranberry",
+      "canonical_name_zh": "蔓越莓",
+      "category_code": "fruit",
+      "subcategory_code": "berry",
+      "aliases": [
+        "新鲜蔓越莓",
+        "蔓越莓碎",
+        "鲜蔓越莓"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_cranberry_raw",
+          "display_name_zh": "蔓越莓（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 171722,
+          "description_contains": "Cranberries, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_onion",
+      "canonical_name_zh": "洋葱",
+      "category_code": "vegetable",
+      "subcategory_code": "allium",
+      "aliases": [
+        "洋葱末",
+        "洋葱丝",
+        "洋葱丁",
+        "洋葱碎",
+        "洋葱块",
+        "洋葱片"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_onion_raw",
+          "display_name_zh": "洋葱（生）",
+          "preparation_state": "raw",
+          "source_version": "sr_legacy_2018_04",
+          "fdc_id": 170000,
+          "description_contains": "Onions, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_garlic",
+      "canonical_name_zh": "大蒜",
+      "category_code": "vegetable",
+      "subcategory_code": "allium",
+      "aliases": [
+        "蒜",
+        "大蒜末",
+        "大蒜片",
+        "大蒜切片",
+        "新鲜大蒜",
+        "大蒜段"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_garlic_raw",
+          "display_name_zh": "大蒜（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 1104647,
+          "description_contains": "Garlic, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_grape",
+      "canonical_name_zh": "葡萄",
+      "category_code": "fruit",
+      "subcategory_code": "berry",
+      "aliases": [],
+      "variants": [
+        {
+          "variant_id": "variant_grape_green_seedless_raw",
+          "display_name_zh": "无籽青葡萄（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2263891,
+          "description_contains": "Grapes, green, seedless, raw",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_raisin",
+      "canonical_name_zh": "葡萄干",
+      "category_code": "fruit",
+      "subcategory_code": "dried_fruit",
+      "aliases": [
+        "葡萄干碎"
+      ],
+      "variants": [
+        {
+          "variant_id": "variant_raisin_dark_seedless",
+          "display_name_zh": "无籽黑葡萄干",
+          "preparation_state": "dried",
+          "source_version": "foundation",
+          "fdc_id": 2758980,
+          "description_contains": "Raisins, dark, seedless",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_da0684bd33b0ac83",
+      "canonical_name_zh": "热狗肠",
+      "category_code": "meat",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_da0684bd33b0ac83_da0684bd33b0",
+          "display_name_zh": "热狗肠（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 323121,
+          "description_contains": "Frankfurter, beef, unheated",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_c5176d43c76e6557",
+      "canonical_name_zh": "杏仁",
+      "category_code": "legume",
+      "subcategory_code": null,
+      "aliases": [
+        "杏仁片",
+        "杏仁碎"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_c5176d43c76e6557_425e5ef3815d",
+          "display_name_zh": "杏仁（干制）",
+          "preparation_state": "dry",
+          "source_version": "foundation",
+          "fdc_id": 323294,
+          "description_contains": "Nuts, almonds, dry roasted, with salt added",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_c5176d43c76e6557_f7e2c344c6a5",
+          "display_name_zh": "杏仁（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2346393,
+          "description_contains": "Nuts, almonds, whole, raw",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_a4bb0c955044c1c6",
+      "canonical_name_zh": "花生酱",
+      "category_code": "legume",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_a4bb0c955044c1c6_53b6752908e4",
+          "display_name_zh": "花生酱（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 324860,
+          "description_contains": "Peanut butter, smooth style, with salt",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_a4bb0c955044c1c6_31c6742de213",
+          "display_name_zh": "花生酱（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2262072,
+          "description_contains": "Peanut butter, creamy",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_a4bb0c955044c1c6_a87bcbe297c2",
+          "display_name_zh": "花生酱（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2758989,
+          "description_contains": "Peanut butter, Creamy",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_45903480176c1abb",
+      "canonical_name_zh": "帕尔马干酪",
+      "category_code": "dairy",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_45903480176c1abb_45903480176c",
+          "display_name_zh": "帕尔马干酪（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 325036,
+          "description_contains": "Cheese, parmesan, grated",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_ed64a15fae918901",
+      "canonical_name_zh": "西柚",
+      "category_code": "fruit",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_ed64a15fae918901_2a78c5409077",
+          "display_name_zh": "西柚（罐装）",
+          "preparation_state": "canned",
+          "source_version": "foundation",
+          "fdc_id": 325287,
+          "description_contains": "Grapefruit juice, white, canned or bottled, unsweetened",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_ed64a15fae918901_d9d6184e7594",
+          "display_name_zh": "西柚（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2003595,
+          "description_contains": "Grapefruit juice, red, not fortified, not from concentrate, refrigerated",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_ed64a15fae918901_749e2ac1bfe9",
+          "display_name_zh": "西柚（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2758977,
+          "description_contains": "Grapefruit, raw",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_613dff39e10a2b40",
+      "canonical_name_zh": "黄芥末酱",
+      "category_code": "dairy",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_613dff39e10a2b40_613dff39e10a",
+          "display_name_zh": "黄芥末酱（加工）",
+          "preparation_state": "prepared",
+          "source_version": "foundation",
+          "fdc_id": 326698,
+          "description_contains": "Mustard, prepared, yellow",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_7f99d22f89bafb12",
+      "canonical_name_zh": "猕猴桃",
+      "category_code": "fruit",
+      "subcategory_code": null,
+      "aliases": [
+        "奇异果",
+        "奇异果片",
+        "猕猴桃片"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_7f99d22f89bafb12_782327bc329f",
+          "display_name_zh": "猕猴桃（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 327046,
+          "description_contains": "Kiwifruit, green, raw",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_7f99d22f89bafb12_b1e25c6a7a51",
+          "display_name_zh": "猕猴桃（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2710831,
+          "description_contains": "Kiwifruit (kiwi), green, peeled, raw",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_667e81096d909865",
+      "canonical_name_zh": "切达奶酪",
+      "category_code": "dairy",
+      "subcategory_code": null,
+      "aliases": [
+        "切达奶酪片"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_667e81096d909865_667e81096d90",
+          "display_name_zh": "切达奶酪（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 328637,
+          "description_contains": "Cheese, cheddar",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_a7c0f75c38cce033",
+      "canonical_name_zh": "西班牙辣香肠",
+      "category_code": "meat",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_a7c0f75c38cce033_ea2f026a4997",
+          "display_name_zh": "西班牙辣香肠（熟制）",
+          "preparation_state": "cooked",
+          "source_version": "foundation",
+          "fdc_id": 332864,
+          "description_contains": "Sausage, pork, chorizo, link or ground, cooked, pan-fried",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_a7c0f75c38cce033_2f59713a8849",
+          "display_name_zh": "西班牙辣香肠（熟制）",
+          "preparation_state": "cooked",
+          "source_version": "foundation",
+          "fdc_id": 746781,
+          "description_contains": "Sausage, pork, chorizo, link or ground, cooked, pan-fried",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_ac2b4f1b26570601",
+      "canonical_name_zh": "白砂糖",
+      "category_code": "carb",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_ac2b4f1b26570601_3f84f6db5713",
+          "display_name_zh": "白砂糖（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 334247,
+          "description_contains": "Sugars, granulated",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_ac2b4f1b26570601_ea5c4eac8113",
+          "display_name_zh": "白砂糖（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 746784,
+          "description_contains": "Sugars, granulated",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_a0ec5133e61ecce0",
+      "canonical_name_zh": "糙米粉",
+      "category_code": "carb",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_a0ec5133e61ecce0_a0ec5133e61e",
+          "display_name_zh": "糙米粉（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1104812,
+          "description_contains": "Flour, rice, brown",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_946f5c718eb0f002",
+      "canonical_name_zh": "糯米粉",
+      "category_code": "carb",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_946f5c718eb0f002_946f5c718eb0",
+          "display_name_zh": "糯米粉（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1104867,
+          "description_contains": "Flour, rice, glutinous",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_b3593c0f5c9d1f93",
+      "canonical_name_zh": "猴头菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "新鲜猴头菇"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_b3593c0f5c9d1f93_65ebb58b8ff5",
+          "display_name_zh": "猴头菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1750344,
+          "description_contains": "Mushroom, lion's mane",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_b3593c0f5c9d1f93_6f8e56d335dc",
+          "display_name_zh": "猴头菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1999626,
+          "description_contains": "Mushroom, lion's mane",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_5bfb498e294e6568",
+      "canonical_name_zh": "平菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "鲜平菇"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_5bfb498e294e6568_edf4f2128171",
+          "display_name_zh": "平菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1750345,
+          "description_contains": "Mushroom, oyster",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_5bfb498e294e6568_d91b97bae932",
+          "display_name_zh": "平菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1999627,
+          "description_contains": "Mushroom, oyster",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_11baeb27adb35043",
+      "canonical_name_zh": "香菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "新鲜香菇",
+        "香菇丁",
+        "香菇丝",
+        "香菇切丝",
+        "香菇末",
+        "香菇片",
+        "香菇碎",
+        "鲜香菇"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_11baeb27adb35043_8c35a89b737f",
+          "display_name_zh": "香菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1750346,
+          "description_contains": "Mushrooms, shiitake",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_11baeb27adb35043_1840617b3eef",
+          "display_name_zh": "香菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1999628,
+          "description_contains": "Mushrooms, shiitake",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_64d2d61b21ee1ec6",
+      "canonical_name_zh": "白蘑菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_64d2d61b21ee1ec6_1f313ecf9505",
+          "display_name_zh": "白蘑菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1750347,
+          "description_contains": "Mushrooms, white button",
+          "is_default": false
+        },
+        {
+          "variant_id": "variant_auto_64d2d61b21ee1ec6_68f5c7dc0e9b",
+          "display_name_zh": "白蘑菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 1999629,
+          "description_contains": "Mushrooms, white button",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_84b8f82ce164d1ec",
+      "canonical_name_zh": "花生油",
+      "category_code": "oil",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_84b8f82ce164d1ec_84b8f82ce164",
+          "display_name_zh": "花生油（油）",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 1750348,
+          "description_contains": "Oil, peanut",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_fc482ae520263327",
+      "canonical_name_zh": "葵花籽油",
+      "category_code": "oil",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_fc482ae520263327_fc482ae52026",
+          "display_name_zh": "葵花籽油（油）",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 1750349,
+          "description_contains": "Oil, sunflower",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_44325756df7ced9e",
+      "canonical_name_zh": "红花籽油",
+      "category_code": "oil",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_44325756df7ced9e_44325756df7c",
+          "display_name_zh": "红花籽油（油）",
+          "preparation_state": "oil",
+          "source_version": "foundation",
+          "fdc_id": 1750350,
+          "description_contains": "Oil, safflower",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_926615fa3a9ebbdb",
+      "canonical_name_zh": "杏鲍菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "杏鲍菇丝"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_926615fa3a9ebbdb_926615fa3a9e",
+          "display_name_zh": "杏鲍菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2003599,
+          "description_contains": "Mushroom, king oyster",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_564d419a355875d0",
+      "canonical_name_zh": "金针菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "新鲜金针菇"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_564d419a355875d0_564d419a3558",
+          "display_name_zh": "金针菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2003600,
+          "description_contains": "Mushroom, enoki",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_628d2f74c8e25398",
+      "canonical_name_zh": "蟹味菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "新鲜蟹味菇"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_628d2f74c8e25398_628d2f74c8e2",
+          "display_name_zh": "蟹味菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2003603,
+          "description_contains": "Mushroom, beech",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_a0aa5f157c25dccd",
+      "canonical_name_zh": "茶树菇",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "新鲜茶树菇",
+        "鲜茶树菇"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_a0aa5f157c25dccd_a0aa5f157c25",
+          "display_name_zh": "茶树菇（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2003604,
+          "description_contains": "Mushroom, pioppini",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_2ae375da2a912a0d",
+      "canonical_name_zh": "杏仁粉",
+      "category_code": "legume",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_2ae375da2a912a0d_2ae375da2a91",
+          "display_name_zh": "杏仁粉（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2261420,
+          "description_contains": "Flour, almond",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_9042527c61e1dd3a",
+      "canonical_name_zh": "亚麻籽粉",
+      "category_code": "legume",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_9042527c61e1dd3a_9042527c61e1",
+          "display_name_zh": "亚麻籽粉（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2262075,
+          "description_contains": "Flaxseed, ground",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_b18d446ab751c950",
+      "canonical_name_zh": "荞麦粉",
+      "category_code": "carb",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_b18d446ab751c950_b18d446ab751",
+          "display_name_zh": "荞麦粉（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2512374,
+          "description_contains": "Flour, buckwheat",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_f01be17aaa6a5bd3",
+      "canonical_name_zh": "黑麦粉",
+      "category_code": "carb",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_f01be17aaa6a5bd3_f01be17aaa6a",
+          "display_name_zh": "黑麦粉（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2512375,
+          "description_contains": "Flour, rye",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_5118122f9483f1ca",
+      "canonical_name_zh": "木薯粉",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_5118122f9483f1ca_5118122f9483",
+          "display_name_zh": "木薯粉（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2512377,
+          "description_contains": "Flour, cassava",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_2573cdf45bd03209",
+      "canonical_name_zh": "花生",
+      "category_code": "legume",
+      "subcategory_code": null,
+      "aliases": [
+        "花生(生)"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_2573cdf45bd03209_2573cdf45bd0",
+          "display_name_zh": "花生（生）",
+          "preparation_state": "raw",
+          "source_version": "foundation",
+          "fdc_id": 2515376,
+          "description_contains": "Peanuts, raw",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_1f01e09be2fe349f",
+      "canonical_name_zh": "鱿鱼",
+      "category_code": "seafood",
+      "subcategory_code": null,
+      "aliases": [
+        "新鲜鱿鱼",
+        "鱿鱼丝",
+        "鱿鱼片",
+        "鲜鱿鱼"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_1f01e09be2fe349f_1f01e09be2fe",
+          "display_name_zh": "鱿鱼（冷冻）",
+          "preparation_state": "frozen",
+          "source_version": "foundation",
+          "fdc_id": 2747671,
+          "description_contains": "Squid (calamari), frozen, tubes only",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_30d305c0d3e44256",
+      "canonical_name_zh": "毛豆",
+      "category_code": "vegetable",
+      "subcategory_code": null,
+      "aliases": [
+        "新鲜毛豆",
+        "鲜毛豆"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_30d305c0d3e44256_30d305c0d3e4",
+          "display_name_zh": "毛豆（冷冻）",
+          "preparation_state": "frozen",
+          "source_version": "foundation",
+          "fdc_id": 2758981,
+          "description_contains": "Edamame, frozen, prepared",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_a5963b4fdeb3a8c2",
+      "canonical_name_zh": "意大利沙拉酱",
+      "category_code": "oil",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_a5963b4fdeb3a8c2_a5963b4fdeb3",
+          "display_name_zh": "意大利沙拉酱（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2758987,
+          "description_contains": "Salad dressing, Italian dressing, commercial, regular",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_f054f4c5ecfd08bc",
+      "canonical_name_zh": "炼乳",
+      "category_code": "dairy",
+      "subcategory_code": null,
+      "aliases": [
+        "甜炼乳"
+      ],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_f054f4c5ecfd08bc_f054f4c5ecfd",
+          "display_name_zh": "炼乳（加工）",
+          "preparation_state": "prepared",
+          "source_version": "foundation",
+          "fdc_id": 2758990,
+          "description_contains": "Sweetened condensed milk",
+          "is_default": false
+        }
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_2fceec46c1f86766",
+      "canonical_name_zh": "萨拉米香肠",
+      "category_code": "meat",
+      "subcategory_code": null,
+      "aliases": [],
+      "nutrition_candidates": [
+        {
+          "variant_id": "variant_auto_2fceec46c1f86766_2fceec46c1f8",
+          "display_name_zh": "萨拉米香肠（来源状态未注明）",
+          "preparation_state": "unspecified",
+          "source_version": "foundation",
+          "fdc_id": 2759005,
+          "description_contains": "Salami, hard, sliced",
+          "is_default": false
+        }
+      ]
+    }
+  ],
+  "catalog_schema_version": 2,
+  "selection_policy": {
+    "policy_id": "readyToCookNutritionSource/v1",
+    "priority": [
+      "排除调味、腌制、油炸等已加工候选",
+      "优先生鲜或未经烹调的候选",
+      "优先去骨或纯肉候选",
+      "优先去皮候选",
+      "优先去外皮候选",
+      "同等条件优先 Foundation",
+      "同等条件优先营养明细更完整的候选",
+      "最后使用既有默认标记和稳定 ID 破同分"
+    ]
+  },
+  "discovery_policy": {
+    "policy_id": "recipeIngredientConceptDiscovery/v1",
+    "minimum_occurrences": 1,
+    "publication_rule": "仅高置信身份进入候选种子；冲突和未匹配项不自动发布"
+  }
+}

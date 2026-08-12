@@ -11,13 +11,14 @@
 1. **授权先于发布**：来源必须具有版本化授权声明，并校验实际文件 SHA-256。
 2. **保留来源原文**：菜谱标题、分类、原料名、分量和原始位置不能因标准化而丢失。
 3. **写法映射复用**：映射针对规范化原料写法维护，不对34万次原料出现逐条人工处理。
-4. **精确优先**：只有审核过的唯一标准名称或别名可以自动通过；编辑距离、向量和大模型只能生成候选。
+4. **精确优先**：只有目录中唯一标准名称或由确定性概念发现规则生成的高置信别名可以自动通过；编辑距离、向量和大模型结果不能直接发布。
 5. **未知不冒充安全结论**：未匹配和歧义项只保留来源文字；已映射组件按策略四态展示。
 6. **映射与安全分离**：原料成功映射不等于适合犬只；必须再解析当前犬食策略。
 7. **完整映射快照**：每个 `mapping_version` 对全部规范化写法给出明确结论，不能用缺行表示未知。
 8. **只发布可操作菜谱**：运行时 `human_recipes` 只包含至少一个已映射且非 `blocked` 组件的菜谱。
 9. **分量只作参考**：所有来源分量必须带 `amount_is_reference_only=true`。
 10. **先 staging 后激活**：导入、版本计数、阻断样本和查询链路全部通过前不得激活。
+11. **低 token 清洗**：先执行确定性清洗，调味料和油不进入覆盖统计或模型队列；模型只处理达到频次阈值、按清洗后身份聚合的剩余项。
 
 ## 三层数据
 
@@ -65,20 +66,34 @@ data/human-recipes/sources/<source>.json
 
 ### 3. 生成映射快照
 
+生成映射前先运行低 token 清洗：
+
+```bash
+python3 scripts/fooddata/prepare_recipe_ingredient_model_batches.py \
+  --sqlite fooddata-cloudbase-export/<batch>/ingredient_data.sqlite \
+  --min-model-occurrences 5 \
+  --max-model-terms 5000 \
+  --batch-size 50 \
+  --report fooddata-cloudbase-export/<batch>/normalization-report.json \
+  --model-batches fooddata-cloudbase-export/<batch>/model-batches.jsonl
+```
+
+确定性规则负责字符、数量、用途括号、受控品牌、刀工、生熟、同义词、组合和替代；水、酵母、泡打粉等进入烹饪辅料分流。模型批次按 `cleaned_name` 聚合，最多附带5个高频来源写法；模型输出不能直接写入映射表，必须再次通过目录别名、来源身份和唯一营养来源约束。
+
 ```bash
 python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
   --sqlite fooddata-cloudbase-export/<batch>/ingredient_data.sqlite \
   --mapping data/human-recipes/mappings/<mapping_version>.json
 ```
 
-首版自动规则只有 `approved_alias_exact`。人工决定写入版本化 `manual_decisions`；复合原料可包含多个组件，歧义和未匹配项不得携带可发布组件。
+首版自动规则只有 `approved_alias_exact`。后续目录批次先运行自动概念发现；复合、歧义和未匹配项不得携带可发布组件，并可长期保持隔离，不要求人工逐条清空。
 
 映射生成器会：
 
 - 校验目录、策略和来源授权版本；
 - 更新来源授权状态；
 - 为全部原料写法生成完整决策；
-- 复用目录默认形态；
+- 复用目录中每个概念唯一的烹调基准营养来源；
 - 为达到频次阈值的未匹配写法生成审核任务；
 - 输出写法覆盖率和出现次数覆盖率。
 
@@ -145,7 +160,7 @@ python3 scripts/fooddata/import_ingredient_cloudbase.py \
 5. 自动重新计算策略状态和可发布菜谱；
 6. 导入新版本并通过发布指针切换。
 
-高频审核优先级按 `occurrence_count` 排序。调味料、复合酱料和明显危险食材应单独分流；提高覆盖率不能以放宽精确匹配或安全策略为代价。
+模型候选优先级按聚合后的 `occurrence_count` 排序。调味料和油直接排除，复合食品和明显危险食材单独分流；提高覆盖率不能以放宽身份匹配或安全策略为代价。频次低于阈值的长尾项可以保持延后，不要求人工逐条清空。
 
 ## 当前基线
 
