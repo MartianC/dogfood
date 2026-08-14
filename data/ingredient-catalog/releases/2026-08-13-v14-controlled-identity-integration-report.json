@@ -1,0 +1,75 @@
+{
+  "report_contract": "controlledIngredientIdentityIntegrationReport/v1",
+  "policy_id": "controlledIngredientIdentityIntegration/v1",
+  "decision_version": "2026-08-13-wave-c1-v1",
+  "catalog_version": "2026-08-13-v14",
+  "base_concept_count": 288,
+  "final_concept_count": 288,
+  "added_concept_count": 0,
+  "added_alias_count": 11,
+  "bare_default_count": 4,
+  "added_aliases": [
+    {
+      "term": "鸡翅根",
+      "concept_id": "ingredient_auto_model_c399df43b7ee2959"
+    },
+    {
+      "term": "翅根",
+      "concept_id": "ingredient_auto_model_c399df43b7ee2959"
+    },
+    {
+      "term": "猪小排",
+      "concept_id": "ingredient_auto_model_5e7120bf23740d37"
+    },
+    {
+      "term": "小排",
+      "concept_id": "ingredient_auto_model_5e7120bf23740d37"
+    },
+    {
+      "term": "黄鳝",
+      "concept_id": "ingredient_cfct_148bb4a2388269e1"
+    },
+    {
+      "term": "豆腐泡",
+      "concept_id": "ingredient_cfct_553faf5ac5c7ea8b"
+    },
+    {
+      "term": "猪腰",
+      "concept_id": "ingredient_pork_kidney"
+    },
+    {
+      "term": "红心火龙果",
+      "concept_id": "ingredient_cfct_6c4d7161654bd6d2"
+    },
+    {
+      "term": "鸡块",
+      "concept_id": "ingredient_chicken_meat"
+    },
+    {
+      "term": "琵琶腿",
+      "concept_id": "ingredient_auto_model_bd97b98d310f774e"
+    },
+    {
+      "term": "龙眼",
+      "concept_id": "ingredient_cfct_498fd93cef03aa6a"
+    }
+  ],
+  "bare_defaults": [
+    {
+      "term": "里脊肉",
+      "concept_id": "ingredient_pork_tenderloin"
+    },
+    {
+      "term": "里脊",
+      "concept_id": "ingredient_pork_tenderloin"
+    },
+    {
+      "term": "精肉",
+      "concept_id": "ingredient_pork_meat"
+    },
+    {
+      "term": "精瘦肉",
+      "concept_id": "ingredient_pork_meat"
+    }
+  ]
+}

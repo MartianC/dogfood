@@ -1,0 +1,19 @@
+{
+  "contract": "cfctOcrSourceManifest/v1",
+  "source_version": "cfct_6th_ocr_2025_12_06",
+  "upstream_repository": "https://github.com/Sanotsu/china-food-composition-data",
+  "upstream_commit": "76ea8a4724b59cea882cc2f59fef8b62e41a0a16",
+  "data_directory": "json_data_vision_251206_Qwen2-5-VL-72B-Instruct",
+  "expected_json_file_count": 61,
+  "expected_food_count": 1657,
+  "upstream_declared_food_count": 1677,
+  "license_status": "needs_review",
+  "data_quality": "ocr_unverified",
+  "publication_basis": "中国食物成分表标准版第6版第1册和第2册（2018-2019）",
+  "notes": [
+    "上游仓库未声明 SPDX 许可证，并明确表示版权归原作者所有。",
+    "上游 README 表示 OCR 准确率无法保证。",
+    "实际最新版 JSON 为1657条，与 README 声明1677条相差20条；导入器按实际冻结数量校验。",
+    "仅用于离线 staging；获得明确授权和数据复核前不得发布到 CloudBase。"
+  ]
+}

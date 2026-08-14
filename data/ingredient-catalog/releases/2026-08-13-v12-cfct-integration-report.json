@@ -1,0 +1,134 @@
+{
+  "report_contract": "cfctIngredientCatalogIntegrationReport/v1",
+  "policy_id": "cfctIngredientCatalogIntegration/v1",
+  "decision_version": "2026-08-13-cfct-wave-a-v1",
+  "source_version": "cfct_6th_ocr_2025_12_06",
+  "catalog_version": "2026-08-13-v12",
+  "base_concept_count": 257,
+  "final_concept_count": 269,
+  "added_concept_count": 12,
+  "added_alias_count": 7,
+  "license_status": "needs_review",
+  "data_quality": "ocr_unverified",
+  "added_concepts": [
+    {
+      "concept_id": "ingredient_cfct_60cb292010d1b872",
+      "canonical_name_zh": "银耳",
+      "food_code": "051024",
+      "source_food_id": 51024,
+      "source_name": "银耳（干）[白木耳]",
+      "nutrient_count": 28,
+      "aliases": [
+        "白木耳",
+        "雪耳"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_6c4d7161654bd6d2",
+      "canonical_name_zh": "火龙果",
+      "food_code": "065023",
+      "source_food_id": 65023,
+      "source_name": "火龙果 [仙蜜果、红龙果]",
+      "nutrient_count": 26,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_276ccb2c45fcdc00",
+      "canonical_name_zh": "草鱼",
+      "food_code": "121102",
+      "source_food_id": 121102,
+      "source_name": "草鱼",
+      "nutrient_count": 27,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_661c6c319c2435dc",
+      "canonical_name_zh": "鲫鱼",
+      "food_code": "121123",
+      "source_food_id": 121123,
+      "source_name": "鲫鱼 [喜头鱼、海附鱼]",
+      "nutrient_count": 29,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_aedf436d605c7502",
+      "canonical_name_zh": "带鱼",
+      "food_code": "121203",
+      "source_food_id": 121203,
+      "source_name": "带鱼 [白带鱼、刀鱼]",
+      "nutrient_count": 27,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_a6f353d104357ee4",
+      "canonical_name_zh": "空心菜",
+      "food_code": "045337",
+      "source_food_id": 45337,
+      "source_name": "萹菜 [空心菜、藤藤菜]",
+      "nutrient_count": 26,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_86f2fb88c5b3d5ce",
+      "canonical_name_zh": "茭白",
+      "food_code": "046007",
+      "source_food_id": 46007,
+      "source_name": "茭白（鲜）[茭笋，茭粑]",
+      "nutrient_count": 28,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_241496bfc2c49ca7",
+      "canonical_name_zh": "百合",
+      "food_code": "045409",
+      "source_food_id": 45409,
+      "source_name": "百合 (鲜)",
+      "nutrient_count": 24,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_957674c584287925",
+      "canonical_name_zh": "腐竹",
+      "food_code": "031507",
+      "source_food_id": 31507,
+      "source_name": "腐竹",
+      "nutrient_count": 27,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_360f65675273434e",
+      "canonical_name_zh": "豆腐皮",
+      "food_code": "031527",
+      "source_food_id": 31527,
+      "source_name": "豆腐皮",
+      "nutrient_count": 28,
+      "aliases": [
+        "豆皮"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_553faf5ac5c7ea8b",
+      "canonical_name_zh": "油豆腐",
+      "food_code": "031506",
+      "source_food_id": 31506,
+      "source_name": "油豆腐",
+      "nutrient_count": 29,
+      "aliases": [
+        "豆泡"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_90fb0af42060ba9a",
+      "canonical_name_zh": "豆腐干",
+      "food_code": "031510x",
+      "source_food_id": 954339736640,
+      "source_name": "豆腐干（代表值）",
+      "nutrient_count": 28,
+      "aliases": [
+        "干豆腐",
+        "豆干",
+        "香干"
+      ]
+    }
+  ]
+}

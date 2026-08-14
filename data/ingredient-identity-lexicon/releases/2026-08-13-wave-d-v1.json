@@ -1,0 +1,76 @@
+{
+  "contract": "recipeIngredientIdentityLexicon/v1",
+  "lexicon_version": "2026-08-13-wave-d-v1",
+  "wave": {
+    "route": "identity_candidate",
+    "minimum_occurrences": 5,
+    "maximum_occurrences": 19,
+    "rule": "明确通过项进入目录；其余项目逐项展开为默认保守隔离"
+  },
+  "default_isolation_reason": "unresolved_after_controlled_wave_audit",
+  "existing_aliases": [
+    {"concept_id": "ingredient_auto_model_251048880651b727", "terms": ["五花肉馅", "五花肉糜", "五花肉沫", "三层肉", "猪五花", "花肉"]},
+    {"concept_id": "ingredient_auto_model_a25211ce5c812248", "terms": ["芋艿"]},
+    {"concept_id": "ingredient_oats", "terms": ["麦片"]},
+    {"concept_id": "ingredient_green_cabbage", "terms": ["包心菜", "甘蓝", "洋白菜", "圆包菜", "莲花白", "高麗菜"]},
+    {"concept_id": "ingredient_stage4_d3f24f45bda00767", "terms": ["奶油芝士", "奶油乳酪"]},
+    {"concept_id": "ingredient_stage2_6d4b28b7f7eefe07", "terms": ["泡发木耳", "水发黑木耳", "泡发黑木耳", "干黑木耳", "云耳", "泡发的木耳"]},
+    {"concept_id": "ingredient_spaghetti", "terms": ["意粉"]},
+    {"concept_id": "ingredient_broccoli", "terms": ["西蓝花"]},
+    {"concept_id": "ingredient_stage2_8825e76530f87ff5", "terms": ["温牛奶", "纯奶"]},
+    {"concept_id": "ingredient_stage3_83afd7b114008a17", "terms": ["车厘子"]},
+    {"concept_id": "ingredient_stage2_b0fef621727ff82a", "terms": ["凤梨", "菠萝肉"]},
+    {"concept_id": "ingredient_stage4_a76f0d3014543252", "terms": ["明胶片", "吉列丁片", "吉利片"]},
+    {"concept_id": "ingredient_cranberry", "terms": ["蔓越梅", "蔓越莓果干", "美国蔓越莓干"]},
+    {"concept_id": "ingredient_stage4_195f7932237eb030", "terms": ["文蛤", "蚬子", "花甲螺"]},
+    {"concept_id": "ingredient_egg_yolk", "terms": ["蛋黃"]},
+    {"concept_id": "ingredient_auto_667e81096d909865", "terms": ["车打芝士"]},
+    {"concept_id": "ingredient_auto_1f01e09be2fe349f", "terms": ["八爪鱼", "鱿鱼圈"]},
+    {"concept_id": "ingredient_auto_11baeb27adb35043", "terms": ["干冬菇"]},
+    {"concept_id": "ingredient_auto_2573cdf45bd03209", "terms": ["油炸花生米", "炸花生"]},
+    {"concept_id": "ingredient_auto_c5176d43c76e6557", "terms": ["巴旦木", "美国大杏仁"]},
+    {"concept_id": "ingredient_stage4_c7a897444f3d6363", "terms": ["加州核桃", "加州核桃仁", "核桃肉"]},
+    {"concept_id": "ingredient_chicken_meat", "terms": ["鸡丁", "鸡丝"]},
+    {"concept_id": "ingredient_pork_ground", "terms": ["肉馅儿", "猪肉陷"]},
+    {"concept_id": "ingredient_auto_model_5e7120bf23740d37", "terms": ["仔排", "子排", "猪肋骨", "精排", "小肋排"]},
+    {"concept_id": "ingredient_auto_model_c399df43b7ee2959", "terms": ["鸡翅尖", "鸡尖"]}
+  ],
+  "new_concepts": [
+    {"canonical_name_zh": "田螺", "terms": ["田螺", "螺蛳"], "category_code": "seafood", "source_category_ids": [15], "source_description_pattern": "^Mollusks, snail, raw$"},
+    {"canonical_name_zh": "蕨菜", "terms": ["蕨菜"], "category_code": "vegetable", "source_category_ids": [11], "source_description_pattern": "^Fiddlehead ferns, raw$"},
+    {"canonical_name_zh": "青口", "terms": ["青口", "海虹", "青口贝"], "category_code": "seafood", "source_category_ids": [15], "source_description_pattern": "^Mollusks, mussel, blue, raw$"},
+    {"canonical_name_zh": "开心果", "terms": ["开心果", "开心果碎"], "category_code": "legume", "source_category_ids": [12], "source_description_pattern": "^Nuts, pistachio nuts, raw$"},
+    {"canonical_name_zh": "桑葚", "terms": ["桑葚"], "category_code": "fruit", "source_category_ids": [9], "source_description_pattern": "^Mulberries, raw$"},
+    {"canonical_name_zh": "牛蒡", "terms": ["牛蒡"], "category_code": "vegetable", "source_category_ids": [11], "source_description_pattern": "^Burdock root, raw$"},
+    {"canonical_name_zh": "荔枝", "terms": ["荔枝"], "category_code": "fruit", "source_category_ids": [9], "source_description_pattern": "^Litchis, raw$"},
+    {"canonical_name_zh": "鲶鱼", "terms": ["鲶鱼"], "category_code": "fish", "source_category_ids": [15], "source_description_pattern": "^Fish, catfish, (?:channel, farmed|farm raised), raw$"},
+    {"canonical_name_zh": "乳鸽", "terms": ["乳鸽", "鸽子"], "category_code": "meat", "source_category_ids": [5], "source_description_pattern": "^Squab, \\(pigeon\\), meat only, raw$"},
+    {"canonical_name_zh": "黑橄榄", "terms": ["黑橄榄"], "category_code": "fruit", "source_category_ids": [9], "source_description_pattern": "^Olives, ripe, canned \\(small-extra large\\)$"},
+    {"canonical_name_zh": "橘子", "terms": ["橘子", "桔子"], "category_code": "fruit", "source_category_ids": [9], "source_description_pattern": "^Mandarin, seedless, peeled, raw$"}
+  ],
+  "isolated": [
+    {"term": "六月鲜", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "糟卤", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "干贝素", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "火锅料", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "一品鲜", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "三奈", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "月桂叶", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "蔬菜精", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "竹签", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "模具", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "饮用水", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "热开水", "reason": "auxiliary_rule_gap_resolved"}
+    ,{"term": "泰椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "小红尖椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "干尖椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "干椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "干海椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "红朝天椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "线椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "树椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "湖南椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "青线椒", "reason": "seasoning_rule_gap_resolved"}
+    ,{"term": "红杭椒", "reason": "seasoning_rule_gap_resolved"}
+  ]
+}

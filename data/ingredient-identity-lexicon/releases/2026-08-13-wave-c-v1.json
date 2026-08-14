@@ -1,0 +1,131 @@
+{
+  "contract": "recipeIngredientIdentityLexicon/v1",
+  "lexicon_version": "2026-08-13-wave-c-v1",
+  "wave": {
+    "route": "identity_candidate",
+    "minimum_occurrences": 20,
+    "maximum_occurrences": 49,
+    "rule": "明确通过项进入目录；其余项目逐项展开为默认保守隔离"
+  },
+  "default_isolation_reason": "unresolved_after_controlled_wave_audit",
+  "existing_aliases": [
+    {"concept_id": "ingredient_stage4_1a9d5484225b41b6", "terms": ["猪脚", "猪手"]},
+    {"concept_id": "ingredient_stage4_2881dc7de3c9028b", "terms": ["莴苣", "青笋"]},
+    {"concept_id": "ingredient_auto_model_714304a5fe9d6555", "terms": ["铁棍山药", "淮山"]},
+    {"concept_id": "ingredient_tomato", "terms": ["小西红柿", "蕃茄"]},
+    {"concept_id": "ingredient_sweet_corn", "terms": ["甜玉米粒"]},
+    {"concept_id": "ingredient_shrimp", "terms": ["明虾"]},
+    {"concept_id": "ingredient_auto_model_c399df43b7ee2959", "terms": ["翅中"]},
+    {"concept_id": "ingredient_auto_model_a4527d3ff636ebd5", "terms": ["笋"]},
+    {"concept_id": "ingredient_chicken_breast", "terms": ["鸡胸脯肉"]},
+    {"concept_id": "ingredient_auto_model_21eaff4331362c33", "terms": ["白面", "中筋粉"]},
+    {"concept_id": "ingredient_auto_model_c53f731e04c2ac9e", "terms": ["马苏里拉", "马苏里拉芝士碎"]},
+    {"concept_id": "ingredient_stage4_26b5c2ec669a7e12", "terms": ["凤爪", "鸡脚"]},
+    {"concept_id": "ingredient_stage3_0e32e5c9179737e8", "terms": ["长豆角"]},
+    {"concept_id": "ingredient_egg_yolk", "terms": ["蛋黄液"]},
+    {"concept_id": "ingredient_stage2_6d4b28b7f7eefe07", "terms": ["水发木耳"]},
+    {"concept_id": "ingredient_auto_model_8d5da74d031e6c25", "terms": ["松仁"]},
+    {"concept_id": "ingredient_whole_egg", "terms": ["雞蛋"]},
+    {"concept_id": "ingredient_sweet_potato", "terms": ["番薯"]},
+    {"concept_id": "ingredient_auto_model_a25211ce5c812248", "terms": ["香芋"]},
+    {"concept_id": "ingredient_stage4_195f7932237eb030", "terms": ["花甲"]},
+    {"concept_id": "ingredient_auto_model_310604136757ec38", "terms": ["蛋糕粉"]}
+  ],
+  "new_concepts": [
+    {
+      "canonical_name_zh": "猪肚",
+      "terms": ["猪肚"],
+      "category_code": "organ",
+      "source_category_ids": [10],
+      "source_description_pattern": "^Pork, fresh, variety meats and by-products, stomach, raw$"
+    },
+    {
+      "canonical_name_zh": "黑豆",
+      "terms": ["黑豆"],
+      "category_code": "legume",
+      "source_category_ids": [16],
+      "source_description_pattern": "^Beans, black, mature seeds, raw$"
+    },
+    {
+      "canonical_name_zh": "螃蟹",
+      "terms": ["螃蟹"],
+      "category_code": "seafood",
+      "source_category_ids": [15],
+      "source_description_pattern": "^Crustaceans, crab, blue, raw$"
+    },
+    {
+      "canonical_name_zh": "白果",
+      "terms": ["白果"],
+      "category_code": "legume",
+      "source_category_ids": [12],
+      "source_description_pattern": "^Nuts, ginkgo nuts, raw$"
+    },
+    {
+      "canonical_name_zh": "琼脂",
+      "terms": ["琼脂"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Seaweed, agar, raw$"
+    },
+    {
+      "canonical_name_zh": "蚕豆",
+      "terms": ["蚕豆"],
+      "category_code": "legume",
+      "source_category_ids": [16],
+      "source_description_pattern": "^Broadbeans \\(fava beans\\), mature seeds, raw$"
+    },
+    {
+      "canonical_name_zh": "鲤鱼",
+      "terms": ["鲤鱼"],
+      "category_code": "fish",
+      "source_category_ids": [15],
+      "source_description_pattern": "^Fish, carp, raw$"
+    },
+    {
+      "canonical_name_zh": "无花果",
+      "terms": ["无花果"],
+      "category_code": "fruit",
+      "source_category_ids": [9],
+      "source_description_pattern": "^Figs, raw$"
+    },
+    {
+      "canonical_name_zh": "兔肉",
+      "terms": ["兔肉"],
+      "category_code": "meat",
+      "source_category_ids": [17],
+      "source_description_pattern": "^Game meat, rabbit, domesticated, composite of cuts, raw$"
+    },
+    {
+      "canonical_name_zh": "生蚝",
+      "terms": ["生蚝"],
+      "category_code": "seafood",
+      "source_category_ids": [15],
+      "source_description_pattern": "^Mollusks, oyster, Pacific, raw$"
+    }
+  ],
+  "isolated": [
+    {"term": "味素", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "凉白开", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "鹽", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "即发干酵母", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "味达美", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "蘑菇精", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "冰水", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "色素", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "无铝泡打粉", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "调料", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "枧水", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "白开水", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "温开水", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "美极鲜", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "沸水", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "食用色素", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "豆鼓", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "鲜贝露", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "安琪酵母", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "味淋", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "矿泉水", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "耐高糖酵母", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "奥尔良腌料", "reason": "seasoning_rule_gap_resolved"}
+  ]
+}

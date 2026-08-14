@@ -1,0 +1,20 @@
+{
+  "contract": "controlledIngredientIdentityDecisions/v1",
+  "decision_version": "2026-08-13-wave-c1-v1",
+  "scope": "仅处理完整词身份；不新增概念或营养来源，不对复合写法做子串替换",
+  "catalog_aliases": [
+    {"concept_id": "ingredient_auto_model_c399df43b7ee2959", "terms": ["鸡翅根", "翅根"]},
+    {"concept_id": "ingredient_auto_model_5e7120bf23740d37", "terms": ["猪小排", "小排"]},
+    {"concept_id": "ingredient_cfct_148bb4a2388269e1", "terms": ["黄鳝"]},
+    {"concept_id": "ingredient_cfct_553faf5ac5c7ea8b", "terms": ["豆腐泡"]},
+    {"concept_id": "ingredient_pork_kidney", "terms": ["猪腰"]},
+    {"concept_id": "ingredient_cfct_6c4d7161654bd6d2", "terms": ["红心火龙果"]},
+    {"concept_id": "ingredient_chicken_meat", "terms": ["鸡块"]},
+    {"concept_id": "ingredient_auto_model_bd97b98d310f774e", "terms": ["琵琶腿"]},
+    {"concept_id": "ingredient_cfct_498fd93cef03aa6a", "terms": ["龙眼"]}
+  ],
+  "bare_defaults": [
+    {"concept_id": "ingredient_pork_tenderloin", "terms": ["里脊肉", "里脊"]},
+    {"concept_id": "ingredient_pork_meat", "terms": ["精肉", "精瘦肉"]}
+  ]
+}

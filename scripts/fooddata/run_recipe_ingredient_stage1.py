@@ -12,13 +12,13 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from recipe_ingredient_normalization import POLICY_ID, clean_term, normalize_text
+from recipe_ingredient_normalization import NormalizationResult, POLICY_ID, clean_term, normalize_text
 
 
 REPORT_CONTRACT = "recipeIngredientStage1Report/v1"
 DECISION_CONTRACT = "recipeIngredientStage1Decisions/v1"
 UNRESOLVED_CONTRACT = "recipeIngredientStage1Unresolved/v1"
-RESOLVED_STATUSES = {"excluded", "auxiliary", "matched", "alternative", "composite"}
+RESOLVED_STATUSES = {"excluded", "auxiliary", "isolated", "matched", "alternative", "composite"}
 
 
 def load_maps(conn: sqlite3.Connection) -> tuple[dict[str, str], set[str]]:
@@ -52,13 +52,55 @@ def decision_type(status: str) -> str:
     return {
         "excluded": "excluded",
         "auxiliary": "auxiliary",
+        "isolated": "isolated",
         "matched": "mapped_existing",
         "alternative": "alternative",
         "composite": "composite",
     }[status]
 
 
-def build_stage1(conn: sqlite3.Connection) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+def load_review_decisions(paths: Path | list[Path] | None) -> dict[str, dict[str, Any]]:
+    if paths is None:
+        return {}
+    values = [paths] if isinstance(paths, Path) else paths
+    decisions: dict[str, dict[str, Any]] = {}
+    for path in values:
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if document.get("contract") != "recipeIngredientReviewedDecisions/v1":
+            raise ValueError("原料审核决定合同不匹配")
+        for item in document.get("items", []):
+            key = normalize_text(str(item["normalized_name"]))
+            if key in decisions:
+                if item.get("supersedes") is True:
+                    decisions[key] = item
+                    continue
+                fields = ("status", "concept_id", "exclusion_category", "rule_id", "decision")
+                if any(decisions[key].get(field) != item.get(field) for field in fields):
+                    raise ValueError(f"规范化后原料审核决定冲突：{key}")
+                continue
+            decisions[key] = item
+    return decisions
+
+
+def apply_review_decision(result: NormalizationResult, review: dict[str, Any] | None) -> NormalizationResult:
+    if review is None or result.status in RESOLVED_STATUSES:
+        return result
+    status = str(review["status"])
+    if status not in {"matched", "auxiliary", "excluded", "isolated"}:
+        raise ValueError(f"原料审核决定状态无效：{status}")
+    result.status = status
+    result.rule_id = str(review["rule_id"])
+    result.rule_trace.append("reviewed_identity_decision")
+    result.concept_id = review.get("concept_id")
+    result.exclusion_category = review.get("exclusion_category")
+    if status == "matched" and not result.concept_id:
+        raise ValueError("原料审核映射缺少概念 ID")
+    return result
+
+
+def build_stage1(
+    conn: sqlite3.Connection, review_decisions: dict[str, dict[str, Any]] | None = None
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     aliases, source_names = load_maps(conn)
     known_names = set(aliases) | source_names
     decisions: list[dict[str, Any]] = []
@@ -80,6 +122,7 @@ def build_stage1(conn: sqlite3.Connection) -> tuple[dict[str, Any], dict[str, An
     for normalized_name, example_raw_name, occurrence_count in rows:
         count = int(occurrence_count)
         result = clean_term(str(normalized_name), aliases, source_names, known_names)
+        result = apply_review_decision(result, (review_decisions or {}).get(normalize_text(str(normalized_name))))
         base = {
             "normalized_name": str(normalized_name),
             "example_raw_name": str(example_raw_name),
@@ -152,6 +195,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--decisions", type=Path, required=True)
     parser.add_argument("--unresolved", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--review-decisions", type=Path, nargs="+")
     return parser.parse_args()
 
 
@@ -165,8 +209,10 @@ def main() -> int:
         print("拒绝覆盖已有阶段一产物", file=sys.stderr)
         return 2
     try:
+        review_decisions = load_review_decisions(args.review_decisions)
         with sqlite3.connect(args.sqlite) as conn:
-            decisions, unresolved, report = build_stage1(conn)
+            decisions, unresolved, report = build_stage1(conn, review_decisions)
+        report["review_decision_count"] = len(review_decisions)
         decision_bytes = encoded(decisions)
         unresolved_bytes = encoded(unresolved)
         report["artifact_sha256"] = {
@@ -180,7 +226,7 @@ def main() -> int:
         args.report.write_bytes(encoded(report))
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
-    except (OSError, sqlite3.Error, ValueError) as error:
+    except (OSError, sqlite3.Error, ValueError, json.JSONDecodeError) as error:
         for path in targets:
             path.unlink(missing_ok=True)
         print(f"阶段一确定性映射失败：{error}", file=sys.stderr)

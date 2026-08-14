@@ -1,0 +1,83 @@
+{
+  "report_contract": "remainingStructuredControlledAgentReviewReport/v1",
+  "policy_id": "remainingStructuredControlledAgentReview/v1",
+  "decision_version": "2026-08-14-remaining-structured-agent-v1",
+  "source_classification_release_id": "2026-08-14-v17-remaining-wave2-state",
+  "source_catalog_version": "2026-08-14-v17",
+  "input_categories": [
+    "composite_or_alternative",
+    "processed_or_brand",
+    "recipe_text_or_non_food",
+    "variable_processed_food"
+  ],
+  "input_term_count": 1637,
+  "input_occurrence_count": 5122,
+  "terminal_term_count": 1637,
+  "category_term_counts": {
+    "composite_or_alternative": 258,
+    "processed_or_brand": 211,
+    "recipe_text_or_non_food": 425,
+    "variable_processed_food": 743
+  },
+  "category_occurrence_counts": {
+    "composite_or_alternative": 524,
+    "processed_or_brand": 1673,
+    "recipe_text_or_non_food": 644,
+    "variable_processed_food": 2281
+  },
+  "status_term_counts": {
+    "auxiliary": 19,
+    "excluded": 57,
+    "isolated": 1561
+  },
+  "status_occurrence_counts": {
+    "auxiliary": 19,
+    "excluded": 84,
+    "isolated": 5019
+  },
+  "decision_term_counts": {
+    "auxiliary": 19,
+    "composite_or_alternative": 225,
+    "excluded": 57,
+    "processed_or_brand": 203,
+    "recipe_text_or_non_food": 403,
+    "variable_processed_food": 730
+  },
+  "rule_term_counts": {
+    "structured_review_auxiliary": 19,
+    "structured_review_composite_or_alternative": 225,
+    "structured_review_excluded_seasoning_or_oil": 57,
+    "structured_review_no_exact_processed_identity": 203,
+    "structured_review_no_exact_variable_processed_identity": 730,
+    "structured_review_recipe_text_or_non_food": 403
+  },
+  "guardrails": {
+    "existing_concepts_only": true,
+    "identity_exact_only": true,
+    "similar_food_proxy_forbidden": true,
+    "composite_or_alternative_default_isolated": true,
+    "unstable_processed_food_default_isolated": true,
+    "non_food_text_isolated": true,
+    "seasoning_or_oil_excluded": true,
+    "auxiliary_terms_terminal": true,
+    "new_concepts_or_sources_created": false,
+    "local_model_used": false,
+    "external_search_used": false,
+    "open_api_used": false
+  },
+  "validation": {
+    "expected_term_count": 1637,
+    "actual_term_count": 1637,
+    "unique_normalized_name_count": 1637,
+    "duplicate_normalized_name_count": 0,
+    "missing_input_term_count": 0,
+    "extra_output_term_count": 0,
+    "invalid_concept_id_count": 0,
+    "exact_catalog_name_intersection_count": 0,
+    "matched_term_count": 0,
+    "required_field_error_count": 0,
+    "invalid_method_count": 0,
+    "invalid_terminal_status_count": 0,
+    "all_items_terminal": true
+  }
+}

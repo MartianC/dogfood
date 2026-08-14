@@ -20,6 +20,10 @@ const stage2CatalogIntegrator = path.join(root, 'scripts/fooddata/integrate_stag
 const stage3Preparer = path.join(root, 'scripts/fooddata/prepare_recipe_ingredient_stage3.py')
 const modelResultIntegrator = path.join(root, 'scripts/fooddata/integrate_recipe_ingredient_model_results.py')
 const coverageReporter = path.join(root, 'scripts/fooddata/report_recipe_ingredient_coverage.py')
+const cfctImporter = path.join(root, 'scripts/fooddata/import_cfct_ocr_source.py')
+const cfctCatalogIntegrator = path.join(root, 'scripts/fooddata/integrate_cfct_ingredient_catalog.py')
+const controlledAliasIntegrator = path.join(root, 'scripts/fooddata/integrate_controlled_ingredient_aliases.py')
+const gapClassifier = path.join(root, 'scripts/fooddata/classify_recipe_ingredient_gaps.py')
 const policySeeder = path.join(root, 'scripts/fooddata/seed_canine_ingredient_policies.py')
 const rankingSeeder = path.join(root, 'scripts/fooddata/seed_nutrient_rankings.py')
 const recipeMappingSeeder = path.join(root, 'scripts/fooddata/seed_recipe_ingredient_mappings.py')
@@ -113,6 +117,22 @@ function runCoverageReporter(args) {
     cwd: root,
     encoding: 'utf8'
   })
+}
+
+function runCfctImporter(args) {
+  return spawnSync('python3', [cfctImporter, ...args], { cwd: root, encoding: 'utf8' })
+}
+
+function runCfctCatalogIntegrator(args) {
+  return spawnSync('python3', [cfctCatalogIntegrator, ...args], { cwd: root, encoding: 'utf8' })
+}
+
+function runControlledAliasIntegrator(args) {
+  return spawnSync('python3', [controlledAliasIntegrator, ...args], { cwd: root, encoding: 'utf8' })
+}
+
+function runGapClassifier(args) {
+  return spawnSync('python3', [gapClassifier, ...args], { cwd: root, encoding: 'utf8' })
 }
 
 function runPolicySeeder(args) {
@@ -406,6 +426,168 @@ conn.close()
   ])
 })
 
+test('CFCT OCR 独立来源保留状态语义、溯源和 needs_review 许可证', () => {
+  const result = runPython(`
+import importlib.util, pathlib
+spec = importlib.util.spec_from_file_location('cfct', pathlib.Path('scripts/fooddata/import_cfct_ocr_source.py'))
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+values = ['0', 'Tr', '—', 'un', '', '899*', '上海']
+print([module.value_status(value) for value in values])
+print(module.source_food_id('051024'), module.source_food_id('031510x'))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const lines = result.stdout.trim().split('\n')
+  assert.match(lines[0], /\(0\.0, 'numeric'\)/)
+  assert.match(lines[0], /\(None, 'trace'\)/)
+  assert.match(lines[0], /\(None, 'not_measured'\)/)
+  assert.match(lines[0], /\(None, 'unavailable'\)/)
+  assert.match(lines[0], /\(None, 'missing'\)/)
+  assert.match(lines[0], /\(899\.0, 'calculated'\)/)
+  assert.match(lines[0], /\(None, 'invalid_ocr'\)/)
+  assert.match(lines[1], /^51024 \d+$/)
+})
+
+test('CFCT 目录合并只接受显式食品编码并保持独立唯一来源', () => {
+  const result = runPython(`
+import json, sqlite3, sys
+sys.path.insert(0, 'scripts/fooddata')
+from integrate_cfct_ingredient_catalog import integrate
+
+conn = sqlite3.connect(':memory:')
+conn.executescript('''
+CREATE TABLE source_release (release_id TEXT, source_version TEXT, license_status TEXT);
+CREATE TABLE source_cfct_food (source_release_id TEXT, fdc_id INTEGER, food_code TEXT, original_name TEXT, data_quality TEXT);
+CREATE TABLE source_food_nutrient (source_release_id TEXT, source_record_id INTEGER, fdc_id INTEGER);
+INSERT INTO source_release VALUES ('cfct-r1','cfct-test','needs_review');
+INSERT INTO source_cfct_food VALUES ('cfct-r1',51024,'051024','银耳（干）[白木耳]','ocr_unverified');
+INSERT INTO source_food_nutrient VALUES ('cfct-r1',1,51024);
+''')
+base = {'catalog_version':'v1','catalog_schema_version':2,'items':[{
+  'concept_id':'existing','canonical_name_zh':'鸡蛋','category_code':'egg','subcategory_code':None,
+  'aliases':[],'variants':[{'variant_id':'ve','display_name_zh':'鸡蛋','preparation_state':'raw','source_version':'foundation','fdc_id':1,'description_contains':'Egg','is_default':True}]
+}]}
+decisions = {'contract':'cfctIngredientCatalogDecisions/v1','decision_version':'d1','source_version':'cfct-test','items':[{
+  'canonical_name_zh':'银耳','aliases':['雪耳'],'category_code':'vegetable','food_code':'051024',
+  'expected_name':'银耳（干）[白木耳]','preparation_state':'dried'
+}]}
+catalog, report = integrate(conn, base, decisions, 'v2')
+print(json.dumps({'count':len(catalog['items']),'report':report,'variant':catalog['items'][1]['variants'][0]}, ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const value = JSON.parse(result.stdout)
+  assert.equal(value.count, 2)
+  assert.equal(value.report.added_concept_count, 1)
+  assert.equal(value.report.license_status, 'needs_review')
+  assert.equal(value.variant.source_version, 'cfct-test')
+  assert.equal(value.variant.fdc_id, 51024)
+})
+
+test('剩余未覆盖分类互斥守恒并区分 CFCT 基础、加工和状态候选', () => {
+  const result = runPython(`
+import json, sqlite3, sys
+sys.path.insert(0, 'scripts/fooddata')
+from classify_recipe_ingredient_gaps import classify, classify_identity
+
+conn = sqlite3.connect(':memory:')
+conn.executescript('''
+CREATE TABLE source_release (release_id TEXT, source_kind TEXT);
+CREATE TABLE source_localized_name (source_release_id TEXT, locale TEXT, name TEXT);
+INSERT INTO source_release VALUES ('c','cfct_ocr');
+INSERT INTO source_localized_name VALUES ('c','zh-CN','香肠');
+INSERT INTO source_localized_name VALUES ('c','zh-CN','虾皮');
+INSERT INTO source_localized_name VALUES ('c','zh-CN','鸭翅');
+''')
+items = [
+ {'normalized_name':'香肠','cleaned_name':'香肠','example_raw_name':'香肠','occurrence_count':10,'status':'source_candidate','rule_id':'x'},
+ {'normalized_name':'虾皮','cleaned_name':'虾皮','example_raw_name':'虾皮','occurrence_count':9,'status':'source_candidate','rule_id':'x'},
+ {'normalized_name':'鸭翅','cleaned_name':'鸭翅','example_raw_name':'鸭翅','occurrence_count':8,'status':'source_candidate','rule_id':'x'},
+ {'normalized_name':'肉','cleaned_name':'肉','example_raw_name':'肉','occurrence_count':7,'status':'ambiguous','rule_id':'x'},
+ {'normalized_name':'青红椒','cleaned_name':'青红椒','example_raw_name':'青红椒','occurrence_count':6,'status':'model_candidate','rule_id':'x'}
+]
+owners={'香肠':'source_exact','虾皮':'source_exact','鸭翅':'source_exact','肉':'generic_ambiguous','青红椒':'identity_candidate'}
+doc=classify(conn, {'items':items}, owners, 'r1')
+print(json.dumps({'terms':doc['input_term_count'],'occ':doc['input_occurrence_count'],'cats':doc['category_occurrence_counts']},ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const value = JSON.parse(result.stdout)
+  assert.equal(value.terms, 5)
+  assert.equal(value.occ, 40)
+  assert.deepEqual(value.cats, {
+    cfct_exact_candidate: 8,
+    cfct_stable_processed_candidate: 9,
+    cfct_variable_processed_candidate: 10,
+    composite_or_alternative: 6,
+    generic_ambiguous: 7
+  })
+})
+
+test('上位词审核先关闭确定性结构，再由受控决定覆盖或终态隔离全部词项', () => {
+  const result = runPython(`
+import json, sys
+sys.path.insert(0, 'scripts/fooddata')
+from prepare_generic_ambiguous_review import prepare
+from integrate_generic_ambiguous_review import integrate
+from run_recipe_ingredient_stage1 import apply_review_decision
+from recipe_ingredient_normalization import NormalizationResult
+
+catalog={'items':[
+ {'concept_id':'pork','canonical_name_zh':'猪肉','category_code':'meat','aliases':[]},
+ {'concept_id':'egg','canonical_name_zh':'鸡蛋','category_code':'egg','aliases':['全蛋']},
+]}
+items=[
+ {'normalized_name':'鸡蛋(全蛋)','cleaned_name':'鸡蛋(全蛋)','example_raw_name':'鸡蛋（全蛋）','occurrence_count':3,'category':'generic_ambiguous','rule_id':'identity_annotation_not_removed'},
+ {'normalized_name':'肉','cleaned_name':'肉','example_raw_name':'肉','occurrence_count':2,'category':'generic_ambiguous','rule_id':'generic_parent_term'},
+ {'normalized_name':'水或牛奶','cleaned_name':'水或牛奶','example_raw_name':'水或牛奶','occurrence_count':1,'category':'generic_ambiguous','rule_id':'unresolved_alternative'},
+]
+candidates, automatic, batches, report=prepare({'contract':'recipeIngredientGapClassification/v1','items':items},catalog,10)
+model={'items':[{'cleaned_name':'肉','decision':'concept:pork'}]}
+review, merged=integrate(candidates,automatic,model,catalog,'d1')
+base=NormalizationResult(normalized_name='肉',cleaned_name='肉',status='ambiguous',rule_id='generic_parent_term')
+mapped=apply_review_decision(base,next(x for x in review['items'] if x['normalized_name']=='肉'))
+print(json.dumps({
+ 'groups':report['identity_group_count'],'auto':report['automatic_group_count'],'model':report['model_group_count'],
+ 'terminal':merged['terminal_group_count'],'statuses':merged['status_group_counts'],
+ 'mapped':[mapped.status,mapped.concept_id,mapped.rule_id]
+},ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const value = JSON.parse(result.stdout)
+  assert.equal(value.groups, 3)
+  assert.equal(value.auto, 2)
+  assert.equal(value.model, 1)
+  assert.equal(value.terminal, 3)
+  assert.deepEqual(value.statuses, { isolated: 1, matched: 2 })
+  assert.deepEqual(value.mapped, ['matched', 'pork', 'generic_review_selected_concept'])
+})
+
+test('阶段一多版本审核决定只允许显式最终门禁覆盖前序决定', () => {
+  const result = runPython(`
+import json, pathlib, sys, tempfile
+sys.path.insert(0, 'scripts/fooddata')
+from run_recipe_ingredient_stage1 import load_review_decisions
+
+base={'contract':'recipeIngredientReviewedDecisions/v1','items':[{
+ 'normalized_name':'小米粉','status':'matched','concept_id':'millet','exclusion_category':None,
+ 'rule_id':'agent_selected','decision':'concept:millet'
+}]}
+gate={'contract':'recipeIngredientReviewedDecisions/v1','items':[{
+ 'normalized_name':'小米粉','status':'isolated','concept_id':None,'exclusion_category':None,
+ 'rule_id':'whole_grain_conflict','decision':'state_conversion','supersedes':True
+}]}
+with tempfile.TemporaryDirectory() as directory:
+ p1=pathlib.Path(directory)/'base.json'; p2=pathlib.Path(directory)/'gate.json'
+ p1.write_text(json.dumps(base),encoding='utf-8'); p2.write_text(json.dumps(gate),encoding='utf-8')
+ values=load_review_decisions([p1,p2])
+ print(json.dumps(values['小米粉'],ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const value = JSON.parse(result.stdout)
+  assert.equal(value.status, 'isolated')
+  assert.equal(value.rule_id, 'whole_grain_conflict')
+  assert.equal(value.supersedes, true)
+})
+
 test('构建器拒绝覆盖已经存在的输出 SQLite', () => {
   const { foundation, srDir, recipes, output } = createFixtureSet()
   fs.writeFileSync(output, 'keep')
@@ -638,6 +820,8 @@ aliases = {
     '胡萝卜': 'ingredient_carrot',
     '低筋面粉': 'ingredient_low_gluten_flour',
     '牛奶': 'ingredient_milk',
+    '猪肉': 'ingredient_pork', '猪肉末': 'ingredient_pork_ground', '平菇': 'ingredient_oyster_mushroom',
+    '黄豆芽': 'ingredient_soybean_sprouts', '鲤鱼': 'ingredient_carp', '鸡蛋': 'ingredient_egg', '鸡肉': 'ingredient_chicken',
     '水': 'ingredient_water',
 }
 values = [
@@ -648,6 +832,14 @@ values = [
     clean_term('牛奶（面团用）200ml', aliases, set()).to_dict(),
     clean_term('鸡胸肉（鸡腿肉）', aliases, set()).to_dict(),
     clean_term('鱼', aliases, set()).to_dict(),
+    clean_term('瘦肉', aliases, set()).to_dict(),
+    clean_term('肉末', aliases, set()).to_dict(),
+    clean_term('肉馅', aliases, set()).to_dict(),
+    clean_term('肉丝', aliases, set()).to_dict(),
+    clean_term('蘑菇', aliases, set()).to_dict(),
+    clean_term('豆芽', aliases, set()).to_dict(),
+    clean_term('蛋', aliases, set()).to_dict(),
+    clean_term('鸡', aliases, set()).to_dict(),
     clean_term('牛奶或胡萝卜', aliases, set()).to_dict(),
     clean_term('清水', aliases, set()).to_dict(),
     clean_term('迷迭香', aliases, set()).to_dict(),
@@ -663,7 +855,7 @@ print(json.dumps(values, ensure_ascii=False))
     'matched',
     'matched',
     'ambiguous',
-    'ambiguous',
+    'matched', 'matched', 'matched', 'matched', 'matched', 'matched', 'matched', 'matched', 'matched',
     'alternative',
     'auxiliary',
     'excluded'
@@ -674,8 +866,8 @@ print(json.dumps(values, ensure_ascii=False))
   assert.equal(values[3].cleaned_name, '低筋面粉')
   assert.equal(values[4].cleaned_name, '牛奶')
   assert.equal(values[4].quantity_text, '200ml')
-  assert.deepEqual(values[7].components, ['ingredient_milk', 'ingredient_carrot'])
-  assert.equal(values[9].exclusion_category, 'seasoning')
+  assert.deepEqual(values[15].components, ['ingredient_milk', 'ingredient_carrot'])
+  assert.equal(values[17].exclusion_category, 'seasoning')
 })
 
 test('阶段一规则统一繁体别名、完整匹配油类并分流烹饪辅料', () => {
@@ -718,6 +910,114 @@ print(json.dumps([clean_term(term, aliases, set()).to_dict() for term in terms],
   assert.equal(values[11].cleaned_name, '牛油果')
 })
 
+test('Wave C1 仅对完整裸词应用猪肉默认并修正桂圆身份方向', () => {
+  const result = runPython(`
+import json
+import sys
+
+sys.path.insert(0, 'scripts/fooddata')
+from recipe_ingredient_normalization import clean_term
+
+aliases = {
+    '猪里脊': 'ingredient_pork_tenderloin',
+    '猪肉': 'ingredient_pork_meat',
+    '桂圆': 'ingredient_longan',
+    '龙眼': 'ingredient_longan',
+}
+terms = ['里脊肉', '里脊', '精肉', '精瘦肉', '桂圆', '龙眼', '牛里脊', '鸡翅根汤']
+print(json.dumps([clean_term(term, aliases, set()).to_dict() for term in terms], ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const values = JSON.parse(result.stdout)
+  assert.deepEqual(values.slice(0, 4).map((item) => item.cleaned_name), ['猪里脊', '猪里脊', '猪肉', '猪肉'])
+  assert.deepEqual(values.slice(0, 4).map((item) => item.rule_id), Array(4).fill('controlled_bare_ingredient_default'))
+  assert.deepEqual(values.slice(4, 6).map((item) => item.cleaned_name), ['桂圆', '龙眼'])
+  assert.deepEqual(values.slice(4, 6).map((item) => item.concept_id), Array(2).fill('ingredient_longan'))
+  assert.equal(values[6].status, 'model_candidate')
+  assert.equal(values[7].status, 'model_candidate')
+})
+
+test('受控身份合并器只新增目录别名并保留唯一营养来源', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'controlled-ingredient-aliases-'))
+  const base = path.join(tmp, 'base.json')
+  const decisions = path.join(tmp, 'decisions.json')
+  const output = path.join(tmp, 'output.json')
+  const report = path.join(tmp, 'report.json')
+  fs.writeFileSync(base, JSON.stringify({
+    catalog_version: 'base-v1',
+    catalog_schema_version: 2,
+    items: [{
+      concept_id: 'ingredient_pork', canonical_name_zh: '猪肉', category_code: 'meat',
+      aliases: [], variants: [{
+        variant_id: 'variant_pork', display_name_zh: '猪肉（生）', preparation_state: 'raw',
+        source_version: 'foundation', fdc_id: 1, description_contains: 'Pork', is_default: true
+      }]
+    }]
+  }))
+  fs.writeFileSync(decisions, JSON.stringify({
+    contract: 'controlledIngredientIdentityDecisions/v1', decision_version: 'wave-c1-test',
+    catalog_aliases: [{ concept_id: 'ingredient_pork', terms: ['猪腰肉'] }],
+    bare_defaults: [{ concept_id: 'ingredient_pork', terms: ['精肉'] }]
+  }))
+  const result = runControlledAliasIntegrator([
+    '--base-catalog', base, '--decisions', decisions, '--catalog-version', 'out-v1',
+    '--out-catalog', output, '--report', report
+  ])
+  assert.equal(result.status, 0, result.stderr)
+  const catalog = JSON.parse(fs.readFileSync(output, 'utf8'))
+  const summary = JSON.parse(fs.readFileSync(report, 'utf8'))
+  assert.deepEqual(catalog.items[0].aliases, ['猪腰肉'])
+  assert.equal(catalog.items[0].variants.length, 1)
+  assert.equal(summary.added_alias_count, 1)
+  assert.equal(summary.bare_default_count, 1)
+})
+
+test('受控身份合并器只允许有营养明细的显式来源建立新概念', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'controlled-ingredient-source-'))
+  const sqlite = path.join(tmp, 'source.sqlite')
+  const base = path.join(tmp, 'base.json')
+  const decisions = path.join(tmp, 'decisions.json')
+  const output = path.join(tmp, 'output.json')
+  const report = path.join(tmp, 'report.json')
+  const setup = runPython(`
+import sqlite3,sys
+c=sqlite3.connect(sys.argv[1])
+c.executescript("""
+CREATE TABLE source_release (release_id TEXT PRIMARY KEY, source_version TEXT);
+CREATE TABLE source_food (source_release_id TEXT, fdc_id INTEGER, description TEXT);
+CREATE TABLE source_food_nutrient (source_release_id TEXT, fdc_id INTEGER, source_record_id INTEGER);
+INSERT INTO source_release VALUES ('r1','source-v1');
+INSERT INTO source_food VALUES ('r1',101,'Target food, raw');
+INSERT INTO source_food_nutrient VALUES ('r1',101,1);
+""")
+c.commit()
+`, [sqlite])
+  assert.equal(setup.status, 0, setup.stderr)
+  fs.writeFileSync(base, JSON.stringify({
+    catalog_version: 'base-v1', catalog_schema_version: 2,
+    items: [{ concept_id: 'existing', canonical_name_zh: '既有', category_code: 'meat', aliases: [],
+      variants: [{ variant_id: 'existing-v', display_name_zh: '既有（生）', preparation_state: 'raw',
+        source_version: 'source-v1', fdc_id: 1, description_contains: 'Existing', is_default: true }] }]
+  }))
+  fs.writeFileSync(decisions, JSON.stringify({
+    contract: 'controlledIngredientIdentityDecisions/v1', decision_version: 'wave-c2-test',
+    catalog_aliases: [], bare_defaults: [], new_concepts: [{
+      canonical_name_zh: '目标食材', aliases: ['目标别名'], category_code: 'meat',
+      source_version: 'source-v1', fdc_id: 101, description_contains: 'Target food, raw', preparation_state: 'raw'
+    }]
+  }))
+  const result = runControlledAliasIntegrator([
+    '--sqlite', sqlite, '--base-catalog', base, '--decisions', decisions, '--catalog-version', 'out-v2',
+    '--out-catalog', output, '--report', report
+  ])
+  assert.equal(result.status, 0, result.stderr)
+  const catalog = JSON.parse(fs.readFileSync(output, 'utf8'))
+  const summary = JSON.parse(fs.readFileSync(report, 'utf8'))
+  assert.equal(catalog.items.length, 2)
+  assert.equal(catalog.items.find((item) => item.canonical_name_zh === '目标食材').variants.length, 1)
+  assert.equal(summary.added_concept_count, 1)
+})
+
 test('阶段一清洁规则关闭辅料调味料缺口并保留状态换算合同', () => {
   const result = runPython(`
 import json
@@ -729,22 +1029,67 @@ from recipe_ingredient_normalization import clean_term
 aliases = {
     '大米': 'ingredient_rice', '鸡蛋': 'ingredient_egg', '芝麻': 'ingredient_sesame',
     '白芝麻': 'ingredient_sesame', '黑芝麻': 'ingredient_sesame',
-    '土豆': 'ingredient_potato', '南瓜': 'ingredient_pumpkin',
+    '土豆': 'ingredient_potato', '南瓜': 'ingredient_pumpkin', '牛腩': 'ingredient_brisket',
 }
-terms = ['酵母粉', '开水', '冰块', '郫县豆瓣', '味极鲜', '酸菜', '米饭', '蛋液', '熟芝麻', '土豆泥', '南瓜泥']
+terms = ['酵母粉', '开水', '冰块', '郫县豆瓣', '味极鲜', '酸菜', '九层塔', '米饭', '蛋液', '熟芝麻', '土豆泥', '南瓜泥', '熟牛腩']
 print(json.dumps([clean_term(term, aliases, set()).to_dict() for term in terms], ensure_ascii=False))
 `)
   assert.equal(result.status, 0, result.stderr)
   const values = JSON.parse(result.stdout)
   assert.deepEqual(values.slice(0, 3).map((item) => item.status), ['auxiliary', 'auxiliary', 'auxiliary'])
-  assert.deepEqual(values.slice(3, 6).map((item) => item.status), ['excluded', 'excluded', 'excluded'])
-  assert.deepEqual(values.slice(6).map((item) => item.status), Array(5).fill('matched'))
-  assert.equal(values[6].cleaned_name, '大米')
-  assert.equal(values[6].mention_preparation_state, 'cooked')
-  assert.equal(values[6].nutrition_status, 'conversion_required')
-  assert.equal(values[7].nutrition_status, 'ready')
-  assert.equal(values[8].cleaned_name, '芝麻')
-  assert.equal(values[8].nutrition_status, 'conversion_required')
+  assert.deepEqual(values.slice(3, 7).map((item) => item.status), Array(4).fill('excluded'))
+  assert.deepEqual(values.slice(7, 12).map((item) => item.status), Array(5).fill('matched'))
+  assert.equal(values[7].cleaned_name, '大米')
+  assert.equal(values[7].mention_preparation_state, 'cooked')
+  assert.equal(values[7].nutrition_status, 'conversion_required')
+  assert.equal(values[8].nutrition_status, 'ready')
+  assert.equal(values[9].cleaned_name, '芝麻')
+  assert.equal(values[9].nutrition_status, 'conversion_required')
+  assert.equal(values[12].status, 'matched')
+  assert.equal(values[12].cleaned_name, '牛腩')
+  assert.equal(values[12].mention_preparation_state, 'cooked')
+  assert.equal(values[12].nutrition_status, 'conversion_required')
+})
+
+test('CFCT 模型终态会进入状态换算或隔离且不再返回来源候选', () => {
+  const result = runPython(`
+import json,sys
+sys.path.insert(0, 'scripts/fooddata')
+from recipe_ingredient_normalization import clean_term
+aliases = {'桂圆': 'ingredient_longan', '柿子': 'ingredient_persimmon'}
+sources = {'桂圆肉', '红豆馅', '燕窝'}
+terms = ['桂圆肉', '桂圆肉碎', '柿饼', '红豆馅', '燕窝']
+print(json.dumps([clean_term(term, aliases, sources).to_dict() for term in terms], ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const values = JSON.parse(result.stdout)
+  assert.deepEqual(values.slice(0, 3).map((item) => item.status), Array(3).fill('matched'))
+  assert.deepEqual(values.slice(0, 3).map((item) => item.nutrition_status), Array(3).fill('conversion_required'))
+  assert.deepEqual(values.slice(3).map((item) => item.status), ['isolated', 'isolated'])
+})
+
+test('CFCT 精确身份后置门禁覆盖模型错误映射并保持全部身份组终态', () => {
+  const result = runPython(`
+import json,sys
+sys.path.insert(0, 'scripts/fooddata')
+from integrate_cfct_exact_identity_review import build_controlled_decisions
+candidates = {'items': [
+  {'cleaned_name':'红豆馅','occurrence_count':3,'source_candidates':[{'choice_id':'source:1','fdc_id':1,'source_version':'cfct','category_code':'legume','original_name':'红豆馅'}],'concept_candidates':[{'choice_id':'concept:bean'}]},
+  {'cleaned_name':'鸭蛋黄','occurrence_count':2,'source_candidates':[{'choice_id':'source:112103','fdc_id':112103,'source_version':'cfct','category_code':'egg','original_name':'鸭蛋黄'}],'concept_candidates':[{'choice_id':'concept:egg_yolk'}]}
+]}
+automatic = {'items': []}
+model = {'items': [
+  {'cleaned_name':'红豆馅','decision':'concept:bean'},
+  {'cleaned_name':'鸭蛋黄','decision':'concept:egg_yolk'}
+]}
+controlled, report = build_controlled_decisions(candidates, automatic, model, 'test-v1')
+print(json.dumps({'controlled': controlled, 'report': report}, ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const value = JSON.parse(result.stdout)
+  assert.equal(value.report.terminal_group_count, 2)
+  assert.equal(value.report.isolated_count, 1)
+  assert.equal(value.controlled.new_concepts[0].fdc_id, 112103)
 })
 
 test('阶段一执行器生成决定、未决项和零模型调用基线报告', () => {
@@ -793,7 +1138,7 @@ conn.close()
   assert.deepEqual(unresolvedDocument.items.map((item) => item.status), [
     'source_candidate', 'model_candidate'
   ])
-  assert.equal(reportDocument.normalization_policy_id, 'recipeIngredientNormalization/v3')
+  assert.equal(reportDocument.normalization_policy_id, 'recipeIngredientNormalization/v7')
   assert.equal(reportDocument.model_calls, 0)
   assert.equal(reportDocument.external_api_token_cost, 0)
   assert.equal(reportDocument.term_count, 5)
@@ -808,7 +1153,7 @@ test('阶段一未决分流器生成互斥队列并保持词项与提及次数�
   const outDir = path.join(tmp, 'routes')
   fs.writeFileSync(unresolved, JSON.stringify({
     contract: 'recipeIngredientStage1Unresolved/v1',
-    normalization_policy_id: 'recipeIngredientNormalization/v3',
+    normalization_policy_id: 'recipeIngredientNormalization/v7',
     items: [
       { normalized_name: '玉米淀粉', cleaned_name: '玉米淀粉', status: 'source_candidate', occurrence_count: 10 },
       { normalized_name: '瘦肉', cleaned_name: '瘦肉', status: 'ambiguous', occurrence_count: 9 },
@@ -1170,6 +1515,69 @@ conn.close()
   assert.equal(values.incomplete_rejected, true)
 })
 
+test('阶段四波次支持频次上下限且调味粉和苏打粉在来源映射前分流', () => {
+  const result = runPython(`
+import json
+import sys
+
+sys.path.insert(0, 'scripts/fooddata')
+from integrate_recipe_ingredient_stage4 import load_wave_items
+from recipe_ingredient_normalization import clean_term
+
+route = {
+    'contract': 'recipeIngredientStage1Route/v1',
+    'route': 'identity_candidate',
+    'items': [
+        {'normalized_name': '高频', 'occurrence_count': 100},
+        {'normalized_name': '本波次', 'occurrence_count': 75},
+        {'normalized_name': '低频', 'occurrence_count': 49},
+    ],
+}
+wave = load_wave_items(route, 50, 99)
+values = [
+    clean_term('肉蔻', {}, set()).to_dict(),
+    clean_term('大喜大牛肉粉', {}, set()).to_dict(),
+    clean_term('苏打粉', {}, set()).to_dict(),
+]
+print(json.dumps({'wave': sorted(wave), 'values': values}, ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  const values = JSON.parse(result.stdout)
+  assert.deepEqual(values.wave, ['本波次'])
+  assert.deepEqual(values.values.map((item) => item.status), ['excluded', 'excluded', 'auxiliary'])
+  assert.equal(values.values[2].cleaned_name, '小苏打')
+})
+
+test('阶段四长波次允许把未明确通过项逐项展开为默认保守隔离', () => {
+  const result = runPython(`
+import json
+import sys
+
+sys.path.insert(0, 'scripts/fooddata')
+from integrate_recipe_ingredient_stage4 import assignment_terms, complete_default_isolation
+
+wave = {
+    '明确项': {'occurrence_count': 30},
+    '未决甲': {'occurrence_count': 25},
+    '未决乙': {'occurrence_count': 20},
+}
+lexicon = {
+    'existing_aliases': [{'concept_id': 'known', 'terms': ['明确项']}],
+    'new_concepts': [],
+    'isolated': [],
+    'default_isolation_reason': 'unresolved_after_controlled_wave_audit',
+}
+assignments = assignment_terms(lexicon)
+isolated = complete_default_isolation(lexicon, wave, assignments)
+print(json.dumps(isolated, ensure_ascii=False))
+`)
+  assert.equal(result.status, 0, result.stderr)
+  assert.deepEqual(JSON.parse(result.stdout), [
+    { term: '未决乙', reason: 'unresolved_after_controlled_wave_audit' },
+    { term: '未决甲', reason: 'unresolved_after_controlled_wave_audit' }
+  ])
+})
+
 test('模型批次按清洗后身份聚合且不包含排除项和烹饪辅料', () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ingredient-model-batches-'))
   const sqlite = path.join(tmp, 'terms.sqlite')
@@ -1344,7 +1752,7 @@ print(json.dumps({
   assert.equal(values.unsweetened_first, true)
 })
 
-test('覆盖率分母只排除调味料和油且只把标准概念映射计为覆盖', () => {
+test('覆盖率分母排除调味料、油和烹饪辅料且只把标准概念映射计为覆盖', () => {
   const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
   const seed = path.join(tmp, 'catalog.json')
   const reportPath = path.join(tmp, 'coverage.json')
@@ -1356,6 +1764,14 @@ test('覆盖率分母只排除调味料和油且只把标准概念映射计为�
     '--release-id', 'coverage-test'
   ])
   assert.equal(buildResult.status, 0, buildResult.stderr)
+  const addAuxiliary = runPython(`
+import sqlite3, sys
+conn=sqlite3.connect(sys.argv[1])
+conn.execute("INSERT INTO recipe_ingredient_term VALUES ('水','水',1)")
+conn.commit()
+conn.close()
+`, [output])
+  assert.equal(addAuxiliary.status, 0, addAuxiliary.stderr)
   fs.writeFileSync(seed, JSON.stringify({
     catalog_version: 'coverage-catalog-v1',
     catalog_schema_version: 2,
@@ -1381,8 +1797,8 @@ test('覆盖率分母只排除调味料和油且只把标准概念映射计为�
   const result = runCoverageReporter(['--sqlite', output, '--report', reportPath])
   assert.equal(result.status, 0, result.stderr)
   const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'))
-  assert.equal(report.total_occurrence_count, 4)
-  assert.deepEqual(report.excluded_occurrence_counts, { seasoning: 1 })
+  assert.equal(report.total_occurrence_count, 5)
+  assert.deepEqual(report.excluded_occurrence_counts, { auxiliary: 1, seasoning: 1 })
   assert.equal(report.denominator_occurrence_count, 3)
   assert.equal(report.covered_occurrence_count, 1)
   assert.equal(report.occurrence_coverage, 1 / 3)

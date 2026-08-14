@@ -9,17 +9,20 @@ from dataclasses import asdict, dataclass, field
 from typing import Iterable
 
 
-POLICY_ID = "recipeIngredientNormalization/v3"
+POLICY_ID = "recipeIngredientNormalization/v7"
 
 SEASONING_PATTERN = re.compile(
     "|".join(
         (
-            r"盐|鸡精|味精|鸡粉|鲜味粉|调味|椒盐|十三香|浓汤宝|高汤粉",
-            r"生抽|老抽|酱油|豉油|鼓油|蚝油|蠔油|耗油|鱼露|酒|醋|酱|味噌|豆豉|香草精|汁$",
+            r"盐|鹽|鸡精|味精|味素|鸡粉|鲜味粉|蘑菇精|调味|调料|椒盐|十三香|浓汤宝|高汤粉",
+            r"生抽|老抽|酱油|豉油|鼓油|蚝油|蠔油|耗油|鱼露|酒|醋|酱|味噌|豆豉|豆鼓|味达美|美极鲜|鲜贝露|味淋|香草精|汁$",
             r"花椒|胡椒|八角|大料|桂皮|香叶|五香|孜然|咖喱|芥末|香辛|香料",
-            r"丁香|肉桂|豆蔻|茴香|辣椒|泡椒|剁椒",
+            r"丁香|肉桂|豆蔻|肉蔻|茴香|辣椒|泡椒|剁椒|牛肉粉",
+            r"泰椒|尖椒|干椒|海椒|朝天椒|线椒|树椒|杭椒|湖南椒|红美人椒",
             r"迷迭香|百里香|罗勒|薄荷|紫苏|草果|白芷|当归|甘草|陈皮",
-            r"炖肉料|烤肉料|烧烤料|火锅底料|高汤精|蔬之鲜|麻辣鲜|藏红花",
+            r"炖肉料|烤肉料|烧烤料|奥尔良腌料|火锅底料|高汤精|蔬之鲜|麻辣鲜|藏红花|色素",
+            r"六月鲜|一品鲜|美味鲜|干贝素|蔬菜精|糟卤|火锅料|腌料|奥尔良粉|新奥尔良粉",
+            r"月桂叶|桂叶|三奈|三萘|山奈|沙姜粉|黑椒|牛至|法香|欧芹|大茴|小茴|回香",
             r"郫县豆瓣|红油豆瓣|番茄沙司|味极鲜|老干妈|榨菜|腐乳|酸菜|泡菜|辣白菜",
             r"小米椒|小米辣|红米椒|二荆条|野山椒|干红椒|红干椒|藤椒",
             r"白糖|砂糖|冰糖|红糖|糖粉|糖浆|麦芽糖|代糖|蜂蜜|炼乳|甜菊|木糖醇|^糖",
@@ -99,6 +102,31 @@ AUXILIARY_TERMS = {
     "小苏打": "processing_aid",
     "食用碱": "processing_aid",
     "碱水": "processing_aid",
+    "竹签": "non_food_item",
+    "模具": "non_food_item",
+    "保鲜膜": "non_food_item",
+    "油纸": "non_food_item",
+    "烤箱": "non_food_item",
+    "打蛋器": "non_food_item",
+    "寿司帘": "non_food_item",
+    "牙签": "non_food_item",
+    "棉线": "non_food_item",
+    "纱布": "non_food_item",
+    "杯子": "non_food_item",
+    "玻璃瓶": "non_food_item",
+    "豆浆机": "non_food_item",
+    "装饰": "recipe_section_label",
+    "装饰:": "recipe_section_label",
+    "表面装饰": "recipe_section_label",
+    "表面装饰:": "recipe_section_label",
+    "装饰材料": "recipe_section_label",
+    "辅料": "recipe_section_label",
+    "辅料:": "recipe_section_label",
+    "配料": "recipe_section_label",
+    "配料:": "recipe_section_label",
+    "主料": "recipe_section_label",
+    "适量": "recipe_section_label",
+    "无": "recipe_section_label",
 }
 CONTROLLED_SYNONYMS = {
     "麻椒": "花椒",
@@ -126,6 +154,22 @@ CONTROLLED_SYNONYMS = {
     "凉开水": "水",
     "冷水": "水",
     "冰块": "水",
+    "凉白开": "水",
+    "白开水": "水",
+    "温开水": "水",
+    "沸水": "水",
+    "冰水": "水",
+    "矿泉水": "水",
+    "饮用水": "水",
+    "热开水": "水",
+    "白水": "水",
+    "凉白开水": "水",
+    "温热水": "水",
+    "即发干酵母": "酵母",
+    "耐高糖酵母": "酵母",
+    "安琪酵母": "酵母",
+    "无铝泡打粉": "泡打粉",
+    "枧水": "碱水",
     "红枣": "枣",
     "马苏里拉芝士": "马苏里拉奶酪",
     "红萝卜": "胡萝卜",
@@ -135,7 +179,6 @@ CONTROLLED_SYNONYMS = {
     "春笋": "竹笋",
     "圣女果": "番茄",
     "马蹄": "荸荠",
-    "桂圆": "龙眼",
     "玉米面": "玉米粉",
     "低粉": "低筋面粉",
     "高粉": "高筋面粉",
@@ -148,6 +191,24 @@ CONTROLLED_SYNONYMS = {
     "马铃薯": "土豆",
     "鸡蛋白": "蛋白",
     "蛋清": "蛋白",
+    "苏打粉": "小苏打",
+    "九层塔": "罗勒",
+}
+# 菜谱领域约定俗成的裸词省略。只对完整裸词生效，带部位、品牌、状态或复合分隔符的写法不走此映射。
+CONTROLLED_BARE_INGREDIENT_DEFAULTS = {
+    "瘦肉": "猪肉",
+    "肉丝": "猪肉",
+    "肉末": "猪肉末",
+    "肉馅": "猪肉末",
+    "蘑菇": "平菇",
+    "豆芽": "黄豆芽",
+    "鱼": "鲤鱼",
+    "蛋": "鸡蛋",
+    "鸡": "鸡肉",
+    "里脊肉": "猪里脊",
+    "里脊": "猪里脊",
+    "精肉": "猪肉",
+    "精瘦肉": "猪肉",
 }
 STATE_IDENTITY_MAPPINGS = {
     "米饭": ("大米", "cooked", "conversion_required"),
@@ -159,6 +220,20 @@ STATE_IDENTITY_MAPPINGS = {
     "熟黑芝麻": ("黑芝麻", "cooked", "conversion_required"),
     "土豆泥": ("土豆", "cooked", "conversion_required"),
     "南瓜泥": ("南瓜", "cooked", "conversion_required"),
+    "熟牛腩": ("牛腩", "cooked", "conversion_required"),
+    "桂圆肉": ("桂圆", "dried", "conversion_required"),
+    "柿饼": ("柿子", "dried", "conversion_required"),
+}
+TERMINAL_ISOLATIONS = {
+    "燕窝": "cfct_exact_insufficient_evidence",
+    "香米": "cfct_exact_multiple_equivalent_sources",
+    "奶白菜": "cfct_exact_identity_disagreement",
+    "珍珠": "cfct_exact_insufficient_evidence",
+    "红豆馅": "cfct_exact_variable_processed",
+    "脆皮肠": "cfct_exact_variable_processed",
+    "阿胶": "cfct_exact_variable_processed",
+    "叉烧肉": "cfct_exact_variable_processed",
+    "蟹足棒": "cfct_exact_variable_processed",
 }
 KNOWN_BRANDS = (
     "蒙牛",
@@ -303,6 +378,12 @@ def clean_single(
     result.rule_trace.extend(trace)
     result.brand = brand
     result.cleaned_name = current
+    if not result.nutrition_status:
+        state_mapping = STATE_IDENTITY_MAPPINGS.get(current)
+        if state_mapping:
+            current, result.mention_preparation_state, result.nutrition_status = state_mapping
+            result.cleaned_name = current
+            result.rule_trace.append("state_identity_mapping_after_candidate_cleanup")
 
     excluded = exclusion_category(current)
     if excluded:
@@ -316,6 +397,22 @@ def clean_single(
         result.status = "auxiliary"
         result.rule_id = AUXILIARY_TERMS[current]
         return result
+    isolation_reason = TERMINAL_ISOLATIONS.get(current)
+    if isolation_reason:
+        result.status = "isolated"
+        result.rule_id = isolation_reason
+        result.rule_trace.append("terminal_model_review_isolation")
+        return result
+    bare_default = CONTROLLED_BARE_INGREDIENT_DEFAULTS.get(current)
+    if bare_default:
+        concept_id = alias_to_concept.get(bare_default)
+        if concept_id:
+            result.status = "matched"
+            result.rule_id = "controlled_bare_ingredient_default"
+            result.concept_id = concept_id
+            result.cleaned_name = bare_default
+            result.rule_trace.append("controlled_bare_ingredient_default")
+            return result
     concept_id = alias_to_concept.get(current)
     if concept_id:
         result.status = "matched"

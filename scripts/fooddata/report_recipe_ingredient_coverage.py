@@ -11,6 +11,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from recipe_ingredient_normalization import POLICY_ID, clean_term, normalize_text
+from run_recipe_ingredient_stage1 import apply_review_decision, load_review_decisions
 
 
 REPORT_CONTRACT = "recipeIngredientCoverageReport/v1"
@@ -43,7 +44,9 @@ def load_maps(conn: sqlite3.Connection) -> tuple[dict[str, str], set[str]]:
     return aliases, source_names
 
 
-def coverage_report(conn: sqlite3.Connection) -> dict[str, object]:
+def coverage_report(
+    conn: sqlite3.Connection, review_decisions: dict[str, dict[str, object]] | None = None
+) -> dict[str, object]:
     aliases, source_names = load_maps(conn)
     known_names = set(aliases) | source_names
     status_terms: dict[str, int] = defaultdict(int)
@@ -65,6 +68,9 @@ def coverage_report(conn: sqlite3.Connection) -> dict[str, object]:
     for normalized_name, example_raw_name, occurrence_count in rows:
         count = int(occurrence_count)
         result = clean_term(str(normalized_name), aliases, source_names, known_names)
+        result = apply_review_decision(
+            result, (review_decisions or {}).get(normalize_text(str(normalized_name)))
+        )
         total_terms += 1
         total_occurrences += count
         status_terms[result.status] += 1
@@ -73,6 +79,10 @@ def coverage_report(conn: sqlite3.Connection) -> dict[str, object]:
             category = str(result.exclusion_category)
             excluded_terms[category] += 1
             excluded_occurrences[category] += count
+            continue
+        if result.status == "auxiliary":
+            excluded_terms["auxiliary"] += 1
+            excluded_occurrences["auxiliary"] += count
             continue
         denominator_terms += 1
         denominator_occurrences += count
@@ -92,7 +102,7 @@ def coverage_report(conn: sqlite3.Connection) -> dict[str, object]:
     return {
         "report_contract": REPORT_CONTRACT,
         "normalization_policy_id": POLICY_ID,
-        "denominator_rule": "仅排除 seasoning 和 oil；其余原料与烹饪辅料均计入分母",
+        "denominator_rule": "排除 seasoning、oil 和烹饪辅料；只统计需要营养覆盖的原料",
         "total_term_count": total_terms,
         "total_occurrence_count": total_occurrences,
         "excluded_term_counts": dict(sorted(excluded_terms.items())),
@@ -115,6 +125,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sqlite", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--review-decisions", type=Path, nargs="+")
     return parser.parse_args()
 
 
@@ -127,8 +138,10 @@ def main() -> int:
         print("拒绝覆盖已有覆盖率报告", file=sys.stderr)
         return 2
     try:
+        review_decisions = load_review_decisions(args.review_decisions)
         with sqlite3.connect(args.sqlite) as conn:
-            report = coverage_report(conn)
+            report = coverage_report(conn, review_decisions)
+        report["review_decision_count"] = len(review_decisions)
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(
             json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -140,7 +153,7 @@ def main() -> int:
             "term_coverage": report["term_coverage"],
         }, ensure_ascii=False, indent=2))
         return 0
-    except (OSError, sqlite3.Error, ValueError) as error:
+    except (OSError, sqlite3.Error, ValueError, json.JSONDecodeError) as error:
         args.report.unlink(missing_ok=True)
         print(f"覆盖率统计失败：{error}", file=sys.stderr)
         return 1

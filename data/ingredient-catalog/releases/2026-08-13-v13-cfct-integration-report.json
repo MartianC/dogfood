@@ -1,0 +1,200 @@
+{
+  "report_contract": "cfctIngredientCatalogIntegrationReport/v1",
+  "policy_id": "cfctIngredientCatalogIntegration/v1",
+  "decision_version": "2026-08-13-cfct-wave-b-v1",
+  "source_version": "cfct_6th_ocr_2025_12_06",
+  "catalog_version": "2026-08-13-v13",
+  "base_concept_count": 269,
+  "final_concept_count": 288,
+  "added_concept_count": 19,
+  "added_alias_count": 7,
+  "license_status": "needs_review",
+  "data_quality": "ocr_unverified",
+  "added_concepts": [
+    {
+      "concept_id": "ingredient_cfct_ddfac5be7f49ea98",
+      "canonical_name_zh": "油菜",
+      "food_code": "045125",
+      "source_food_id": 45125,
+      "source_name": "油菜",
+      "nutrient_count": 24,
+      "aliases": [
+        "小油菜"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_e98e8e75431f7273",
+      "canonical_name_zh": "丝瓜",
+      "food_code": "043228",
+      "source_food_id": 43228,
+      "source_name": "丝瓜",
+      "nutrient_count": 27,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_ae7526f8f0f91be8",
+      "canonical_name_zh": "薏米",
+      "food_code": "019008",
+      "source_food_id": 19008,
+      "source_name": "薏米 [薏仁米，苡米]",
+      "nutrient_count": 27,
+      "aliases": [
+        "薏仁"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_668ba26444edc99a",
+      "canonical_name_zh": "山楂",
+      "food_code": "061301",
+      "source_food_id": 61301,
+      "source_name": "红果 [山里红，大山楂]",
+      "nutrient_count": 30,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_498fd93cef03aa6a",
+      "canonical_name_zh": "桂圆",
+      "food_code": "065006",
+      "source_food_id": 65006,
+      "source_name": "桂圆",
+      "nutrient_count": 26,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_7380b445c20b0293",
+      "canonical_name_zh": "虾米",
+      "food_code": "122201",
+      "source_food_id": 122201,
+      "source_name": "虾米[海米、虾仁]",
+      "nutrient_count": 26,
+      "aliases": [
+        "海米"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_c3f67713059cf50f",
+      "canonical_name_zh": "干贝",
+      "food_code": "124112",
+      "source_food_id": 124112,
+      "source_name": "扇贝 (干) [干贝]",
+      "nutrient_count": 25,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_e963fd868be15b9b",
+      "canonical_name_zh": "香椿",
+      "food_code": "048055",
+      "source_food_id": 48055,
+      "source_name": "香椿（鲜）[香椿芽]",
+      "nutrient_count": 30,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_20285b4ff58222b2",
+      "canonical_name_zh": "荠菜",
+      "food_code": "045323",
+      "source_food_id": 45323,
+      "source_name": "荠菜（鲜）[蓟菜，菱角菜]",
+      "nutrient_count": 30,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_0031c59449c0e28c",
+      "canonical_name_zh": "黄花菜",
+      "food_code": "045412",
+      "source_food_id": 45412,
+      "source_name": "金针菜 (鲜) [黄花菜]",
+      "nutrient_count": 29,
+      "aliases": [
+        "金针菜"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_d3ba38c71d51821f",
+      "canonical_name_zh": "油麦菜",
+      "food_code": "045334",
+      "source_food_id": 45334,
+      "source_name": "油麦菜",
+      "nutrient_count": 27,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_13f6c1e7623a0b06",
+      "canonical_name_zh": "韭黄",
+      "food_code": "044402",
+      "source_food_id": 44402,
+      "source_name": "韭黄（韭芽，黄色）",
+      "nutrient_count": 28,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_3b60a0a23bcc7ca9",
+      "canonical_name_zh": "猪皮",
+      "food_code": "081130",
+      "source_food_id": 81130,
+      "source_name": "猪皮",
+      "nutrient_count": 23,
+      "aliases": [
+        "肉皮"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_148bb4a2388269e1",
+      "canonical_name_zh": "鳝鱼",
+      "food_code": "121107",
+      "source_food_id": 121107,
+      "source_name": "黄鳝[鳝鱼]",
+      "nutrient_count": 27,
+      "aliases": [
+        "鳝丝"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_60e052b48ab8dad6",
+      "canonical_name_zh": "芡实",
+      "food_code": "072019",
+      "source_food_id": 72019,
+      "source_name": "芡实米（干）[鸡头米]",
+      "nutrient_count": 23,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_53e780b32364da54",
+      "canonical_name_zh": "猪大肠",
+      "food_code": "081113",
+      "source_food_id": 81113,
+      "source_name": "猪大肠",
+      "nutrient_count": 28,
+      "aliases": [
+        "大肠"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_10ee2a6e55781345",
+      "canonical_name_zh": "豌豆苗",
+      "food_code": "042208",
+      "source_food_id": 42208,
+      "source_name": "豌豆苗",
+      "nutrient_count": 27,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_88697abad37c60ed",
+      "canonical_name_zh": "鸡毛菜",
+      "food_code": "045122",
+      "source_food_id": 45122,
+      "source_name": "鸡毛菜",
+      "nutrient_count": 27,
+      "aliases": []
+    },
+    {
+      "concept_id": "ingredient_cfct_ffe653a750566e07",
+      "canonical_name_zh": "刀豆",
+      "food_code": "042103",
+      "source_food_id": 42103,
+      "source_name": "刀豆 (鲜)",
+      "nutrient_count": 30,
+      "aliases": []
+    }
+  ]
+}

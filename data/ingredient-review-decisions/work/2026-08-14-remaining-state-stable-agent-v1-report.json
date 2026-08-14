@@ -1,0 +1,56 @@
+{
+  "report_contract": "remainingStateStableControlledAgentReviewReport/v1",
+  "policy_id": "remainingStateStableControlledAgentReview/v1",
+  "decision_version": "2026-08-14-remaining-state-stable-agent-v1",
+  "input_categories": [
+    "state_or_form_conversion",
+    "stable_processed_food"
+  ],
+  "input_term_count": 2958,
+  "input_occurrence_count": 7566,
+  "terminal_term_count": 2958,
+  "status_term_counts": {
+    "auxiliary": 92,
+    "excluded": 54,
+    "isolated": 2740,
+    "matched": 72
+  },
+  "status_occurrence_counts": {
+    "auxiliary": 291,
+    "excluded": 156,
+    "isolated": 6986,
+    "matched": 133
+  },
+  "category_status_term_counts": {
+    "state_or_form_conversion": {
+      "auxiliary": 89,
+      "excluded": 54,
+      "isolated": 2352,
+      "matched": 48
+    },
+    "stable_processed_food": {
+      "auxiliary": 3,
+      "isolated": 388,
+      "matched": 24
+    }
+  },
+  "guardrails": {
+    "existing_concepts_only": true,
+    "identity_exact_only": true,
+    "harmless_cut_only": true,
+    "state_conversion_isolated": true,
+    "stable_processed_exact_identity_only": true,
+    "similar_food_proxy_forbidden": true,
+    "new_concepts_or_sources_created": false,
+    "local_model_used": false,
+    "external_api_used": false
+  },
+  "validation": {
+    "expected_term_count": 2958,
+    "actual_term_count": 2958,
+    "unique_normalized_name_count": 2958,
+    "duplicate_normalized_name_count": 0,
+    "invalid_concept_id_count": 0,
+    "all_items_terminal": true
+  }
+}

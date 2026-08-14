@@ -1,0 +1,52 @@
+{
+  "report_contract": "remainingLowFrequencyControlledAgentReviewReport/v1",
+  "policy_id": "remainingLowFrequencyControlledAgentReview/v1",
+  "decision_version": "2026-08-14-remaining-low-frequency-agent-v1",
+  "input_category": "low_frequency_unclear",
+  "input_term_count": 6428,
+  "input_occurrence_count": 9384,
+  "terminal_term_count": 6428,
+  "status_term_counts": {
+    "auxiliary": 255,
+    "excluded": 227,
+    "isolated": 5808,
+    "matched": 138
+  },
+  "status_occurrence_counts": {
+    "auxiliary": 371,
+    "excluded": 459,
+    "isolated": 8311,
+    "matched": 243
+  },
+  "rule_term_counts": {
+    "low_frequency_review_auxiliary": 255,
+    "low_frequency_review_exact_orthography": 67,
+    "low_frequency_review_exact_synonym": 9,
+    "low_frequency_review_excluded": 227,
+    "low_frequency_review_harmless_cut_suffix_removed": 42,
+    "low_frequency_review_insufficient_evidence": 5549,
+    "low_frequency_review_recipe_label_removed": 20,
+    "low_frequency_review_state_mismatch_or_unavailable": 259
+  },
+  "guardrails": {
+    "existing_concepts_only": true,
+    "identity_exact_only": true,
+    "similar_food_proxy_forbidden": true,
+    "animal_species_and_part_mismatch_isolated": true,
+    "preparation_state_mismatch_isolated": true,
+    "new_concepts_or_sources_created": false,
+    "local_model_used": false,
+    "external_search_used": false,
+    "open_api_used": false
+  },
+  "validation": {
+    "expected_term_count": 6428,
+    "actual_term_count": 6428,
+    "unique_normalized_name_count": 6428,
+    "duplicate_normalized_name_count": 0,
+    "invalid_concept_id_count": 0,
+    "all_items_terminal": true,
+    "all_methods_controlled_agent_review": true,
+    "all_required_fields_present": true
+  }
+}

@@ -20,8 +20,11 @@
 - SR Legacy CSV：`/Users/cyr/Documents/Documents/Dogfood/FoodData_Central_sr_legacy_food_csv_2018-04`
 - SR Legacy 中文名称 SQLite：`data/usda-localized-names/releases/sr-legacy-2018-04-zh-CN-v1.sqlite`
 - 人饭菜谱 CSV：`/Users/cyr/Documents/Documents/Dogfood/capu_data_5w/caipu_1.csv`
+- CFCT 第6版 OCR JSON：固定到 `Sanotsu/china-food-composition-data@76ea8a4724b59cea882cc2f59fef8b62e41a0a16` 的 `json_data_vision_251206_Qwen2-5-VL-72B-Instruct/`；来源清单为 `data/cfct/releases/2025-12-06-v1.json`
 
 路径仅作为本地构建参数，不写死在脚本中。
+
+CFCT OCR 来源不是官方开放数据库。上游仓库没有 SPDX 许可证，并声明 OCR 准确率不能保证、版权归原作者所有。因此该来源固定为 `license_status=needs_review` 和 `data_quality=ocr_unverified`，只允许进入离线 staging；获得明确授权和数据复核前不得导出到 CloudBase。实际冻结 JSON 为61个文件、1,657个唯一食品编码，与上游 README 声明的1,677条相差20条，差异必须保留在来源清单中。
 
 USDA 数据在主库中标记为 `public_domain`。人饭菜谱授权已经由项目所有者确认，版本化声明位于 `data/human-recipes/sources/capu-5w.json`；映射生成器校验实际 CSV SHA-256 后把来源标记为 `verified`。授权合同或原始凭证由项目所有者在代码库之外保管。
 
@@ -49,6 +52,40 @@ python3 scripts/fooddata/seed_ingredient_catalog.py \
   --seed data/ingredient-catalog/releases/2026-07-22-v2.json
 ```
 
+CFCT 以独立来源叠加到已有 SQLite，不覆盖 Foundation 或 SR Legacy：
+
+```bash
+python3 scripts/fooddata/import_cfct_ocr_source.py \
+  --base-sqlite fooddata-cloudbase-export/<base>/ingredient_data.sqlite \
+  --cfct-json-dir /path/to/china-food-composition-data/json_data_vision_251206_Qwen2-5-VL-72B-Instruct \
+  --manifest data/cfct/releases/2025-12-06-v1.json \
+  --out-sqlite fooddata-cloudbase-export/<cfct_batch>/ingredient_data.sqlite
+```
+
+导入器保留 CFCT 原始食品编码、中文名、分类、可食部、备注、源文件和上游提交。数值与测定后修约的0写入通用营养表；`Tr`、`—`、`un`、空值、带星号计算值和 OCR 错位分别保存为 `trace / not_measured / unavailable / missing / calculated / invalid_ocr`，不能互相替代。当前导入1,657个食品和39,552个可计算营养值；16个 OCR 错位值被隔离，36个带星号计算值被显式标记。
+
+只有显式 CFCT 食品编码决定可以进入标准目录：
+
+```bash
+python3 scripts/fooddata/integrate_cfct_ingredient_catalog.py \
+  --sqlite fooddata-cloudbase-export/<cfct_batch>/ingredient_data.sqlite \
+  --base-catalog data/ingredient-catalog/releases/<base>.json \
+  --decisions data/ingredient-identity-lexicon/releases/<cfct_wave>.json \
+  --catalog-version <catalog_version> \
+  --out-catalog data/ingredient-catalog/releases/<catalog_version>.json \
+  --report data/ingredient-catalog/releases/<catalog_version>-cfct-integration-report.json
+```
+
+CFCT Wave A/B 共新增31个概念：银耳、火龙果、草鱼、鲫鱼、带鱼、空心菜、茭白、百合、腐竹、豆腐皮、油豆腐、豆腐干、油菜、丝瓜、薏米、山楂、桂圆、虾米、干贝、香椿、荠菜、黄花菜、油麦菜、韭黄、猪皮、鳝鱼、芡实、猪大肠、豌豆苗、鸡毛菜和刀豆。目录版本 `2026-08-13-v13` 含288个概念和288个唯一来源。严格覆盖提及由92,724增至95,811，排除调味料和油的覆盖率为66.23%；进一步排除辅料后为70.40%。
+
+基础食材候选 Wave C1 使用 `controlledIngredientIdentityDecisions/v1` 冻结受控同义词与菜谱裸词默认。目录别名由 `scripts/fooddata/integrate_controlled_ingredient_aliases.py` 写入新完整快照；`里脊肉/里脊 → 猪里脊`、`精肉/精瘦肉 → 猪肉` 只保存在完整裸词规则中，不作为可扩散的目录别名。v14 仍含288个概念和288个唯一来源，新增11个明确别名和4个裸词默认；阶段一新增覆盖802次，排除调味料、油和辅料后的覆盖率为70.99%。该版本仅为本地 staging。
+
+Wave C2 扩展同一合同以支持显式来源新概念。合并器要求来源版本、食品 ID、描述和营养明细全部匹配，并拒绝复用已被其他概念占用的来源。最终修正版 `2026-08-13-wave-c2-v2` 为三黄鸡、土鸡、乌鸡、小青菜、上海青、柿子椒、菜椒、灯笼椒、红菜椒、瑶柱、肥肠、花菇、白玉菇、胡罗卜和甜豆补入既有概念别名；新增牛腩、草菇、黑鱼、千张、苋菜、武昌鱼、小黄鱼、金桔和牛腱9个唯一来源概念。v16 含297个概念和297个唯一来源；排除调味料、油和辅料后的覆盖率为71.76%。紫薯、鸭腿、龙利鱼、肥牛和梅花肉继续隔离，不使用相似食材代理。
+
+CFCT 精确来源候选使用 `cfctExactIdentityPreparation/v1 → cfctExactIdentityControlledModel/v1 → cfctExactIdentityDecisionIntegration/v1` 完成闭环。v16 的135个词项先聚合为102个身份组：16组由单一自然食品来源门禁自动通过，86组交给本地27B模型执行正序、逆序双次判断，10组分歧触发第三次裁决。模型只能选择输入中的既有概念、CFCT食品编码或受控隔离状态；最终后置门禁纠正桂圆肉、红豆馅、鸭蛋黄、豆角、燕窝和阿胶6项越界或分类错误。v17 最终将11组并入既有概念、80组建立唯一来源新概念、11组进入状态换算或终态隔离；目录含377个概念和377个唯一来源。模型使用58,311个本地token，外部API成本为0。最新阶段一不再包含 `cfct_exact_candidate` 队列。
+
+剩余未覆盖项使用 `scripts/fooddata/classify_recipe_ingredient_gaps.py` 生成互斥守恒分类。最新清单为 `data/ingredient-gap-classification/releases/2026-08-13-v13-v2.json`，人读版为 `docs/data/remaining-ingredient-gap-classification-v2.md`。分类器区分 CFCT/USDA 精确候选、基础身份、稳定或不稳定加工品、形态换算、上位词、组合词、菜谱噪声和低频待定；任何词项遗漏或重复归属都会失败。
+
 从 `catalog_schema_version=2` 起，先从菜谱频次自动清洗原料写法、聚合别名并发现高置信标准概念。跨 USDA 分类、英文身份冲突和未匹配项自动隔离，不依赖人工逐条审核：
 
 ```bash
@@ -71,7 +108,7 @@ python3 scripts/fooddata/select_preferred_ingredient_sources.py \
   --report data/ingredient-catalog/releases/<catalog_version>-selection-report.json
 ```
 
-菜谱写法进入概念发现前使用 `recipeIngredientNormalization/v3` 确定性清洗。调味料和油排除，水和加工助剂分流；油类只允许完整词或受控别名匹配，避免“牛油”误伤“牛油果”。v3进一步回填发酵辅料、腌制调味品和裸上位词，并为熟制原料保留 `mention_preparation_state` 与 `nutrition_status`。剩余未解决项按清洗后身份聚合，再由 `recipeIngredientModelAssist/v1` 生成紧凑模型批次。模型不判断安全或营养来源，也不直接写数据库。
+菜谱写法进入概念发现前使用 `recipeIngredientNormalization/v7` 确定性清洗。调味料和油排除，水和加工助剂分流；油类只允许完整词或受控别名匹配，避免“牛油”误伤“牛油果”。v3回填发酵辅料、腌制调味品和裸上位词，并为熟制原料保留 `mention_preparation_state` 与 `nutrition_status`；v4增加受控裸词省略；v5增加里脊肉、里脊、精肉和精瘦肉的菜谱领域默认，并修正桂圆方向；v6将九层塔按罗勒归入调味料，并为熟牛腩保留状态；v7消费 CFCT 模型终态，桂圆肉和柿饼进入 `conversion_required`，燕窝、香米、奶白菜、珍珠及配方不稳定加工品进入终态隔离，不再重复进入来源候选或模型队列。模型不判断安全，也不能绕过来源和营养门禁直接写数据库。
 
 阶段一可使用 `scripts/fooddata/run_recipe_ingredient_stage1.py` 独立执行。执行器从当前 SQLite 读取菜谱原料、已批准别名和中文来源名，生成不可覆盖的 `stage-1-decisions.json`、`stage-1-unresolved.json` 与 `stage-1-baseline-report.json`；报告固定记录模型调用数和外部 API token 成本为0，并为决定和未决产物记录 SHA-256，支持重复运行校验。
 
@@ -140,11 +177,24 @@ python3 scripts/fooddata/integrate_recipe_ingredient_stage4.py \
   --lexicon data/ingredient-identity-lexicon/releases/<lexicon_version>.json \
   --catalog-version <catalog_version> \
   --minimum-occurrences 100 \
+  --maximum-occurrences <optional_maximum> \
   --out-catalog data/ingredient-catalog/releases/<catalog_version>.json \
   --report data/ingredient-catalog/releases/<catalog_version>-stage4-integration-report.json
 ```
 
 2026-08-12 的 Wave A 使用 `2026-08-12-wave-a-v1` 词典处理57项、9,525次提及：24项、3,761次通过，33项、5,764次隔离；新增15个概念并补充7个既有概念别名。最终 `2026-08-12-v7` 包含226个概念、754个别名和226个唯一来源，严格覆盖率由56.27%提升到58.96%。鸡爪因不存在生鲜档案而降级使用唯一水煮来源；该状态不得在运行时解释为生重营养。
+
+2026-08-13 的 Wave B 使用 `2026-08-13-wave-b-v1` 词典和频次范围50至99，避免重复处理 Wave A 隔离项。58项、4,018次提及里，25项、1,799次通过，33项、2,219次隔离；新增9个概念并补充14个既有别名。最终 `2026-08-13-v8` 包含235个概念、780个别名和235个唯一来源。覆盖提及由86,828增至88,752；调味料分流修复使分母由147,265降至147,120，严格覆盖率由58.96%提升到60.33%。
+
+对于 Wave C 及后续更长的波次，词典可以设置 `default_isolation_reason`。执行器仍校验所有明确分配均位于冻结波次中，并把未明确通过的项目逐项展开成隔离决定；默认隔离不等于丢弃，报告保留每个原料及频次。只有受控别名和英文来源门禁通过项可以写入目录。
+
+2026-08-13 的 Wave C 使用 `2026-08-13-wave-c-v1` 处理频次20至49的264项、8,221次提及：38项、1,341次通过，226项、6,880次隔离；新增10个概念并补28个既有别名。`2026-08-13-v9` 包含245个概念、818个别名和245个唯一来源。覆盖提及由88,752增至90,193，调味料分流修复使分母由147,120降至146,339，严格覆盖率由60.33%提升到61.63%。
+
+2026-08-13 的 Wave D 使用 `2026-08-13-wave-d-v1` 处理频次5至19的919项、8,268次提及：78项、810次通过，841项、7,458次隔离；新增11个概念并补61个既有别名。`2026-08-13-v10` 包含256个概念、896个批准别名和256个唯一来源。阶段一未决提及由47,862降至45,373，覆盖提及由90,193增至90,718；调味料规则修复使严格分母由146,339降至144,658，覆盖率由61.63%提升到62.71%。酸牛奶、鸭掌、咸鸭蛋黄、芥兰、翅根和部位不明的瘦肉写法因身份或形态不等价继续隔离。
+
+Wave E1 基于 v4 重跑后的候选冻结频次不少于20次的257项、13,130次提及；只有 `茼蒿` 通过 `Chrysanthemum leaves, raw` 精确来源门禁，新增1个概念，256项继续隔离。`2026-08-13-v11` 共257个概念、257个唯一来源。覆盖提及由92,683增至92,724，严格覆盖率由64.07%提升到64.10%。这验证了高频长尾当前瓶颈主要是精确营养来源缺失，而非继续扩展中文别名。
+
+Wave E2 对 v4 最新阶段一产物的 8 个 `source_exact` 写法及全部身份候选执行阶段二身份聚类，共 14,002 项、36,493 次提及，形成 1,350 个来源身份簇，但没有项目通过唯一身份、分类、营养明细和唯一来源四重门禁。阶段二接受 0 项；中文来源名命中不会自动转成标准概念，复合食品和加工态继续隔离。
 
 本地模型结果必须经过 `recipeIngredientModelResultIntegration/v1` 门禁后才能生成目录候选。门禁要求模型基础名与清洗名保持足够字面一致，并且能够唯一落到既有目录概念或 Foundation / SR Legacy 中文来源；裸动物、上位词、模型近形误判和受控动物身份冲突继续隔离。模型结果不能绕过 `readyToCookNutritionSource/v1` 唯一来源选择器。
 
@@ -337,6 +387,10 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
 每次目录、策略、USDA 来源或营养公式变化后，必须按照 [`nutrient_rankings` 生成与发布 SOP](data/nutrient-rankings-sop.md) 重新生成完整排行。空排行必须显式保留，不能回退到未经审核食材。
 
 人饭菜谱的来源授权、映射、审核、运行时筛选和发布必须遵循 [`human_recipes` 映射与发布 SOP](data/human-recipes-sop.md)。后续批次复用未变化决定，只审核新增或受影响的原料写法。
+
+上位词或省略词的版本化审核决定通过 `run_recipe_ingredient_stage1.py --review-decisions` 消费。决定只允许映射既有标准概念或进入受控终态，不能新增营养来源。2026-08-14最终版本将3,901个身份组全部终态化，其中1,441组映射既有概念；重跑后 `generic_ambiguous` 队列为0。覆盖率脚本使用同一决定文件，并按项目口径排除调味料、油和烹饪辅料。
+
+`--review-decisions` 支持按顺序传入多个版本化决定文件。普通重复键必须得出相同决定；只有最终代码门禁文件显式声明 `supersedes: true` 时才能覆盖前序subagent决定。2026-08-14阶段一v13已将33,930种菜谱写法全部终态化，未决队列为0；这表示每项都有映射、排除或隔离结论，不表示所有原料都有营养值。营养覆盖率仍只计算 `matched`、`alternative` 和 `composite`，隔离项不得回退到相似食材来源。
 
 ## 验证
 

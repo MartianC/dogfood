@@ -1,0 +1,10 @@
+{
+  "contract": "recipeIngredientGapClassification/v1",
+  "policy_id": "recipeIngredientGapClassification/v1",
+  "release_id": "2026-08-14-v17-all-agent-terminal",
+  "input_term_count": 0,
+  "input_occurrence_count": 0,
+  "category_term_counts": {},
+  "category_occurrence_counts": {},
+  "items": []
+}

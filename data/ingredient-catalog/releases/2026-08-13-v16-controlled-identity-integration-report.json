@@ -1,0 +1,159 @@
+{
+  "report_contract": "controlledIngredientIdentityIntegrationReport/v1",
+  "policy_id": "controlledIngredientIdentityIntegration/v1",
+  "decision_version": "2026-08-13-wave-c2-v2",
+  "catalog_version": "2026-08-13-v16",
+  "base_concept_count": 288,
+  "final_concept_count": 297,
+  "added_concept_count": 9,
+  "added_alias_count": 15,
+  "bare_default_count": 0,
+  "added_aliases": [
+    {
+      "term": "三黄鸡",
+      "concept_id": "ingredient_chicken_meat"
+    },
+    {
+      "term": "土鸡",
+      "concept_id": "ingredient_chicken_meat"
+    },
+    {
+      "term": "乌鸡",
+      "concept_id": "ingredient_chicken_meat"
+    },
+    {
+      "term": "小青菜",
+      "concept_id": "ingredient_bok_choy"
+    },
+    {
+      "term": "上海青",
+      "concept_id": "ingredient_bok_choy"
+    },
+    {
+      "term": "柿子椒",
+      "concept_id": "ingredient_bell_pepper"
+    },
+    {
+      "term": "菜椒",
+      "concept_id": "ingredient_bell_pepper"
+    },
+    {
+      "term": "灯笼椒",
+      "concept_id": "ingredient_bell_pepper"
+    },
+    {
+      "term": "红菜椒",
+      "concept_id": "ingredient_bell_pepper"
+    },
+    {
+      "term": "瑶柱",
+      "concept_id": "ingredient_cfct_c3f67713059cf50f"
+    },
+    {
+      "term": "肥肠",
+      "concept_id": "ingredient_cfct_53e780b32364da54"
+    },
+    {
+      "term": "花菇",
+      "concept_id": "ingredient_auto_11baeb27adb35043"
+    },
+    {
+      "term": "白玉菇",
+      "concept_id": "ingredient_auto_628d2f74c8e25398"
+    },
+    {
+      "term": "胡罗卜",
+      "concept_id": "ingredient_carrot"
+    },
+    {
+      "term": "甜豆",
+      "concept_id": "ingredient_stage4_f530ae90343a12a3"
+    }
+  ],
+  "bare_defaults": [],
+  "added_concepts": [
+    {
+      "concept_id": "ingredient_controlled_418820f8930eca5b",
+      "canonical_name_zh": "牛腩",
+      "aliases": [
+        "牛腩肉"
+      ],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 168607,
+      "source_description": "Beef, brisket, whole, separable lean only, all grades, raw"
+    },
+    {
+      "concept_id": "ingredient_controlled_735dcd75a186c543",
+      "canonical_name_zh": "草菇",
+      "aliases": [],
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 51001,
+      "source_description": "草菇 [大黑头细花草、稻菇]"
+    },
+    {
+      "concept_id": "ingredient_controlled_631f7a24198fa648",
+      "canonical_name_zh": "黑鱼",
+      "aliases": [
+        "乌鳢"
+      ],
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121116,
+      "source_description": "乌鳢[黑鱼、乌鱼、生鱼]"
+    },
+    {
+      "concept_id": "ingredient_controlled_a4007f997b4d81d2",
+      "canonical_name_zh": "千张",
+      "aliases": [
+        "百页"
+      ],
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 31509,
+      "source_description": "千张 [百页]"
+    },
+    {
+      "concept_id": "ingredient_controlled_d462915d079dc796",
+      "canonical_name_zh": "苋菜",
+      "aliases": [],
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45319,
+      "source_description": "苋菜（绿，鲜）"
+    },
+    {
+      "concept_id": "ingredient_controlled_fd8bdfade7284b22",
+      "canonical_name_zh": "武昌鱼",
+      "aliases": [
+        "鲂鱼"
+      ],
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121126,
+      "source_description": "鲌鱼 [鲂鱼、武昌鱼]"
+    },
+    {
+      "concept_id": "ingredient_controlled_833d48333c2da64e",
+      "canonical_name_zh": "小黄鱼",
+      "aliases": [],
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121242,
+      "source_description": "黄鱼(小黄花鱼)"
+    },
+    {
+      "concept_id": "ingredient_controlled_e384d050845bad4f",
+      "canonical_name_zh": "金桔",
+      "aliases": [],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 168154,
+      "source_description": "Kumquats, raw"
+    },
+    {
+      "concept_id": "ingredient_controlled_3f29510bdffab5f1",
+      "canonical_name_zh": "牛腱",
+      "aliases": [
+        "牛腱子",
+        "牛腱子肉"
+      ],
+      "source_version": "sr_legacy_2018_04",
+      "fdc_id": 169441,
+      "source_description": "Beef, shank crosscuts, separable lean only, trimmed to 1/4\" fat, choice, raw"
+    }
+  ]
+}

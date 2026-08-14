@@ -1,0 +1,1688 @@
+{
+  "report_contract": "cfctExactIdentityDecisionReport/v1",
+  "policy_id": "cfctExactIdentityDecisionIntegration/v1",
+  "decision_version": "2026-08-14-cfct-exact-v1",
+  "input_group_count": 102,
+  "terminal_group_count": 102,
+  "mapped_existing_count": 11,
+  "new_concept_count": 80,
+  "isolated_count": 11,
+  "isolated": [
+    {
+      "cleaned_name": "桂圆肉",
+      "status": "state_conversion",
+      "occurrence_count": 31
+    },
+    {
+      "cleaned_name": "燕窝",
+      "status": "insufficient_evidence",
+      "occurrence_count": 25
+    },
+    {
+      "cleaned_name": "红豆馅",
+      "status": "variable_processed",
+      "occurrence_count": 23
+    },
+    {
+      "cleaned_name": "香米",
+      "status": "insufficient_evidence",
+      "occurrence_count": 15
+    },
+    {
+      "cleaned_name": "脆皮肠",
+      "status": "variable_processed",
+      "occurrence_count": 14
+    },
+    {
+      "cleaned_name": "阿胶",
+      "status": "variable_processed",
+      "occurrence_count": 13
+    },
+    {
+      "cleaned_name": "叉烧肉",
+      "status": "variable_processed",
+      "occurrence_count": 8
+    },
+    {
+      "cleaned_name": "奶白菜",
+      "status": "insufficient_evidence",
+      "occurrence_count": 6
+    },
+    {
+      "cleaned_name": "蟹足棒",
+      "status": "variable_processed",
+      "occurrence_count": 3
+    },
+    {
+      "cleaned_name": "柿饼",
+      "status": "state_conversion",
+      "occurrence_count": 2
+    },
+    {
+      "cleaned_name": "珍珠",
+      "status": "insufficient_evidence",
+      "occurrence_count": 2
+    }
+  ],
+  "decisions": [
+    {
+      "cleaned_name": "北极虾",
+      "occurrence_count": 44,
+      "model_or_automatic_decision": "source:122117",
+      "decision": "source:122117",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭蛋",
+      "occurrence_count": 41,
+      "model_or_automatic_decision": "source:112101",
+      "decision": "source:112101",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "海参",
+      "occurrence_count": 39,
+      "model_or_automatic_decision": "source:129001",
+      "decision": "source:129001",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "梭子蟹",
+      "occurrence_count": 35,
+      "model_or_automatic_decision": "source:123004",
+      "decision": "source:123004",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "桂圆肉",
+      "occurrence_count": 31,
+      "model_or_automatic_decision": "concept:ingredient_cfct_498fd93cef03aa6a",
+      "decision": "state_conversion",
+      "status": "state_conversion",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": "longan_flesh_state_cannot_use_fresh_longan"
+    },
+    {
+      "cleaned_name": "素鸡",
+      "occurrence_count": 30,
+      "model_or_automatic_decision": "source:31522",
+      "decision": "source:31522",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "咸肉",
+      "occurrence_count": 28,
+      "model_or_automatic_decision": "source:81308",
+      "decision": "source:81308",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "燕窝",
+      "occurrence_count": 25,
+      "model_or_automatic_decision": "source:219036",
+      "decision": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": "current_catalog_has_no_controlled_bird_nest_category"
+    },
+    {
+      "cleaned_name": "红豆馅",
+      "occurrence_count": 23,
+      "model_or_automatic_decision": "concept:ingredient_auto_model_e9e73aa2dd8c70bc",
+      "decision": "variable_processed",
+      "status": "variable_processed",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": "sweetened_filling_cannot_use_plain_red_bean"
+    },
+    {
+      "cleaned_name": "蛏子",
+      "occurrence_count": 23,
+      "model_or_automatic_decision": "source:124103",
+      "decision": "source:124103",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鲅鱼",
+      "occurrence_count": 22,
+      "model_or_automatic_decision": "source:121145",
+      "decision": "source:121145",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "烤麸",
+      "occurrence_count": 19,
+      "model_or_automatic_decision": "source:31526",
+      "decision": "source:31526",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭翅",
+      "occurrence_count": 19,
+      "model_or_automatic_decision": "source:92106",
+      "decision": "source:92106",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "牛蛙",
+      "occurrence_count": 18,
+      "model_or_automatic_decision": "source:219022",
+      "decision": "source:219022",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "香米",
+      "occurrence_count": 15,
+      "model_or_automatic_decision": "insufficient_evidence",
+      "decision": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "猪大排",
+      "occurrence_count": 14,
+      "model_or_automatic_decision": "source:81114",
+      "decision": "source:81114",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "脆皮肠",
+      "occurrence_count": 14,
+      "model_or_automatic_decision": "variable_processed",
+      "decision": "variable_processed",
+      "status": "variable_processed",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "椰子",
+      "occurrence_count": 13,
+      "model_or_automatic_decision": "source:65017",
+      "decision": "source:65017",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "猪血",
+      "occurrence_count": 13,
+      "model_or_automatic_decision": "source:81212",
+      "decision": "source:81212",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "阿胶",
+      "occurrence_count": 13,
+      "model_or_automatic_decision": "source:219031",
+      "decision": "variable_processed",
+      "status": "variable_processed",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": "processed_animal_product_requires_composition_policy"
+    },
+    {
+      "cleaned_name": "橙",
+      "occurrence_count": 12,
+      "model_or_automatic_decision": "concept:ingredient_orange",
+      "decision": "concept:ingredient_orange",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "泥鳅",
+      "occurrence_count": 11,
+      "model_or_automatic_decision": "source:121114",
+      "decision": "source:121114",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "油菜心",
+      "occurrence_count": 10,
+      "model_or_automatic_decision": "concept:ingredient_cfct_ddfac5be7f49ea98",
+      "decision": "concept:ingredient_cfct_ddfac5be7f49ea98",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭掌",
+      "occurrence_count": 10,
+      "model_or_automatic_decision": "source:92107",
+      "decision": "source:92107",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭蛋黄",
+      "occurrence_count": 10,
+      "model_or_automatic_decision": "concept:ingredient_egg_yolk",
+      "decision": "source:112103",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": "duck_egg_yolk_cannot_use_chicken_egg_yolk"
+    },
+    {
+      "cleaned_name": "叉烧肉",
+      "occurrence_count": 8,
+      "model_or_automatic_decision": "variable_processed",
+      "decision": "variable_processed",
+      "status": "variable_processed",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "牛肚",
+      "occurrence_count": 7,
+      "model_or_automatic_decision": "source:82203",
+      "decision": "source:82203",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "猪小肠",
+      "occurrence_count": 7,
+      "model_or_automatic_decision": "source:81210",
+      "decision": "source:81210",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "穿心莲",
+      "occurrence_count": 7,
+      "model_or_automatic_decision": "source:45419",
+      "decision": "source:45419",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "蟹肉",
+      "occurrence_count": 7,
+      "model_or_automatic_decision": "source:123005",
+      "decision": "source:123005",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "奶白菜",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "insufficient_evidence",
+      "decision": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "杏",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:62204",
+      "decision": "source:62204",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "枸杞叶",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:48086",
+      "decision": "source:48086",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "海蟹",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:123001",
+      "decision": "source:123001",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "猪肺",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:81203",
+      "decision": "source:81203",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "羊肚",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:83202",
+      "decision": "source:83202",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "豌豆尖",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:42112",
+      "decision": "source:42112",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "金鲳鱼",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:121243",
+      "decision": "source:121243",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭肠",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:92201",
+      "decision": "source:92201",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭肫",
+      "occurrence_count": 6,
+      "model_or_automatic_decision": "source:92211",
+      "decision": "source:92211",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "河蚌",
+      "occurrence_count": 5,
+      "model_or_automatic_decision": "source:124106",
+      "decision": "source:124106",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "海蜇头",
+      "occurrence_count": 5,
+      "model_or_automatic_decision": "source:129005",
+      "decision": "source:129005",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "绿豆面",
+      "occurrence_count": 5,
+      "model_or_automatic_decision": "source:32102",
+      "decision": "source:32102",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鲷鱼",
+      "occurrence_count": 5,
+      "model_or_automatic_decision": "source:121139",
+      "decision": "source:121139",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鹅蛋",
+      "occurrence_count": 5,
+      "model_or_automatic_decision": "source:113101",
+      "decision": "source:113101",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鹌鹑",
+      "occurrence_count": 5,
+      "model_or_automatic_decision": "source:99002",
+      "decision": "source:99002",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "小麦",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "source:11101",
+      "decision": "source:11101",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "方腿",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "concept:ingredient_auto_model_b399c827c559aeeb",
+      "decision": "concept:ingredient_auto_model_b399c827c559aeeb",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "李子",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "source:62201",
+      "decision": "source:62201",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "杨桃",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "source:65016",
+      "decision": "source:65016",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "枇杷",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "source:65018",
+      "decision": "source:65018",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "河蟹",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "concept:ingredient_stage4_3efc0d87f78ee263",
+      "decision": "concept:ingredient_stage4_3efc0d87f78ee263",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "牛舌",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "source:82207",
+      "decision": "source:82207",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "白瓜",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "source:43201",
+      "decision": "source:43201",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "金瓜",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "concept:ingredient_pumpkin",
+      "decision": "concept:ingredient_pumpkin",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "高粱米",
+      "occurrence_count": 4,
+      "model_or_automatic_decision": "source:19001",
+      "decision": "source:19001",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "海蜇皮",
+      "occurrence_count": 3,
+      "model_or_automatic_decision": "source:129004",
+      "decision": "source:129004",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "红薯叶",
+      "occurrence_count": 3,
+      "model_or_automatic_decision": "source:45420",
+      "decision": "source:45420",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "羊肺",
+      "occurrence_count": 3,
+      "model_or_automatic_decision": "source:83203",
+      "decision": "source:83203",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "菠萝蜜",
+      "occurrence_count": 3,
+      "model_or_automatic_decision": "source:71002",
+      "decision": "source:71002",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "蟹足棒",
+      "occurrence_count": 3,
+      "model_or_automatic_decision": "variable_processed",
+      "decision": "variable_processed",
+      "status": "variable_processed",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "豆角",
+      "occurrence_count": 3,
+      "model_or_automatic_decision": "concept:ingredient_stage3_0e32e5c9179737e8",
+      "decision": "concept:ingredient_green_beans",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": "project_controlled_synonym_maps_doujiao_to_green_beans"
+    },
+    {
+      "cleaned_name": "金枪鱼肉",
+      "occurrence_count": 3,
+      "model_or_automatic_decision": "concept:ingredient_tuna",
+      "decision": "concept:ingredient_tuna",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "南瓜藤",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:45421",
+      "decision": "source:45421",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "柿饼",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "state_conversion",
+      "decision": "state_conversion",
+      "status": "state_conversion",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "猪头皮",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:81118",
+      "decision": "source:81118",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "猪耳",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:81115",
+      "decision": "source:81115",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "珍珠",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "insufficient_evidence",
+      "decision": "insufficient_evidence",
+      "status": "insufficient_evidence",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "盖菜",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:45214",
+      "decision": "source:45214",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "羊心",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:83208",
+      "decision": "source:83208",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "苹果梨",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:61214",
+      "decision": "source:61214",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "西梅",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:62208",
+      "decision": "source:62208",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "赤贝",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:124105",
+      "decision": "source:124105",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭心",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:92206",
+      "decision": "source:92206",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鹅",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:93101",
+      "decision": "source:93101",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "麸皮",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:11205",
+      "decision": "source:11205",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "黄米",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:15202",
+      "decision": "source:15202",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "黑豆苗",
+      "occurrence_count": 2,
+      "model_or_automatic_decision": "source:42207",
+      "decision": "source:42207",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "墨鱼圈",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:129301",
+      "decision": "source:129301",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "方瓜",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:43204",
+      "decision": "source:43204",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "棠梨花",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:45423",
+      "decision": "source:45423",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "樱桃萝卜缨",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:45328",
+      "decision": "source:45328",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "猪脑",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:81205",
+      "decision": "source:81205",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "石螺",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:124305",
+      "decision": "source:124305",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "紫菜头",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:41403",
+      "decision": "source:41403",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "红富士苹果",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "concept:ingredient_apple",
+      "decision": "concept:ingredient_apple",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "羊血",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:83209",
+      "decision": "source:83209",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "芹菜茎",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "concept:ingredient_celery",
+      "decision": "concept:ingredient_celery",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "荆芥",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:48088",
+      "decision": "source:48088",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "莱阳梨",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "concept:ingredient_pear",
+      "decision": "concept:ingredient_pear",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "菊苣",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:45413",
+      "decision": "source:45413",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "葵花子仁",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:72008",
+      "decision": "source:72008",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "虾虎",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:122114",
+      "decision": "source:122114",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "蜜桃",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "concept:ingredient_peach",
+      "decision": "concept:ingredient_peach",
+      "status": "mapped_existing",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "酸木瓜",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:65028",
+      "decision": "source:65028",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "钳鱼",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:121143",
+      "decision": "source:121143",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "韭薹",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:44403",
+      "decision": "source:44403",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鱼排",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:121304",
+      "decision": "source:121304",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸡血",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:91204",
+      "decision": "source:91204",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭肝",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:92202",
+      "decision": "source:92202",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鸭胸脯肉",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:92104",
+      "decision": "source:92104",
+      "status": "new_concept",
+      "method": "controlled_model_consensus",
+      "post_gate_reason": null
+    },
+    {
+      "cleaned_name": "鹅肝",
+      "occurrence_count": 1,
+      "model_or_automatic_decision": "source:93201",
+      "decision": "source:93201",
+      "status": "new_concept",
+      "method": "unique_natural_exact_source",
+      "post_gate_reason": null
+    }
+  ],
+  "catalog_version": "2026-08-14-v17",
+  "catalog_integration": {
+    "report_contract": "controlledIngredientIdentityIntegrationReport/v1",
+    "policy_id": "controlledIngredientIdentityIntegration/v1",
+    "decision_version": "2026-08-14-cfct-exact-v1",
+    "catalog_version": "2026-08-14-v17",
+    "base_concept_count": 297,
+    "final_concept_count": 377,
+    "added_concept_count": 80,
+    "added_alias_count": 11,
+    "bare_default_count": 0,
+    "added_aliases": [
+      {
+        "term": "红富士苹果",
+        "concept_id": "ingredient_apple"
+      },
+      {
+        "term": "方腿",
+        "concept_id": "ingredient_auto_model_b399c827c559aeeb"
+      },
+      {
+        "term": "芹菜茎",
+        "concept_id": "ingredient_celery"
+      },
+      {
+        "term": "油菜心",
+        "concept_id": "ingredient_cfct_ddfac5be7f49ea98"
+      },
+      {
+        "term": "豆角",
+        "concept_id": "ingredient_green_beans"
+      },
+      {
+        "term": "橙",
+        "concept_id": "ingredient_orange"
+      },
+      {
+        "term": "蜜桃",
+        "concept_id": "ingredient_peach"
+      },
+      {
+        "term": "莱阳梨",
+        "concept_id": "ingredient_pear"
+      },
+      {
+        "term": "金瓜",
+        "concept_id": "ingredient_pumpkin"
+      },
+      {
+        "term": "河蟹",
+        "concept_id": "ingredient_stage4_3efc0d87f78ee263"
+      },
+      {
+        "term": "金枪鱼肉",
+        "concept_id": "ingredient_tuna"
+      }
+    ],
+    "bare_defaults": [],
+    "added_concepts": [
+      {
+        "concept_id": "ingredient_controlled_886be3df8b47fe0f",
+        "canonical_name_zh": "北极虾",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 122117,
+        "source_description": "北极虾"
+      },
+      {
+        "concept_id": "ingredient_controlled_4e422119400c2ace",
+        "canonical_name_zh": "鸭蛋",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 112101,
+        "source_description": "鸭蛋"
+      },
+      {
+        "concept_id": "ingredient_controlled_a9ce1833a8735bdd",
+        "canonical_name_zh": "海参",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 129001,
+        "source_description": "海参"
+      },
+      {
+        "concept_id": "ingredient_controlled_8f19a05916a1f98b",
+        "canonical_name_zh": "梭子蟹",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 123004,
+        "source_description": "梭子蟹"
+      },
+      {
+        "concept_id": "ingredient_controlled_e5b2c6e915bc00df",
+        "canonical_name_zh": "素鸡",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 31522,
+        "source_description": "素鸡"
+      },
+      {
+        "concept_id": "ingredient_controlled_328acea66f677f3d",
+        "canonical_name_zh": "咸肉",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81308,
+        "source_description": "咸肉"
+      },
+      {
+        "concept_id": "ingredient_controlled_27229beefc6700f8",
+        "canonical_name_zh": "蛏子",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 124103,
+        "source_description": "蛏子"
+      },
+      {
+        "concept_id": "ingredient_controlled_c99e0d05cdae9c33",
+        "canonical_name_zh": "鲅鱼",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 121145,
+        "source_description": "鲅鱼"
+      },
+      {
+        "concept_id": "ingredient_controlled_bb31d0f4a35edb16",
+        "canonical_name_zh": "烤麸",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 31526,
+        "source_description": "烤麸"
+      },
+      {
+        "concept_id": "ingredient_controlled_c9fcde19fb9c3605",
+        "canonical_name_zh": "鸭翅",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 92106,
+        "source_description": "鸭翅"
+      },
+      {
+        "concept_id": "ingredient_controlled_00e1e90feee2e342",
+        "canonical_name_zh": "牛蛙",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 219022,
+        "source_description": "牛蛙"
+      },
+      {
+        "concept_id": "ingredient_controlled_92596ec6f3293ee7",
+        "canonical_name_zh": "猪大排",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81114,
+        "source_description": "猪大排"
+      },
+      {
+        "concept_id": "ingredient_controlled_7e29ba7e06c2ccf9",
+        "canonical_name_zh": "椰子",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 65017,
+        "source_description": "椰子"
+      },
+      {
+        "concept_id": "ingredient_controlled_4a7d48572a51e8d9",
+        "canonical_name_zh": "猪血",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81212,
+        "source_description": "猪血"
+      },
+      {
+        "concept_id": "ingredient_controlled_1c614da639bb7faa",
+        "canonical_name_zh": "泥鳅",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 121114,
+        "source_description": "泥鳅"
+      },
+      {
+        "concept_id": "ingredient_controlled_e65fc5c274bbe158",
+        "canonical_name_zh": "鸭掌",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 92107,
+        "source_description": "鸭掌"
+      },
+      {
+        "concept_id": "ingredient_controlled_235c7e8ac91fe957",
+        "canonical_name_zh": "鸭蛋黄",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 112103,
+        "source_description": "鸭蛋黄"
+      },
+      {
+        "concept_id": "ingredient_controlled_7e3c683403766c66",
+        "canonical_name_zh": "牛肚",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 82203,
+        "source_description": "牛肚"
+      },
+      {
+        "concept_id": "ingredient_controlled_7070bca4ce9540b5",
+        "canonical_name_zh": "猪小肠",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81210,
+        "source_description": "猪小肠"
+      },
+      {
+        "concept_id": "ingredient_controlled_b81467ef37c840ad",
+        "canonical_name_zh": "穿心莲",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 45419,
+        "source_description": "穿心莲"
+      },
+      {
+        "concept_id": "ingredient_controlled_6dd7c1b9dc861da2",
+        "canonical_name_zh": "蟹肉",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 123005,
+        "source_description": "蟹肉"
+      },
+      {
+        "concept_id": "ingredient_controlled_27bddee8cda79cc0",
+        "canonical_name_zh": "杏",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 62204,
+        "source_description": "杏"
+      },
+      {
+        "concept_id": "ingredient_controlled_a1a0af0a680902e1",
+        "canonical_name_zh": "枸杞叶",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 48086,
+        "source_description": "枸杞叶"
+      },
+      {
+        "concept_id": "ingredient_controlled_c991d8071ec74c75",
+        "canonical_name_zh": "海蟹",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 123001,
+        "source_description": "海蟹"
+      },
+      {
+        "concept_id": "ingredient_controlled_e59b7810fb884948",
+        "canonical_name_zh": "猪肺",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81203,
+        "source_description": "猪肺"
+      },
+      {
+        "concept_id": "ingredient_controlled_8b03489112948e1d",
+        "canonical_name_zh": "羊肚",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 83202,
+        "source_description": "羊肚"
+      },
+      {
+        "concept_id": "ingredient_controlled_e315997bb60c49a3",
+        "canonical_name_zh": "豌豆尖",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 42112,
+        "source_description": "豌豆尖"
+      },
+      {
+        "concept_id": "ingredient_controlled_322f587acc878ecb",
+        "canonical_name_zh": "金鲳鱼",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 121243,
+        "source_description": "金鲳鱼"
+      },
+      {
+        "concept_id": "ingredient_controlled_81aa33f616f269fa",
+        "canonical_name_zh": "鸭肠",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 92201,
+        "source_description": "鸭肠"
+      },
+      {
+        "concept_id": "ingredient_controlled_7f2c79f354d99e73",
+        "canonical_name_zh": "鸭肫",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 92211,
+        "source_description": "鸭肫"
+      },
+      {
+        "concept_id": "ingredient_controlled_4b50b2839237f0ff",
+        "canonical_name_zh": "河蚌",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 124106,
+        "source_description": "河蚌"
+      },
+      {
+        "concept_id": "ingredient_controlled_4486fab71ea6a600",
+        "canonical_name_zh": "海蜇头",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 129005,
+        "source_description": "海蜇头"
+      },
+      {
+        "concept_id": "ingredient_controlled_013dfbc817a1fbba",
+        "canonical_name_zh": "绿豆面",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 32102,
+        "source_description": "绿豆面"
+      },
+      {
+        "concept_id": "ingredient_controlled_1e840413d423840d",
+        "canonical_name_zh": "鲷鱼",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 121139,
+        "source_description": "鲷鱼"
+      },
+      {
+        "concept_id": "ingredient_controlled_2334a0543f8be2b1",
+        "canonical_name_zh": "鹅蛋",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 113101,
+        "source_description": "鹅蛋"
+      },
+      {
+        "concept_id": "ingredient_controlled_ff5a6cdb59d385b5",
+        "canonical_name_zh": "鹌鹑",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 99002,
+        "source_description": "鹌鹑"
+      },
+      {
+        "concept_id": "ingredient_controlled_8b34c8535334f805",
+        "canonical_name_zh": "小麦",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 11101,
+        "source_description": "小麦"
+      },
+      {
+        "concept_id": "ingredient_controlled_29913aea852fb1ad",
+        "canonical_name_zh": "李子",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 62201,
+        "source_description": "李子"
+      },
+      {
+        "concept_id": "ingredient_controlled_590d5ecc837e839c",
+        "canonical_name_zh": "杨桃",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 65016,
+        "source_description": "杨桃"
+      },
+      {
+        "concept_id": "ingredient_controlled_83923b23c9b80b82",
+        "canonical_name_zh": "枇杷",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 65018,
+        "source_description": "枇杷"
+      },
+      {
+        "concept_id": "ingredient_controlled_1bae261d97eefa99",
+        "canonical_name_zh": "牛舌",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 82207,
+        "source_description": "牛舌"
+      },
+      {
+        "concept_id": "ingredient_controlled_48ef12e6c213dac3",
+        "canonical_name_zh": "白瓜",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 43201,
+        "source_description": "白瓜"
+      },
+      {
+        "concept_id": "ingredient_controlled_6d3ccdbda688b8d6",
+        "canonical_name_zh": "高粱米",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 19001,
+        "source_description": "高粱米"
+      },
+      {
+        "concept_id": "ingredient_controlled_4a65cf475047f5f3",
+        "canonical_name_zh": "海蜇皮",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 129004,
+        "source_description": "海蜇皮"
+      },
+      {
+        "concept_id": "ingredient_controlled_48a79c4a77aef2ec",
+        "canonical_name_zh": "红薯叶",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 45420,
+        "source_description": "红薯叶"
+      },
+      {
+        "concept_id": "ingredient_controlled_e48d22d5e1eabd2f",
+        "canonical_name_zh": "羊肺",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 83203,
+        "source_description": "羊肺"
+      },
+      {
+        "concept_id": "ingredient_controlled_359ca18192e7151b",
+        "canonical_name_zh": "菠萝蜜",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 71002,
+        "source_description": "菠萝蜜"
+      },
+      {
+        "concept_id": "ingredient_controlled_1219eb2351f3425c",
+        "canonical_name_zh": "南瓜藤",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 45421,
+        "source_description": "南瓜藤"
+      },
+      {
+        "concept_id": "ingredient_controlled_48ba12a0e71188f5",
+        "canonical_name_zh": "猪头皮",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81118,
+        "source_description": "猪头皮"
+      },
+      {
+        "concept_id": "ingredient_controlled_30145f3a0a4a7833",
+        "canonical_name_zh": "猪耳",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81115,
+        "source_description": "猪耳"
+      },
+      {
+        "concept_id": "ingredient_controlled_ef0a3de42d6a7d39",
+        "canonical_name_zh": "盖菜",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 45214,
+        "source_description": "盖菜"
+      },
+      {
+        "concept_id": "ingredient_controlled_896262ad5701ef8a",
+        "canonical_name_zh": "羊心",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 83208,
+        "source_description": "羊心"
+      },
+      {
+        "concept_id": "ingredient_controlled_2d0b6241121d6179",
+        "canonical_name_zh": "苹果梨",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 61214,
+        "source_description": "苹果梨"
+      },
+      {
+        "concept_id": "ingredient_controlled_6504d97f92fb98e1",
+        "canonical_name_zh": "西梅",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 62208,
+        "source_description": "西梅"
+      },
+      {
+        "concept_id": "ingredient_controlled_cacd7a003ce317b0",
+        "canonical_name_zh": "赤贝",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 124105,
+        "source_description": "赤贝"
+      },
+      {
+        "concept_id": "ingredient_controlled_a384b7c4e94de40f",
+        "canonical_name_zh": "鸭心",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 92206,
+        "source_description": "鸭心"
+      },
+      {
+        "concept_id": "ingredient_controlled_416dc43358dd63ef",
+        "canonical_name_zh": "鹅",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 93101,
+        "source_description": "鹅"
+      },
+      {
+        "concept_id": "ingredient_controlled_7a30542c6143c288",
+        "canonical_name_zh": "麸皮",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 11205,
+        "source_description": "麸皮"
+      },
+      {
+        "concept_id": "ingredient_controlled_4043d28d0945d2a9",
+        "canonical_name_zh": "黄米",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 15202,
+        "source_description": "黄米"
+      },
+      {
+        "concept_id": "ingredient_controlled_757aed728e55c0ce",
+        "canonical_name_zh": "黑豆苗",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 42207,
+        "source_description": "黑豆苗"
+      },
+      {
+        "concept_id": "ingredient_controlled_9771296d9a7b14dd",
+        "canonical_name_zh": "墨鱼圈",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 129301,
+        "source_description": "墨鱼圈"
+      },
+      {
+        "concept_id": "ingredient_controlled_5dd906654e4e3dbf",
+        "canonical_name_zh": "方瓜",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 43204,
+        "source_description": "方瓜"
+      },
+      {
+        "concept_id": "ingredient_controlled_535438210070253c",
+        "canonical_name_zh": "棠梨花",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 45423,
+        "source_description": "棠梨花"
+      },
+      {
+        "concept_id": "ingredient_controlled_8f247de26bdf3fc2",
+        "canonical_name_zh": "樱桃萝卜缨",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 45328,
+        "source_description": "樱桃萝卜缨"
+      },
+      {
+        "concept_id": "ingredient_controlled_20fdeeac5410ca16",
+        "canonical_name_zh": "猪脑",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 81205,
+        "source_description": "猪脑"
+      },
+      {
+        "concept_id": "ingredient_controlled_586a5776c4345216",
+        "canonical_name_zh": "石螺",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 124305,
+        "source_description": "石螺"
+      },
+      {
+        "concept_id": "ingredient_controlled_0aed44d054948175",
+        "canonical_name_zh": "紫菜头",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 41403,
+        "source_description": "紫菜头"
+      },
+      {
+        "concept_id": "ingredient_controlled_aec89d899f4e6b86",
+        "canonical_name_zh": "羊血",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 83209,
+        "source_description": "羊血"
+      },
+      {
+        "concept_id": "ingredient_controlled_a98cc7e883a3dffc",
+        "canonical_name_zh": "荆芥",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 48088,
+        "source_description": "荆芥"
+      },
+      {
+        "concept_id": "ingredient_controlled_88aa79dc3e869d8e",
+        "canonical_name_zh": "菊苣",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 45413,
+        "source_description": "菊苣"
+      },
+      {
+        "concept_id": "ingredient_controlled_0756ee57ab39844a",
+        "canonical_name_zh": "葵花子仁",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 72008,
+        "source_description": "葵花子仁"
+      },
+      {
+        "concept_id": "ingredient_controlled_d9ecb57d24385810",
+        "canonical_name_zh": "虾虎",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 122114,
+        "source_description": "虾虎"
+      },
+      {
+        "concept_id": "ingredient_controlled_260d5ef431e889a5",
+        "canonical_name_zh": "酸木瓜",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 65028,
+        "source_description": "酸木瓜"
+      },
+      {
+        "concept_id": "ingredient_controlled_a5fdc5d87c0a5e52",
+        "canonical_name_zh": "钳鱼",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 121143,
+        "source_description": "钳鱼"
+      },
+      {
+        "concept_id": "ingredient_controlled_c5b69a0214b24818",
+        "canonical_name_zh": "韭薹",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 44403,
+        "source_description": "韭薹"
+      },
+      {
+        "concept_id": "ingredient_controlled_a0afe3b311fa1f71",
+        "canonical_name_zh": "鱼排",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 121304,
+        "source_description": "鱼排"
+      },
+      {
+        "concept_id": "ingredient_controlled_f6394583807bbd53",
+        "canonical_name_zh": "鸡血",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 91204,
+        "source_description": "鸡血"
+      },
+      {
+        "concept_id": "ingredient_controlled_0dbd112df6803e8f",
+        "canonical_name_zh": "鸭肝",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 92202,
+        "source_description": "鸭肝"
+      },
+      {
+        "concept_id": "ingredient_controlled_5db09a9e2462a5f9",
+        "canonical_name_zh": "鸭胸脯肉",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 92104,
+        "source_description": "鸭胸脯肉"
+      },
+      {
+        "concept_id": "ingredient_controlled_70df0d7c3feb4f4f",
+        "canonical_name_zh": "鹅肝",
+        "aliases": [],
+        "source_version": "cfct_6th_ocr_2025_12_06",
+        "fdc_id": 93201,
+        "source_description": "鹅肝"
+      }
+    ]
+  }
+}

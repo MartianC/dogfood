@@ -31,13 +31,21 @@ def source_key(value: dict[str, Any]) -> tuple[str, int]:
     return str(value["source_version"]), int(value["fdc_id"])
 
 
-def load_wave_items(route: dict[str, Any], minimum_occurrences: int) -> dict[str, dict[str, Any]]:
+def load_wave_items(
+    route: dict[str, Any],
+    minimum_occurrences: int,
+    maximum_occurrences: int | None = None,
+) -> dict[str, dict[str, Any]]:
     if route.get("contract") != ROUTE_CONTRACT or route.get("route") != "identity_candidate":
         raise ValueError("阶段四输入必须是阶段一 identity_candidate 路由")
     items = {
         str(item["normalized_name"]): item
         for item in route.get("items", [])
         if int(item.get("occurrence_count", 0)) >= minimum_occurrences
+        and (
+            maximum_occurrences is None
+            or int(item.get("occurrence_count", 0)) <= maximum_occurrences
+        )
     }
     if not items:
         raise ValueError("阶段四波次没有达到频次阈值的原料")
@@ -67,6 +75,25 @@ def assignment_terms(lexicon: dict[str, Any]) -> dict[str, str]:
             raise ValueError(f"阶段四词条重复分配：{term}")
         assignments[term] = "isolated"
     return assignments
+
+
+def complete_default_isolation(
+    lexicon: dict[str, Any],
+    wave_items: dict[str, dict[str, Any]],
+    assignments: dict[str, str],
+) -> list[dict[str, str]]:
+    explicit = [
+        {"term": str(entry["term"]), "reason": str(entry["reason"])}
+        for entry in lexicon.get("isolated", [])
+    ]
+    default_reason = str(lexicon.get("default_isolation_reason", "")).strip()
+    missing = sorted(set(wave_items) - set(assignments))
+    if missing and not default_reason:
+        raise ValueError(f"阶段四词典缺少波次词条：{missing}")
+    return [
+        *explicit,
+        *({"term": term, "reason": default_reason} for term in missing),
+    ]
 
 
 def load_source_candidates(conn: sqlite3.Connection) -> list[dict[str, Any]]:
@@ -128,15 +155,18 @@ def integrate_stage4(
     lexicon: dict[str, Any],
     catalog_version: str,
     minimum_occurrences: int,
+    maximum_occurrences: int | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     if lexicon.get("contract") != LEXICON_CONTRACT:
         raise ValueError("阶段四身份词典合同不匹配")
-    wave_items = load_wave_items(route, minimum_occurrences)
+    wave_items = load_wave_items(route, minimum_occurrences, maximum_occurrences)
     assignments = assignment_terms(lexicon)
-    missing = sorted(set(wave_items) - set(assignments))
     extra = sorted(set(assignments) - set(wave_items))
-    if missing or extra:
-        raise ValueError(f"阶段四词典与波次不守恒：missing={missing}, extra={extra}")
+    if extra:
+        raise ValueError(f"阶段四词典包含波次外词条：{extra}")
+    isolated_entries = complete_default_isolation(lexicon, wave_items, assignments)
+    for entry in isolated_entries:
+        assignments[entry["term"]] = "isolated"
 
     output = deepcopy(base_catalog)
     output["catalog_version"] = catalog_version
@@ -145,6 +175,7 @@ def integrate_stage4(
         "policy_id": POLICY_ID,
         "lexicon_version": lexicon.get("lexicon_version"),
         "minimum_occurrences": minimum_occurrences,
+        "maximum_occurrences": maximum_occurrences,
         "rule": "完整覆盖频次波次；既有别名或受控英文身份来源通过后才允许写入目录",
     }
     items = output.get("items")
@@ -255,7 +286,7 @@ def integrate_stage4(
             })
 
     isolated = []
-    for entry in lexicon.get("isolated", []):
+    for entry in isolated_entries:
         term = str(entry["term"])
         isolated.append({
             "term": term,
@@ -280,6 +311,7 @@ def integrate_stage4(
         "lexicon_version": lexicon.get("lexicon_version"),
         "catalog_version": catalog_version,
         "minimum_occurrences": minimum_occurrences,
+        "maximum_occurrences": maximum_occurrences,
         "wave_term_count": len(wave_items),
         "wave_occurrence_count": sum(int(item["occurrence_count"]) for item in wave_items.values()),
         "accepted_term_count": len(accepted),
@@ -307,6 +339,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lexicon", type=Path, required=True)
     parser.add_argument("--catalog-version", required=True)
     parser.add_argument("--minimum-occurrences", type=int, default=100)
+    parser.add_argument("--maximum-occurrences", type=int)
     parser.add_argument("--out-catalog", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     return parser.parse_args()
@@ -322,8 +355,11 @@ def main() -> int:
     if any(path.exists() for path in targets):
         print("拒绝覆盖已有阶段四目录或报告", file=sys.stderr)
         return 2
-    if args.minimum_occurrences <= 0:
-        print("阶段四频次阈值必须为正整数", file=sys.stderr)
+    if args.minimum_occurrences <= 0 or (
+        args.maximum_occurrences is not None
+        and args.maximum_occurrences < args.minimum_occurrences
+    ):
+        print("阶段四频次范围无效", file=sys.stderr)
         return 2
     try:
         base_catalog, route, lexicon = [
@@ -333,6 +369,7 @@ def main() -> int:
             catalog, report = integrate_stage4(
                 conn, base_catalog, route, lexicon,
                 args.catalog_version, args.minimum_occurrences,
+                args.maximum_occurrences,
             )
         for path in targets:
             path.parent.mkdir(parents=True, exist_ok=True)
