@@ -97,7 +97,7 @@ function catalogDataVersions(release) {
     mappingVersion: release.mapping_version == null ? null : String(release.mapping_version),
     catalogVersion: String(release.catalog_version || ''),
     policyVersion: String(release.policy_version || ''),
-    nutritionSourceReleaseId: String(release.profile_release_id || '')
+    nutritionSourceReleaseId: runtimeDataReleaseService.nutritionProfileReleaseId(release)
   }
 }
 

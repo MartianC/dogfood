@@ -17,6 +17,28 @@ test('优先汇总每 100g 能量记录', () => {
   ])
 })
 
+test('兼容 USDA Atwater 能量营养素 ID', () => {
+  const result = service.calculateMealEnergy({
+    ingredients: [
+      { ingredientId: 'food_a', name: '鸡胸肉', perMealAmountGram: 100 },
+      { ingredientId: 'food_b', name: '牛肉', perMealAmountGram: 100 }
+    ],
+    nutrientRecords: [
+      { food_id: 'food_a', nutrient_id: 2047, unit_name: 'KCAL', amount: 106.034 },
+      { food_id: 'food_b', nutrient_id: 2048, unit_name: 'KCAL', amount: 112.20227 }
+    ]
+  })
+
+  assert.equal(result.available, true)
+  assert.equal(result.totalKcal, 218.23627)
+  assert.deepEqual(result.ingredientEnergies.map(({ id, name, source }) => ({ id, name, source })), [
+    { id: 'food_a', name: '鸡胸肉', source: 'direct_atwater_general' },
+    { id: 'food_b', name: '牛肉', source: 'direct_atwater_specific' }
+  ])
+  assert.ok(Math.abs(result.ingredientEnergies[0].kcal - 106.034) < 1e-9)
+  assert.ok(Math.abs(result.ingredientEnergies[1].kcal - 112.20227) < 1e-9)
+})
+
 test('能量记录缺失时使用完整宏量营养数据估算', () => {
   const result = service.calculateMealEnergy({
     ingredients: [{ ingredientId: 'food_a', name: '测试食材', perMealAmountGram: 50 }],

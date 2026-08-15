@@ -218,8 +218,14 @@ function aggregateNutrient(code, recordUnit, ingredients, recordsByFood, missing
 }
 
 function requirementLimits(requirements) {
-  const minimums = requirements.filter((item) => item.requirement_type === 'min').map((item) => Number(item.value))
-  const maximums = requirements.filter((item) => item.requirement_type === 'max').map((item) => Number(item.value))
+  const numericValues = (requirementType) => requirements
+    .filter((item) => item.requirement_type === requirementType)
+    .map((item) => item.value)
+    .filter((value) => value !== null && value !== undefined && String(value).trim() !== '')
+    .map((value) => Number(value))
+    .filter(Number.isFinite)
+  const minimums = numericValues('min')
+  const maximums = numericValues('max')
   return {
     minimum: minimums.length ? Math.max(...minimums) : null,
     maximum: maximums.length ? Math.min(...maximums) : null

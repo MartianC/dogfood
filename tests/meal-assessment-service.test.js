@@ -502,3 +502,81 @@ test('标准使用缓存且每次食材查询只发送去重后的 ID', async ()
     nutritionDataService.clearCache()
   }
 })
+
+test('活动人饭发布使用基础营养版本读取营养快照', async () => {
+  const originalWx = global.wx
+  let profileWhere
+  nutritionDataService.clearCache()
+  global.wx = {
+    cloud: {
+      database() {
+        return {
+          command: { in: (values) => values },
+          collection(name) {
+            if (name === 'data_releases') {
+              return {
+                where: () => ({
+                  skip() { return this },
+                  limit() { return this },
+                  async get() {
+                    return {
+                      data: [{
+                        status: 'active',
+                        release_id: 'human-recipe-release-v2',
+                        base_release_id: 'nutrition-release-v2'
+                      }]
+                    }
+                  }
+                })
+              }
+            }
+            if (name === 'pet_nutrition_standards') {
+              return {
+                skip() { return this },
+                limit() { return this },
+                async get() { return { data: [] } }
+              }
+            }
+            return {
+              where(condition) {
+                profileWhere = condition
+                return {
+                  skip() { return this },
+                  limit() { return this },
+                  async get() {
+                    return {
+                      data: [{
+                        food_id: 'food_a',
+                        fdc_id: 1,
+                        nutrients: {
+                          1008: { name: 'Energy', unit: 'KCAL', amount: 106, value_status: 'known' }
+                        }
+                      }]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  try {
+    const result = await nutritionDataService.loadMealAssessmentData([{ ingredientId: 'food_a' }])
+
+    assert.equal(profileWhere.release_id, 'nutrition-release-v2')
+    assert.deepEqual(result.nutrientRecords, [{
+      food_id: 'food_a',
+      fdc_id: 1,
+      nutrient_id: 1008,
+      name: 'Energy',
+      unit_name: 'KCAL',
+      amount: 106
+    }])
+  } finally {
+    global.wx = originalWx
+    nutritionDataService.clearCache()
+  }
+})

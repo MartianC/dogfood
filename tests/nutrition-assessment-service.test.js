@@ -3,6 +3,17 @@ const assert = require('node:assert/strict')
 
 const nutritionAssessmentService = require('../subpackages/custom-recipe/services/nutritionAssessmentService')
 const nutritionDataService = require('../subpackages/custom-recipe/services/nutritionDataService')
+const fediafSeed = require('../data/pet-nutrition-standards/fediaf-2025-dog.json')
+const fediafStandard = {
+  ...fediafSeed.standard,
+  profiles: fediafSeed.profiles.map((profile) => ({
+    ...profile,
+    requirements: profile.requirements.map((requirement) => ({
+      ...requirement,
+      pet_nutrient_code: requirement.nutrient_code
+    }))
+  }))
+}
 
 const standards = [
   {
@@ -411,4 +422,39 @@ test('真实 USDA nutrient id 映射到标准营养元素代码', () => {
   assert.equal(nutritionAssessmentService.nutrientCodeOf({ nutrient_id: 1110, unit_name: 'IU' }), 'vitamin_d')
   assert.equal(nutritionAssessmentService.nutrientCodeOf({ nutrient_id: 1114, unit_name: 'UG' }), 'vitamin_d')
   assert.deepEqual(nutritionAssessmentService.nutrientIdsForCode('calcium'), [1087])
+})
+
+test('FEDIAF 未设置数值上限时不应把纯鸡胸肉的钠判定为超标', () => {
+  const chickenProfile = {
+    food_id: 'food_2646170',
+    nutrients: {
+      1051: { unit: 'G', amount: 74.78 },
+      1093: { unit: 'MG', amount: 65.75 }
+    }
+  }
+  const nutrientRecords = Object.entries(chickenProfile.nutrients).map(([nutrientId, nutrient]) => ({
+    food_id: chickenProfile.food_id,
+    nutrient_id: Number(nutrientId),
+    unit_name: nutrient.unit,
+    amount: nutrient.amount
+  }))
+  const gbStandard = {
+    standard_code: 'GB/T 31216-2014',
+    authority: 'GB/T',
+    profiles: [{ profile_code: 'adult', profile_name: '成年犬粮', requirements: [] }]
+  }
+
+  const assessment = nutritionAssessmentService.buildAssessment({
+    ingredients: [{ ingredientId: chickenProfile.food_id, name: '鸡胸肉', perMealAmountGram: 292 }],
+    dog: { id: 'dog_1', name: '布丁', activityLevel: 'normal', dailyMeals: 2 },
+    lifeStage: adultLifeStage,
+    standards: [gbStandard, fediafStandard],
+    nutrientRecords
+  })
+  const sodium = assessment.elements.find((item) => item.code === 'sodium')
+
+  assert.equal(sodium.fediaf.currentValue, 0.26)
+  assert.equal(sodium.fediaf.status, 'met')
+  assert.equal(sodium.fediaf.requirementText, '≥ 0.1 g')
+  assert.equal(assessment.standards[1].highItems.some((item) => item.code === 'sodium'), false)
 })
