@@ -13,8 +13,8 @@ test.beforeEach(() => {
 test('空关键词返回最近添加的食材，非空关键词从食材库过滤', async () => {
   ingredientService.recordRecentIngredient({ id: 'recent_1', name: '西蓝花', category: 'vegetable' })
 
-  const recent = await ingredientService.searchIngredients('')
-  const results = await ingredientService.searchIngredients('鸡胸')
+  const recent = ingredientService.getRecentIngredients()
+  const results = (await ingredientService.loadIngredientPage({ keyword: '鸡胸' })).items
 
   assert.equal(recent[0].name, '西蓝花')
   assert.ok(results.length > 0)
@@ -22,7 +22,9 @@ test('空关键词返回最近添加的食材，非空关键词从食材库过�
 })
 
 test('搜索不到食材时返回空数组', async () => {
-  assert.deepEqual(await ingredientService.searchIngredients('不存在的食材'), [])
+  const page = await ingredientService.loadIngredientPage({ keyword: '不存在的食材' })
+  assert.deepEqual(page.items, [])
+  assert.equal(page.hasMore, false)
 })
 
 test('运行时发布只读取 active，无 active 时拒绝回退 staging', async () => {
@@ -57,18 +59,30 @@ test('运行时发布只读取 active，无 active 时拒绝回退 staging', asy
   }
 })
 
-test('云端食材搜索读取所有非 blocked 食材', async () => {
+test('云端食材目录每次只读取 20 条并按偏移量加载下一页', async () => {
   const originalWx = global.wx
-  const catalogWhereCalls = []
-  const collectionNames = []
+  const records = Array.from({ length: 45 }, (_, index) => ({
+    food_id: `food_${index}`,
+    concept_id: `ingredient_${index}`,
+    variant_id: `variant_${index}`,
+    canonical_name_zh: `食材${String(index).padStart(2, '0')}`,
+    category_code: 'other',
+    is_default: true,
+    policy_status: 'allowed'
+  }))
+  const catalogCalls = []
   ingredientService.clearCache()
   global.wx = {
     cloud: {
       database() {
         return {
-          command: { neq(value) { return { $neq: value } } },
+          command: {
+            neq(value) { return { $neq: value } },
+            and(conditions) { return { $and: conditions } },
+            or(conditions) { return { $or: conditions } }
+          },
+          RegExp({ regexp, options }) { return { $regex: regexp, $options: options } },
           collection(name) {
-            collectionNames.push(name)
             if (name === 'data_releases') {
               return {
                 where(condition) {
@@ -95,54 +109,15 @@ test('云端食材搜索读取所有非 blocked 食材', async () => {
             assert.equal(name, 'ingredient_catalog')
             return {
               where(condition) {
-                catalogWhereCalls.push(condition)
+                let offset = 0
                 return {
-                  skip() { return this },
-                  limit() { return this },
+                  skip(value) { offset = value; return this },
+                  limit(limit) {
+                    catalogCalls.push({ condition, offset, limit })
+                    return this
+                  },
                   async get() {
-                    return {
-                      data: [
-                        {
-                          food_id: 'food_2',
-                          concept_id: 'ingredient_carrot',
-                          variant_id: 'variant_carrot_cooked',
-                          display_name_zh: '胡萝卜（煮熟）',
-                          canonical_name_zh: '胡萝卜',
-                          aliases: ['红萝卜'],
-                          category_code: 'vegetable',
-                          is_default: false,
-                          catalog_version: 'catalog-v1',
-                          policy_version: 'policy-v1',
-                          policy_status: 'allowed'
-                        },
-                        {
-                          food_id: 'food_1',
-                          concept_id: 'ingredient_carrot',
-                          variant_id: 'variant_carrot_raw',
-                          display_name_zh: '胡萝卜（生）',
-                          canonical_name_zh: '胡萝卜',
-                          aliases: ['红萝卜'],
-                          category_code: 'vegetable',
-                          is_default: true,
-                          catalog_version: 'catalog-v1',
-                          policy_version: 'policy-v1',
-                          policy_status: 'conditional'
-                        },
-                        {
-                          food_id: 'food_3',
-                          concept_id: 'ingredient_onion',
-                          variant_id: 'variant_onion_raw',
-                          display_name_zh: '洋葱（生）',
-                          canonical_name_zh: '洋葱',
-                          aliases: [],
-                          category_code: 'vegetable',
-                          is_default: true,
-                          catalog_version: 'catalog-v1',
-                          policy_version: 'policy-v1',
-                          policy_status: 'blocked'
-                        }
-                      ]
-                    }
+                    return { data: records.slice(offset, offset + 20) }
                   }
                 }
               }
@@ -154,22 +129,105 @@ test('云端食材搜索读取所有非 blocked 食材', async () => {
   }
 
   try {
-    const catalog = await ingredientService.loadIngredientCatalog()
-    const results = await ingredientService.searchIngredients('红萝卜')
+    const first = await ingredientService.loadIngredientPage({ offset: 0 })
+    const second = await ingredientService.loadIngredientPage({ offset: 20 })
 
-    assert.deepEqual(collectionNames, ['data_releases', 'ingredient_catalog'])
-    assert.deepEqual(catalogWhereCalls, [{
-      catalog_version: 'catalog-v1',
-      policy_version: 'policy-v1',
-      policy_status: { $neq: 'blocked' }
-    }])
-    assert.equal(catalog[0].name, '胡萝卜')
-    assert.equal(catalog[0].variantName, '胡萝卜（生）')
-    assert.equal(catalog.length, 1)
-    assert.equal(catalog[0].policyStatus, 'conditional')
-    assert.equal(results[0].foodId, 'food_1')
-    assert.equal(results[0].conceptId, 'ingredient_carrot')
-    assert.equal(results[0].variantId, 'variant_carrot_raw')
+    assert.equal(first.items.length, 20)
+    assert.equal(first.hasMore, true)
+    assert.equal(second.items.length, 20)
+    assert.equal(second.hasMore, true)
+    assert.deepEqual(catalogCalls.map(({ offset, limit }) => ({ offset, limit })), [
+      { offset: 0, limit: 20 },
+      { offset: 20, limit: 20 }
+    ])
+    assert.equal(catalogCalls[0].condition.is_default, true)
+    assert.deepEqual(catalogCalls[0].condition.policy_status, { $neq: 'blocked' })
+  } finally {
+    global.wx = originalWx
+    ingredientService.clearCache()
+  }
+})
+
+test('搜索分页只返回匹配项，不用无关食材补足 20 条', async () => {
+  const originalWx = global.wx
+  let searchCondition
+  ingredientService.clearCache()
+  global.wx = {
+    cloud: {
+      database() {
+        return {
+          command: {
+            neq(value) { return { $neq: value } },
+            and(conditions) { return { $and: conditions } },
+            or(conditions) { return { $or: conditions } }
+          },
+          RegExp({ regexp, options }) { return { $regex: regexp, $options: options } },
+          collection(name) {
+            if (name === 'data_releases') {
+              return {
+                where() {
+                  return {
+                    skip() { return this },
+                    limit() { return this },
+                    async get() {
+                      return {
+                        data: [{
+                          status: 'active',
+                          release_id: 'release-v1',
+                          catalog_version: 'catalog-v1',
+                          policy_version: 'policy-v1'
+                        }]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            return {
+              where(condition) {
+                searchCondition = condition
+                return {
+                  skip() { return this },
+                  limit() { return this },
+                  async get() {
+                    return { data: [
+                      {
+                        food_id: 'food_carrot',
+                        concept_id: 'ingredient_carrot',
+                        variant_id: 'variant_carrot',
+                        canonical_name_zh: '胡萝卜',
+                        aliases: ['红萝卜'],
+                        category_code: 'vegetable',
+                        is_default: true,
+                        policy_status: 'allowed'
+                      },
+                      {
+                        food_id: 'food_onion',
+                        concept_id: 'ingredient_onion',
+                        variant_id: 'variant_onion',
+                        canonical_name_zh: '洋葱',
+                        category_code: 'vegetable',
+                        is_default: true,
+                        policy_status: 'allowed'
+                      }
+                    ] }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  try {
+    const page = await ingredientService.loadIngredientPage({ keyword: '红萝卜' })
+
+    assert.deepEqual(page.items.map((item) => item.name), ['胡萝卜'])
+    assert.equal(page.hasMore, false)
+    assert.equal(searchCondition.$and[1].$or.length, 3)
+    assert.equal(searchCondition.$and[1].$or[0].canonical_name_zh.$regex, '红萝卜')
   } finally {
     global.wx = originalWx
     ingredientService.clearCache()

@@ -7,7 +7,6 @@ const runtimeDataReleaseService = require('./runtimeDataReleaseService')
 const RECENT_KEY = 'recentIngredients'
 const MAX_RECENT = 8
 const PAGE_SIZE = 20
-const MAX_SEARCH_RESULTS = 20
 const categoryLabels = {
   meat: '肉类',
   organ: '内脏',
@@ -22,8 +21,6 @@ const categoryLabels = {
   oil: '油脂',
   other: '其他'
 }
-let ingredientCatalogCache = null
-
 const COMMON_INGREDIENTS = [
   { id: 'common_beef', name: '牛肉', category: 'meat' },
   { id: 'common_egg', name: '鸡蛋', category: 'other' },
@@ -164,18 +161,6 @@ function canUseCloudDatabase() {
     && typeof wx.cloud.database === 'function'
 }
 
-async function readAll(query) {
-  const result = []
-  let offset = 0
-  while (true) {
-    const page = await query.skip(offset).limit(PAGE_SIZE).get()
-    const items = Array.isArray(page.data) ? page.data : []
-    result.push(...items)
-    if (items.length < PAGE_SIZE) return result
-    offset += items.length
-  }
-}
-
 function sortIngredients(items) {
   return items.slice().sort((left, right) => (
     left.category.localeCompare(right.category)
@@ -183,36 +168,85 @@ function sortIngredients(items) {
   ))
 }
 
-async function loadCloudIngredientCatalog() {
-  const database = wx.cloud.database()
-  const release = await runtimeDataReleaseService.loadRuntimeRelease(database)
-  const records = await readAll(database.collection('ingredient_catalog').where({
+function normalizePageOptions(options = {}) {
+  const offset = Number(options.offset)
+  const limit = Number(options.limit)
+  return {
+    keyword: String(options.keyword || '').trim(),
+    offset: Number.isInteger(offset) && offset > 0 ? offset : 0,
+    limit: Number.isInteger(limit) && limit > 0 ? Math.min(limit, PAGE_SIZE) : PAGE_SIZE
+  }
+}
+
+function escapeRegularExpression(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function catalogWhere(database, release, keyword) {
+  const base = {
     catalog_version: release.catalog_version,
     policy_version: release.policy_version,
-    policy_status: database.command.neq('blocked')
-  }))
-  const ingredientsByConcept = records
+    policy_status: database.command.neq('blocked'),
+    is_default: true
+  }
+  if (!keyword) return base
+  const pattern = database.RegExp({
+    regexp: escapeRegularExpression(keyword),
+    options: 'i'
+  })
+  return database.command.and([
+    base,
+    database.command.or([
+      { canonical_name_zh: pattern },
+      { display_name_zh: pattern },
+      { aliases: pattern }
+    ])
+  ])
+}
+
+function normalizeCatalogPage(records, release, keyword) {
+  const seen = new Set()
+  return records
     .filter(isIngredientPolicyOpen)
     .map((item) => normalizeCatalogIngredient({
       ...item,
       dataVersions: catalogDataVersions(release)
     }))
-    .reduce((result, item) => {
+    .filter((item) => {
       const key = item.conceptId || item.name
-      if (!item.name || !item.foodId || !key) return result
-      const existing = result[key]
-      if (!existing || (item.isDefault && !existing.isDefault)) result[key] = item
-      return result
-    }, {})
-  return sortIngredients(Object.values(ingredientsByConcept))
+      if (!item.name || !item.foodId || !key || seen.has(key)) return false
+      if (keyword && !catalogItemMatches(item, keyword)) return false
+      seen.add(key)
+      return true
+    })
 }
 
-async function loadIngredientCatalog() {
-  if (ingredientCatalogCache) return ingredientCatalogCache
-  ingredientCatalogCache = canUseCloudDatabase()
-    ? await loadCloudIngredientCatalog()
-    : sortIngredients(buildMockIngredients())
-  return ingredientCatalogCache
+async function loadCloudIngredientPage(options) {
+  const database = wx.cloud.database()
+  const release = await runtimeDataReleaseService.loadRuntimeRelease(database)
+  const result = await database.collection('ingredient_catalog')
+    .where(catalogWhere(database, release, options.keyword))
+    .skip(options.offset)
+    .limit(options.limit)
+    .get()
+  const records = Array.isArray(result.data) ? result.data : []
+  return {
+    items: normalizeCatalogPage(records, release, options.keyword),
+    hasMore: records.length === options.limit
+  }
+}
+
+async function loadIngredientPage(rawOptions = {}) {
+  const options = normalizePageOptions(rawOptions)
+  if (canUseCloudDatabase()) return loadCloudIngredientPage(options)
+  const matches = sortIngredients(buildMockIngredients()).filter((item) => (
+    !options.keyword || catalogItemMatches(item, options.keyword)
+  ))
+  const items = matches.slice(options.offset, options.offset + options.limit)
+  return {
+    items,
+    hasMore: options.offset + items.length < matches.length
+  }
 }
 
 function catalogItemMatches(item, keyword) {
@@ -226,28 +260,13 @@ function catalogItemMatches(item, keyword) {
   ].some((value) => String(value || '').toLocaleLowerCase().includes(normalizedKeyword))
 }
 
-async function searchIngredients(keyword) {
-  const query = String(keyword || '').trim()
-  if (!query) return getRecentIngredients()
-  if (canUseCloudDatabase()) {
-    const catalog = await loadIngredientCatalog()
-    return catalog.filter((item) => catalogItemMatches(item, query)).slice(0, MAX_SEARCH_RESULTS)
-  }
-  const lowerQuery = query.toLocaleLowerCase()
-  return buildMockIngredients()
-    .filter((item) => item.name.toLocaleLowerCase().includes(lowerQuery))
-    .slice(0, MAX_SEARCH_RESULTS)
-}
-
 function clearCache() {
-  ingredientCatalogCache = null
   runtimeDataReleaseService.clearCache()
 }
 
 module.exports = {
   getRecentIngredients,
-  loadIngredientCatalog,
-  searchIngredients,
+  loadIngredientPage,
   recordRecentIngredient,
   normalizeIngredient,
   normalizeCatalogIngredient,

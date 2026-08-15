@@ -232,7 +232,7 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
 ### 2026-07-12 F06-F08 小程序实现
 
 - F06 编辑态由 `subpackages/custom-recipe/edit` 管理食材数组，食材列表通过 `components/vendor/recipe-ingredient-list` 统一包装 TDesign `Cell Group(theme=card)`、`Cell`、`Input` 和 `Icon`；克重输入每次 `change` 都重新计算比例，比例作为灰色只读文本展示在输入框左侧。
-- F07 搜索态使用 `components/vendor/recipe-ingredient-search` 包装 TDesign `Search`。空关键词显示“常用与最近”，非空关键词调用 `services/ingredientService.searchIngredients`，有结果显示 Card Style 食材行，无结果显示 TDesign Empty 适配态。
+- F07 搜索态使用 `components/vendor/recipe-ingredient-search` 包装 TDesign `Search`。空关键词显示“常用与最近”，普通目录与关键词结果都通过 `ingredientService.loadIngredientPage` 每次读取 20 条，页面触底后追加下一页；关键词先在云端匹配规范名称、形态名称和别名，不用无关食材补足不足 20 条的结果。有结果显示 Card Style 食材行，无结果显示 TDesign Empty 适配态。
 - F07 的搜索结果整行和右侧 `cart-filled` 圆形操作均触发同一选择事件，进入 `components/vendor/recipe-ingredient-popup` 包装的底部 Popup；弹层使用 TDesign `Popup/Input/Button`，克重必须是大于 0 的数值。
 - 食材数据边界：CloudBase 环境查询 `food_localized_name` 的 `zh-CN` 名称；mock 环境使用公共食谱中的稳定 fixture，并将最近添加食材存入本地存储。重复食材按 `ingredientId` 或名称合并克重。
 - 营养汇总暂保留占位，只显示当前食材总克重，不接入营养计算规则。
@@ -408,7 +408,7 @@ F09 作为收起抽屉的独立状态规格，供实现和视觉比对。首版�
 - Search、CellGroup/Cell 和克重 Popup 分别继续来自 `recipe-ingredient-search`、`recipe-ingredient-list`、`recipe-ingredient-popup`，没有在页面直接使用 TDesign 标签，也没有新增基础组件或 vendor wrapper。
 - 缺口摘要是页面级业务组合，使用现有颜色、边框、圆角、排版 token 实现。定稿不再包含点击详情语义，因此不复用可点击 `ui-notice`，避免为了单页展示改动全局组件契约。
 - 新增独立 `nutrientIngredientService`：按目标营养素读取 `food_nutrients`、关联 `food_localized_name` 中文名、过滤无可靠数值记录、按每 100g 含量降序，并输出现有列表可直接消费的 `displayDescription`。
-- 营养评估服务只新增缺口展示值及营养素 ID 映射；原搜索模式仍调用 `ingredientService.searchIngredients`，空关键词仍显示“常用与最近”，标题配置仍为“搜索食材”。
+- 营养评估服务只新增缺口展示值及营养素 ID 映射；普通搜索模式使用 `ingredientService.loadIngredientPage` 独立维护目录与关键词分页，空关键词仍显示“常用与最近”，标题配置仍为“搜索食材”。营养模式继续使用最多 20 条的营养排行结果，不参与普通目录触底分页。
 - 微信开发者工具只读验证确认：营养模式显示“钙缺口 38 mg / 100g”“国标 · 成年犬粮”和 20 条降序结果；普通模式仍显示原快捷食材默认态。两种模式均截图检查，无分类、详情入口、状态混显、截断或横向溢出；临时截图不纳入仓库。
 
 ## 2026-07-18 犬只档案能量扩展 C01–C02

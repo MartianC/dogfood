@@ -4,6 +4,8 @@ const nutrientIngredientService = require('../services/nutrientIngredientService
 const draftAdapters = require('../services/draftAdapters')
 const { canAddIngredient } = require('../services/ingredientOperationRules')
 
+const INGREDIENT_PAGE_SIZE = 20
+
 function findRecipe(draftKind, recipeId) {
   return draftAdapters.getDraft(draftKind, recipeId)
 }
@@ -36,6 +38,16 @@ function nutrientGapText(options, nutrientName) {
   const unit = String(options.gapUnit || '').trim()
   if (!value) return `${nutrientName}缺口待计算`
   return `${nutrientName}缺口 ${value}${unit ? ` ${unit}` : ''} / 100g`
+}
+
+function appendUniqueIngredients(current = [], next = []) {
+  const seen = new Set(current.map((item) => item.id || item.foodId || item.name))
+  return current.concat(next.filter((item) => {
+    const key = item.id || item.foodId || item.name
+    if (!key || seen.has(key)) return false
+    seen.add(key)
+    return true
+  }))
 }
 
 function addSharedMealIngredient(draft, ingredient, amount) {
@@ -99,11 +111,17 @@ Page({
     quickIngredients: [],
     catalogIngredients: [],
     catalogLoading: false,
+    catalogLoadingMore: false,
     catalogError: false,
+    catalogLoadMoreError: false,
+    catalogHasMore: false,
     searchValue: '',
     searchResults: [],
     searchLoading: false,
+    searchLoadingMore: false,
     searchError: false,
+    searchLoadMoreError: false,
+    searchHasMore: false,
     hasSearchQuery: false,
     selectedIngredient: null,
     popupVisible: false
@@ -150,20 +168,126 @@ Page({
     })
   },
 
-  async loadCatalogIngredients() {
-    this.setData({ catalogLoading: true, catalogError: false })
+  async loadCatalogIngredients({ append = false } = {}) {
+    const offset = append ? this.data.catalogIngredients.length : 0
+    this.setData(append
+      ? { catalogLoadingMore: true, catalogLoadMoreError: false }
+      : {
+          catalogIngredients: [],
+          catalogLoading: true,
+          catalogError: false,
+          catalogHasMore: false
+        })
     try {
-      const catalogIngredients = await ingredientService.loadIngredientCatalog()
+      const page = await ingredientService.loadIngredientPage({
+        offset,
+        limit: INGREDIENT_PAGE_SIZE
+      })
+      const catalogIngredients = append
+        ? appendUniqueIngredients(this.data.catalogIngredients, page.items)
+        : page.items
       this.setData({
         catalogIngredients,
         catalogLoading: false,
+        catalogLoadingMore: false,
+        catalogLoadMoreError: false,
+        catalogHasMore: page.hasMore,
         quickIngredients: ingredientService
           .getRecentIngredients(this.data.ingredients, catalogIngredients)
           .slice(0, 4)
       })
+      return true
     } catch (error) {
-      this.setData({ catalogIngredients: [], catalogLoading: false, catalogError: true })
+      this.setData(append
+        ? { catalogLoadingMore: false, catalogLoadMoreError: true }
+        : {
+            catalogIngredients: [],
+            catalogLoading: false,
+            catalogError: true,
+            catalogHasMore: false
+          })
+      return false
     }
+  },
+
+  loadNextCatalogPage() {
+    if (
+      !this.data.catalogHasMore
+      || this.data.catalogLoading
+      || this.data.catalogLoadingMore
+    ) return Promise.resolve(false)
+    if (this.catalogPageRequest) return this.catalogPageRequest
+    const request = this.loadCatalogIngredients({ append: true })
+    this.catalogPageRequest = request
+    return request.finally(() => {
+      if (this.catalogPageRequest === request) this.catalogPageRequest = null
+    })
+  },
+
+  async loadIngredientSearchResults(query, searchValue, requestId, append = false) {
+    const offset = append ? this.data.searchResults.length : 0
+    this.setData(append
+      ? { searchLoadingMore: true, searchLoadMoreError: false }
+      : {
+          searchValue,
+          searchResults: [],
+          searchLoading: true,
+          searchError: false,
+          searchHasMore: false,
+          searchLoadMoreError: false,
+          hasSearchQuery: true
+        })
+    try {
+      const page = await ingredientService.loadIngredientPage({
+        keyword: query,
+        offset,
+        limit: INGREDIENT_PAGE_SIZE
+      })
+      if (requestId !== this.searchRequestId) return false
+      this.setData({
+        searchResults: append
+          ? appendUniqueIngredients(this.data.searchResults, page.items)
+          : page.items,
+        searchLoading: false,
+        searchLoadingMore: false,
+        searchError: false,
+        searchLoadMoreError: false,
+        searchHasMore: page.hasMore
+      })
+      return true
+    } catch (error) {
+      if (requestId !== this.searchRequestId) return false
+      this.setData(append
+        ? { searchLoadingMore: false, searchLoadMoreError: true }
+        : {
+            searchResults: [],
+            searchLoading: false,
+            searchError: true,
+            searchHasMore: false
+          })
+      return false
+    }
+  },
+
+  loadNextSearchPage() {
+    if (
+      !this.data.searchHasMore
+      || this.data.searchLoading
+      || this.data.searchLoadingMore
+    ) return Promise.resolve(false)
+    if (this.searchPageRequest) return this.searchPageRequest
+    const requestId = this.searchRequestId
+    const query = this.data.searchValue.trim()
+    const request = this.loadIngredientSearchResults(
+      query,
+      this.data.searchValue,
+      requestId,
+      true
+    )
+    this.searchPageRequest = request
+    return request.finally(() => {
+      if (this.searchPageRequest === request) this.searchPageRequest = null
+    })
   },
 
   async loadNutrientResults(keyword = '', searchValue = '', requestId) {
@@ -202,6 +326,7 @@ Page({
     const query = searchValue.trim()
     const requestId = (this.searchRequestId || 0) + 1
     this.searchRequestId = requestId
+    this.searchPageRequest = null
     if (!query) {
       if (this.data.isNutrientMode) {
         if (this.data.nutrientDefaultLoaded) {
@@ -221,7 +346,10 @@ Page({
         searchValue,
         searchResults: [],
         searchLoading: false,
+        searchLoadingMore: false,
         searchError: false,
+        searchLoadMoreError: false,
+        searchHasMore: false,
         hasSearchQuery: false,
         quickIngredients: this.data.catalogIngredients.length
           ? ingredientService
@@ -231,6 +359,9 @@ Page({
       })
       return
     }
+    if (!this.data.isNutrientMode) {
+      return this.loadIngredientSearchResults(query, searchValue, requestId)
+    }
     this.setData({
       searchValue,
       searchResults: [],
@@ -239,15 +370,13 @@ Page({
       hasSearchQuery: true
     })
     try {
-      const searchResults = this.data.isNutrientMode
-        ? await nutrientIngredientService.loadNutrientIngredients({
-          nutrientCode: this.data.nutrientCode,
-          nutrientName: this.data.nutrientName,
-          preferredUnit: this.data.nutrientPreferredUnit,
-          currentIngredients: this.data.ingredients,
-          keyword: query
-        })
-        : await ingredientService.searchIngredients(query)
+      const searchResults = await nutrientIngredientService.loadNutrientIngredients({
+        nutrientCode: this.data.nutrientCode,
+        nutrientName: this.data.nutrientName,
+        preferredUnit: this.data.nutrientPreferredUnit,
+        currentIngredients: this.data.ingredients,
+        keyword: query
+      })
       if (requestId !== this.searchRequestId) return
       this.setData({ searchResults, searchLoading: false })
     } catch (error) {
@@ -258,6 +387,7 @@ Page({
 
   onSearchAction() {
     this.searchRequestId = (this.searchRequestId || 0) + 1
+    this.searchPageRequest = null
     if (this.data.isNutrientMode) {
       if (this.data.nutrientDefaultLoaded) {
         this.setData({
@@ -276,7 +406,10 @@ Page({
       searchValue: '',
       searchResults: [],
       searchLoading: false,
+      searchLoadingMore: false,
       searchError: false,
+      searchLoadMoreError: false,
+      searchHasMore: false,
       hasSearchQuery: false,
       quickIngredients: this.data.catalogIngredients.length
         ? ingredientService
@@ -293,6 +426,21 @@ Page({
   onRetryCatalog() {
     ingredientService.clearCache()
     this.loadCatalogIngredients()
+  },
+
+  onRetryCatalogMore() {
+    return this.loadNextCatalogPage()
+  },
+
+  onRetrySearchMore() {
+    return this.loadNextSearchPage()
+  },
+
+  onReachBottom() {
+    if (this.data.isNutrientMode) return Promise.resolve(false)
+    return this.data.hasSearchQuery
+      ? this.loadNextSearchPage()
+      : this.loadNextCatalogPage()
   },
 
   onQuickIngredientTap(event) {

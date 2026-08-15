@@ -71,7 +71,7 @@
 
         <view class="ingredient-search-catalog">
           <view class="ingredient-search-heading ingredient-search-heading--results">
-            食材列表{{catalogIngredients.length ? ' · ' + catalogIngredients.length + ' 种' : ''}}
+            食材列表{{catalogIngredients.length ? ' · 已加载 ' + catalogIngredients.length + ' 种' : ''}}
           </view>
           <view wx:if="{{catalogLoading}}" class="ingredient-search-loading">正在读取食材列表</view>
           <view wx:elif="{{catalogError}}" class="ingredient-search-no-result" bindtap="onRetryCatalog">
@@ -86,6 +86,14 @@
             bind:select="onSelectIngredient"
           />
           <view wx:else class="ingredient-search-quick-empty">暂无可添加的食材</view>
+          <view wx:if="{{catalogLoadingMore}}" class="ingredient-search-loading">正在加载更多</view>
+          <view
+            wx:elif="{{catalogLoadMoreError}}"
+            class="ingredient-search-loading"
+            bindtap="onRetryCatalogMore"
+            aria-role="button"
+            aria-label="重新加载更多食材"
+          >加载失败，点此重试</view>
         </view>
       </block>
 
@@ -97,13 +105,23 @@
       </view>
 
       <block wx:elif="{{searchResults.length}}">
-        <view class="ingredient-search-heading ingredient-search-heading--results">搜索结果</view>
+        <view class="ingredient-search-heading ingredient-search-heading--results">
+          搜索结果 · 已加载 {{searchResults.length}} 种
+        </view>
         <recipe-ingredient-list
           items="{{searchResults}}"
           mode="search"
           action-icon="/assets/icons/recipe-cart-filled.svg"
           bind:select="onSelectIngredient"
         />
+        <view wx:if="{{searchLoadingMore}}" class="ingredient-search-loading">正在加载更多</view>
+        <view
+          wx:elif="{{searchLoadMoreError}}"
+          class="ingredient-search-loading"
+          bindtap="onRetrySearchMore"
+          aria-role="button"
+          aria-label="重新加载更多搜索结果"
+        >加载失败，点此重试</view>
       </block>
 
       <view wx:else class="ingredient-search-no-result">
