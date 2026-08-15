@@ -1,0 +1,796 @@
+{
+  "contract": "controlledIngredientIdentityDecisions/v1",
+  "decision_version": "2026-08-14-cfct-exact-v1",
+  "scope": "CFCT 精确来源候选的确定性与本地模型完整终态决定",
+  "catalog_aliases": [
+    {
+      "concept_id": "ingredient_apple",
+      "terms": [
+        "红富士苹果"
+      ]
+    },
+    {
+      "concept_id": "ingredient_auto_model_b399c827c559aeeb",
+      "terms": [
+        "方腿"
+      ]
+    },
+    {
+      "concept_id": "ingredient_celery",
+      "terms": [
+        "芹菜茎"
+      ]
+    },
+    {
+      "concept_id": "ingredient_cfct_ddfac5be7f49ea98",
+      "terms": [
+        "油菜心"
+      ]
+    },
+    {
+      "concept_id": "ingredient_green_beans",
+      "terms": [
+        "豆角"
+      ]
+    },
+    {
+      "concept_id": "ingredient_orange",
+      "terms": [
+        "橙"
+      ]
+    },
+    {
+      "concept_id": "ingredient_peach",
+      "terms": [
+        "蜜桃"
+      ]
+    },
+    {
+      "concept_id": "ingredient_pear",
+      "terms": [
+        "莱阳梨"
+      ]
+    },
+    {
+      "concept_id": "ingredient_pumpkin",
+      "terms": [
+        "金瓜"
+      ]
+    },
+    {
+      "concept_id": "ingredient_stage4_3efc0d87f78ee263",
+      "terms": [
+        "河蟹"
+      ]
+    },
+    {
+      "concept_id": "ingredient_tuna",
+      "terms": [
+        "金枪鱼肉"
+      ]
+    }
+  ],
+  "bare_defaults": [],
+  "new_concepts": [
+    {
+      "canonical_name_zh": "北极虾",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 122117,
+      "description_contains": "北极虾",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭蛋",
+      "aliases": [],
+      "category_code": "egg",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 112101,
+      "description_contains": "鸭蛋",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "海参",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 129001,
+      "description_contains": "海参",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "梭子蟹",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 123004,
+      "description_contains": "梭子蟹",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "素鸡",
+      "aliases": [],
+      "category_code": "legume",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 31522,
+      "description_contains": "素鸡",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "咸肉",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81308,
+      "description_contains": "咸肉",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "蛏子",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 124103,
+      "description_contains": "蛏子",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鲅鱼",
+      "aliases": [],
+      "category_code": "fish",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121145,
+      "description_contains": "鲅鱼",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "烤麸",
+      "aliases": [],
+      "category_code": "legume",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 31526,
+      "description_contains": "烤麸",
+      "preparation_state": "cooked"
+    },
+    {
+      "canonical_name_zh": "鸭翅",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 92106,
+      "description_contains": "鸭翅",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "牛蛙",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 219022,
+      "description_contains": "牛蛙",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "猪大排",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81114,
+      "description_contains": "猪大排",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "椰子",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 65017,
+      "description_contains": "椰子",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "猪血",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81212,
+      "description_contains": "猪血",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "泥鳅",
+      "aliases": [],
+      "category_code": "fish",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121114,
+      "description_contains": "泥鳅",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭掌",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 92107,
+      "description_contains": "鸭掌",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭蛋黄",
+      "aliases": [],
+      "category_code": "egg",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 112103,
+      "description_contains": "鸭蛋黄",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "牛肚",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 82203,
+      "description_contains": "牛肚",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "猪小肠",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81210,
+      "description_contains": "猪小肠",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "穿心莲",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45419,
+      "description_contains": "穿心莲",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "蟹肉",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 123005,
+      "description_contains": "蟹肉",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "杏",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 62204,
+      "description_contains": "杏",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "枸杞叶",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 48086,
+      "description_contains": "枸杞叶",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "海蟹",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 123001,
+      "description_contains": "海蟹",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "猪肺",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81203,
+      "description_contains": "猪肺",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "羊肚",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 83202,
+      "description_contains": "羊肚",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "豌豆尖",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 42112,
+      "description_contains": "豌豆尖",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "金鲳鱼",
+      "aliases": [],
+      "category_code": "fish",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121243,
+      "description_contains": "金鲳鱼",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭肠",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 92201,
+      "description_contains": "鸭肠",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭肫",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 92211,
+      "description_contains": "鸭肫",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "河蚌",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 124106,
+      "description_contains": "河蚌",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "海蜇头",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 129005,
+      "description_contains": "海蜇头",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "绿豆面",
+      "aliases": [],
+      "category_code": "legume",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 32102,
+      "description_contains": "绿豆面",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鲷鱼",
+      "aliases": [],
+      "category_code": "fish",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121139,
+      "description_contains": "鲷鱼",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鹅蛋",
+      "aliases": [],
+      "category_code": "egg",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 113101,
+      "description_contains": "鹅蛋",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鹌鹑",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 99002,
+      "description_contains": "鹌鹑",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "小麦",
+      "aliases": [],
+      "category_code": "carb",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 11101,
+      "description_contains": "小麦",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "李子",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 62201,
+      "description_contains": "李子",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "杨桃",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 65016,
+      "description_contains": "杨桃",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "枇杷",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 65018,
+      "description_contains": "枇杷",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "牛舌",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 82207,
+      "description_contains": "牛舌",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "白瓜",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 43201,
+      "description_contains": "白瓜",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "高粱米",
+      "aliases": [],
+      "category_code": "carb",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 19001,
+      "description_contains": "高粱米",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "海蜇皮",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 129004,
+      "description_contains": "海蜇皮",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "红薯叶",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45420,
+      "description_contains": "红薯叶",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "羊肺",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 83203,
+      "description_contains": "羊肺",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "菠萝蜜",
+      "aliases": [],
+      "category_code": "legume",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 71002,
+      "description_contains": "菠萝蜜",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "南瓜藤",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45421,
+      "description_contains": "南瓜藤",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "猪头皮",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81118,
+      "description_contains": "猪头皮",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "猪耳",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81115,
+      "description_contains": "猪耳",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "盖菜",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45214,
+      "description_contains": "盖菜",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "羊心",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 83208,
+      "description_contains": "羊心",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "苹果梨",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 61214,
+      "description_contains": "苹果梨",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "西梅",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 62208,
+      "description_contains": "西梅",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "赤贝",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 124105,
+      "description_contains": "赤贝",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭心",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 92206,
+      "description_contains": "鸭心",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鹅",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 93101,
+      "description_contains": "鹅",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "麸皮",
+      "aliases": [],
+      "category_code": "carb",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 11205,
+      "description_contains": "麸皮",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "黄米",
+      "aliases": [],
+      "category_code": "carb",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 15202,
+      "description_contains": "黄米",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "黑豆苗",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 42207,
+      "description_contains": "黑豆苗",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "墨鱼圈",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 129301,
+      "description_contains": "墨鱼圈",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "方瓜",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 43204,
+      "description_contains": "方瓜",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "棠梨花",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45423,
+      "description_contains": "棠梨花",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "樱桃萝卜缨",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45328,
+      "description_contains": "樱桃萝卜缨",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "猪脑",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 81205,
+      "description_contains": "猪脑",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "石螺",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 124305,
+      "description_contains": "石螺",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "紫菜头",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 41403,
+      "description_contains": "紫菜头",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "羊血",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 83209,
+      "description_contains": "羊血",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "荆芥",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 48088,
+      "description_contains": "荆芥",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "菊苣",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 45413,
+      "description_contains": "菊苣",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "葵花子仁",
+      "aliases": [],
+      "category_code": "legume",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 72008,
+      "description_contains": "葵花子仁",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "虾虎",
+      "aliases": [],
+      "category_code": "seafood",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 122114,
+      "description_contains": "虾虎",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "酸木瓜",
+      "aliases": [],
+      "category_code": "fruit",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 65028,
+      "description_contains": "酸木瓜",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "钳鱼",
+      "aliases": [],
+      "category_code": "fish",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121143,
+      "description_contains": "钳鱼",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "韭薹",
+      "aliases": [],
+      "category_code": "vegetable",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 44403,
+      "description_contains": "韭薹",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鱼排",
+      "aliases": [],
+      "category_code": "fish",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 121304,
+      "description_contains": "鱼排",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸡血",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 91204,
+      "description_contains": "鸡血",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭肝",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 92202,
+      "description_contains": "鸭肝",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鸭胸脯肉",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 92104,
+      "description_contains": "鸭胸脯肉",
+      "preparation_state": "unspecified"
+    },
+    {
+      "canonical_name_zh": "鹅肝",
+      "aliases": [],
+      "category_code": "meat",
+      "source_version": "cfct_6th_ocr_2025_12_06",
+      "fdc_id": 93201,
+      "description_contains": "鹅肝",
+      "preparation_state": "unspecified"
+    }
+  ]
+}

@@ -1,0 +1,923 @@
+{
+  "report_contract": "recipeIngredientStage4IntegrationReport/v1",
+  "policy_id": "recipeIngredientStage4IdentityLexiconIntegration/v1",
+  "lexicon_version": "2026-08-12-wave-a-v1",
+  "catalog_version": "2026-08-12-v7",
+  "minimum_occurrences": 100,
+  "wave_term_count": 57,
+  "wave_occurrence_count": 9525,
+  "accepted_term_count": 24,
+  "accepted_occurrence_count": 3761,
+  "isolated_term_count": 33,
+  "isolated_occurrence_count": 5764,
+  "base_concept_count": 211,
+  "final_concept_count": 226,
+  "added_concept_count": 15,
+  "added_alias_count": 7,
+  "selected_source_count": 226,
+  "added_concepts": [
+    {
+      "concept_id": "ingredient_stage4_d3f24f45bda00767",
+      "canonical_name_zh": "奶油奶酪",
+      "terms": [
+        "奶油奶酪"
+      ],
+      "occurrence_count": 311,
+      "source_candidate_count": 1,
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346385,
+      "selected_description": "Cream cheese, full fat, block",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 3,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 35,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 2346385
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_a76f0d3014543252",
+      "canonical_name_zh": "吉利丁",
+      "terms": [
+        "吉利丁片"
+      ],
+      "occurrence_count": 280,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169599,
+      "selected_description": "Gelatins, dry powder, unsweetened",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 89,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 169599
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_e45e538515ff56d6",
+      "canonical_name_zh": "苦瓜",
+      "terms": [
+        "苦瓜"
+      ],
+      "occurrence_count": 192,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168393,
+      "selected_description": "Balsam-pear (bitter gourd), pods, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 39,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 168393
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_2881dc7de3c9028b",
+      "canonical_name_zh": "莴笋",
+      "terms": [
+        "莴笋"
+      ],
+      "occurrence_count": 188,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169990,
+      "selected_description": "Celtuce, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 55,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 169990
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_999a17e34b6e3e2f",
+      "canonical_name_zh": "鹌鹑蛋",
+      "terms": [
+        "鹌鹑蛋"
+      ],
+      "occurrence_count": 186,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 172191,
+      "selected_description": "Egg, quail, whole, fresh, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 172191
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_1a9d5484225b41b6",
+      "canonical_name_zh": "猪蹄",
+      "terms": [
+        "猪蹄"
+      ],
+      "occurrence_count": 180,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 167859,
+      "selected_description": "Pork, fresh, variety meats and by-products, feet, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 86,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 167859
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_571f79710d252094",
+      "canonical_name_zh": "黄豆",
+      "terms": [
+        "黄豆"
+      ],
+      "occurrence_count": 178,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 174270,
+      "selected_description": "Soybeans, mature seeds, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 78,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 174270
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_c7a897444f3d6363",
+      "canonical_name_zh": "核桃",
+      "terms": [
+        "核桃",
+        "核桃仁"
+      ],
+      "occurrence_count": 289,
+      "source_candidate_count": 1,
+      "selected_source_version": "foundation",
+      "selected_fdc_id": 2346394,
+      "selected_description": "Nuts, walnuts, English, halves, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 0,
+        "nutrient_count": 48,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 2346394
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_3bcf8f0654746622",
+      "canonical_name_zh": "红辣椒",
+      "terms": [
+        "红尖椒",
+        "朝天椒"
+      ],
+      "occurrence_count": 240,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 170106,
+      "selected_description": "Peppers, hot chili, red, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 170106
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_6e42b6bdfbf36778",
+      "canonical_name_zh": "黄豆芽",
+      "terms": [
+        "黄豆芽"
+      ],
+      "occurrence_count": 133,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169284,
+      "selected_description": "Soybeans, mature seeds, sprouted, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 65,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 169284
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_6f8de898937f9a4b",
+      "canonical_name_zh": "西米",
+      "terms": [
+        "西米"
+      ],
+      "occurrence_count": 131,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169717,
+      "selected_description": "Tapioca, pearl, dry",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 1,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 89,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 169717
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_f530ae90343a12a3",
+      "canonical_name_zh": "荷兰豆",
+      "terms": [
+        "荷兰豆"
+      ],
+      "occurrence_count": 130,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 170010,
+      "selected_description": "Peas, edible-podded, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 170010
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_36427b57cff86836",
+      "canonical_name_zh": "绿豆芽",
+      "terms": [
+        "绿豆芽"
+      ],
+      "occurrence_count": 127,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 169957,
+      "selected_description": "Mung beans, mature seeds, sprouted, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 169957
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_7445f15a4c18dca1",
+      "canonical_name_zh": "紫菜",
+      "terms": [
+        "紫菜"
+      ],
+      "occurrence_count": 121,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168458,
+      "selected_description": "Seaweed, laver, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 90,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 168458
+      }
+    },
+    {
+      "concept_id": "ingredient_stage4_26b5c2ec669a7e12",
+      "canonical_name_zh": "鸡爪",
+      "terms": [
+        "鸡爪"
+      ],
+      "occurrence_count": 128,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 171119,
+      "selected_description": "Chicken, feet, boiled",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 4,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 71,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 171119
+      }
+    }
+  ],
+  "added_aliases": [
+    {
+      "term": "普通面粉",
+      "concept_id": "ingredient_auto_model_21eaff4331362c33"
+    },
+    {
+      "term": "高筋粉",
+      "concept_id": "ingredient_auto_model_68247edb8b567452"
+    },
+    {
+      "term": "鸡蛋清",
+      "concept_id": "ingredient_egg_white"
+    },
+    {
+      "term": "猪里脊肉",
+      "concept_id": "ingredient_pork_tenderloin"
+    },
+    {
+      "term": "肋排",
+      "concept_id": "ingredient_auto_model_5e7120bf23740d37"
+    },
+    {
+      "term": "娃娃菜",
+      "concept_id": "ingredient_auto_model_9b8bc1b61d692685"
+    },
+    {
+      "term": "口蘑",
+      "concept_id": "ingredient_auto_64d2d61b21ee1ec6"
+    }
+  ],
+  "isolated": [
+    {
+      "term": "尖椒",
+      "occurrence_count": 383,
+      "reason": "pepper_color_and_cultivar_ambiguous"
+    },
+    {
+      "term": "面包糠",
+      "occurrence_count": 350,
+      "reason": "no_exact_breadcrumb_source"
+    },
+    {
+      "term": "里脊肉",
+      "occurrence_count": 308,
+      "reason": "animal_species_missing"
+    },
+    {
+      "term": "银耳",
+      "occurrence_count": 263,
+      "reason": "no_exact_tremella_source"
+    },
+    {
+      "term": "紫薯",
+      "occurrence_count": 251,
+      "reason": "no_exact_purple_sweet_potato_source"
+    },
+    {
+      "term": "抹茶粉",
+      "occurrence_count": 236,
+      "reason": "no_exact_matcha_source"
+    },
+    {
+      "term": "椰蓉",
+      "occurrence_count": 234,
+      "reason": "dried_state_requires_identity_conversion"
+    },
+    {
+      "term": "香肠",
+      "occurrence_count": 227,
+      "reason": "processed_composition_too_broad"
+    },
+    {
+      "term": "青红椒",
+      "occurrence_count": 193,
+      "reason": "composite_ingredient_requires_split"
+    },
+    {
+      "term": "牛腩",
+      "occurrence_count": 192,
+      "reason": "beef_cut_identity_ambiguous"
+    },
+    {
+      "term": "芝士",
+      "occurrence_count": 191,
+      "reason": "cheese_type_missing"
+    },
+    {
+      "term": "腊肉",
+      "occurrence_count": 179,
+      "reason": "processed_composition_too_broad"
+    },
+    {
+      "term": "虾皮",
+      "occurrence_count": 178,
+      "reason": "dried_state_requires_identity_conversion"
+    },
+    {
+      "term": "腊肠",
+      "occurrence_count": 168,
+      "reason": "processed_composition_too_broad"
+    },
+    {
+      "term": "巧克力",
+      "occurrence_count": 160,
+      "reason": "cacao_and_sugar_profile_missing"
+    },
+    {
+      "term": "豆芽",
+      "occurrence_count": 159,
+      "reason": "bean_species_missing"
+    },
+    {
+      "term": "鲫鱼",
+      "occurrence_count": 153,
+      "reason": "source_only_supports_generic_carp"
+    },
+    {
+      "term": "油菜",
+      "occurrence_count": 150,
+      "reason": "chinese_identity_has_multiple_species"
+    },
+    {
+      "term": "黑巧克力",
+      "occurrence_count": 148,
+      "reason": "cacao_percentage_missing"
+    },
+    {
+      "term": "腐竹",
+      "occurrence_count": 130,
+      "reason": "no_exact_yuba_source"
+    },
+    {
+      "term": "草鱼",
+      "occurrence_count": 128,
+      "reason": "source_only_supports_generic_carp"
+    },
+    {
+      "term": "百合",
+      "occurrence_count": 127,
+      "reason": "no_exact_edible_lily_source"
+    },
+    {
+      "term": "粉条",
+      "occurrence_count": 124,
+      "reason": "starch_source_identity_missing"
+    },
+    {
+      "term": "海苔",
+      "occurrence_count": 121,
+      "reason": "roasted_or_dried_state_requires_conversion"
+    },
+    {
+      "term": "皮蛋",
+      "occurrence_count": 121,
+      "reason": "no_exact_preserved_egg_source"
+    },
+    {
+      "term": "香干",
+      "occurrence_count": 121,
+      "reason": "processed_tofu_composition_missing"
+    },
+    {
+      "term": "带鱼",
+      "occurrence_count": 118,
+      "reason": "no_exact_hairtail_source"
+    },
+    {
+      "term": "丝瓜",
+      "occurrence_count": 114,
+      "reason": "no_exact_luffa_source"
+    },
+    {
+      "term": "火龙果",
+      "occurrence_count": 110,
+      "reason": "no_exact_dragon_fruit_source"
+    },
+    {
+      "term": "虾米",
+      "occurrence_count": 109,
+      "reason": "dried_state_requires_identity_conversion"
+    },
+    {
+      "term": "豆腐皮",
+      "occurrence_count": 109,
+      "reason": "no_exact_tofu_skin_source"
+    },
+    {
+      "term": "薏米",
+      "occurrence_count": 108,
+      "reason": "no_exact_adlay_source"
+    },
+    {
+      "term": "奶酪",
+      "occurrence_count": 101,
+      "reason": "cheese_type_missing"
+    }
+  ],
+  "decisions": [
+    {
+      "term": "尖椒",
+      "occurrence_count": 383,
+      "decision": "isolated",
+      "reason": "pepper_color_and_cultivar_ambiguous"
+    },
+    {
+      "term": "面包糠",
+      "occurrence_count": 350,
+      "decision": "isolated",
+      "reason": "no_exact_breadcrumb_source"
+    },
+    {
+      "term": "奶油奶酪",
+      "occurrence_count": 311,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_d3f24f45bda00767"
+    },
+    {
+      "term": "里脊肉",
+      "occurrence_count": 308,
+      "decision": "isolated",
+      "reason": "animal_species_missing"
+    },
+    {
+      "term": "吉利丁片",
+      "occurrence_count": 280,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_a76f0d3014543252"
+    },
+    {
+      "term": "银耳",
+      "occurrence_count": 263,
+      "decision": "isolated",
+      "reason": "no_exact_tremella_source"
+    },
+    {
+      "term": "紫薯",
+      "occurrence_count": 251,
+      "decision": "isolated",
+      "reason": "no_exact_purple_sweet_potato_source"
+    },
+    {
+      "term": "抹茶粉",
+      "occurrence_count": 236,
+      "decision": "isolated",
+      "reason": "no_exact_matcha_source"
+    },
+    {
+      "term": "椰蓉",
+      "occurrence_count": 234,
+      "decision": "isolated",
+      "reason": "dried_state_requires_identity_conversion"
+    },
+    {
+      "term": "香肠",
+      "occurrence_count": 227,
+      "decision": "isolated",
+      "reason": "processed_composition_too_broad"
+    },
+    {
+      "term": "青红椒",
+      "occurrence_count": 193,
+      "decision": "isolated",
+      "reason": "composite_ingredient_requires_split"
+    },
+    {
+      "term": "牛腩",
+      "occurrence_count": 192,
+      "decision": "isolated",
+      "reason": "beef_cut_identity_ambiguous"
+    },
+    {
+      "term": "苦瓜",
+      "occurrence_count": 192,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_e45e538515ff56d6"
+    },
+    {
+      "term": "芝士",
+      "occurrence_count": 191,
+      "decision": "isolated",
+      "reason": "cheese_type_missing"
+    },
+    {
+      "term": "莴笋",
+      "occurrence_count": 188,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_2881dc7de3c9028b"
+    },
+    {
+      "term": "鹌鹑蛋",
+      "occurrence_count": 186,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_999a17e34b6e3e2f"
+    },
+    {
+      "term": "猪蹄",
+      "occurrence_count": 180,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_1a9d5484225b41b6"
+    },
+    {
+      "term": "腊肉",
+      "occurrence_count": 179,
+      "decision": "isolated",
+      "reason": "processed_composition_too_broad"
+    },
+    {
+      "term": "虾皮",
+      "occurrence_count": 178,
+      "decision": "isolated",
+      "reason": "dried_state_requires_identity_conversion"
+    },
+    {
+      "term": "黄豆",
+      "occurrence_count": 178,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_571f79710d252094"
+    },
+    {
+      "term": "腊肠",
+      "occurrence_count": 168,
+      "decision": "isolated",
+      "reason": "processed_composition_too_broad"
+    },
+    {
+      "term": "巧克力",
+      "occurrence_count": 160,
+      "decision": "isolated",
+      "reason": "cacao_and_sugar_profile_missing"
+    },
+    {
+      "term": "普通面粉",
+      "occurrence_count": 160,
+      "decision": "mapped_existing_concept",
+      "concept_id": "ingredient_auto_model_21eaff4331362c33"
+    },
+    {
+      "term": "豆芽",
+      "occurrence_count": 159,
+      "decision": "isolated",
+      "reason": "bean_species_missing"
+    },
+    {
+      "term": "娃娃菜",
+      "occurrence_count": 157,
+      "decision": "mapped_existing_concept",
+      "concept_id": "ingredient_auto_model_9b8bc1b61d692685"
+    },
+    {
+      "term": "鲫鱼",
+      "occurrence_count": 153,
+      "decision": "isolated",
+      "reason": "source_only_supports_generic_carp"
+    },
+    {
+      "term": "油菜",
+      "occurrence_count": 150,
+      "decision": "isolated",
+      "reason": "chinese_identity_has_multiple_species"
+    },
+    {
+      "term": "黑巧克力",
+      "occurrence_count": 148,
+      "decision": "isolated",
+      "reason": "cacao_percentage_missing"
+    },
+    {
+      "term": "高筋粉",
+      "occurrence_count": 146,
+      "decision": "mapped_existing_concept",
+      "concept_id": "ingredient_auto_model_68247edb8b567452"
+    },
+    {
+      "term": "核桃",
+      "occurrence_count": 145,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_c7a897444f3d6363"
+    },
+    {
+      "term": "核桃仁",
+      "occurrence_count": 144,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_c7a897444f3d6363"
+    },
+    {
+      "term": "口蘑",
+      "occurrence_count": 139,
+      "decision": "mapped_existing_concept",
+      "concept_id": "ingredient_auto_64d2d61b21ee1ec6"
+    },
+    {
+      "term": "黄豆芽",
+      "occurrence_count": 133,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_6e42b6bdfbf36778"
+    },
+    {
+      "term": "红尖椒",
+      "occurrence_count": 132,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_3bcf8f0654746622"
+    },
+    {
+      "term": "鸡蛋清",
+      "occurrence_count": 132,
+      "decision": "mapped_existing_concept",
+      "concept_id": "ingredient_egg_white"
+    },
+    {
+      "term": "西米",
+      "occurrence_count": 131,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_6f8de898937f9a4b"
+    },
+    {
+      "term": "腐竹",
+      "occurrence_count": 130,
+      "decision": "isolated",
+      "reason": "no_exact_yuba_source"
+    },
+    {
+      "term": "荷兰豆",
+      "occurrence_count": 130,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_f530ae90343a12a3"
+    },
+    {
+      "term": "草鱼",
+      "occurrence_count": 128,
+      "decision": "isolated",
+      "reason": "source_only_supports_generic_carp"
+    },
+    {
+      "term": "鸡爪",
+      "occurrence_count": 128,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_26b5c2ec669a7e12"
+    },
+    {
+      "term": "百合",
+      "occurrence_count": 127,
+      "decision": "isolated",
+      "reason": "no_exact_edible_lily_source"
+    },
+    {
+      "term": "绿豆芽",
+      "occurrence_count": 127,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_36427b57cff86836"
+    },
+    {
+      "term": "粉条",
+      "occurrence_count": 124,
+      "decision": "isolated",
+      "reason": "starch_source_identity_missing"
+    },
+    {
+      "term": "海苔",
+      "occurrence_count": 121,
+      "decision": "isolated",
+      "reason": "roasted_or_dried_state_requires_conversion"
+    },
+    {
+      "term": "皮蛋",
+      "occurrence_count": 121,
+      "decision": "isolated",
+      "reason": "no_exact_preserved_egg_source"
+    },
+    {
+      "term": "紫菜",
+      "occurrence_count": 121,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_7445f15a4c18dca1"
+    },
+    {
+      "term": "香干",
+      "occurrence_count": 121,
+      "decision": "isolated",
+      "reason": "processed_tofu_composition_missing"
+    },
+    {
+      "term": "带鱼",
+      "occurrence_count": 118,
+      "decision": "isolated",
+      "reason": "no_exact_hairtail_source"
+    },
+    {
+      "term": "丝瓜",
+      "occurrence_count": 114,
+      "decision": "isolated",
+      "reason": "no_exact_luffa_source"
+    },
+    {
+      "term": "火龙果",
+      "occurrence_count": 110,
+      "decision": "isolated",
+      "reason": "no_exact_dragon_fruit_source"
+    },
+    {
+      "term": "虾米",
+      "occurrence_count": 109,
+      "decision": "isolated",
+      "reason": "dried_state_requires_identity_conversion"
+    },
+    {
+      "term": "豆腐皮",
+      "occurrence_count": 109,
+      "decision": "isolated",
+      "reason": "no_exact_tofu_skin_source"
+    },
+    {
+      "term": "朝天椒",
+      "occurrence_count": 108,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_3bcf8f0654746622"
+    },
+    {
+      "term": "薏米",
+      "occurrence_count": 108,
+      "decision": "isolated",
+      "reason": "no_exact_adlay_source"
+    },
+    {
+      "term": "肋排",
+      "occurrence_count": 107,
+      "decision": "mapped_existing_concept",
+      "concept_id": "ingredient_auto_model_5e7120bf23740d37"
+    },
+    {
+      "term": "猪里脊肉",
+      "occurrence_count": 106,
+      "decision": "mapped_existing_concept",
+      "concept_id": "ingredient_pork_tenderloin"
+    },
+    {
+      "term": "奶酪",
+      "occurrence_count": 101,
+      "decision": "isolated",
+      "reason": "cheese_type_missing"
+    }
+  ]
+}

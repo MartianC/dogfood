@@ -294,7 +294,7 @@ function normalizeHumanRecipeDetail(result = {}) {
               variantId: String(component.variant_id || ''),
               foodId: String(component.food_id || ''),
               displayName: String(
-                component.display_name_zh || component.canonical_name_zh || ''
+                component.canonical_name_zh || component.display_name_zh || ''
               ),
               category: String(component.category_code || 'other'),
               preparationState: String(component.preparation_state || ''),

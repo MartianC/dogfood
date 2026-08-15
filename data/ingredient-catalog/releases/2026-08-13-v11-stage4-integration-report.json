@@ -1,0 +1,2872 @@
+{
+  "report_contract": "recipeIngredientStage4IntegrationReport/v1",
+  "policy_id": "recipeIngredientStage4IdentityLexiconIntegration/v1",
+  "lexicon_version": "2026-08-13-wave-e1-v1",
+  "catalog_version": "2026-08-13-v11",
+  "minimum_occurrences": 20,
+  "maximum_occurrences": 999999,
+  "wave_term_count": 257,
+  "wave_occurrence_count": 13130,
+  "accepted_term_count": 1,
+  "accepted_occurrence_count": 40,
+  "isolated_term_count": 256,
+  "isolated_occurrence_count": 13090,
+  "base_concept_count": 256,
+  "final_concept_count": 257,
+  "added_concept_count": 1,
+  "added_alias_count": 0,
+  "selected_source_count": 257,
+  "added_concepts": [
+    {
+      "concept_id": "ingredient_stage4_0928d44fd25a4a10",
+      "canonical_name_zh": "茼蒿",
+      "terms": [
+        "茼蒿"
+      ],
+      "occurrence_count": 40,
+      "source_candidate_count": 1,
+      "selected_source_version": "sr_legacy_2018_04",
+      "selected_fdc_id": 168491,
+      "selected_description": "Chrysanthemum leaves, raw",
+      "selected_score": {
+        "processed_penalty": 0,
+        "unsweetened_rank": 0,
+        "preparation_rank": 0,
+        "bone_rank": 1,
+        "skin_rank": 1,
+        "peel_rank": 1,
+        "source_rank": 1,
+        "nutrient_count": 36,
+        "existing_default_tiebreaker": false,
+        "fdc_id": 168491
+      }
+    }
+  ],
+  "added_aliases": [],
+  "isolated": [
+    {
+      "term": "面包糠",
+      "occurrence_count": 350,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "里脊肉",
+      "occurrence_count": 308,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "银耳",
+      "occurrence_count": 263,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "紫薯",
+      "occurrence_count": 251,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "抹茶粉",
+      "occurrence_count": 236,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰蓉",
+      "occurrence_count": 234,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香肠",
+      "occurrence_count": 227,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青红椒",
+      "occurrence_count": 193,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛腩",
+      "occurrence_count": 192,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芝士",
+      "occurrence_count": 191,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "腊肉",
+      "occurrence_count": 179,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虾皮",
+      "occurrence_count": 178,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "腊肠",
+      "occurrence_count": 168,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "巧克力",
+      "occurrence_count": 160,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲫鱼",
+      "occurrence_count": 153,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油菜",
+      "occurrence_count": 150,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黑巧克力",
+      "occurrence_count": 148,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "腐竹",
+      "occurrence_count": 130,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "草鱼",
+      "occurrence_count": 128,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "百合",
+      "occurrence_count": 127,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "粉条",
+      "occurrence_count": 124,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海苔",
+      "occurrence_count": 121,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "皮蛋",
+      "occurrence_count": 121,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香干",
+      "occurrence_count": 121,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "带鱼",
+      "occurrence_count": 118,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "丝瓜",
+      "occurrence_count": 114,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "火龙果",
+      "occurrence_count": 110,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虾米",
+      "occurrence_count": 109,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆腐皮",
+      "occurrence_count": 109,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "薏米",
+      "occurrence_count": 108,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "奶酪",
+      "occurrence_count": 101,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆干",
+      "occurrence_count": 93,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小红椒",
+      "occurrence_count": 90,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "吐司",
+      "occurrence_count": 87,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "茭白",
+      "occurrence_count": 87,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "三黄鸡",
+      "occurrence_count": 85,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸蛋黄",
+      "occurrence_count": 85,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "山楂",
+      "occurrence_count": 85,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂圆",
+      "occurrence_count": 84,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "年糕",
+      "occurrence_count": 83,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芝士片",
+      "occurrence_count": 83,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红曲粉",
+      "occurrence_count": 75,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆腐干",
+      "occurrence_count": 75,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆瓣",
+      "occurrence_count": 73,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸡翅根",
+      "occurrence_count": 73,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海米",
+      "occurrence_count": 66,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干贝",
+      "occurrence_count": 65,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥牛",
+      "occurrence_count": 60,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰丝",
+      "occurrence_count": 57,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "龙利鱼",
+      "occurrence_count": 57,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白巧克力",
+      "occurrence_count": 56,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "空心菜",
+      "occurrence_count": 55,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蜜豆",
+      "occurrence_count": 55,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小青菜",
+      "occurrence_count": 53,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虫草花",
+      "occurrence_count": 53,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "澄粉",
+      "occurrence_count": 52,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "党参",
+      "occurrence_count": 51,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "吉士粉",
+      "occurrence_count": 51,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "湿淀粉",
+      "occurrence_count": 51,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆皮",
+      "occurrence_count": 51,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "午餐肉",
+      "occurrence_count": 49,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小油菜",
+      "occurrence_count": 49,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香椿",
+      "occurrence_count": 49,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "土鸡",
+      "occurrence_count": 48,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "荠菜",
+      "occurrence_count": 48,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "萝卜干",
+      "occurrence_count": 48,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰奶",
+      "occurrence_count": 47,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馒头",
+      "occurrence_count": 47,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸭腿",
+      "occurrence_count": 47,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄花菜",
+      "occurrence_count": 47,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "冻豆腐",
+      "occurrence_count": 46,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油豆腐",
+      "occurrence_count": 46,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鱼丸",
+      "occurrence_count": 46,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桃胶",
+      "occurrence_count": 45,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梅干菜",
+      "occurrence_count": 45,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "苦菊",
+      "occurrence_count": 45,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "北极虾",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "地瓜粉",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油麦菜",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪小排",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪骨",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "细糖",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "酸豆角",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "韭黄",
+      "occurrence_count": 44,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "乌鸡",
+      "occurrence_count": 43,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红薯粉",
+      "occurrence_count": 43,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面",
+      "occurrence_count": 43,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馄饨皮",
+      "occurrence_count": 43,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馅料",
+      "occurrence_count": 43,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂花",
+      "occurrence_count": 42,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪皮",
+      "occurrence_count": 42,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干豆腐",
+      "occurrence_count": 41,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芡粉",
+      "occurrence_count": 41,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "菜心",
+      "occurrence_count": 41,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "薏仁",
+      "occurrence_count": 40,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小排",
+      "occurrence_count": 39,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "挂面",
+      "occurrence_count": 39,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油辣子",
+      "occurrence_count": 39,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "柿子椒",
+      "occurrence_count": 38,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "橄榄菜",
+      "occurrence_count": 38,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海参",
+      "occurrence_count": 38,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "米",
+      "occurrence_count": 38,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面包",
+      "occurrence_count": 38,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄芪",
+      "occurrence_count": 38,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芝士粉",
+      "occurrence_count": 37,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蜜红豆",
+      "occurrence_count": 37,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鱼头",
+      "occurrence_count": 37,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸭蛋",
+      "occurrence_count": 37,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "塔塔粉",
+      "occurrence_count": 36,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蜜糖",
+      "occurrence_count": 36,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "里脊",
+      "occurrence_count": 36,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香草粉",
+      "occurrence_count": 36,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "魔芋",
+      "occurrence_count": 36,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面包屑",
+      "occurrence_count": 35,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "上海青",
+      "occurrence_count": 34,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "巧克力豆",
+      "occurrence_count": 34,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梭子蟹",
+      "occurrence_count": 34,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "草菇",
+      "occurrence_count": 34,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "金枪鱼罐头",
+      "occurrence_count": 34,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "千张",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "南乳",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干桂花",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "淀粉水",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "瑶柱",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "美人椒",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥肉",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥肠",
+      "occurrence_count": 33,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "手指饼干",
+      "occurrence_count": 32,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红薯淀粉",
+      "occurrence_count": 32,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青柠檬",
+      "occurrence_count": 32,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "土司",
+      "occurrence_count": 31,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "笋干",
+      "occurrence_count": 31,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "九层塔",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "披萨草",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂圆肉",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红茶",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "罗汉果",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "雪菜",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "韭菜花",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黑鱼",
+      "occurrence_count": 30,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "土豆淀粉",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干百合",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海鲜菇",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "熟米饭",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白玉菇",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "素鸡",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "菜椒",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆渣",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香草",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸡腿菇",
+      "occurrence_count": 29,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂圆干",
+      "occurrence_count": 28,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梅花肉",
+      "occurrence_count": 28,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "紫薯泥",
+      "occurrence_count": 28,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香草荚",
+      "occurrence_count": 28,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸡块",
+      "occurrence_count": 28,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸭血",
+      "occurrence_count": 28,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "QQ糖",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸菜",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸鸭蛋",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "大闸蟹",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油泼辣子",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白兰地",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "茶叶",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青蒜苗",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面包片",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄花鱼",
+      "occurrence_count": 27,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸肉",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "材料:",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰子粉",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "水量",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "沙拉",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油条",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肉丁",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥牛片",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "自制酸奶",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "花菇",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "苋菜",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蟹肉棒",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "醪糟",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲜百合",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄糖",
+      "occurrence_count": 26,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "前腿肉",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "柠檬皮屑",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "燕窝",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芒果泥",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "花胶",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "菰米",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "酸笋",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馅料:",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "魔芋丝",
+      "occurrence_count": 25,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "大头菜",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小黄鱼",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "山楂干",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "广式腊肠",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "橙皮",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "汤种",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "细纱糖",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蔓越梅干",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "话梅",
+      "occurrence_count": 24,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "剩饭",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "吐司片",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "灯笼椒",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛腱子",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "粽叶",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "精肉",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红心火龙果",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红豆馅",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "自发粉",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蛏子",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "饼干",
+      "occurrence_count": 23,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咖啡",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咖啡粉",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "春卷皮",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪腰",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "甜豆",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白米饭",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "皂角米",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红菜椒",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "胡罗卜",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虾干",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蟹棒",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "马蹄粉",
+      "occurrence_count": 22,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "乌冬面",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "大杏仁",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小麦粉",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "戚风蛋糕",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "手擀面",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "柚子",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛尾",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪排",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "琵琶腿",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "砂仁",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红黄彩椒",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蟹柳",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "锡纸",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲳鱼",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄鱼",
+      "occurrence_count": 21,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "太白粉",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干葱头",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梅菜",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "武昌鱼",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "水萝卜",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油面筋",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "澄面",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛腱子肉",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "玫瑰花",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "精瘦肉",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肉丸",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蒸肉米粉",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蔥",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆腐泡",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "速溶咖啡",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "金桔",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青柠",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲅鱼",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄鳝",
+      "occurrence_count": 20,
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    }
+  ],
+  "decisions": [
+    {
+      "term": "面包糠",
+      "occurrence_count": 350,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "里脊肉",
+      "occurrence_count": 308,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "银耳",
+      "occurrence_count": 263,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "紫薯",
+      "occurrence_count": 251,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "抹茶粉",
+      "occurrence_count": 236,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰蓉",
+      "occurrence_count": 234,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香肠",
+      "occurrence_count": 227,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青红椒",
+      "occurrence_count": 193,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛腩",
+      "occurrence_count": 192,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芝士",
+      "occurrence_count": 191,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "腊肉",
+      "occurrence_count": 179,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虾皮",
+      "occurrence_count": 178,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "腊肠",
+      "occurrence_count": 168,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "巧克力",
+      "occurrence_count": 160,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲫鱼",
+      "occurrence_count": 153,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油菜",
+      "occurrence_count": 150,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黑巧克力",
+      "occurrence_count": 148,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "腐竹",
+      "occurrence_count": 130,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "草鱼",
+      "occurrence_count": 128,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "百合",
+      "occurrence_count": 127,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "粉条",
+      "occurrence_count": 124,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海苔",
+      "occurrence_count": 121,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "皮蛋",
+      "occurrence_count": 121,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香干",
+      "occurrence_count": 121,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "带鱼",
+      "occurrence_count": 118,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "丝瓜",
+      "occurrence_count": 114,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "火龙果",
+      "occurrence_count": 110,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虾米",
+      "occurrence_count": 109,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆腐皮",
+      "occurrence_count": 109,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "薏米",
+      "occurrence_count": 108,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "奶酪",
+      "occurrence_count": 101,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆干",
+      "occurrence_count": 93,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小红椒",
+      "occurrence_count": 90,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "吐司",
+      "occurrence_count": 87,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "茭白",
+      "occurrence_count": 87,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "三黄鸡",
+      "occurrence_count": 85,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸蛋黄",
+      "occurrence_count": 85,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "山楂",
+      "occurrence_count": 85,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂圆",
+      "occurrence_count": 84,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "年糕",
+      "occurrence_count": 83,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芝士片",
+      "occurrence_count": 83,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红曲粉",
+      "occurrence_count": 75,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆腐干",
+      "occurrence_count": 75,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆瓣",
+      "occurrence_count": 73,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸡翅根",
+      "occurrence_count": 73,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海米",
+      "occurrence_count": 66,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干贝",
+      "occurrence_count": 65,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥牛",
+      "occurrence_count": 60,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰丝",
+      "occurrence_count": 57,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "龙利鱼",
+      "occurrence_count": 57,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白巧克力",
+      "occurrence_count": 56,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "空心菜",
+      "occurrence_count": 55,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蜜豆",
+      "occurrence_count": 55,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小青菜",
+      "occurrence_count": 53,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虫草花",
+      "occurrence_count": 53,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "澄粉",
+      "occurrence_count": 52,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "党参",
+      "occurrence_count": 51,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "吉士粉",
+      "occurrence_count": 51,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "湿淀粉",
+      "occurrence_count": 51,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆皮",
+      "occurrence_count": 51,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "午餐肉",
+      "occurrence_count": 49,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小油菜",
+      "occurrence_count": 49,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香椿",
+      "occurrence_count": 49,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "土鸡",
+      "occurrence_count": 48,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "荠菜",
+      "occurrence_count": 48,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "萝卜干",
+      "occurrence_count": 48,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰奶",
+      "occurrence_count": 47,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馒头",
+      "occurrence_count": 47,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸭腿",
+      "occurrence_count": 47,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄花菜",
+      "occurrence_count": 47,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "冻豆腐",
+      "occurrence_count": 46,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油豆腐",
+      "occurrence_count": 46,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鱼丸",
+      "occurrence_count": 46,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桃胶",
+      "occurrence_count": 45,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梅干菜",
+      "occurrence_count": 45,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "苦菊",
+      "occurrence_count": 45,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "北极虾",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "地瓜粉",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油麦菜",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪小排",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪骨",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "细糖",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "酸豆角",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "韭黄",
+      "occurrence_count": 44,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "乌鸡",
+      "occurrence_count": 43,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红薯粉",
+      "occurrence_count": 43,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面",
+      "occurrence_count": 43,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馄饨皮",
+      "occurrence_count": 43,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馅料",
+      "occurrence_count": 43,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂花",
+      "occurrence_count": 42,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪皮",
+      "occurrence_count": 42,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干豆腐",
+      "occurrence_count": 41,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芡粉",
+      "occurrence_count": 41,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "菜心",
+      "occurrence_count": 41,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "茼蒿",
+      "occurrence_count": 40,
+      "decision": "new_concept",
+      "concept_id": "ingredient_stage4_0928d44fd25a4a10"
+    },
+    {
+      "term": "薏仁",
+      "occurrence_count": 40,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小排",
+      "occurrence_count": 39,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "挂面",
+      "occurrence_count": 39,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油辣子",
+      "occurrence_count": 39,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "柿子椒",
+      "occurrence_count": 38,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "橄榄菜",
+      "occurrence_count": 38,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海参",
+      "occurrence_count": 38,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "米",
+      "occurrence_count": 38,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面包",
+      "occurrence_count": 38,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄芪",
+      "occurrence_count": 38,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芝士粉",
+      "occurrence_count": 37,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蜜红豆",
+      "occurrence_count": 37,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鱼头",
+      "occurrence_count": 37,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸭蛋",
+      "occurrence_count": 37,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "塔塔粉",
+      "occurrence_count": 36,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蜜糖",
+      "occurrence_count": 36,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "里脊",
+      "occurrence_count": 36,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香草粉",
+      "occurrence_count": 36,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "魔芋",
+      "occurrence_count": 36,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面包屑",
+      "occurrence_count": 35,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "上海青",
+      "occurrence_count": 34,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "巧克力豆",
+      "occurrence_count": 34,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梭子蟹",
+      "occurrence_count": 34,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "草菇",
+      "occurrence_count": 34,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "金枪鱼罐头",
+      "occurrence_count": 34,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "千张",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "南乳",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干桂花",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "淀粉水",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "瑶柱",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "美人椒",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥肉",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥肠",
+      "occurrence_count": 33,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "手指饼干",
+      "occurrence_count": 32,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红薯淀粉",
+      "occurrence_count": 32,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青柠檬",
+      "occurrence_count": 32,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "土司",
+      "occurrence_count": 31,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "笋干",
+      "occurrence_count": 31,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "九层塔",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "披萨草",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂圆肉",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红茶",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "罗汉果",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "雪菜",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "韭菜花",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黑鱼",
+      "occurrence_count": 30,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "土豆淀粉",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干百合",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "海鲜菇",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "熟米饭",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白玉菇",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "素鸡",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "菜椒",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆渣",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香草",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸡腿菇",
+      "occurrence_count": 29,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "桂圆干",
+      "occurrence_count": 28,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梅花肉",
+      "occurrence_count": 28,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "紫薯泥",
+      "occurrence_count": 28,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "香草荚",
+      "occurrence_count": 28,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸡块",
+      "occurrence_count": 28,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鸭血",
+      "occurrence_count": 28,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "QQ糖",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸菜",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸鸭蛋",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "大闸蟹",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油泼辣子",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白兰地",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "茶叶",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青蒜苗",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "面包片",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄花鱼",
+      "occurrence_count": 27,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咸肉",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "材料:",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "椰子粉",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "水量",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "沙拉",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油条",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肉丁",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肥牛片",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "自制酸奶",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "花菇",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "苋菜",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蟹肉棒",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "醪糟",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲜百合",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄糖",
+      "occurrence_count": 26,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "前腿肉",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "柠檬皮屑",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "燕窝",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "芒果泥",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "花胶",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "菰米",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "酸笋",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "馅料:",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "魔芋丝",
+      "occurrence_count": 25,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "大头菜",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小黄鱼",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "山楂干",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "广式腊肠",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "橙皮",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "汤种",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "细纱糖",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蔓越梅干",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "话梅",
+      "occurrence_count": 24,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "剩饭",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "吐司片",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "灯笼椒",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛腱子",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "粽叶",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "精肉",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红心火龙果",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红豆馅",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "自发粉",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蛏子",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "饼干",
+      "occurrence_count": 23,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咖啡",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "咖啡粉",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "春卷皮",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪腰",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "甜豆",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "白米饭",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "皂角米",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红菜椒",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "胡罗卜",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "虾干",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蟹棒",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "马蹄粉",
+      "occurrence_count": 22,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "乌冬面",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "大杏仁",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "小麦粉",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "戚风蛋糕",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "手擀面",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "柚子",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛尾",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "猪排",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "琵琶腿",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "砂仁",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "红黄彩椒",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蟹柳",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "锡纸",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲳鱼",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄鱼",
+      "occurrence_count": 21,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "太白粉",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "干葱头",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "梅菜",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "武昌鱼",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "水萝卜",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "油面筋",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "澄面",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "牛腱子肉",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "玫瑰花",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "精瘦肉",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "肉丸",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蒸肉米粉",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "蔥",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "豆腐泡",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "速溶咖啡",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "金桔",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "青柠",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "鲅鱼",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    },
+    {
+      "term": "黄鳝",
+      "occurrence_count": 20,
+      "decision": "isolated",
+      "reason": "unresolved_after_controlled_wave_e1_audit"
+    }
+  ]
+}

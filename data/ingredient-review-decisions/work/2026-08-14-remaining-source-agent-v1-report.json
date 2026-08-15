@@ -1,0 +1,41 @@
+{
+  "report_contract": "remainingSourceControlledAgentReviewReport/v1",
+  "policy_id": "remainingSourceControlledAgentReview/v1",
+  "decision_version": "2026-08-14-remaining-source-agent-v1",
+  "input_term_count": 54,
+  "input_occurrence_count": 1301,
+  "terminal_term_count": 54,
+  "duplicate_normalized_name_count": 0,
+  "status_term_counts": {
+    "matched": 6,
+    "auxiliary": 2,
+    "excluded": 1,
+    "isolated": 45
+  },
+  "status_occurrence_counts": {
+    "matched": 21,
+    "auxiliary": 9,
+    "excluded": 1,
+    "isolated": 1270
+  },
+  "source_category_term_counts": {
+    "cfct_stable_processed_candidate": 3,
+    "cfct_state_candidate": 16,
+    "cfct_variable_processed_candidate": 21,
+    "multi_source_exact_candidate": 6,
+    "usda_exact_candidate": 8
+  },
+  "review_constraints": {
+    "existing_concepts_only": true,
+    "new_concepts_created": 0,
+    "new_sources_created": 0,
+    "similarity_proxy_allowed": false,
+    "local_model_used": false,
+    "external_api_used": false
+  },
+  "notes": [
+    "仅在食材身份与既有标准概念完全一致时映射。",
+    "状态不一致、配方不稳定、来源多义或证据不足的词项均进入显式终态隔离。",
+    "鱼汤和煎炸粉按辅料处理，炼制猪油按油脂排除。"
+  ]
+}

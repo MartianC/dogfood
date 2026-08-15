@@ -1,0 +1,95 @@
+{
+  "contract": "recipeIngredientReviewedDecisions/v1",
+  "policy_id": "allRemainingAgentFinalGate/v1",
+  "decision_version": "2026-08-14-all-agent-final-gate-v1",
+  "items": [
+    {
+      "normalized_name": "苹果去皮",
+      "cleaned_name": "苹果去皮",
+      "status": "isolated",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_source_with_skin_conflict",
+      "decision": "state_conversion",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    },
+    {
+      "normalized_name": "小米粉",
+      "cleaned_name": "小米粉",
+      "status": "isolated",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_flour_cannot_use_whole_grain_source",
+      "decision": "state_conversion",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    },
+    {
+      "normalized_name": "千页豆腐",
+      "cleaned_name": "千页豆腐",
+      "status": "isolated",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_processed_tofu_cannot_use_plain_tofu_source",
+      "decision": "variable_processed_food",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    },
+    {
+      "normalized_name": "自制酸奶",
+      "cleaned_name": "自制酸奶",
+      "status": "isolated",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_recipe_yogurt_formula_variable",
+      "decision": "variable_processed_food",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    },
+    {
+      "normalized_name": "老酸奶",
+      "cleaned_name": "老酸奶",
+      "status": "isolated",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_yogurt_formula_mismatch",
+      "decision": "variable_processed_food",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    },
+    {
+      "normalized_name": "袋装金枪鱼",
+      "cleaned_name": "袋装金枪鱼",
+      "status": "isolated",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_packaged_tuna_cannot_use_frozen_raw_source",
+      "decision": "state_conversion",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    },
+    {
+      "normalized_name": "老玉米",
+      "cleaned_name": "老玉米",
+      "status": "isolated",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_old_corn_cannot_assume_sweet_corn",
+      "decision": "insufficient_evidence",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    },
+    {
+      "normalized_name": "3)水淀粉",
+      "cleaned_name": "3)水淀粉",
+      "status": "auxiliary",
+      "concept_id": null,
+      "exclusion_category": null,
+      "rule_id": "final_gate_starch_slurry_is_auxiliary",
+      "decision": "auxiliary",
+      "method": "post_agent_code_gate",
+      "supersedes": true
+    }
+  ]
+}

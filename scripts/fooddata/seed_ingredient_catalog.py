@@ -135,6 +135,10 @@ def validate_seed_shape(seed: dict[str, Any]) -> None:
         variants = item.get("variants")
         if not isinstance(variants, list) or not variants:
             raise ValueError(f"标准食材概念没有形态：{concept_id}")
+        if int(seed.get("catalog_schema_version", 1)) >= 2 and len(variants) != 1:
+            raise ValueError(
+                f"标准食材目录 v2 每个概念必须只有一个烹调基准营养来源：{concept_id}"
+            )
         default_count = sum(bool(variant.get("is_default")) for variant in variants)
         if default_count != 1:
             raise ValueError(f"每个概念必须且只能有一个默认形态：{concept_id}")

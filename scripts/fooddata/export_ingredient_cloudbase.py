@@ -47,6 +47,15 @@ REQUIRED_TABLES = {
     "human_recipe",
     "human_recipe_ingredient_mention",
 }
+ROLLBACK_CANDIDATE_FIELDS = (
+    "release_id",
+    "profile_release_id",
+    "catalog_version",
+    "policy_version",
+    "ranking_version",
+    "recipe_version",
+    "mapping_version",
+)
 
 
 def load_operation_rules() -> dict[str, Any]:
@@ -54,7 +63,9 @@ def load_operation_rules() -> dict[str, Any]:
     if rules.get("contract") != "ingredientOperationRules/v1":
         raise ValueError("食材操作规则契约版本不正确")
     if rules.get("blockedStatus") != "blocked":
-        raise ValueError("食材操作规则必须只阻断 blocked")
+        raise ValueError("食材操作规则 blocked 状态定义不正确")
+    if rules.get("operableStatuses") != ["allowed", "conditional", "unknown"]:
+        raise ValueError("食材操作规则必须采用 not-blocked 规则")
     return rules
 
 
@@ -68,7 +79,7 @@ def normalize_policy_status(value: Any) -> str:
 
 
 def can_operate_ingredient(value: Any) -> bool:
-    return normalize_policy_status(value) != OPERATION_RULES["blockedStatus"]
+    return normalize_policy_status(value) in set(OPERATION_RULES["operableStatuses"])
 
 
 def json_schema_type_matches(value: Any, expected: str) -> bool:
@@ -194,7 +205,26 @@ def parse_args() -> argparse.Namespace:
         default="staging",
         help="投影只允许输出 staging；工具不切换 production active",
     )
+    for field in ROLLBACK_CANDIDATE_FIELDS:
+        parser.add_argument(
+            f"--rollback-{field.replace('_', '-')}",
+            help=f"目标环境当前 active 的 {field}；回滚字段必须完整提供",
+        )
     return parser.parse_args()
+
+
+def rollback_candidate_from_args(args: argparse.Namespace) -> dict[str, str] | None:
+    values = {
+        field: getattr(args, f"rollback_{field}")
+        for field in ROLLBACK_CANDIDATE_FIELDS
+    }
+    provided = [field for field, value in values.items() if value]
+    if provided and len(provided) != len(ROLLBACK_CANDIDATE_FIELDS):
+        missing = [field for field, value in values.items() if not value]
+        raise ValueError("回滚候选字段必须完整提供，缺少：" + ", ".join(missing))
+    if not provided:
+        return None
+    return {"status": "active", **values}
 
 
 def stable_export_timestamp(release_id: str) -> str:
@@ -248,6 +278,25 @@ def validate_database(conn: sqlite3.Connection) -> tuple[str, int]:
     if foreign_key_errors:
         raise ValueError(f"离线主库外键校验失败：{foreign_key_errors[:3]}")
     return str(builds[0][0]), int(builds[0][1])
+
+
+def validate_publishable_sources(conn: sqlite3.Connection) -> None:
+    blocked = conn.execute(
+        """
+        SELECT r.source_kind, r.source_version, r.license_status, COUNT(f.fdc_id)
+        FROM source_release r
+        JOIN source_food f ON f.source_release_id = r.release_id
+        GROUP BY r.release_id
+        HAVING r.license_status NOT IN ('public_domain', 'verified')
+        ORDER BY r.source_kind, r.source_version
+        """
+    ).fetchall()
+    if blocked:
+        details = ", ".join(
+            f"{kind}/{version}={status}({count})"
+            for kind, version, status, count in blocked
+        )
+        raise ValueError(f"营养来源未获发布授权：{details}")
 
 
 def source_release_documents(conn: sqlite3.Connection) -> list[dict[str, Any]]:
@@ -1105,9 +1154,24 @@ def one_document(document: dict[str, Any]) -> Iterator[dict[str, Any]]:
     yield document
 
 
-def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
+def export_documents(
+    sqlite_path: Path,
+    out_dir: Path,
+    rollback_candidate: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    if rollback_candidate is not None:
+        missing = [
+            field for field in ROLLBACK_CANDIDATE_FIELDS
+            if not str(rollback_candidate.get(field, "")).strip()
+        ]
+        if rollback_candidate.get("status") != "active" or missing:
+            raise ValueError(
+                "回滚候选必须是完整 active 版本组合"
+                + ("，缺少：" + ", ".join(missing) if missing else "")
+            )
     with sqlite3.connect(f"file:{sqlite_path}?mode=ro", uri=True) as conn:
         release_id, schema_version = validate_database(conn)
+        validate_publishable_sources(conn)
         sources = source_release_documents(conn)
         profile_count = conn.execute("SELECT COUNT(*) FROM source_food").fetchone()[0]
         catalog_count = conn.execute(
@@ -1164,7 +1228,11 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             mapping_version=mapping_version,
             catalog_version=version,
             policy_version=safety_version,
-            rollback_recipe_version=mapping_version,
+            rollback_recipe_version=(
+                rollback_candidate["recipe_version"]
+                if rollback_candidate is not None
+                else None
+            ),
         )
         validate_human_recipe_projection_report(projection_report)
         release_document = {
@@ -1182,12 +1250,9 @@ def export_documents(sqlite_path: Path, out_dir: Path) -> dict[str, Any]:
             "recipe_version": recipe_version,
             "mapping_version": mapping_version,
             "rollback_candidate": (
-                {
-                    "status": "active",
-                    "recipe_version": mapping_version,
-                }
-                if mapping_version is not None
-                else None
+                rollback_candidate
+                if rollback_candidate is not None
+                else {"status": "requires-active-pointer"}
             ),
             "base_release_id": release_id,
             "recipe_source_count": source_recipe_count,
@@ -1324,7 +1389,11 @@ def main() -> int:
         print(f"离线 SQLite 不存在：{sqlite_path}", file=sys.stderr)
         return 2
     try:
-        manifest = export_documents(sqlite_path, out_dir)
+        manifest = export_documents(
+            sqlite_path,
+            out_dir,
+            rollback_candidate=rollback_candidate_from_args(args),
+        )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
         return 0
     except (OSError, sqlite3.Error, ValueError) as error:

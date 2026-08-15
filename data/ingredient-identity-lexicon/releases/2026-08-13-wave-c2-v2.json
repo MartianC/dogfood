@@ -1,0 +1,36 @@
+{
+  "contract": "controlledIngredientIdentityDecisions/v1",
+  "decision_version": "2026-08-13-wave-c2-v2",
+  "scope": "基础食材身份候选 C2 修正版；只接收同一身份别名或显式唯一生鲜来源，九层塔按罗勒归入调味料",
+  "catalog_aliases": [
+    {"concept_id": "ingredient_chicken_meat", "terms": ["三黄鸡", "土鸡", "乌鸡"]},
+    {"concept_id": "ingredient_bok_choy", "terms": ["小青菜", "上海青"]},
+    {"concept_id": "ingredient_bell_pepper", "terms": ["柿子椒", "菜椒", "灯笼椒", "红菜椒"]},
+    {"concept_id": "ingredient_cfct_c3f67713059cf50f", "terms": ["瑶柱"]},
+    {"concept_id": "ingredient_cfct_53e780b32364da54", "terms": ["肥肠"]},
+    {"concept_id": "ingredient_auto_11baeb27adb35043", "terms": ["花菇"]},
+    {"concept_id": "ingredient_auto_628d2f74c8e25398", "terms": ["白玉菇"]},
+    {"concept_id": "ingredient_carrot", "terms": ["胡罗卜"]},
+    {"concept_id": "ingredient_stage4_f530ae90343a12a3", "terms": ["甜豆"]}
+  ],
+  "bare_defaults": [],
+  "new_concepts": [
+    {"canonical_name_zh": "牛腩", "aliases": ["牛腩肉"], "category_code": "meat", "source_version": "sr_legacy_2018_04", "fdc_id": 168607, "description_contains": "Beef, brisket, whole, separable lean only, all grades, raw", "preparation_state": "raw"},
+    {"canonical_name_zh": "草菇", "aliases": [], "category_code": "vegetable", "source_version": "cfct_6th_ocr_2025_12_06", "fdc_id": 51001, "description_contains": "草菇 [大黑头细花草、稻菇]", "preparation_state": "raw"},
+    {"canonical_name_zh": "黑鱼", "aliases": ["乌鳢"], "category_code": "fish", "source_version": "cfct_6th_ocr_2025_12_06", "fdc_id": 121116, "description_contains": "乌鳢[黑鱼、乌鱼、生鱼]", "preparation_state": "raw"},
+    {"canonical_name_zh": "千张", "aliases": ["百页"], "category_code": "legume", "source_version": "cfct_6th_ocr_2025_12_06", "fdc_id": 31509, "description_contains": "千张 [百页]", "preparation_state": "unspecified"},
+    {"canonical_name_zh": "苋菜", "aliases": [], "category_code": "vegetable", "source_version": "cfct_6th_ocr_2025_12_06", "fdc_id": 45319, "description_contains": "苋菜（绿，鲜）", "preparation_state": "raw"},
+    {"canonical_name_zh": "武昌鱼", "aliases": ["鲂鱼"], "category_code": "fish", "source_version": "cfct_6th_ocr_2025_12_06", "fdc_id": 121126, "description_contains": "鲌鱼 [鲂鱼、武昌鱼]", "preparation_state": "raw"},
+    {"canonical_name_zh": "小黄鱼", "aliases": [], "category_code": "fish", "source_version": "cfct_6th_ocr_2025_12_06", "fdc_id": 121242, "description_contains": "黄鱼(小黄花鱼)", "preparation_state": "raw"},
+    {"canonical_name_zh": "金桔", "aliases": [], "category_code": "fruit", "source_version": "sr_legacy_2018_04", "fdc_id": 168154, "description_contains": "Kumquats, raw", "preparation_state": "raw"},
+    {"canonical_name_zh": "牛腱", "aliases": ["牛腱子", "牛腱子肉"], "category_code": "meat", "source_version": "sr_legacy_2018_04", "fdc_id": 169441, "description_contains": "Beef, shank crosscuts, separable lean only, trimmed to 1/4\" fat, choice, raw", "preparation_state": "raw"}
+  ],
+  "isolated_high_frequency": [
+    {"term": "九层塔", "reason": "罗勒类香草，归入 seasoning，不建立营养概念"},
+    {"term": "紫薯", "reason": "缺少紫肉甘薯精确来源，不能使用橙肉红薯代理"},
+    {"term": "鸭腿", "reason": "现有来源只有整鸭肉，缺少鸭腿部位来源"},
+    {"term": "龙利鱼", "reason": "中文市场名存在物种混用，不能映射比目鱼"},
+    {"term": "肥牛", "reason": "火锅切片来源部位和脂肪比例不稳定"},
+    {"term": "梅花肉", "reason": "中国分割部位与现有 USDA 肩肉条目不能唯一对应"}
+  ]
+}

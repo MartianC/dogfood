@@ -25,7 +25,7 @@ test('搜索不到食材时返回空数组', async () => {
   assert.deepEqual(await ingredientService.searchIngredients('不存在的食材'), [])
 })
 
-test('运行时发布优先 active，无 active 时回退最新 staging', async () => {
+test('运行时发布只读取 active，无 active 时拒绝回退 staging', async () => {
   const statuses = []
   runtimeDataReleaseService.clearCache()
   const database = {
@@ -38,13 +38,7 @@ test('运行时发布优先 active，无 active 时回退最新 staging', async 
             skip() { return this },
             limit() { return this },
             async get() {
-              if (condition.status === 'active') return { data: [] }
-              return {
-                data: [
-                  { release_id: 'release-old', status: 'staging', generated_at: '2026-07-21T00:00:00Z' },
-                  { release_id: 'release-new', status: 'staging', generated_at: '2026-07-23T00:00:00Z' }
-                ]
-              }
+              return { data: [] }
             }
           }
         }
@@ -53,30 +47,26 @@ test('运行时发布优先 active，无 active 时回退最新 staging', async 
   }
 
   try {
-    const release = await runtimeDataReleaseService.loadRuntimeRelease(database)
-    assert.deepEqual(statuses, ['active', 'staging'])
-    assert.equal(release.release_id, 'release-new')
+    await assert.rejects(
+      () => runtimeDataReleaseService.loadRuntimeRelease(database),
+      /未找到 active 数据发布版本/
+    )
+    assert.deepEqual(statuses, ['active'])
   } finally {
     runtimeDataReleaseService.clearCache()
   }
 })
 
-test('云端食材搜索开放除 blocked 外的全部可搜索食材', async () => {
+test('云端食材搜索读取所有非 blocked 食材', async () => {
   const originalWx = global.wx
   const catalogWhereCalls = []
   const collectionNames = []
-  const notBlocked = { operator: 'neq', value: 'blocked' }
   ingredientService.clearCache()
   global.wx = {
     cloud: {
       database() {
         return {
-          command: {
-            neq(value) {
-              assert.equal(value, 'blocked')
-              return notBlocked
-            }
-          },
+          command: { neq(value) { return { $neq: value } } },
           collection(name) {
             collectionNames.push(name)
             if (name === 'data_releases') {
@@ -123,7 +113,7 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
                           is_default: false,
                           catalog_version: 'catalog-v1',
                           policy_version: 'policy-v1',
-                          policy_status: 'conditional'
+                          policy_status: 'allowed'
                         },
                         {
                           food_id: 'food_1',
@@ -136,7 +126,7 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
                           is_default: true,
                           catalog_version: 'catalog-v1',
                           policy_version: 'policy-v1',
-                          policy_status: 'unknown'
+                          policy_status: 'conditional'
                         },
                         {
                           food_id: 'food_3',
@@ -171,12 +161,12 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
     assert.deepEqual(catalogWhereCalls, [{
       catalog_version: 'catalog-v1',
       policy_version: 'policy-v1',
-      policy_status: notBlocked
+      policy_status: { $neq: 'blocked' }
     }])
     assert.equal(catalog[0].name, '胡萝卜')
     assert.equal(catalog[0].variantName, '胡萝卜（生）')
     assert.equal(catalog.length, 1)
-    assert.equal(catalog[0].policyStatus, 'unknown')
+    assert.equal(catalog[0].policyStatus, 'conditional')
     assert.equal(results[0].foodId, 'food_1')
     assert.equal(results[0].conceptId, 'ingredient_carrot')
     assert.equal(results[0].variantId, 'variant_carrot_raw')
@@ -186,7 +176,7 @@ test('云端食材搜索开放除 blocked 外的全部可搜索食材', async ()
   }
 })
 
-test('食材安全开放规则只拦截 blocked', () => {
+test('食材安全开放规则只拒绝 blocked', () => {
   assert.equal(ingredientService.isIngredientPolicyOpen({ policy_status: 'allowed' }), true)
   assert.equal(ingredientService.isIngredientPolicyOpen({ policy_status: 'conditional' }), true)
   assert.equal(ingredientService.isIngredientPolicyOpen({ policy_status: 'unknown' }), true)

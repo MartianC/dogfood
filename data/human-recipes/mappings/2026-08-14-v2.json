@@ -1,0 +1,14 @@
+{
+  "mapping_version": "2026-08-14-v2",
+  "compatible_catalog_version": "2026-08-14-v18",
+  "compatible_policy_version": "2026-08-14-v2",
+  "source_declaration": "data/human-recipes/sources/capu-5w.json",
+  "generated_at": "2026-08-14T00:00:00Z",
+  "automatic_rules": [
+    "approved_alias_exact"
+  ],
+  "review_task_min_occurrences": 2147483647,
+  "stage1_decisions": "fooddata-cloudbase-export/2026-08-14-stage1-deterministic-v17-v13/stage-1-decisions.json",
+  "stage1_decisions_sha256": "21409c2ea204b870ce192feeb395b1b22e9ca933852ed2937f9df045bcac81eb",
+  "manual_decisions": []
+}

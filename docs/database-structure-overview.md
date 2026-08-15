@@ -18,14 +18,14 @@
 
 离线 SQLite 主库
   ├─ USDA / SR Legacy 原始数据
-  ├─ 食材概念、别名、形态
+  ├─ 食材概念、别名、营养来源候选与唯一烹调基准
   ├─ 犬食安全策略
   ├─ 营养素排行
   └─ 人饭菜谱与人工映射
           │ 受控导出（版本化、staging）
           ▼
 CloudBase 公共只读投影
-  ├─ foods / food_nutrients / food_localized_name / pet_nutrition_standards
+  ├─ pet_nutrition_standards
   └─ data_releases / food_nutrition_profiles / ingredient_catalog /
      canine_ingredient_policies / nutrient_rankings / human_recipes
 ```
@@ -199,18 +199,17 @@ CloudBase 公共只读投影
 
 这些集合禁止小程序端写入，数据源是 SQLite 或受控种子文件。
 
-### FoodData 基础集合
+### 犬营养标准集合
 
-- `foods`：`_id=food_<fdc_id>`；字段：`fdc_id`、`data_type`、`description`、`food_category_id`、`publication_date`、`data_version`、`source`。
-- `food_nutrients`：`_id=food_nutrient_<id>`；字段：`id`、`food_id`、`fdc_id`、`nutrient_id`、`name`、`unit_name`、`amount`、`data_points`、`derivation_id`、`min`、`max`、`median`、`footnote`、`min_year_acquired`、`data_version`。
-- `food_localized_name`：`_id=food_localized_name_<id>`；字段：`id`、`fdc_id`、`food_id`、`locale`、`name`、`name_type`、`confidence`、`created_at`、`updated_at`、`data_version`。
 - `pet_nutrition_standards`：`_id=pet_standard_<id>`；顶层字段为标准元数据（`region_code`、`authority`、`standard_code`、`title`、`version`、日期、`status`、`source_url`、`notes`、`data_version`），`profiles[]` 内含犬种/生命阶段/食品范围、能量密度和 `requirements[]`；需求项含 `pet_nutrient_code`、名称、`requirement_type`、数值/文本、单位、basis、条件。
+
+早期 Foundation 明细集合 `foods`、`food_nutrients`、`food_localized_name` 已于2026-08-11从 CloudBase 退役；完整原始层继续保存在离线 SQLite，运行时只使用聚合营养快照。
 
 ### 食材知识运行时投影
 
 - `data_releases`：发布指针和计数。字段：`release_id`、`base_release_id`、`schema_version`、`status`（`staging` 或 `active`）、`catalog_version`、`policy_version`、`ranking_version`、独立 `recipe_version`、输入 `mapping_version`、`rollback_candidate`、`generated_at`、`sources[]`、`collections` 计数。生产查询只消费当前活动发布，新的导出先进入 staging 完成验证。
 - `food_nutrition_profiles`：一条 `source_release_id + fdc_id` 一份聚合快照。字段：`release_id`、`food_id`、`fdc_id`、食物描述/来源版本、`nutrient_count`、`known_nutrient_count`、`nutrients` 对象。`nutrients[nutrient_id]` 含 `name`、`unit`、`amount`、`value_status`。
-- `ingredient_catalog`：搜索和选择目录项。字段：`release_id`、`catalog_version`、`policy_version`、`concept_id`、`variant_id`、中文名/别名、分类、制备/部位/皮骨状态、`food_id`/`fdc_id`、来源版本、`policy_status`；新生成物不保存权限布尔字段。
+- `ingredient_catalog`：搜索和选择目录项。历史活动版本允许同一概念存在多个形态；从 `catalog_schema_version=2` 起每个概念只投影一个自动选择的烹调基准营养来源。字段包括 `release_id`、`catalog_version`、`policy_version`、`concept_id`、兼容 `variant_id`、中文名/别名、分类、来源状态、`food_id`/`fdc_id`、来源版本和 `policy_status`；新生成物不保存权限布尔字段。
 - `canine_ingredient_policies`：安全策略快照。字段：`policy_id`、`policy_version`、兼容目录版本、`subject_key`、`concept_id`、可选 `variant_id`、`decision`、`hazard_type`、`conditions`、`evidence`、`rationale`、审核人/时间和下次复核时间。
 - `nutrient_rankings`：版本化营养素排行。字段：`ranking_version`、兼容目录/策略版本、`nutrient_code`、中文名、单位、basis、`formula`、候选/入榜数量、生成时间、`items[]`。排行项含 rank、概念/形态/food ID、每 100g 数值和组成值。
 - `human_recipes`：授权菜谱运行时投影。历史 `recipe_version=2026-07-23-v1` 共6,082条且保持不变；v2 使用 `human-recipe-runtime-v2-<mapping_version>` 独立版本和新 `_id/release_id` 键空间，每条内嵌全部来源有序原料、映射组件、四态策略、阻断原因和版本快照，人饭分量只作参考。
@@ -223,18 +222,20 @@ CloudBase 公共只读投影
 
 `source_food(source_release_id, fdc_id, data_type, description, food_category_id, publication_date)`；`source_nutrient(source_release_id, nutrient_id, name, unit_name, nutrient_nbr, rank)`；`source_food_nutrient(source_release_id, source_record_id, fdc_id, nutrient_id, amount, data_points, derivation_id, min, max, median, footnote, min_year_acquired)`；`source_localized_name(source_release_id, source_record_id, fdc_id, locale, name, name_type, confidence, created_at, updated_at)`；`source_food_category(source_release_id, category_id, code, description)`；`source_sr_legacy_food(source_release_id, fdc_id, ndb_number)`。
 
+`source_localized_name` 对 Foundation 和 SR Legacy 使用同一结构，由 `source_release_id` 区分来源。Foundation 保留534条原始中文名称；SR Legacy 通过版本化 `food_localized_name` SQLite 导入7,793条 Apple 系统机器译名，统一主库共8,327条。机器译名置信度为0.65，不等同于标准食材概念名。
+
 ### 人饭菜谱层
 
 `human_recipe` 保存来源、标题、分类、原料/分量原文及数量对齐状态；`human_recipe_ingredient_mention` 保存按位置拆分的原料和分量；`recipe_ingredient_term` 保存规范化原料写法和出现次数。
 
 ### 审核与知识层
 
-`ingredient_concept`（标准概念）；`ingredient_alias`（别名到概念，含审核状态和版本）；`ingredient_variant`（生熟/部位/皮骨状态到来源食物）；`canine_ingredient_policy`（概念或形态安全策略）；`nutrient_ranking` 与 `nutrient_ranking_item`（版本化排行及排行项）；`recipe_mapping_release`（映射版本、兼容版本、来源和授权）；`ingredient_mapping_decision` 与 `ingredient_mapping_component`（人饭原料映射及复合拆分）；`review_task`（歧义、安全关键、无形态等人工任务）。完整字段和约束以 `scripts/fooddata/build_ingredient_data_sqlite.py` 的 `SCHEMA_SQL` 为最终机器契约。
+`ingredient_concept`（标准概念）；`ingredient_alias`（别名到概念，含审核状态和版本）；`ingredient_variant`（标准食材到烹调基准营养来源的技术绑定，历史版本兼容多形态）；`canine_ingredient_policy`（概念或来源绑定级安全策略）；`nutrient_ranking` 与 `nutrient_ranking_item`（版本化排行及排行项）；`recipe_mapping_release`（映射版本、兼容版本、来源和授权）；`ingredient_mapping_decision` 与 `ingredient_mapping_component`（人饭原料映射及复合拆分）；`review_task`（歧义、安全关键、无来源等任务）。完整字段和约束以 `scripts/fooddata/build_ingredient_data_sqlite.py` 的 `SCHEMA_SQL` 为最终机器契约。
 
 ## 5. 关系、版本和权限
 
 1. 用户关系：`users.openId` 是登录索引；业务集合通过 `_openid` 归属用户，`dogs._id` 被食谱、清单、体重测量、护理记录和共享本餐记录以 ID 引用，同时保存 snapshots。共享本餐一次只引用一只狗狗。
-2. 营养关系：`foods` → `food_nutrients` / `food_localized_name`；`food_nutrition_profiles` 将同一食物的营养明细聚合成一次读取；`ingredient_catalog.variant_id` → `food_id`。
+2. 营养关系：离线 `source_food` → `source_food_nutrient`；`food_nutrition_profiles` 将同一食物的营养明细聚合成一次运行时读取；单来源目录中 `ingredient_catalog.concept_id` 经唯一兼容 `variant_id` 绑定一个 `food_id`。
 3. 审核关系：`ingredient_concept` → `ingredient_alias` / `ingredient_variant`；策略优先匹配 variant，缺失时回退 concept；排行必须同时兼容 catalog 和 policy 版本。
 4. 发布关系：一个 `release_id` 绑定一组 `catalog_version`、`policy_version`、`ranking_version` 和各集合计数。旧快照不可修改，生产切换应通过活动版本指针完成。
 5. 权限：`users`、`dogs`、`customRecipes`、`mealPlans`、`weight_measurements`、`care_records`、`shared_meal_records` 仅云函数访问；体重、护理和共享本餐写入都会复核狗狗归属。共享本餐保存还会复核活动数据版本和当前食材策略。公共营养集合客户端可读不可写；策略集合按当前设计由云函数读取，不能直接暴露原始审核字段。

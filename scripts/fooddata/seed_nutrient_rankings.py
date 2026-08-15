@@ -33,6 +33,7 @@ def load_operation_rules() -> dict[str, Any]:
     if (
         rules.get("contract") != "ingredientOperationRules/v1"
         or rules.get("blockedStatus") != "blocked"
+        or rules.get("operableStatuses") != ["allowed", "conditional", "unknown"]
     ):
         raise ValueError("食材操作规则契约无效")
     return rules
@@ -45,7 +46,7 @@ def can_operate_ingredient(value: Any) -> bool:
     normalized = str(value or "unknown").strip().lower()
     if normalized not in set(OPERATION_RULES["knownStatuses"]):
         normalized = "unknown"
-    return normalized != OPERATION_RULES["blockedStatus"]
+    return normalized in set(OPERATION_RULES["operableStatuses"])
 
 
 def parse_args() -> argparse.Namespace:

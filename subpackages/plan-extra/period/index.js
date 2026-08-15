@@ -35,6 +35,12 @@ Page({
         ingredients: (draft.ingredients || []).map((item) => ({
           name: item.name,
           category: item.category,
+          ingredientId: item.ingredientId || item.foodId || '',
+          foodId: item.foodId || item.ingredientId || '',
+          conceptId: item.conceptId || '',
+          variantId: item.variantId || '',
+          policyStatus: item.policyStatus || '',
+          dataVersions: item.dataVersions ? { ...item.dataVersions } : undefined,
           baseAmountGram: Number(item.perMealAmountGram || 0),
           ratioPercent: 0,
           allergenKey: item.allergenKey || ''

@@ -10,7 +10,8 @@ const {
   canAddIngredient,
   canAutoIncludeIngredient,
   KNOWN_POLICY_STATUSES,
-  BLOCKED_POLICY_STATUS
+  BLOCKED_POLICY_STATUS,
+  OPERABLE_POLICY_STATUSES
 } = require('../subpackages/shared-meal/services/ingredientOperationRules')
 
 const expected = {
@@ -20,10 +21,14 @@ const expected = {
   blocked: false
 }
 
-test('唯一食材操作规则对搜索、添加和自动带入使用同一非 blocked 判定', () => {
+test('唯一食材操作规则对搜索、添加、自动带入和排行使用同一 not-blocked 判定', () => {
   assert.equal(rules.contract, 'ingredientOperationRules/v1')
   assert.deepEqual(KNOWN_POLICY_STATUSES, rules.knownStatuses)
   assert.equal(BLOCKED_POLICY_STATUS, rules.blockedStatus)
+  assert.deepEqual(OPERABLE_POLICY_STATUSES, rules.operableStatuses)
+  assert.deepEqual(rules.operations, {
+    search: 'notBlocked', add: 'notBlocked', autoInclude: 'notBlocked', nutrientRanking: 'notBlocked'
+  })
   for (const [status, allowed] of Object.entries(expected)) {
     assert.equal(canSearchIngredient({ policy_status: status }), allowed)
     assert.equal(canAddIngredient({ policyStatus: status }), allowed)

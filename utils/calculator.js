@@ -40,6 +40,12 @@ function calcBatchPlan(recipe, dog, periodDays) {
   const perMealItems = recipe.ingredients.map((item) => ({
     name: item.name,
     category: item.category,
+    ingredientId: item.ingredientId || item.foodId || '',
+    foodId: item.foodId || item.ingredientId || '',
+    conceptId: item.conceptId || '',
+    variantId: item.variantId || '',
+    dataVersions: item.dataVersions ? { ...item.dataVersions } : undefined,
+    policyStatus: item.policyStatus || '',
     amountGram: roundTo5(Number(item.baseAmountGram) * ratio),
     allergenKey: item.allergenKey || ''
   }))
@@ -72,6 +78,12 @@ function mergePlanItems(itemGroups) {
       merged.push({
         name: item.name,
         category: item.category,
+        ingredientId: item.ingredientId || item.foodId || '',
+        foodId: item.foodId || item.ingredientId || '',
+        conceptId: item.conceptId || '',
+        variantId: item.variantId || '',
+        dataVersions: item.dataVersions ? { ...item.dataVersions } : undefined,
+        policyStatus: item.policyStatus || '',
         amountGram: 0,
         allergenKey: item.allergenKey || ''
       })

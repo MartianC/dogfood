@@ -38,6 +38,7 @@
 
 - `docs/cloudbase-fooddata-import.md`：现有 Foundation Foods 与犬粮标准的 CloudBase 导入说明。
 - `docs/ingredient-data-pipeline.md`：Foundation、SR Legacy、人饭菜谱和食材知识审核层的离线主库构建说明。
+- `docs/data/recipe-ingredient-gap-mapping-plan.md`：v3之后剩余菜谱原料的自动映射、来源身份聚类、状态换算和发布门禁方案。
 - `docs/data/ingredient-catalog-sop.md`：后续新增、修正、审核和发布 `ingredient_catalog` 的强制标准流程。
 - `docs/data/canine-ingredient-policies-sop.md`：每次目录导入后的犬食安全策略对账、证据审核、版本化和发布流程。
 - `docs/data/nutrient-rankings-sop.md`：营养素排行的公式、过滤、版本化、空排行、导入和回滚流程。

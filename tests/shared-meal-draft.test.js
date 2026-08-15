@@ -66,6 +66,51 @@ function draftWithSources(humanMenus, sourceIngredientSelections) {
   })
 }
 
+test('人饭详情与狗饭草稿统一使用 canonical 食材名', () => {
+  const normalized = normalizeHumanRecipeDetail({
+    recipeVersion: dataVersions.recipeVersion,
+    recipe: {
+      id: 'recipe-canonical-name',
+      release_id: dataVersions.runtimeReleaseId,
+      recipe_version: dataVersions.recipeVersion,
+      mapping_version: dataVersions.mappingVersion,
+      compatible_catalog_version: dataVersions.catalogVersion,
+      compatible_policy_version: dataVersions.policyVersion,
+      base_release_id: dataVersions.nutritionSourceReleaseId,
+      ingredients: [{
+        position: 0,
+        raw_name: '鸡胸肉',
+        components: [{
+          concept_id: fixture.conceptId,
+          variant_id: fixture.variantId,
+          food_id: fixture.foodId,
+          canonical_name_zh: '鸡胸肉',
+          display_name_zh: '鸡胸肉（熟）',
+          category_code: fixture.category,
+          policy_status: fixture.policyStatus
+        }]
+      }]
+    }
+  })
+  const component = normalized.ingredients[0].components[0]
+
+  assert.equal(component.displayName, '鸡胸肉')
+
+  const draft = createDraftFromMenus({
+    id: 'draft-canonical-name',
+    dog,
+    humanMenus: [normalized],
+    sourceIngredientSelections: [{
+      humanMenuId: normalized.id,
+      ingredientPosition: 0,
+      conceptId: component.conceptId,
+      variantId: component.variantId
+    }],
+    dataVersions
+  })
+  assert.equal(draft.ingredients[0].name, '鸡胸肉')
+})
+
 test('include 将单个允许来源加入草稿且不修改输入状态', () => {
   const draft = draftWithSources([menu()], [])
 

@@ -24,9 +24,8 @@ function latestRelease(releases) {
 
 async function loadRuntimeRelease(database) {
   if (releaseCache) return releaseCache
-  const activeRelease = latestRelease(await readReleases(database, 'active'))
-  releaseCache = activeRelease || latestRelease(await readReleases(database, 'staging'))
-  if (!releaseCache) throw new Error('未找到可用的数据发布版本')
+  releaseCache = latestRelease(await readReleases(database, 'active'))
+  if (!releaseCache) throw new Error('未找到 active 数据发布版本')
   return releaseCache
 }
 

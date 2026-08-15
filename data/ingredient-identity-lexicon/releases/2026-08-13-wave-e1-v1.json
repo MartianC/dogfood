@@ -1,0 +1,22 @@
+{
+  "contract": "recipeIngredientIdentityLexicon/v1",
+  "lexicon_version": "2026-08-13-wave-e1-v1",
+  "wave": {
+    "route": "identity_candidate",
+    "minimum_occurrences": 20,
+    "maximum_occurrences": 999999,
+    "rule": "只接收已完成英文来源和营养明细门禁的高频生鲜概念；其余项目逐项保守隔离"
+  },
+  "default_isolation_reason": "unresolved_after_controlled_wave_e1_audit",
+  "existing_aliases": [],
+  "new_concepts": [
+    {
+      "canonical_name_zh": "茼蒿",
+      "terms": ["茼蒿"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Chrysanthemum leaves, raw$"
+    }
+  ],
+  "isolated": []
+}

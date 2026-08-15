@@ -1,0 +1,19 @@
+{
+  "contract": "cfctIngredientCatalogDecisions/v1",
+  "decision_version": "2026-08-13-cfct-wave-a-v1",
+  "source_version": "cfct_6th_ocr_2025_12_06",
+  "items": [
+    {"canonical_name_zh": "银耳", "aliases": ["雪耳", "白木耳"], "category_code": "vegetable", "food_code": "051024", "expected_name": "银耳（干）[白木耳]", "preparation_state": "dried"},
+    {"canonical_name_zh": "火龙果", "aliases": [], "category_code": "fruit", "food_code": "065023", "expected_name": "火龙果 [仙蜜果、红龙果]", "preparation_state": "raw"},
+    {"canonical_name_zh": "草鱼", "aliases": [], "category_code": "fish", "food_code": "121102", "expected_name": "草鱼", "preparation_state": "raw"},
+    {"canonical_name_zh": "鲫鱼", "aliases": [], "category_code": "fish", "food_code": "121123", "expected_name": "鲫鱼 [喜头鱼、海附鱼]", "preparation_state": "raw"},
+    {"canonical_name_zh": "带鱼", "aliases": [], "category_code": "fish", "food_code": "121203", "expected_name": "带鱼 [白带鱼、刀鱼]", "preparation_state": "raw"},
+    {"canonical_name_zh": "空心菜", "aliases": [], "category_code": "vegetable", "food_code": "045337", "expected_name": "萹菜 [空心菜、藤藤菜]", "preparation_state": "raw"},
+    {"canonical_name_zh": "茭白", "aliases": [], "category_code": "vegetable", "food_code": "046007", "expected_name": "茭白（鲜）[茭笋，茭粑]", "preparation_state": "raw"},
+    {"canonical_name_zh": "百合", "aliases": [], "category_code": "vegetable", "food_code": "045409", "expected_name": "百合 (鲜)", "preparation_state": "raw"},
+    {"canonical_name_zh": "腐竹", "aliases": [], "category_code": "legume", "food_code": "031507", "expected_name": "腐竹", "preparation_state": "dried"},
+    {"canonical_name_zh": "豆腐皮", "aliases": ["豆皮"], "category_code": "legume", "food_code": "031527", "expected_name": "豆腐皮", "preparation_state": "dried"},
+    {"canonical_name_zh": "油豆腐", "aliases": ["豆泡"], "category_code": "legume", "food_code": "031506", "expected_name": "油豆腐", "preparation_state": "fried"},
+    {"canonical_name_zh": "豆腐干", "aliases": ["豆干", "香干", "干豆腐"], "category_code": "legume", "food_code": "031510x", "expected_name": "豆腐干（代表值）", "preparation_state": "processed"}
+  ]
+}

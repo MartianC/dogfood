@@ -1,0 +1,26 @@
+{
+  "contract": "cfctIngredientCatalogDecisions/v1",
+  "decision_version": "2026-08-13-cfct-wave-b-v1",
+  "source_version": "cfct_6th_ocr_2025_12_06",
+  "items": [
+    {"canonical_name_zh": "油菜", "aliases": ["小油菜"], "category_code": "vegetable", "food_code": "045125", "expected_name": "油菜", "preparation_state": "raw"},
+    {"canonical_name_zh": "丝瓜", "aliases": [], "category_code": "vegetable", "food_code": "043228", "expected_name": "丝瓜", "preparation_state": "raw"},
+    {"canonical_name_zh": "薏米", "aliases": ["薏仁"], "category_code": "carb", "food_code": "019008", "expected_name": "薏米 [薏仁米，苡米]", "preparation_state": "raw"},
+    {"canonical_name_zh": "山楂", "aliases": [], "category_code": "fruit", "food_code": "061301", "expected_name": "红果 [山里红，大山楂]", "preparation_state": "raw"},
+    {"canonical_name_zh": "桂圆", "aliases": [], "category_code": "fruit", "food_code": "065006", "expected_name": "桂圆", "preparation_state": "raw"},
+    {"canonical_name_zh": "虾米", "aliases": ["海米"], "category_code": "seafood", "food_code": "122201", "expected_name": "虾米[海米、虾仁]", "preparation_state": "dried"},
+    {"canonical_name_zh": "干贝", "aliases": [], "category_code": "seafood", "food_code": "124112", "expected_name": "扇贝 (干) [干贝]", "preparation_state": "dried"},
+    {"canonical_name_zh": "香椿", "aliases": [], "category_code": "vegetable", "food_code": "048055", "expected_name": "香椿（鲜）[香椿芽]", "preparation_state": "raw"},
+    {"canonical_name_zh": "荠菜", "aliases": [], "category_code": "vegetable", "food_code": "045323", "expected_name": "荠菜（鲜）[蓟菜，菱角菜]", "preparation_state": "raw"},
+    {"canonical_name_zh": "黄花菜", "aliases": ["金针菜"], "category_code": "vegetable", "food_code": "045412", "expected_name": "金针菜 (鲜) [黄花菜]", "preparation_state": "raw"},
+    {"canonical_name_zh": "油麦菜", "aliases": [], "category_code": "vegetable", "food_code": "045334", "expected_name": "油麦菜", "preparation_state": "raw"},
+    {"canonical_name_zh": "韭黄", "aliases": [], "category_code": "vegetable", "food_code": "044402", "expected_name": "韭黄（韭芽，黄色）", "preparation_state": "raw"},
+    {"canonical_name_zh": "猪皮", "aliases": ["肉皮"], "category_code": "organ", "food_code": "081130", "expected_name": "猪皮", "preparation_state": "raw"},
+    {"canonical_name_zh": "鳝鱼", "aliases": ["鳝丝"], "category_code": "fish", "food_code": "121107", "expected_name": "黄鳝[鳝鱼]", "preparation_state": "raw"},
+    {"canonical_name_zh": "芡实", "aliases": [], "category_code": "legume", "food_code": "072019", "expected_name": "芡实米（干）[鸡头米]", "preparation_state": "dried"},
+    {"canonical_name_zh": "猪大肠", "aliases": ["大肠"], "category_code": "organ", "food_code": "081113", "expected_name": "猪大肠", "preparation_state": "raw"},
+    {"canonical_name_zh": "豌豆苗", "aliases": [], "category_code": "vegetable", "food_code": "042208", "expected_name": "豌豆苗", "preparation_state": "raw"},
+    {"canonical_name_zh": "鸡毛菜", "aliases": [], "category_code": "vegetable", "food_code": "045122", "expected_name": "鸡毛菜", "preparation_state": "raw"},
+    {"canonical_name_zh": "刀豆", "aliases": [], "category_code": "legume", "food_code": "042103", "expected_name": "刀豆 (鲜)", "preparation_state": "raw"}
+  ]
+}

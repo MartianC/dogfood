@@ -1,0 +1,181 @@
+{
+  "contract": "recipeIngredientIdentityLexicon/v1",
+  "lexicon_version": "2026-08-12-wave-a-v1",
+  "wave": {
+    "route": "identity_candidate",
+    "minimum_occurrences": 100,
+    "rule": "完整覆盖本波次；英文身份、来源分类或可食部位不足时保守隔离"
+  },
+  "existing_aliases": [
+    {
+      "concept_id": "ingredient_auto_model_21eaff4331362c33",
+      "terms": ["普通面粉"]
+    },
+    {
+      "concept_id": "ingredient_auto_model_68247edb8b567452",
+      "terms": ["高筋粉"]
+    },
+    {
+      "concept_id": "ingredient_egg_white",
+      "terms": ["鸡蛋清"]
+    },
+    {
+      "concept_id": "ingredient_pork_tenderloin",
+      "terms": ["猪里脊肉"]
+    },
+    {
+      "concept_id": "ingredient_auto_model_5e7120bf23740d37",
+      "terms": ["肋排"]
+    },
+    {
+      "concept_id": "ingredient_auto_model_9b8bc1b61d692685",
+      "terms": ["娃娃菜"]
+    },
+    {
+      "concept_id": "ingredient_auto_64d2d61b21ee1ec6",
+      "terms": ["口蘑"]
+    }
+  ],
+  "new_concepts": [
+    {
+      "canonical_name_zh": "奶油奶酪",
+      "terms": ["奶油奶酪"],
+      "category_code": "dairy",
+      "source_category_ids": [1],
+      "source_description_pattern": "^Cream cheese, full fat, block$"
+    },
+    {
+      "canonical_name_zh": "吉利丁",
+      "terms": ["吉利丁片"],
+      "category_code": "carb",
+      "source_category_ids": [19],
+      "source_description_pattern": "^Gelatins, dry powder, unsweetened$"
+    },
+    {
+      "canonical_name_zh": "苦瓜",
+      "terms": ["苦瓜"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Balsam-pear \\(bitter gourd\\), pods, raw$"
+    },
+    {
+      "canonical_name_zh": "莴笋",
+      "terms": ["莴笋"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Celtuce, raw$"
+    },
+    {
+      "canonical_name_zh": "鹌鹑蛋",
+      "terms": ["鹌鹑蛋"],
+      "category_code": "egg",
+      "source_category_ids": [1],
+      "source_description_pattern": "^Egg, quail, whole, fresh, raw$"
+    },
+    {
+      "canonical_name_zh": "猪蹄",
+      "terms": ["猪蹄"],
+      "category_code": "meat",
+      "source_category_ids": [10],
+      "source_description_pattern": "^Pork, fresh, variety meats and by-products, feet, raw$"
+    },
+    {
+      "canonical_name_zh": "黄豆",
+      "terms": ["黄豆"],
+      "category_code": "legume",
+      "source_category_ids": [16],
+      "source_description_pattern": "^Soybeans, mature seeds, raw$"
+    },
+    {
+      "canonical_name_zh": "核桃",
+      "terms": ["核桃", "核桃仁"],
+      "category_code": "legume",
+      "source_category_ids": [12],
+      "source_description_pattern": "^Nuts, walnuts, English, halves, raw$"
+    },
+    {
+      "canonical_name_zh": "红辣椒",
+      "terms": ["红尖椒", "朝天椒"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Peppers, hot chili, red, raw$"
+    },
+    {
+      "canonical_name_zh": "黄豆芽",
+      "terms": ["黄豆芽"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Soybeans, mature seeds, sprouted, raw$"
+    },
+    {
+      "canonical_name_zh": "西米",
+      "terms": ["西米"],
+      "category_code": "carb",
+      "source_category_ids": [20],
+      "source_description_pattern": "^Tapioca, pearl, dry$"
+    },
+    {
+      "canonical_name_zh": "荷兰豆",
+      "terms": ["荷兰豆"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Peas, edible-podded, raw$"
+    },
+    {
+      "canonical_name_zh": "绿豆芽",
+      "terms": ["绿豆芽"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Mung beans, mature seeds, sprouted, raw$"
+    },
+    {
+      "canonical_name_zh": "紫菜",
+      "terms": ["紫菜"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Seaweed, laver, raw$"
+    },
+    {
+      "canonical_name_zh": "鸡爪",
+      "terms": ["鸡爪"],
+      "category_code": "meat",
+      "source_category_ids": [5],
+      "source_description_pattern": "^Chicken, feet, boiled$"
+    }
+  ],
+  "isolated": [
+    {"term": "尖椒", "reason": "pepper_color_and_cultivar_ambiguous"},
+    {"term": "面包糠", "reason": "no_exact_breadcrumb_source"},
+    {"term": "里脊肉", "reason": "animal_species_missing"},
+    {"term": "银耳", "reason": "no_exact_tremella_source"},
+    {"term": "紫薯", "reason": "no_exact_purple_sweet_potato_source"},
+    {"term": "抹茶粉", "reason": "no_exact_matcha_source"},
+    {"term": "椰蓉", "reason": "dried_state_requires_identity_conversion"},
+    {"term": "香肠", "reason": "processed_composition_too_broad"},
+    {"term": "青红椒", "reason": "composite_ingredient_requires_split"},
+    {"term": "牛腩", "reason": "beef_cut_identity_ambiguous"},
+    {"term": "芝士", "reason": "cheese_type_missing"},
+    {"term": "腊肉", "reason": "processed_composition_too_broad"},
+    {"term": "虾皮", "reason": "dried_state_requires_identity_conversion"},
+    {"term": "腊肠", "reason": "processed_composition_too_broad"},
+    {"term": "巧克力", "reason": "cacao_and_sugar_profile_missing"},
+    {"term": "豆芽", "reason": "bean_species_missing"},
+    {"term": "鲫鱼", "reason": "source_only_supports_generic_carp"},
+    {"term": "油菜", "reason": "chinese_identity_has_multiple_species"},
+    {"term": "黑巧克力", "reason": "cacao_percentage_missing"},
+    {"term": "粉条", "reason": "starch_source_identity_missing"},
+    {"term": "海苔", "reason": "roasted_or_dried_state_requires_conversion"},
+    {"term": "皮蛋", "reason": "no_exact_preserved_egg_source"},
+    {"term": "腐竹", "reason": "no_exact_yuba_source"},
+    {"term": "香干", "reason": "processed_tofu_composition_missing"},
+    {"term": "带鱼", "reason": "no_exact_hairtail_source"},
+    {"term": "丝瓜", "reason": "no_exact_luffa_source"},
+    {"term": "火龙果", "reason": "no_exact_dragon_fruit_source"},
+    {"term": "虾米", "reason": "dried_state_requires_identity_conversion"},
+    {"term": "豆腐皮", "reason": "no_exact_tofu_skin_source"},
+    {"term": "薏米", "reason": "no_exact_adlay_source"},
+    {"term": "奶酪", "reason": "cheese_type_missing"},
+    {"term": "草鱼", "reason": "source_only_supports_generic_carp"},
+    {"term": "百合", "reason": "no_exact_edible_lily_source"}
+  ]
+}

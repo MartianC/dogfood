@@ -604,7 +604,11 @@ test('搜索结果携带原料预览时展开立即显示且不再请求详情',
               position: 0,
               raw_name: '胡萝卜',
               mapping_status: 'matched',
-              components: [{ display_name_zh: '胡萝卜（生）', policy_status: 'allowed' }]
+              components: [{
+                canonical_name_zh: '胡萝卜',
+                display_name_zh: '胡萝卜（生）',
+                policy_status: 'allowed'
+              }]
             },
             {
               position: 1,
@@ -635,7 +639,7 @@ test('搜索结果携带原料预览时展开立即显示且不再请求详情',
     const expandedRecipe = page.data.recipes[0]
     assert.equal(detailCalls, 0)
     assert.equal(expandedRecipe.detailLoading, false)
-    assert.equal(expandedRecipe.allowedIngredientText, '胡萝卜（生）')
+    assert.equal(expandedRecipe.allowedIngredientText, '胡萝卜')
     assert.equal(expandedRecipe.blockedIngredientText, '洋葱')
   } finally {
     humanRecipeService.__setAdapterForTest(mock)

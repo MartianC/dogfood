@@ -1,0 +1,107 @@
+{
+  "decision_version": "2026-08-15-blocked-v1",
+  "evidence_reviewed_at": "2026-08-15",
+  "reviewed_by": "system:public-evidence-review（自动证据复核，非专业终审）",
+  "evidence_library": {
+    "merck_allium_2024": {
+      "title": "Garlic and Onion (Allium spp) Toxicosis in Animals",
+      "publisher": "Merck Veterinary Manual",
+      "url": "https://www.merckvetmanual.com/toxicology/food-hazards/garlic-and-onion-allium-spp-toxicosis-in-animals",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "merck_chocolate_2024": {
+      "title": "Chocolate Toxicosis in Animals",
+      "publisher": "Merck Veterinary Manual",
+      "url": "https://www.merckvetmanual.com/toxicology/food-hazards/chocolate-toxicosis-in-animals",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "aspca_chives": {
+      "title": "Chives",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants/chives",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "aspca_lemon": {
+      "title": "Lemon",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants/lemon",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "aspca_ginkgo": {
+      "title": "Fall Plants: Hazardous or Harmless?",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/news/fall-plants-hazardous-or-harmless",
+      "accessed_at": "2026-08-15",
+      "species": "pet"
+    },
+    "yamato_chive_dog_2005": {
+      "title": "Heinz body hemolytic anemia with eccentrocytosis from ingestion of Chinese chive and garlic in a dog",
+      "publisher": "Journal of the American Animal Hospital Association",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15634869/",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "jvma_ginkgo_dog_2023": {
+      "title": "Case of Suspected Ginkgo Seed Poisoning in a Dog",
+      "publisher": "Journal of the Japan Veterinary Medical Association",
+      "url": "https://doi.org/10.12935/jvma.76.e304",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    }
+  },
+  "concept_policies": [
+    {
+      "concept_id": "ingredient_stage2_edb8f30ddf374568",
+      "decision": "blocked",
+      "hazard_type": "methylxanthine_toxicity",
+      "evidence_ids": ["merck_chocolate_2024", "aspca_avoid"],
+      "rationale": "可可粉固有的可可碱和咖啡因可导致犬心脏及中枢神经毒性，不能通过普通烹调建立可验证安全条件。"
+    },
+    {
+      "concept_id": "ingredient_stage4_0281ad73aedd22c8",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": ["merck_allium_2024", "aspca_chives"],
+      "rationale": "红葱头属于 Allium，生、熟、脱水或粉末形态均不能可靠消除犬氧化性溶血风险。"
+    },
+    {
+      "concept_id": "ingredient_auto_model_42a2a51c9c828059",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": ["merck_allium_2024", "aspca_chives", "yamato_chive_dog_2005"],
+      "rationale": "韭菜属于 Allium，已有犬摄入 Chinese chive 后发生 Heinz 小体溶血性贫血的病例证据。"
+    },
+    {
+      "concept_id": "ingredient_cfct_13f6c1e7623a0b06",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": ["merck_allium_2024", "yamato_chive_dog_2005"],
+      "rationale": "韭黄是 Allium tuberosum 的黄化叶，遮光栽培不是毒理去除处理。"
+    },
+    {
+      "concept_id": "ingredient_controlled_c5b69a0214b24818",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": ["merck_allium_2024", "yamato_chive_dog_2005"],
+      "rationale": "韭薹是 Allium tuberosum 的花薹，改变食用部位不能建立经验证的犬用安全条件。"
+    },
+    {
+      "concept_id": "ingredient_auto_model_888df20a1476558b",
+      "decision": "blocked",
+      "hazard_type": "citrus_peel_toxicity",
+      "evidence_ids": ["aspca_lemon", "aspca_avoid"],
+      "rationale": "当前概念明确指向柠檬皮，ASPCA 将果皮中的精油和补骨脂素列为犬风险成分；不能以普通清洗或烹调自动放行。"
+    },
+    {
+      "concept_id": "ingredient_stage4_d616c8bcd232bcf6",
+      "decision": "blocked",
+      "hazard_type": "ginkgotoxin_toxicity",
+      "evidence_ids": ["aspca_ginkgo", "jvma_ginkgo_dog_2023"],
+      "rationale": "白果即银杏种子，含 ginkgotoxin，已有犬摄入后出现呕吐、震颤、意识和站立异常的病例；未建立犬用安全摄入量。"
+    }
+  ]
+}

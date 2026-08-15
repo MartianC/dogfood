@@ -377,6 +377,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="构建食材知识层离线 SQLite 主库")
     parser.add_argument("--foundation-sqlite", required=True, help="Foundation Foods SQLite 路径")
     parser.add_argument("--sr-legacy-dir", required=True, help="SR Legacy CSV 目录")
+    parser.add_argument(
+        "--sr-localized-names-sqlite",
+        help="可选的 SR Legacy 中文名称 SQLite；food_localized_name 结构须与 Foundation 一致",
+    )
     parser.add_argument("--recipes-csv", required=True, help="人饭菜谱 CSV 路径")
     parser.add_argument("--out-sqlite", required=True, help="输出 SQLite 路径；已存在时拒绝覆盖")
     parser.add_argument("--release-id", required=True, help="本次离线数据构建版本")
@@ -467,16 +471,22 @@ def insert_batches(
     return count
 
 
-def validate_foundation_database(path: Path) -> None:
+def validate_foundation_database(path: Path, localized_names_only: bool = False) -> None:
     with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as conn:
         tables = {
             row[0]
             for row in conn.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
         }
-        missing_tables = sorted(FOUNDATION_REQUIRED_TABLES - tables)
+        required_tables = {"food_localized_name"} if localized_names_only else FOUNDATION_REQUIRED_TABLES
+        missing_tables = sorted(required_tables - tables)
         if missing_tables:
             raise ValueError(f"Foundation SQLite 缺少表：{', '.join(missing_tables)}")
-        for table, required_columns in FOUNDATION_REQUIRED_COLUMNS.items():
+        required_columns_by_table = (
+            {"food_localized_name": FOUNDATION_REQUIRED_COLUMNS["food_localized_name"]}
+            if localized_names_only
+            else FOUNDATION_REQUIRED_COLUMNS
+        )
+        for table, required_columns in required_columns_by_table.items():
             columns = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
             missing_columns = sorted(required_columns - columns)
             if missing_columns:
@@ -492,7 +502,12 @@ def validate_csv_columns(path: Path, required_columns: set[str]) -> None:
         raise ValueError(f"{path.name} 缺少字段：{', '.join(missing)}")
 
 
-def validate_inputs(foundation: Path, sr_dir: Path, recipes: Path) -> None:
+def validate_inputs(
+    foundation: Path,
+    sr_dir: Path,
+    sr_localized_names: Path | None,
+    recipes: Path,
+) -> None:
     if not foundation.is_file():
         raise ValueError(f"Foundation SQLite 不存在：{foundation}")
     if not sr_dir.is_dir():
@@ -503,6 +518,10 @@ def validate_inputs(foundation: Path, sr_dir: Path, recipes: Path) -> None:
     if not recipes.is_file():
         raise ValueError(f"菜谱 CSV 不存在：{recipes}")
     validate_foundation_database(foundation)
+    if sr_localized_names is not None:
+        if not sr_localized_names.is_file():
+            raise ValueError(f"SR Legacy 中文名称 SQLite 不存在：{sr_localized_names}")
+        validate_foundation_database(sr_localized_names, localized_names_only=True)
     validate_csv_columns(sr_dir / "food.csv", FOUNDATION_REQUIRED_COLUMNS["food"])
     validate_csv_columns(sr_dir / "nutrient.csv", FOUNDATION_REQUIRED_COLUMNS["nutrient"])
     validate_csv_columns(sr_dir / "food_nutrient.csv", FOUNDATION_REQUIRED_COLUMNS["food_nutrient"])
@@ -636,6 +655,7 @@ def csv_rows(path: Path) -> Iterator[dict[str, str]]:
 def import_sr_legacy(
     conn: sqlite3.Connection,
     source_dir: Path,
+    localized_names_path: Path | None,
     release_id: str,
 ) -> dict[str, int]:
     stats: dict[str, int] = {}
@@ -727,6 +747,38 @@ def import_sr_legacy(
             for row in csv_rows(source_dir / "sr_legacy_food.csv")
         ),
     )
+    stats["localized_name"] = 0
+    if localized_names_path is not None:
+        with sqlite3.connect(f"file:{localized_names_path}?mode=ro", uri=True) as source:
+            source_ids = {
+                int(row[0]) for row in source.execute("SELECT fdc_id FROM food_localized_name")
+            }
+            food_ids = {int(row["fdc_id"]) for row in csv_rows(source_dir / "food.csv")}
+            if source_ids != food_ids:
+                raise ValueError(
+                    "SR Legacy 中文名称必须与 food.csv 一一对应："
+                    f"names={len(source_ids)}, foods={len(food_ids)}"
+                )
+            stats["localized_name"] = insert_batches(
+                conn,
+                """
+                INSERT INTO source_localized_name (
+                  source_release_id, source_record_id, fdc_id, locale, name, name_type,
+                  confidence, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    (release_id, *row)
+                    for row in rows_from_query(
+                        source,
+                        """
+                        SELECT id, fdc_id, locale, name, name_type, confidence,
+                               created_at, updated_at
+                        FROM food_localized_name ORDER BY id
+                        """,
+                    )
+                ),
+            )
     return stats
 
 
@@ -874,12 +926,18 @@ def record_stats(
 def build_database(
     foundation_path: Path,
     sr_dir: Path,
+    sr_localized_names_path: Path | None,
     recipes_path: Path,
     output_path: Path,
     build_release_id: str,
 ) -> dict[str, Any]:
     foundation_checksum = sha256_file(foundation_path)
     sr_checksum = sha256_bundle(sr_dir, SR_REQUIRED_FILES)
+    if sr_localized_names_path is not None:
+        localized_checksum = sha256_file(sr_localized_names_path)
+        sr_checksum = hashlib.sha256(
+            f"{sr_checksum}\0food_localized_name\0{localized_checksum}".encode("ascii")
+        ).hexdigest()
     recipes_checksum = sha256_file(recipes_path)
     foundation_release = source_release_id("usda_foundation", foundation_checksum)
     sr_release = source_release_id("usda_sr_legacy_2018_04", sr_checksum)
@@ -932,7 +990,9 @@ def build_database(
         )
 
         foundation_stats = import_foundation(conn, foundation_path, foundation_release)
-        sr_stats = import_sr_legacy(conn, sr_dir, sr_release)
+        sr_stats = import_sr_legacy(
+            conn, sr_dir, sr_localized_names_path, sr_release
+        )
         recipe_stats = import_recipes(conn, recipes_path, recipes_release)
         record_stats(conn, foundation_release, foundation_stats)
         record_stats(conn, sr_release, sr_stats)
@@ -966,6 +1026,9 @@ def build_database(
             "source_food_nutrient": (
                 foundation_stats["food_nutrient"] + sr_stats["food_nutrient"]
             ),
+            "source_localized_name": (
+                foundation_stats["localized_name"] + sr_stats["localized_name"]
+            ),
             **recipe_stats,
         },
     }
@@ -975,6 +1038,11 @@ def main() -> int:
     args = parse_args()
     foundation_path = Path(args.foundation_sqlite)
     sr_dir = Path(args.sr_legacy_dir)
+    sr_localized_names_path = (
+        Path(args.sr_localized_names_sqlite)
+        if args.sr_localized_names_sqlite
+        else None
+    )
     recipes_path = Path(args.recipes_csv)
     output_path = Path(args.out_sqlite)
     release_id = str(args.release_id).strip()
@@ -985,10 +1053,13 @@ def main() -> int:
         print(f"输出 SQLite 已存在，拒绝覆盖：{output_path}", file=sys.stderr)
         return 2
     try:
-        validate_inputs(foundation_path, sr_dir, recipes_path)
+        validate_inputs(
+            foundation_path, sr_dir, sr_localized_names_path, recipes_path
+        )
         summary = build_database(
             foundation_path,
             sr_dir,
+            sr_localized_names_path,
             recipes_path,
             output_path,
             release_id,

@@ -1,0 +1,124 @@
+{
+  "contract": "recipeIngredientIdentityLexicon/v1",
+  "lexicon_version": "2026-08-13-wave-b-v1",
+  "wave": {
+    "route": "identity_candidate",
+    "minimum_occurrences": 50,
+    "maximum_occurrences": 99,
+    "rule": "只处理v7重跑后50至99次的新波次；Wave A隔离项不重复入队"
+  },
+  "existing_aliases": [
+    {"concept_id": "ingredient_green_cabbage", "terms": ["圆白菜"]},
+    {"concept_id": "ingredient_auto_f054f4c5ecfd08bc", "terms": ["炼奶"]},
+    {"concept_id": "ingredient_stage3_0e32e5c9179737e8", "terms": ["豇豆"]},
+    {"concept_id": "ingredient_stage4_3bcf8f0654746622", "terms": ["指天椒"]},
+    {"concept_id": "ingredient_chicken_breast", "terms": ["鸡脯肉"]},
+    {"concept_id": "ingredient_celery", "terms": ["香芹"]},
+    {"concept_id": "ingredient_stage4_a76f0d3014543252", "terms": ["吉利丁粉", "鱼胶粉"]},
+    {"concept_id": "ingredient_auto_model_5e7120bf23740d37", "terms": ["猪肋排"]},
+    {"concept_id": "ingredient_stage2_b0df7aca2b149480", "terms": ["原味酸奶"]},
+    {"concept_id": "ingredient_auto_11baeb27adb35043", "terms": ["冬菇"]},
+    {"concept_id": "ingredient_auto_model_df20c6fe0c8700f1", "terms": ["红甜椒", "红彩椒"]},
+    {"concept_id": "ingredient_peach", "terms": ["黄桃"]}
+  ],
+  "new_concepts": [
+    {
+      "canonical_name_zh": "牛油果",
+      "terms": ["牛油果"],
+      "category_code": "fruit",
+      "source_category_ids": [9],
+      "source_description_pattern": "^Avocado, Hass, peeled, raw$"
+    },
+    {
+      "canonical_name_zh": "鲈鱼",
+      "terms": ["鲈鱼"],
+      "category_code": "fish",
+      "source_category_ids": [15],
+      "source_description_pattern": "^Fish, sea bass, mixed species, raw$"
+    },
+    {
+      "canonical_name_zh": "荸荠",
+      "terms": ["马蹄"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Waterchestnuts, chinese, \\(matai\\), raw$"
+    },
+    {
+      "canonical_name_zh": "粘米粉",
+      "terms": ["粘米粉"],
+      "category_code": "carb",
+      "source_category_ids": [20],
+      "source_description_pattern": "^Rice flour, white, unenriched$"
+    },
+    {
+      "canonical_name_zh": "蛤蜊",
+      "terms": ["蛤蜊", "花蛤"],
+      "category_code": "seafood",
+      "source_category_ids": [15],
+      "source_description_pattern": "^Mollusks, clam, mixed species, raw$"
+    },
+    {
+      "canonical_name_zh": "羊排",
+      "terms": ["羊排"],
+      "category_code": "meat",
+      "source_category_ids": [17],
+      "source_description_pattern": "^Lamb, rib, separable lean only, trimmed to 1/4\\\" fat, choice, raw$"
+    },
+    {
+      "canonical_name_zh": "板栗",
+      "terms": ["板栗", "栗子"],
+      "category_code": "legume",
+      "source_category_ids": [12],
+      "source_description_pattern": "^Nuts, chestnuts, chinese, raw$"
+    },
+    {
+      "canonical_name_zh": "扇贝",
+      "terms": ["扇贝"],
+      "category_code": "seafood",
+      "source_category_ids": [15],
+      "source_description_pattern": "^Mollusks, scallop, mixed species, raw$"
+    },
+    {
+      "canonical_name_zh": "红葱头",
+      "terms": ["红葱头"],
+      "category_code": "vegetable",
+      "source_category_ids": [11],
+      "source_description_pattern": "^Shallots, bulb, peeled, root removed, raw$"
+    }
+  ],
+  "isolated": [
+    {"term": "豆干", "reason": "processed_tofu_composition_missing"},
+    {"term": "小红椒", "reason": "pepper_cultivar_ambiguous"},
+    {"term": "吐司", "reason": "bread_type_and_recipe_missing"},
+    {"term": "茭白", "reason": "no_exact_wild_rice_stem_source"},
+    {"term": "三黄鸡", "reason": "whole_bird_and_edible_part_ambiguous"},
+    {"term": "咸蛋黄", "reason": "no_exact_salted_egg_yolk_source"},
+    {"term": "山楂", "reason": "no_exact_hawthorn_source"},
+    {"term": "桂圆", "reason": "dried_longan_state_requires_conversion"},
+    {"term": "年糕", "reason": "processed_rice_cake_composition_missing"},
+    {"term": "芝士片", "reason": "cheese_type_missing"},
+    {"term": "红曲粉", "reason": "no_exact_red_yeast_rice_source"},
+    {"term": "豆腐干", "reason": "processed_tofu_composition_missing"},
+    {"term": "豆瓣", "reason": "ingredient_or_seasoning_identity_ambiguous"},
+    {"term": "鸡翅根", "reason": "wing_drumette_cannot_use_drumstick_source"},
+    {"term": "杭椒", "reason": "pepper_cultivar_ambiguous"},
+    {"term": "海米", "reason": "dried_state_requires_identity_conversion"},
+    {"term": "干贝", "reason": "dried_state_requires_identity_conversion"},
+    {"term": "肥牛", "reason": "beef_cut_and_fat_ratio_missing"},
+    {"term": "椰丝", "reason": "dried_state_requires_identity_conversion"},
+    {"term": "龙利鱼", "reason": "commercial_name_species_ambiguous"},
+    {"term": "白巧克力", "reason": "cocoa_butter_and_sugar_profile_missing"},
+    {"term": "大喜大牛肉粉", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "空心菜", "reason": "no_exact_water_spinach_source"},
+    {"term": "肉蔻", "reason": "seasoning_rule_gap_resolved"},
+    {"term": "蜜豆", "reason": "sweetened_processed_legume"},
+    {"term": "小青菜", "reason": "leafy_vegetable_species_ambiguous"},
+    {"term": "虫草花", "reason": "no_exact_cordyceps_flower_source"},
+    {"term": "澄粉", "reason": "wheat_starch_cannot_use_cornstarch_source"},
+    {"term": "党参", "reason": "no_exact_codonopsis_source"},
+    {"term": "吉士粉", "reason": "processed_custard_powder_composition_missing"},
+    {"term": "湿淀粉", "reason": "dilution_state_requires_conversion"},
+    {"term": "苏打粉", "reason": "auxiliary_rule_gap_resolved"},
+    {"term": "豆皮", "reason": "tofu_skin_or_soy_sheet_identity_ambiguous"}
+  ]
+}

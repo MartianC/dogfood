@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["results"],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cleaned_name", "base_name_zh", "status", "resolution_reason"],
+        "properties": {
+          "cleaned_name": { "type": "string", "minLength": 1 },
+          "base_name_zh": { "type": ["string", "null"] },
+          "status": { "type": "string", "enum": ["resolved", "unresolved"] },
+          "resolution_reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
