@@ -91,6 +91,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 `small` 和 `medium` 的长文案允许换行，避免在窄屏中撑破父容器；搜索页专用的 `large` 保持单行，父级必须通过横向滚动或换行布局承接超宽内容。
 `profile-choice` 未选中态使用 `--df-profile-color-choice-unselected` 浅灰背景；`profile-choice-selected` 使用档案页主绿色和白色文字，选择项不得只依赖文字颜色区分。
+档案页胶囊视觉高度由 `--df-profile-choice-height` 控制，当前为 `64rpx`，最小视觉宽度由 `--df-profile-choice-min-width` 控制为 `72rpx`；页面外层选择项仍保留不小于 `88rpx` 的点击目标。
 `removable` 形态提供不小于 `88rpx` 的点击目标，实际胶囊高度为 `72rpx`，用于固定摘要中的已选菜单移除操作。
 
 ## ui-notice

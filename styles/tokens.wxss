@@ -58,4 +58,6 @@ page,
   --df-profile-color-slider-general: #91b99b;
   --df-profile-color-slider-active: #6aa77c;
   --df-profile-color-choice-unselected: #f1f3f1;
+  --df-profile-choice-height: 64rpx;
+  --df-profile-choice-min-width: 72rpx;
 }

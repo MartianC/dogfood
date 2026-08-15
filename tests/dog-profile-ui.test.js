@@ -111,6 +111,17 @@ test('档案页所有选择项使用浅灰未选中态和绿色选中态', () =>
   assert.match(wxss, /background:\s*var\(--df-profile-color-choice-unselected\)/)
 })
 
+test('档案选择胶囊视觉收紧但保留最小点击区域', () => {
+  const tagWxss = readPage('components/ui/ui-tag', 'wxss')
+  const profileWxss = readPage(profilePages[0], 'wxss')
+
+  assert.match(tagWxss, /min-height:\s*var\(--df-profile-choice-height\)/)
+  assert.match(tagWxss, /min-width:\s*var\(--df-profile-choice-min-width\)/)
+  assert.match(tagWxss, /font-size:\s*var\(--df-font-sm\)/)
+  assert.match(tagWxss, /border-radius:\s*var\(--df-radius-pill\)/)
+  assert.match(profileWxss, /\.dog-profile-choice\s*\{[\s\S]*min-height:\s*88rpx/)
+})
+
 test('建档字段变化实时刷新阶段、品种估算和纯时长活动档位', () => {
   profilePages.forEach((page) => {
     const definition = loadPageDefinition(page)

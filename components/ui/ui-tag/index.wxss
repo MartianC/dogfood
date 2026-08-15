@@ -49,14 +49,18 @@
 
 .ui-tag--profile-choice,
 .ui-tag--profile-choice-selected {
-  min-height: 88rpx;
+  min-height: var(--df-profile-choice-height);
+  min-width: var(--df-profile-choice-min-width);
   box-sizing: border-box;
+  padding: 0 var(--df-space-4);
   justify-content: center;
   border: 1rpx solid var(--df-profile-color-field-line);
-  border-radius: 999rpx;
-  font-size: 28rpx;
+  border-radius: var(--df-radius-pill);
+  font-size: var(--df-font-sm);
   font-weight: 400;
-  line-height: 38rpx;
+  line-height: 32rpx;
+  white-space: nowrap;
+  word-break: normal;
 }
 
 .ui-tag--profile-choice {
