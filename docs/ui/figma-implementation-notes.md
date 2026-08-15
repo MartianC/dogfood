@@ -1122,6 +1122,31 @@ Calendar 复用 TDesign `Calendar 日历` 组件集 `27213:17690` 的
 
 用户已于 2026-08-05 确认 D3.1 设计，允许进入路线图 `R2.1`；本轮在独立 worktree 完成 R2.1 查询模型和 F2.1 记录页接入。
 
+## 2026-08-15 C01 狗狗档案页代码实现
+
+本轮代码实现以既有 Figma 文件 [dogfood](https://www.figma.com/design/CHUlIiWUhuXHA0IUwQe6Qe/dogfood?node-id=19810-4) 的 `狗饭 · 本餐评估 · 能量扩展` 页面 C01 `19810:4`（`375 × 812`，`狗狗档案 · 成年犬 · 正常态`）为视觉基准，未修改 Figma 画布。
+
+### 视觉与组件映射
+
+| Figma C01 | 工程实现 |
+| --- | --- |
+| 56px 高白底字段卡片、12px 圆角、浅边框 | `components/ui/ui-field` 的 `variant="profile"` |
+| 浅绿色系统估算阶段字段 | `components/ui/ui-field` 的 `variant="profile-stage"` |
+| 44px 体况、绝育、饮食目标选择胶囊 | `components/ui/ui-tag` 的 `profile-choice` / `profile-choice-selected` 变体 |
+| 0–6 小时、0.5 小时步进的四段活动滑杆 | `subpackages/dog-profile/dog-edit/index.wxml` / `index.wxss` |
+| 底部固定“保存档案” | 现有 `ui-button` + `.bottom-action` |
+| 圆角矩形头像与默认头像 | 编辑页头像沿用狗狗列表的圆角矩形规格；有真实头像时展示本地头像，无头像时使用 `assets.defaultDogAvatar` 的默认 SVG |
+
+颜色使用 `styles/tokens.wxss` 中新增的隔离 `--df-profile-color-*` token，保留其他页面的全局视觉基线。页面使用项目其他二级页一致的原生导航栏；设计稿未体现的“删除档案”放在编辑态头像行右侧，与头像垂直居中并保持二次确认。
+
+### 已知差异
+
+- Figma 的系统胶囊属于宿主导航能力，工程复用小程序原生导航栏以保证标题栏不随页面内容滚动；删除按钮是按本轮需求新增的业务入口，位于头像右侧而非导航栏内。
+- 用户反馈要求选择态增强层级；C01 及档案页后续选择项均使用 `ui-tag` 的 `profile-choice` 变体，未选中态改用隔离的 `--df-profile-color-choice-unselected` 浅灰 token，选中态保留主绿色和白色文字。
+- 后续视觉反馈要求收紧胶囊体量；工程将选择胶囊视觉高度收紧为 `64rpx`、最小视觉宽度设为 `72rpx`、字号收紧为 `var(--df-font-sm)`，并保持外层 `88rpx` 点击区域，不改变 Figma 画布中的 44px 点击高度规范。
+- C01 首屏只展示档案核心字段；现有特殊营养需求字段继续保留在页面后续区域，以维持已落地的保存合同，不影响 C01 首屏重排。
+- 当前微信开发者工具预览编译成功；`miniprogram-automator` 运行态检查因现有 IDE 服务端口为 `55404`、自动化端口 `9420` 未开启且切换端口需要重启 IDE，未执行重启，故未生成临时运行态截图。
+
 ## 2026-08-05 R2.1 统一时间轴查询与展示模型
 
 R2.1 在独立 worktree `codex/r21-unified-record-timeline` 中完成查询层实现，主 worktree 未改动页面代码。实现位于

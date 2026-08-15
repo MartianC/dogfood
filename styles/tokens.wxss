@@ -46,4 +46,18 @@ page,
   --df-shadow-primary: 0 12rpx 32rpx rgba(20, 37, 28, 0.09);
   --df-shadow-sheet: 0 -36rpx 68rpx rgba(27, 22, 16, 0.22);
   --df-color-mask: rgba(25, 24, 21, 0.44);
+
+  /* Figma C01 档案页专用视觉映射，避免改变其他页面的全局基线。 */
+  --df-profile-color-bg: #ffffff;
+  --df-profile-color-field-line: #e4eae2;
+  --df-profile-color-stage-bg: #f7fbf5;
+  --df-profile-color-text: #1e2b20;
+  --df-profile-color-muted: #617064;
+  --df-profile-color-primary: #2b7a43;
+  --df-profile-color-slider-low: #d9e8dd;
+  --df-profile-color-slider-general: #91b99b;
+  --df-profile-color-slider-active: #6aa77c;
+  --df-profile-color-choice-unselected: #f1f3f1;
+  --df-profile-choice-height: 64rpx;
+  --df-profile-choice-min-width: 72rpx;
 }

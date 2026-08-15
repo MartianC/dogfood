@@ -34,3 +34,52 @@
   font-size: var(--df-font-xs);
   line-height: 1.4;
 }
+
+.ui-field--profile,
+.ui-field--profile-stage {
+  min-height: 112rpx;
+  padding: 16rpx 20rpx;
+  border-color: var(--df-profile-color-field-line);
+  border-radius: 24rpx;
+  background: var(--df-profile-color-bg);
+}
+
+.ui-field--profile .ui-field__label,
+.ui-field--profile-stage .ui-field__label {
+  margin-bottom: 6rpx;
+  color: var(--df-profile-color-muted);
+  font-size: 22rpx;
+  line-height: 32rpx;
+}
+
+.ui-field--profile .ui-field__body,
+.ui-field--profile-stage .ui-field__body {
+  min-height: 38rpx;
+  color: var(--df-profile-color-text);
+  font-size: 28rpx;
+  line-height: 38rpx;
+}
+
+.ui-field--profile .ui-field__error,
+.ui-field--profile .ui-field__help,
+.ui-field--profile-stage .ui-field__error,
+.ui-field--profile-stage .ui-field__help {
+  margin-top: 6rpx;
+}
+
+.ui-field--profile-stage {
+  background: var(--df-profile-color-stage-bg);
+}
+
+.ui-field--profile-stage .ui-field__label,
+.ui-field--profile-stage .ui-field__body {
+  color: var(--df-profile-color-primary);
+}
+
+.ui-field--profile-stage .ui-field__label {
+  color: var(--df-profile-color-muted);
+}
+
+.ui-field--profile-stage .ui-field__body {
+  font-weight: 700;
+}

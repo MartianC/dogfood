@@ -47,6 +47,34 @@
   background: var(--df-color-warning-soft);
 }
 
+.ui-tag--profile-choice,
+.ui-tag--profile-choice-selected {
+  min-height: var(--df-profile-choice-height);
+  min-width: var(--df-profile-choice-min-width);
+  box-sizing: border-box;
+  padding: 0 var(--df-space-4);
+  justify-content: center;
+  border: 1rpx solid var(--df-profile-color-field-line);
+  border-radius: var(--df-radius-pill);
+  font-size: var(--df-font-sm);
+  font-weight: 400;
+  line-height: 32rpx;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.ui-tag--profile-choice {
+  color: var(--df-profile-color-muted);
+  background: var(--df-profile-color-choice-unselected);
+}
+
+.ui-tag--profile-choice-selected {
+  color: var(--df-color-on-primary);
+  background: var(--df-profile-color-primary);
+  border-color: var(--df-profile-color-primary);
+  font-weight: 700;
+}
+
 .ui-tag-remove-target {
   display: inline-flex;
   min-height: var(--df-touch-min);
