@@ -34,6 +34,8 @@
 | `--df-color-on-primary-muted` | 主色背景上的弱文字 | `rgba(255, 255, 255, 0.78)` |
 | `--df-color-mask` | 弹层遮罩 | `rgba(25, 24, 21, 0.44)` |
 
+档案页 C01 使用一组隔离的 Figma 对齐 token（`--df-profile-color-*`），仅供 `subpackages/dog-profile/dog-edit` 及 `ui-field` 的 `profile` / `profile-stage`、`ui-tag` 的 `profile-choice` / `profile-choice-selected` 变体使用，不改变全局页面基线。`--df-profile-color-choice-unselected` 是选择胶囊的浅灰未选中背景。具体来源和实现差异记录在 `docs/ui/figma-implementation-notes.md`。
+
 ## 字体层级
 
 `styles/typography.wxss` 提供少量全局排版类：`df-heading-xl`、`df-heading-lg`、`df-body`、`df-caption`。页面标题、卡片标题和说明文字优先使用这些层级或组件内部样式，不新增 `.title`、`.subtitle`、`.section-title` 等泛名。

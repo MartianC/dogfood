@@ -1,5 +1,6 @@
 const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
+const assets = require('../../../utils/assets')
 const fileService = require('../services/fileService')
 const {
   dietGoalOptions,
@@ -15,7 +16,6 @@ const {
   deriveActivityLevel,
   estimateExpectedAdultWeight
 } = require('../../../services/dogProfileDerivations')
-const assets = require('../../../utils/assets')
 
 function localDateText(date = new Date()) {
   const year = date.getFullYear()
@@ -138,7 +138,8 @@ Page({
 
   setField(event) {
     const key = event.currentTarget.dataset.key
-    this.setData({ [`form.${key}`]: event.detail.value })
+    const patch = { [`form.${key}`]: event.detail.value }
+    this.setData(patch)
   },
 
   onBirthDate(event) {
@@ -246,14 +247,20 @@ Page({
   },
 
   async onDelete() {
-    if (!this.data.id) return
+    if (!this.data.id || this.data.saving) return
     wx.showModal({
       title: '删除档案',
       content: '历史清单不会被删除，但后续不会再用该档案生成新清单。',
       success: async (result) => {
         if (!result.confirm) return
-        await dogService.deleteDog(this.data.id)
-        wx.navigateBack()
+        this.setData({ saving: true })
+        try {
+          await dogService.deleteDog(this.data.id)
+          wx.navigateBack()
+        } catch (error) {
+          this.setData({ saving: false })
+          wx.showToast({ title: error.message || '删除失败，请重试', icon: 'none' })
+        }
       }
     })
   }

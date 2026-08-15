@@ -82,7 +82,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
-| prop | `variant` | `neutral | good | warning`，默认 `neutral` |
+| prop | `variant` | `neutral | good | warning | profile-choice | profile-choice-selected`，默认 `neutral`；后两者用于 C01 档案选择胶囊 |
 | prop | `size` | `small | medium | large`，默认 `medium`；`large` 用于搜索页的常用食材胶囊 |
 | prop | `removable` | 是否显示可移除形态，默认 `false`；内部关闭图标使用本地 SVG |
 | prop | `eventValue` | 移除时随事件回传的稳定业务值 |
@@ -90,6 +90,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 | slot | 默认 | 标签文案 |
 
 `small` 和 `medium` 的长文案允许换行，避免在窄屏中撑破父容器；搜索页专用的 `large` 保持单行，父级必须通过横向滚动或换行布局承接超宽内容。
+`profile-choice` 未选中态使用 `--df-profile-color-choice-unselected` 浅灰背景；`profile-choice-selected` 使用档案页主绿色和白色文字，选择项不得只依赖文字颜色区分。
 `removable` 形态提供不小于 `88rpx` 的点击目标，实际胶囊高度为 `72rpx`，用于固定摘要中的已选菜单移除操作。
 
 ## ui-notice
@@ -109,10 +110,13 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
+| prop | `variant` | `default | profile | profile-stage`；档案页使用后两者，其余表单使用 `default` |
 | prop | `label` | 字段名称 |
 | prop | `helpText` | 辅助说明 |
 | prop | `errorText` | 错误文案；存在时优先展示并覆盖 `helpText` |
 | slot | 默认 | `input`、`picker` 展示值或其他表单控件 |
+
+`variant` 支持 `default`、`profile` 和 `profile-stage`。`profile` 用于 Figma C01 档案页的 56px 字段卡片；`profile-stage` 在同一规格上使用浅绿色背景和主色只读结果。其他表单继续使用 `default`，避免档案页视觉调整影响护理、体重等页面。
 
 `ui-field` 用于字段边框、label、帮助和错误文案。输入控件的取值、单位、对齐和 picker 数据仍由业务组件负责。
 

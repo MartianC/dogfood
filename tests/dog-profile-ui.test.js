@@ -51,7 +51,7 @@ test('完整与快速建档只收集出生日期、品种和日均活动时长',
 
     assert.match(wxml, /mode="date"/)
     assert.match(wxml, /label="出生日期"/)
-    assert.match(wxml, /label="爱宠品种"/)
+    assert.match(wxml, /label="(?:爱宠|狗狗)品种"/)
     assert.match(wxml, /<slider[^>]*min="0"[^>]*max="6"[^>]*step="0\.5"/)
     assert.match(wxml, /dog-profile-activity-slider__band--low/)
     assert.match(wxml, /dog-profile-activity-slider__band--general/)
@@ -80,6 +80,35 @@ test('档案界面不展示实现备注且编辑保存保留隐藏数据字段',
   assert.match(editJs, /allergens:\s*Array\.isArray\(dog\.allergens\)/)
   assert.match(editJs, /avoidIngredients:\s*Array\.isArray\(dog\.avoidIngredients\)/)
   assert.doesNotMatch(editJs, /allergens:\s*splitText|avoidIngredients:\s*splitText/)
+})
+
+test('编辑档案使用原生导航栏，并把删除入口放在头像右侧', () => {
+  const wxml = readPage(profilePages[0], 'wxml')
+  const json = readPage(profilePages[0], 'json')
+
+  assert.doesNotMatch(json, /"navigationStyle"\s*:\s*"custom"/)
+  assert.match(wxml, /class="dog-profile-avatar-row"[\s\S]*?class="dog-profile-delete-action"[\s\S]*?ariaLabel="删除档案"[\s\S]*?>删除档案<\/ui-button>/)
+  assert.doesNotMatch(wxml, /dog-profile-navbar__action|>删除<\/ui-button>/)
+})
+
+test('编辑档案头像沿用狗狗列表的默认 SVG 和圆角矩形规格', () => {
+  const js = readPage(profilePages[0], 'js')
+  const wxml = readPage(profilePages[0], 'wxml')
+  const wxss = readPage(profilePages[0], 'wxss')
+
+  assert.match(js, /defaultDogAvatar:\s*assets\.defaultDogAvatar/)
+  assert.match(wxml, /src="\{\{form\.avatarUrl \|\| defaultDogAvatar\}\}"/)
+  assert.match(wxss, /\.dog-profile-avatar__image[\s\S]*border-radius:\s*24rpx/)
+  assert.doesNotMatch(wxml, /dog-profile-avatar__fallback|avatarInitial/)
+})
+
+test('档案页所有选择项使用浅灰未选中态和绿色选中态', () => {
+  const wxml = readPage(profilePages[0], 'wxml')
+  const wxss = readPage('components/ui/ui-tag', 'wxss')
+
+  assert.match(wxml, /profile-choice-selected/)
+  assert.doesNotMatch(wxml, /variant="\{\{[^}]+\? 'good' : 'neutral'/)
+  assert.match(wxss, /background:\s*var\(--df-profile-color-choice-unselected\)/)
 })
 
 test('建档字段变化实时刷新阶段、品种估算和纯时长活动档位', () => {

@@ -1,4 +1,4 @@
-<view class="ui-field">
+<view class="ui-field ui-field--{{variant}}">
   <view wx:if="{{label}}" class="ui-field__label">{{label}}</view>
   <view class="ui-field__body">
     <slot />
