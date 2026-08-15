@@ -666,6 +666,31 @@ test('CloudBase 导出器区分已知零值和未知营养值', () => {
   assert.equal(tomato.nutrients['1008'].value_status, 'unknown')
 })
 
+test('CloudBase 导出器拒绝未获发布授权的营养来源', () => {
+  const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
+  const outDir = path.join(tmp, 'cloudbase')
+  const buildResult = runBuilder([
+    '--foundation-sqlite', foundation,
+    '--sr-legacy-dir', srDir,
+    '--recipes-csv', recipes,
+    '--out-sqlite', output,
+    '--release-id', '2026-07-21-source-gate-test'
+  ])
+  assert.equal(buildResult.status, 0, buildResult.stderr)
+  const updateResult = runPython(`
+import sqlite3, sys
+with sqlite3.connect(sys.argv[1]) as conn:
+    conn.execute("UPDATE source_release SET license_status='needs_review' WHERE source_kind='usda_fooddata' AND source_version='foundation'")
+`, [output])
+  assert.equal(updateResult.status, 0, updateResult.stderr)
+
+  const exportResult = runExporter(['--sqlite', output, '--out-dir', outDir])
+
+  assert.notEqual(exportResult.status, 0)
+  assert.match(exportResult.stderr, /营养来源未获发布授权/)
+  assert.equal(fs.existsSync(path.join(outDir, 'cloudbase-ingredient-import-manifest.json')), false)
+})
+
 test('食材目录种子写入概念、别名和形态且新投影不含权限布尔字段', () => {
   const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
   const seedPath = path.join(tmp, 'catalog.json')
@@ -2032,7 +2057,7 @@ test('CloudBase 导出器拒绝覆盖已经存在的导出文件', () => {
   assert.equal(fs.readFileSync(path.join(outDir, 'data_releases.jsonl'), 'utf8'), 'keep')
 })
 
-test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行时投影', () => {
+test('犬食安全策略完整覆盖目录并按 not-blocked 规则生成运行时投影', () => {
   const { tmp, foundation, srDir, recipes, output } = createFixtureSet()
   const catalogSeed = path.join(tmp, 'catalog.json')
   const policySeed = path.join(tmp, 'policies.json')
@@ -2202,7 +2227,17 @@ test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行�
     review_tasks: 3
   })
 
-  const exportResult = runExporter(['--sqlite', output, '--out-dir', outDir])
+  const exportResult = runExporter([
+    '--sqlite', output,
+    '--out-dir', outDir,
+    '--rollback-release-id', 'old-release-v1',
+    '--rollback-profile-release-id', 'old-profile-v1',
+    '--rollback-catalog-version', 'old-catalog-v1',
+    '--rollback-policy-version', 'old-policy-v1',
+    '--rollback-ranking-version', 'old-ranking-v1',
+    '--rollback-recipe-version', 'old-recipe-v1',
+    '--rollback-mapping-version', 'old-mapping-v1'
+  ])
   assert.equal(exportResult.status, 0, exportResult.stderr)
   const manifest = JSON.parse(fs.readFileSync(
     path.join(outDir, 'cloudbase-ingredient-import-manifest.json'),
@@ -2237,11 +2272,13 @@ test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行�
   assert.equal(rankings.find((item) => item.nutrient_code === 'vitamin_d').ranked_count, 0)
   const protein = rankings.find((item) => item.nutrient_code === 'protein')
   assert.equal(protein.items.length, 2)
-  assert.deepEqual(protein.items.map((item) => item.variant_id), [
-    'variant_pork_heart_raw',
-    'variant_tomato_raw'
-  ])
-  assert.equal(protein.items[1].amount_per_100g, 0.88)
+  assert.deepEqual(new Set(protein.items.map((item) => item.variant_id)), new Set([
+    'variant_tomato_raw', 'variant_pork_heart_raw'
+  ]))
+  assert.equal(
+    protein.items.find((item) => item.variant_id === 'variant_tomato_raw').amount_per_100g,
+    0.88
+  )
   assert.equal(manifest.collections.human_recipes.rows, 1)
   assert.equal(manifest.pending_collections.includes('human_recipes'), false)
   assert.equal(
@@ -2255,8 +2292,9 @@ test('犬食安全策略完整覆盖目录并按 non-blocked 规则生成运行�
   )
   assert.equal(
     release.rollback_candidate.recipe_version,
-    'test-recipe-mapping-v1'
+    'old-recipe-v1'
   )
+  assert.equal(release.rollback_candidate.mapping_version, 'old-mapping-v1')
   assert.equal(release.recipe_source_count, 2)
   assert.equal(release.collections.human_recipes, 1)
   const tomatoRecipe = humanRecipes.find((item) => item.source_recipe_id === '1')

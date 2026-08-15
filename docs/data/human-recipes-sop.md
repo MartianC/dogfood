@@ -15,7 +15,7 @@
 5. **未知不冒充安全结论**：未匹配和歧义项只保留来源文字；已映射组件按策略四态展示。
 6. **映射与安全分离**：原料成功映射不等于适合犬只；必须再解析当前犬食策略。
 7. **完整映射快照**：每个 `mapping_version` 对全部规范化写法给出明确结论，不能用缺行表示未知。
-8. **只发布可操作菜谱**：运行时 `human_recipes` 只包含至少一个已映射且非 `blocked` 组件的菜谱。
+8. **只发布可操作菜谱**：运行时 `human_recipes` 只包含至少一个已映射且为 `allowed` 的组件。
 9. **分量只作参考**：所有来源分量必须带 `amount_is_reference_only=true`。
 10. **先 staging 后激活**：导入、版本计数、阻断样本和查询链路全部通过前不得激活。
 11. **低 token 清洗**：先执行确定性清洗，调味料和油不进入覆盖统计或模型队列；模型只处理达到频次阈值、按清洗后身份聚合的剩余项。
@@ -99,7 +99,7 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 
 ### 4. 生成运行时投影
 
-导出器将每次原料提及与映射组件连接，再解析形态级优先、概念级回退的有效犬食策略。只有至少一个已映射且非 `blocked` 组件的菜谱进入 `human_recipes.jsonl`。
+导出器将每次原料提及与映射组件连接，再解析形态级优先、概念级回退的有效犬食策略。只有至少一个已映射且为 `allowed` 的组件进入 `human_recipes.jsonl`。
 
 每条文档必须包含：
 
@@ -112,7 +112,7 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 - 原料原文、规范化写法和来源分量；
 - 映射状态及组件的 `concept_id`、`variant_id`、`food_id`；
 - `policy_status`，以及仅对 `blocked` 组件整理后的 `blockedReason`；
-- 映射、未解决、非 blocked 和阻断数量；
+- 映射、未解决、可操作和阻断数量；报告字段 `nonBlockedComponents` 按 `notBlocked` 操作规则计数；
 - `amounts_are_reference_only=true`。
 
 ### 5. 发布前校验
@@ -123,8 +123,8 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
 - `recipe_ingredient_term` 与映射决策数量完全一致；
 - 所有组件引用当前目录的合法概念和形态；
 - 所有映射组件引用当前有效策略；
-- `allowed`、`conditional`、`unknown` 可操作，`blocked` 不可操作；
-- 运行时文档至少具有一个已映射且非 `blocked` 组件；
+- 只有 `allowed` 可操作；`conditional`、`unknown` 和 `blocked` 均不生成可操作组件；
+- 运行时文档至少具有一个已映射且为 `allowed` 的组件；
 - 人饭分量全部标记为仅供参考；
 - `_id` 唯一，文档低于512 KiB；
 - v2 `_id`、`recipe_version`、运行时 `release_id` 和 `data_releases._id`

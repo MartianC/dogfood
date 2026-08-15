@@ -2,6 +2,11 @@
   "contract": "ingredientOperationRules/v1",
   "policyStatusField": "policy_status",
   "blockedStatus": "blocked",
+  "operableStatuses": [
+    "allowed",
+    "conditional",
+    "unknown"
+  ],
   "knownStatuses": [
     "allowed",
     "conditional",
@@ -9,8 +14,9 @@
     "blocked"
   ],
   "operations": {
-    "search": "nonBlocked",
-    "add": "nonBlocked",
-    "autoInclude": "nonBlocked"
+    "search": "notBlocked",
+    "add": "notBlocked",
+    "autoInclude": "notBlocked",
+    "nutrientRanking": "notBlocked"
   }
 }

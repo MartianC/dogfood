@@ -21,6 +21,23 @@ ALLOWED_COLLECTIONS = (
     "human_recipes",
 )
 DEFAULT_MAX_COMMAND_BYTES = 700_000
+VERSION_FIELDS = {
+    "data_releases": "release_id",
+    "food_nutrition_profiles": "release_id",
+    "ingredient_catalog": "release_id",
+    "canine_ingredient_policies": "policy_version",
+    "nutrient_rankings": "ranking_version",
+    "human_recipes": "recipe_version",
+}
+ROLLBACK_CANDIDATE_FIELDS = (
+    "release_id",
+    "profile_release_id",
+    "catalog_version",
+    "policy_version",
+    "ranking_version",
+    "recipe_version",
+    "mapping_version",
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -36,6 +53,18 @@ def load_manifest(package_dir: Path) -> dict[str, Any]:
     if not path.is_file():
         raise ValueError(f"找不到导入清单：{path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def validate_pending_collections(
+    manifest: dict[str, Any], allow_pending: bool
+) -> None:
+    pending = manifest.get("pending_collections", [])
+    if not isinstance(pending, list):
+        raise ValueError("导入清单 pending_collections 必须是数组")
+    if pending and not allow_pending:
+        raise ValueError(
+            "发布包仍有未完成集合，拒绝导入：" + ", ".join(map(str, pending))
+        )
 
 
 def validate_collection_file(
@@ -59,6 +88,40 @@ def validate_collection_file(
             f"集合行数不匹配：{collection}，预期 {expected_rows}，实际 {row_count}"
         )
     return path, expected_rows
+
+
+def validate_collection_documents(path: Path, collection: str) -> None:
+    seen: set[str] = set()
+    versions: set[str] = set()
+    version_field = VERSION_FIELDS[collection]
+    for document in iter_documents(path):
+        document_id = str(document["_id"])
+        if document_id in seen:
+            raise ValueError(f"集合文件包含重复 _id：{collection}/{document_id}")
+        seen.add(document_id)
+        version = str(document.get(version_field, ""))
+        if not version:
+            raise ValueError(f"集合文档缺少 {version_field}：{collection}/{document_id}")
+        versions.add(version)
+        if collection == "data_releases":
+            rollback_candidate = document.get("rollback_candidate")
+            if not isinstance(rollback_candidate, dict):
+                raise ValueError(
+                    f"发布记录缺少完整 rollback_candidate：{document_id}"
+                )
+            missing = [
+                field for field in ROLLBACK_CANDIDATE_FIELDS
+                if not str(rollback_candidate.get(field, "")).strip()
+            ]
+            if rollback_candidate.get("status") != "active" or missing:
+                raise ValueError(
+                    f"发布记录 rollback_candidate 不是完整 active 组合：{document_id}"
+                    + ("，缺少：" + ", ".join(missing) if missing else "")
+                )
+    if len(versions) != 1:
+        raise ValueError(
+            f"{collection} 必须且只能包含一个 {version_field}：{sorted(versions)}"
+        )
 
 
 def iter_documents(path: Path) -> Iterator[dict[str, Any]]:
@@ -196,14 +259,7 @@ def import_collection(
             flush=True,
         )
 
-        version_field = {
-            "data_releases": "release_id",
-            "food_nutrition_profiles": "release_id",
-            "ingredient_catalog": "release_id",
-            "canine_ingredient_policies": "policy_version",
-            "nutrient_rankings": "ranking_version",
-            "human_recipes": "recipe_version",
-        }.get(collection)
+        version_field = VERSION_FIELDS.get(collection)
         if version_field and version_query is None:
             versions = {str(document.get(version_field, "")) for document in documents}
             if len(versions) != 1 or not next(iter(versions)):
@@ -221,8 +277,8 @@ def import_collection(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--package-dir", type=Path, required=True)
-    parser.add_argument("--env-id", required=True)
-    parser.add_argument("--tcb-bin", type=Path, required=True)
+    parser.add_argument("--env-id")
+    parser.add_argument("--tcb-bin", type=Path)
     parser.add_argument(
         "--collection",
         action="append",
@@ -233,25 +289,56 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--max-command-bytes", type=int, default=DEFAULT_MAX_COMMAND_BYTES
     )
+    parser.add_argument(
+        "--preflight-only",
+        action="store_true",
+        help="只校验 manifest、SHA-256、行数、文档 ID 和批次大小，不写 CloudBase",
+    )
+    parser.add_argument(
+        "--allow-pending",
+        action="store_true",
+        help="显式允许导入仍有 pending 集合的局部 staging 包",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    if not args.tcb_bin.is_file():
-        print(f"CloudBase CLI 不存在：{args.tcb_bin}", file=sys.stderr)
-        return 1
     if args.max_command_bytes <= 0 or args.max_command_bytes >= 900_000:
         print("--max-command-bytes 必须在 1 到 899999 之间", file=sys.stderr)
         return 1
+    if not args.preflight_only:
+        if not args.env_id:
+            print("非 preflight 模式必须提供 --env-id", file=sys.stderr)
+            return 1
+        if args.tcb_bin is None or not args.tcb_bin.is_file():
+            print(f"CloudBase CLI 不存在：{args.tcb_bin}", file=sys.stderr)
+            return 1
 
     try:
         manifest = load_manifest(args.package_dir)
+        validate_pending_collections(manifest, args.allow_pending)
         collections = args.collections or list(ALLOWED_COLLECTIONS)
         for collection in collections:
             path, expected_rows = validate_collection_file(
                 args.package_dir, collection, manifest
             )
+            validate_collection_documents(path, collection)
+            preflight_rows = 0
+            preflight_batches = 0
+            for documents, _command in iter_batches(
+                collection, path, args.max_command_bytes
+            ):
+                preflight_rows += len(documents)
+                preflight_batches += 1
+            if preflight_rows != expected_rows:
+                raise ValueError(f"集合预检批次数量不匹配：{collection}")
+            if args.preflight_only:
+                print(
+                    f"{collection}: 预检完成，共 {expected_rows} 条，{preflight_batches} 个批次",
+                    flush=True,
+                )
+                continue
             import_collection(
                 args.tcb_bin,
                 args.env_id,

@@ -29,11 +29,24 @@ def integrate(conn: sqlite3.Connection, base: dict[str, Any], decisions: dict[st
     source_version = str(decisions.get("source_version", ""))
     output = deepcopy(base)
     output["catalog_version"] = catalog_version
+    source_metadata = conn.execute(
+        """
+        SELECT DISTINCT license_status
+        FROM source_release
+        WHERE source_version=?
+        """,
+        (source_version,),
+    ).fetchall()
+    if len(source_metadata) != 1:
+        raise ValueError("CFCT 来源发布状态必须唯一")
+    source_license_status = str(source_metadata[0][0])
+    if source_license_status not in {"needs_review", "verified"}:
+        raise ValueError(f"CFCT 来源发布状态无效：{source_license_status}")
     output["cfct_integration"] = {
         "policy_id": POLICY_ID,
         "decision_version": decisions.get("decision_version"),
         "source_version": source_version,
-        "license_status": "needs_review",
+        "license_status": source_license_status,
         "data_quality": "ocr_unverified",
     }
     items = output.get("items", [])
@@ -72,7 +85,11 @@ def integrate(conn: sqlite3.Connection, base: dict[str, Any], decisions: dict[st
         if len(rows) != 1:
             raise ValueError(f"CFCT 来源必须唯一：{food_code}")
         _release_id, fdc_id, original_name, quality, license_status, nutrient_count = rows[0]
-        if str(original_name) != expected_name or quality != "ocr_unverified" or license_status != "needs_review":
+        if (
+            str(original_name) != expected_name
+            or quality != "ocr_unverified"
+            or license_status != source_license_status
+        ):
             raise ValueError(f"CFCT 来源元数据不匹配：{food_code}")
         if int(nutrient_count) <= 0:
             raise ValueError(f"CFCT 来源没有可计算营养值：{food_code}")
@@ -129,7 +146,7 @@ def integrate(conn: sqlite3.Connection, base: dict[str, Any], decisions: dict[st
         "final_concept_count": len(items),
         "added_concept_count": len(added),
         "added_alias_count": sum(len(item["aliases"]) for item in added),
-        "license_status": "needs_review",
+        "license_status": source_license_status,
         "data_quality": "ocr_unverified",
         "added_concepts": added,
     }

@@ -24,7 +24,7 @@
 
 路径仅作为本地构建参数，不写死在脚本中。
 
-CFCT OCR 来源不是官方开放数据库。上游仓库没有 SPDX 许可证，并声明 OCR 准确率不能保证、版权归原作者所有。因此该来源固定为 `license_status=needs_review` 和 `data_quality=ocr_unverified`，只允许进入离线 staging；获得明确授权和数据复核前不得导出到 CloudBase。实际冻结 JSON 为61个文件、1,657个唯一食品编码，与上游 README 声明的1,677条相差20条，差异必须保留在来源清单中。
+CFCT OCR 上游仓库没有 SPDX 许可证，并声明 OCR 准确率不能保证、版权归原作者所有。项目所有者已确认固定版本可用于本项目 CloudBase 发布，因此来源清单记录为 `license_status=verified`；授权绑定上游提交、61个文件、1,657个唯一食品编码和 SHA-256。`data_quality` 仍为 `ocr_unverified`，允许发布不代表 OCR 已人工校正；16个无效 OCR 值继续隔离。实际冻结数量与上游 README 声明的1,677条相差20条，差异保留在来源清单中。
 
 USDA 数据在主库中标记为 `public_domain`。人饭菜谱授权已经由项目所有者确认，版本化声明位于 `data/human-recipes/sources/capu-5w.json`；映射生成器校验实际 CSV SHA-256 后把来源标记为 `verified`。授权合同或原始凭证由项目所有者在代码库之外保管。
 
@@ -244,6 +244,8 @@ python3 scripts/fooddata/seed_canine_ingredient_policies.py \
 
 未显式给出非 `unknown` 结论的概念会生成审核过的保守默认，不会因为缺行而变成允许。
 
+当前 `2026-08-15-v3` 策略在 v2 基础上使用公开兽医毒理证据，把可可粉、红葱头、韭菜、韭黄、韭薹、柠檬皮和白果7个原 `unknown` 概念提升为 `blocked`。完整快照仍为398条：32 allowed、24 conditional、331 unknown、11 blocked。其余需熟制、去核、去皮、标签校验或剂量限制的项目不做 whole-concept 强封禁，继续 fail-closed。
+
 最后按兼容目录和策略生成营养素排行：
 
 ```bash
@@ -252,7 +254,7 @@ python3 scripts/fooddata/seed_nutrient_rankings.py \
   --rules data/nutrient-rankings/releases/2026-07-22-v1.json
 ```
 
-新排行按 `ingredientOperationRules/v1` 只排除 `blocked`；缺少完整组成值的组合营养素不会把缺失值当零。
+新排行按 `ingredientOperationRules/v1` 仅包含 `allowed`；`conditional`、`unknown` 和 `blocked` 均不进入排行。缺少完整组成值的组合营养素不会把缺失值当零。
 
 随后生成完整原料写法映射快照：
 
@@ -262,7 +264,7 @@ python3 scripts/fooddata/seed_recipe_ingredient_mappings.py \
   --mapping data/human-recipes/mappings/2026-07-23-v1.json
 ```
 
-首版只使用已批准唯一别名精确匹配；其余写法明确保存为 `unmatched`，只保留来源文字，不制造目录身份或安全结论。
+当前 `2026-08-15-v3` 映射以阶段一 v13 的同一 SHA-256 快照为输入，只迁移兼容策略版本，不改变33,930条决定和5,043个组件。`isolated/excluded/auxiliary` 写为无组件 `unmatched`，详细终态保存在审计备注，不制造目录身份或安全结论。
 
 ## 导出 CloudBase 只读投影
 
@@ -272,14 +274,16 @@ python3 scripts/fooddata/export_ingredient_cloudbase.py \
   --out-dir fooddata-cloudbase-export/2026-07-22-ingredient-catalog-v1/cloudbase-jsonl
 ```
 
+不提供回滚参数时，导出物仅用于离线检查，发布记录会标记 `requires-active-pointer`，导入 preflight 会拒绝它。生成可导入包前必须先只读核验目标环境，再完整提供 `--rollback-release-id`、`--rollback-profile-release-id`、`--rollback-catalog-version`、`--rollback-policy-version`、`--rollback-ranking-version`、`--rollback-recipe-version` 和 `--rollback-mapping-version`；七个字段不允许部分提供，也不能从新版本号推断。
+
 当前生成：
 
 - `data_releases.jsonl`：1 条 staging 版本文档，不会自动切换活动版本。
-- `food_nutrition_profiles.jsonl`：8,262 条一食物一文档的营养快照。
-- `ingredient_catalog.jsonl`：历史活动版本为107条一形态一文档；单来源目录从下一版本起为一标准食材一文档。
-- `canine_ingredient_policies.jsonl`：119 条概念或形态级完整策略快照。
+- `food_nutrition_profiles.jsonl`：当前候选9,919条一食物一文档的营养快照。
+- `ingredient_catalog.jsonl`：当前候选377条，一标准食材一个唯一营养来源。
+- `canine_ingredient_policies.jsonl`：当前候选398条概念或形态级完整策略快照。
 - `nutrient_rankings.jsonl`：44 条一营养素一文档的安全过滤排行，共180个排行项。
-- `human_recipes.jsonl`：历史 v1 为6,082条旧规则投影；新生成的 v2 仅要求至少一个已映射且非 `blocked` 组件，历史文件不就地改写。
+- `human_recipes.jsonl`：当前候选7,197条；v2 只发布至少一个 `allowed` 组件的菜谱，历史文件不就地改写。
 - `cloudbase-ingredient-import-manifest.json`：来源 SHA-256、行数、最大文档体积和文件校验值。
 
 真实导出中，最大营养快照为 13,357 bytes，低于项目采用的 512 KiB 文档预算。营养素按稳定 `nutrient_id` 存入 `nutrients` 对象：

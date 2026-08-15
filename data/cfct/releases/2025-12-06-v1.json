@@ -7,13 +7,24 @@
   "expected_json_file_count": 61,
   "expected_food_count": 1657,
   "upstream_declared_food_count": 1677,
-  "license_status": "needs_review",
+  "source_sha256": "3e343f3f13d56613c3e1473c2343b9894aa46c06b88434f34cf5ca3940bed77e",
+  "license_status": "verified",
   "data_quality": "ocr_unverified",
   "publication_basis": "中国食物成分表标准版第6版第1册和第2册（2018-2019）",
+  "authorization_basis": "项目所有者确认该固定版本 CFCT 数据可用于本项目 CloudBase 发布。",
+  "authorization_confirmed_by": "项目所有者",
+  "authorization_confirmed_at": "2026-08-14",
+  "authorized_publication_scope": [
+    "CloudBase 营养档案",
+    "标准食材目录",
+    "营养排行",
+    "人饭菜谱运行时投影"
+  ],
   "notes": [
     "上游仓库未声明 SPDX 许可证，并明确表示版权归原作者所有。",
     "上游 README 表示 OCR 准确率无法保证。",
     "实际最新版 JSON 为1657条，与 README 声明1677条相差20条；导入器按实际冻结数量校验。",
-    "仅用于离线 staging；获得明确授权和数据复核前不得发布到 CloudBase。"
+    "项目所有者已确认本项目可以发布该固定数据版本；授权或权利凭证由项目所有者在代码库之外保管。",
+    "允许发布不改变 ocr_unverified 质量状态；无效 OCR 值继续隔离，不生成可计算营养值。"
   ]
 }

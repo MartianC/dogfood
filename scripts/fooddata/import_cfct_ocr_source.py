@@ -69,6 +69,31 @@ def bundle_sha256(files: list[Path]) -> str:
     return digest.hexdigest()
 
 
+def validate_publication_authorization(
+    manifest: dict[str, Any], checksum: str
+) -> str:
+    license_status = str(manifest.get("license_status", "needs_review"))
+    if license_status not in {"needs_review", "verified"}:
+        raise ValueError(f"CFCT 许可证状态无效：{license_status}")
+    expected_checksum = str(manifest.get("source_sha256", ""))
+    if expected_checksum and expected_checksum != checksum:
+        raise ValueError("CFCT 来源 SHA-256 与授权清单不匹配")
+    if license_status == "verified":
+        required = (
+            "source_sha256",
+            "authorization_basis",
+            "authorization_confirmed_by",
+            "authorization_confirmed_at",
+            "authorized_publication_scope",
+        )
+        missing = [key for key in required if not manifest.get(key)]
+        if missing:
+            raise ValueError("CFCT 发布授权缺少字段：" + ", ".join(missing))
+        if not isinstance(manifest["authorized_publication_scope"], list):
+            raise ValueError("CFCT authorized_publication_scope 必须是数组")
+    return license_status
+
+
 def stable_category_id(name: str) -> int:
     return int(hashlib.sha256(name.encode("utf-8")).hexdigest()[:7], 16)
 
@@ -127,9 +152,16 @@ def load_rows(directory: Path, manifest: dict[str, Any]) -> tuple[list[dict[str,
 def import_source(conn: sqlite3.Connection, rows: list[dict[str, Any]], manifest: dict[str, Any], checksum: str) -> dict[str, int]:
     version = str(manifest["source_version"])
     release_id = f"cfct_ocr_{checksum[:16]}"
+    license_status = validate_publication_authorization(manifest, checksum)
     conn.execute(
-        "INSERT INTO source_release VALUES (?, 'cfct_ocr', ?, ?, ?, 'needs_review')",
-        (release_id, version, f"{manifest['upstream_repository']}@{manifest['upstream_commit']}", checksum),
+        "INSERT INTO source_release VALUES (?, 'cfct_ocr', ?, ?, ?, ?)",
+        (
+            release_id,
+            version,
+            f"{manifest['upstream_repository']}@{manifest['upstream_commit']}",
+            checksum,
+            license_status,
+        ),
     )
     conn.executescript(
         """
@@ -224,7 +256,12 @@ def import_source(conn: sqlite3.Connection, rows: list[dict[str, Any]], manifest
         "INSERT INTO source_import_stat VALUES (?, ?, ?)",
         [(release_id, key, value) for key, value in sorted(stats.items())],
     )
-    return {"source_release_id": release_id, **stats}
+    return {
+        "source_release_id": release_id,
+        "license_status": license_status,
+        "data_quality": str(manifest.get("data_quality", "ocr_unverified")),
+        **stats,
+    }
 
 
 def main() -> int:

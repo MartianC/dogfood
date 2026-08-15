@@ -51,6 +51,14 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def validate_tables(conn: sqlite3.Connection) -> None:
     tables = {
         row[0]
@@ -218,6 +226,86 @@ def manual_decision_map(mapping: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return decisions
 
 
+def stage1_manual_decisions(
+    mapping: dict[str, Any], generated_at: str
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+    source_value = str(mapping.get("stage1_decisions", "")).strip()
+    if not source_value:
+        return list(mapping.get("manual_decisions", [])), None
+    if mapping.get("manual_decisions"):
+        raise ValueError("stage1_decisions 与 manual_decisions 不能同时包含决定")
+    source_path = Path(source_value)
+    if not source_path.is_absolute():
+        source_path = Path.cwd() / source_path
+    if not source_path.is_file():
+        raise ValueError(f"阶段一决定不存在：{source_path}")
+    expected_sha256 = str(mapping.get("stage1_decisions_sha256", "")).strip()
+    actual_sha256 = sha256_file(source_path)
+    if not expected_sha256 or expected_sha256 != actual_sha256:
+        raise ValueError("阶段一决定 SHA-256 不匹配")
+    source = load_json(source_path)
+    if source.get("contract") != "recipeIngredientStage1Decisions/v1":
+        raise ValueError("阶段一决定合同不匹配")
+    status_map = {
+        "mapped_existing": "matched",
+        "composite": "composite",
+        "alternative": "alternative",
+        "isolated": "unmatched",
+        "excluded": "unmatched",
+        "auxiliary": "unmatched",
+    }
+    decisions: list[dict[str, Any]] = []
+    stage_counts: dict[str, int] = {}
+    for item in source.get("items", []):
+        stage_status = str(item.get("decision", ""))
+        mapping_status = status_map.get(stage_status)
+        if mapping_status is None:
+            raise ValueError(f"未知阶段一终态：{stage_status}")
+        concept_ids: list[str] = []
+        if stage_status == "mapped_existing":
+            concept_id = str(item.get("concept_id", ""))
+            if not concept_id:
+                raise ValueError("mapped_existing 缺少 concept_id")
+            concept_ids = [concept_id]
+        elif stage_status in {"composite", "alternative"}:
+            concept_ids = [str(value) for value in item.get("components", [])]
+            if len(concept_ids) < 2 or any(not value for value in concept_ids):
+                raise ValueError(f"{stage_status} 缺少有效组件")
+        normalized_name = str(item.get("normalized_name", "")).strip()
+        if not normalized_name:
+            raise ValueError("阶段一决定缺少 normalized_name")
+        decisions.append(
+            {
+                "normalized_name": normalized_name,
+                "mapping_status": mapping_status,
+                "components": [
+                    {"concept_id": concept_id} for concept_id in concept_ids
+                ],
+                "rule_id": str(item.get("rule_id") or "stage1_terminal_snapshot"),
+                "reviewed_by": "system:stage1-terminal-snapshot",
+                "reviewed_at": generated_at,
+                "notes": json.dumps(
+                    {
+                        "stage1_decision": stage_status,
+                        "cleaned_name": item.get("cleaned_name"),
+                        "exclusion_category": item.get("exclusion_category"),
+                    },
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+            }
+        )
+        stage_counts[stage_status] = stage_counts.get(stage_status, 0) + 1
+    return decisions, {
+        "path": source_value,
+        "sha256": actual_sha256,
+        "normalization_policy_id": source.get("normalization_policy_id"),
+        "decision_count": len(decisions),
+        "stage_counts": dict(sorted(stage_counts.items())),
+    }
+
+
 def resolve_manual_components(
     decision: dict[str, Any],
     defaults: dict[str, str],
@@ -278,9 +366,10 @@ def seed_mappings(
     catalog_version, policy_version = verify_versions(conn, mapping)
     source = verify_source_authorization(conn, mapping_path, mapping)
     aliases, defaults, variant_owners = catalog_maps(conn)
-    manual = manual_decision_map(mapping)
     mapping_version = str(mapping["mapping_version"])
     generated_at = str(mapping["generated_at"])
+    manual_items, stage1_metadata = stage1_manual_decisions(mapping, generated_at)
+    manual = manual_decision_map({"manual_decisions": manual_items})
 
     terms = list(
         conn.execute(
@@ -319,6 +408,7 @@ def seed_mappings(
                     "automatic_rules": mapping["automatic_rules"],
                     "review_task_min_occurrences": task_threshold,
                     "manual_decision_count": len(manual),
+                    "stage1_snapshot": stage1_metadata,
                 },
                 ensure_ascii=False,
                 sort_keys=True,

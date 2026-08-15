@@ -3,6 +3,7 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
+const { loadActiveRelease, validatePublishedIngredients } = require('./publishedDataValidation')
 
 function normalize(doc) {
   return {
@@ -27,14 +28,29 @@ exports.main = async (event) => {
   const payload = event.payload || {}
   if (!payload.title) throw new Error('请填写食谱名称')
   if (!Array.isArray(payload.ingredients) || !payload.ingredients.length) throw new Error('请添加食材')
+  const release = await loadActiveRelease(db)
+  await validatePublishedIngredients(db, payload.ingredients, release)
 
   const collection = db.collection('customRecipes')
   const now = new Date()
   const data = {
     _openid: wxContext.OPENID,
-    ...payload,
+    title: String(payload.title).trim(),
+    ingredients: payload.ingredients,
+    targetDogIds: Array.isArray(payload.targetDogIds) ? payload.targetDogIds : [],
+    targetDogSnapshots: Array.isArray(payload.targetDogSnapshots) ? payload.targetDogSnapshots : [],
+    adviceSummary: String(payload.adviceSummary || ''),
+    advices: Array.isArray(payload.advices) ? payload.advices : [],
+    adviceAlgorithmVersion: payload.adviceAlgorithmVersion || null,
+    adviceAlgorithmSource: payload.adviceAlgorithmSource || null,
+    status: payload.status || 'draft',
     createdAt: payload.createdAt || now,
-    updatedAt: now
+    updatedAt: now,
+    dataVersions: { ...((payload.dataVersions && typeof payload.dataVersions === 'object') ? payload.dataVersions : {}),
+      runtimeReleaseId: release.release_id,
+      catalogVersion: release.catalog_version,
+      policyVersion: release.policy_version,
+      nutritionSourceReleaseId: release.profile_release_id || null }
   }
 
   if (payload.id) {

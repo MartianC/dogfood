@@ -1,6 +1,8 @@
 const KNOWN_POLICY_STATUSES = Object.freeze(['allowed', 'conditional', 'unknown', 'blocked'])
 const BLOCKED_POLICY_STATUS = 'blocked'
+const OPERABLE_POLICY_STATUSES = Object.freeze(['allowed', 'conditional', 'unknown'])
 const knownStatuses = new Set(KNOWN_POLICY_STATUSES)
+const operableStatuses = new Set(OPERABLE_POLICY_STATUSES)
 
 function normalizePolicyStatus(value) {
   const raw = typeof value === 'string'
@@ -11,12 +13,13 @@ function normalizePolicyStatus(value) {
 }
 
 function canAddIngredient(value) {
-  return normalizePolicyStatus(value) !== BLOCKED_POLICY_STATUS
+  return operableStatuses.has(normalizePolicyStatus(value))
 }
 
 module.exports = {
   canAddIngredient,
   normalizePolicyStatus,
   KNOWN_POLICY_STATUSES,
-  BLOCKED_POLICY_STATUS
+  BLOCKED_POLICY_STATUS,
+  OPERABLE_POLICY_STATUSES
 }
