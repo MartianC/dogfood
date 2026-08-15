@@ -32,10 +32,3 @@ fooddata-cloudbase-export/
 .env.*
 !.env.example
 project.private.config.json
-
-# anypal
-anypal-uia/
-.anypal/
-
-# pad
-.pad.toml
