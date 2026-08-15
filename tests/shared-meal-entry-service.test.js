@@ -126,6 +126,30 @@ test('多只已有档案时统一交给选狗页显式选择', async () => {
   assert.deepEqual(navigations, ['/subpackages/shared-meal/dog-select/index'])
 })
 
+test('底部圆形入口跳过人饭菜单并由选狗页直接创建狗饭', async () => {
+  const { service, navigations } = loadEntryService({
+    authState: 'has-profile',
+    dogs: [{ id: 'dog-1' }]
+  })
+
+  const result = await service.startSharedMeal({ skipHumanMenu: true })
+
+  assert.equal(result.status, 'flow-started')
+  assert.equal(result.url, '/subpackages/shared-meal/dog-select/index?skipHumanMenu=1')
+  assert.deepEqual(navigations, [result.url])
+})
+
+test('底部圆形入口在无档案时保留跳过人饭菜单的返回意图', async () => {
+  const { service, navigations } = loadEntryService({ authState: 'logged-in', dogs: [] })
+
+  await service.startSharedMeal({ skipHumanMenu: true })
+
+  assert.equal(
+    decodeURIComponent(navigations[0]),
+    '/subpackages/dog-profile/dog-quick-create/index?redirect=/subpackages/shared-meal/dog-select/index?skipHumanMenu=1'
+  )
+})
+
 test('连续点击复用同一次入口请求，避免重复登录和重复导航', async () => {
   let resolveLogin
   let loginCalls = 0
@@ -152,4 +176,10 @@ test('首页和记录页只调用同一个入口服务，不复制守卫与草�
     assert.match(source, /sharedMealEntryService\.startSharedMeal\(\)/, relativePath)
     assert.doesNotMatch(source, /shared-meal\/dog-select|sharedMealDogEligibility|sharedMealDraftService/, relativePath)
   }
+})
+
+test('只有底部圆形入口传入跳过人饭菜单选项', () => {
+  const tabBar = fs.readFileSync(path.join(__dirname, '..', 'custom-tab-bar/index.js'), 'utf8')
+
+  assert.match(tabBar, /startSharedMeal\(\{ skipHumanMenu: true \}\)/)
 })

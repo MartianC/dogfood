@@ -175,16 +175,19 @@ function validateNavigationImplementation({ appConfig, contract, sources }) {
   )
   assertCondition(
     sources.customTabBarJs.includes('onStartSharedMeal') &&
-      /sharedMealEntryService\.startSharedMeal\s*\(\s*\)/.test(sources.customTabBarJs),
+      /sharedMealEntryService\.startSharedMeal\s*\(/.test(sources.customTabBarJs),
     '中央记餐动作必须调用统一记餐入口服务'
   )
 
   const callers = contract.target.centralAction.callers
   callers.forEach((caller) => {
     const source = sourceForCaller(caller, sources)
+    const entryCallPattern = caller === 'custom-tab-bar/index'
+      ? /sharedMealEntryService\.startSharedMeal\s*\(/
+      : /sharedMealEntryService\.startSharedMeal\s*\(\s*\)/
     assertCondition(source, `中央记餐调用方未提供源码：${caller}`)
     assertCondition(
-      /sharedMealEntryService\.startSharedMeal\s*\(\s*\)/.test(source),
+      entryCallPattern.test(source),
       `${caller} 未复用 sharedMealEntryService.startSharedMeal()`
     )
   })

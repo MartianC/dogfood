@@ -44,6 +44,7 @@ function formatRecoveryTime(mealTime) {
 Page({
   data: {
     draftId: '',
+    skipHumanMenuSelection: false,
     dogs: [],
     loading: true,
     errorText: '',
@@ -57,13 +58,14 @@ Page({
 
   onLoad(options) {
     const explicitDraftId = options.draftId ? String(options.draftId) : ''
+    const skipHumanMenuSelection = String(options.skipHumanMenu || '') === '1'
     const restored = explicitDraftId ? restoreDraft(explicitDraftId) : null
     this.resumeAfterProfileUpdate = Boolean(
       explicitDraftId
       && restored.status === 'restored'
       && restored.draft.humanMenus.length > 0
     )
-    this.recoveryDecision = explicitDraftId
+    this.recoveryDecision = explicitDraftId || skipHumanMenuSelection
       ? { status: 'none', draft: null }
       : getDraftRecoveryDecision()
     this.recoveryExpectedId = this.recoveryDecision.status === 'resumable'
@@ -74,8 +76,9 @@ Page({
     this.didAutoContinue = false
     this.setData({
       draftId: explicitDraftId || this.recoveryExpectedId || createDraftId(),
-      recoveryStatus: explicitDraftId ? 'none' : 'loading',
-      recoveryVisible: !explicitDraftId
+      skipHumanMenuSelection,
+      recoveryStatus: explicitDraftId || skipHumanMenuSelection ? 'none' : 'loading',
+      recoveryVisible: !explicitDraftId && !skipHumanMenuSelection
     })
   },
 
@@ -238,19 +241,23 @@ Page({
     const draft = saveDogSelectionDraft(dog, this.data.draftId)
     this.hasNavigated = true
     if (eligibility.status === 'incomplete') {
-      const returnUrl = `/subpackages/shared-meal/dog-select/index?draftId=${draft.id}`
+      const skipHumanMenuParam = this.data.skipHumanMenuSelection ? '&skipHumanMenu=1' : ''
+      const returnUrl = `/subpackages/shared-meal/dog-select/index?draftId=${draft.id}${skipHumanMenuParam}`
       wx.navigateTo({
         url: `/subpackages/dog-profile/dog-edit/index?id=${encodeURIComponent(dog.id)}&redirect=${encodeURIComponent(returnUrl)}`
       })
       return
     }
     wx.navigateTo({
-      url: `/subpackages/shared-meal/menu-search/index?draftId=${encodeURIComponent(draft.id)}`
+      url: this.data.skipHumanMenuSelection
+        ? `/subpackages/shared-meal/compose/index?draftId=${encodeURIComponent(draft.id)}`
+        : `/subpackages/shared-meal/menu-search/index?draftId=${encodeURIComponent(draft.id)}`
     })
   },
 
   onCreateDog() {
-    const returnUrl = `/subpackages/shared-meal/dog-select/index?draftId=${this.data.draftId}`
+    const skipHumanMenuParam = this.data.skipHumanMenuSelection ? '&skipHumanMenu=1' : ''
+    const returnUrl = `/subpackages/shared-meal/dog-select/index?draftId=${this.data.draftId}${skipHumanMenuParam}`
     wx.navigateTo({
       url: `/subpackages/dog-profile/dog-quick-create/index?redirect=${encodeURIComponent(returnUrl)}`
     })

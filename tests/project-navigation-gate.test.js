@@ -147,3 +147,21 @@ test('门禁拒绝首页、记录或中央动作绕过统一记餐入口', () =>
     /pages\/records\/index 未复用 sharedMealEntryService\.startSharedMeal\(\)/
   )
 })
+
+test('门禁只允许中央动作携带跳过菜单意图', () => {
+  const fixture = createFixture()
+  fixture.sources.customTabBarJs = fixture.sources.customTabBarJs.replace(
+    'sharedMealEntryService.startSharedMeal()',
+    'sharedMealEntryService.startSharedMeal({ skipHumanMenu: true })'
+  )
+  assert.doesNotThrow(() => validateNavigationImplementation(fixture))
+
+  fixture.sources.homeJs = fixture.sources.homeJs.replace(
+    'sharedMealEntryService.startSharedMeal()',
+    'sharedMealEntryService.startSharedMeal({ skipHumanMenu: true })'
+  )
+  assert.throws(
+    () => validateNavigationImplementation(fixture),
+    /pages\/home\/index 未复用 sharedMealEntryService\.startSharedMeal\(\)/
+  )
+})

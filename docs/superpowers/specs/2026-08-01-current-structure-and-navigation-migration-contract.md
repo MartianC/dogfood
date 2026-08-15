@@ -85,9 +85,9 @@ subpackages/shared-meal
 | 记录 | `pages/records/index` | 原路径迁移 | 保留月份状态与记录详情链路，只对齐入口和文案 |
 | 狗狗 | `pages/dogs/index` | 新增 | 从“我的”拆出独立目的地；路径与首页、记录保持同级简单结构 |
 | 我的 | `pages/profile/index/index` | 原路径迁移 | 保持既有 Tab 深链，移除狗狗和旧能力入口后承载账号与设置 |
-| 记一顿 | 无页面；统一入口服务 | 新增 `services/sharedMealEntryService.js` | 中央动作不是 Tab，首页、记录空态和 TabBar 需复用同一守卫合同 |
+| 记一顿 | 无页面；统一入口服务 | 新增 `services/sharedMealEntryService.js` | 中央动作不是 Tab；首页、记录空态和 TabBar 复用同一守卫合同，中央动作可携带跳过人饭菜单的明确意图 |
 
-中央动作完成守卫后继续进入现有 `subpackages/shared-meal/dog-select/index`，不创建第二套选狗页。入口服务的具体接口与登录/建档往返由 `A1.1` 实现和测试。
+中央动作完成守卫后继续进入现有 `subpackages/shared-meal/dog-select/index`，不创建第二套选狗页；选定狗狗后直接进入 `compose` 空白狗饭，不经过人饭菜单选择。入口服务的具体接口与登录/建档往返由 `A1.1` 实现和测试。
 
 ## 4. 页面迁移清单
 
@@ -106,7 +106,7 @@ subpackages/shared-meal
 | 迁移 | `pages/profile/index/index` | 移除狗狗列表、历史清单和自定义食谱入口；保留账号与真实设置 |
 | 保留 | `subpackages/dog-profile/dog-edit/index` | 继续承载新增、编辑和记餐过程中的档案完善 |
 | 保留 | `subpackages/dog-profile/dog-quick-create/index` | 继续保留快速建档和 `redirect` 往返兼容 |
-| 保留 | `subpackages/shared-meal/dog-select/index` | 作为统一入口守卫后的现有选狗/草稿恢复流程 |
+| 保留 | `subpackages/shared-meal/dog-select/index` | 作为统一入口守卫后的现有选狗页；支持既有草稿恢复流程和中央动作的空白狗饭直达模式 |
 | 保留 | `subpackages/shared-meal/menu-search/index` | canonical 人饭菜单选择页 |
 | 保留 | `subpackages/shared-meal/compose/index` | 当前编辑、评估和保存闭环 |
 | 保留 | `subpackages/shared-meal/record-detail/index` | 当前不可变快照详情 |

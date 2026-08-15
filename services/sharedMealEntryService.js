@@ -7,8 +7,14 @@ const QUICK_CREATE_PATH = '/subpackages/dog-profile/dog-quick-create/index'
 
 let activeEntry = null
 
-function buildQuickCreateUrl() {
-  return `${QUICK_CREATE_PATH}?redirect=${encodeURIComponent(SHARED_MEAL_FLOW_PATH)}`
+function buildFlowUrl(options = {}) {
+  return options.skipHumanMenu
+    ? `${SHARED_MEAL_FLOW_PATH}?skipHumanMenu=1`
+    : SHARED_MEAL_FLOW_PATH
+}
+
+function buildQuickCreateUrl(options = {}) {
+  return `${QUICK_CREATE_PATH}?redirect=${encodeURIComponent(buildFlowUrl(options))}`
 }
 
 function currentAuthReady() {
@@ -24,7 +30,7 @@ function navigateTo(url) {
   wx.navigateTo({ url })
 }
 
-async function runEntry() {
+async function runEntry(options = {}) {
   const authReady = currentAuthReady()
   if (authReady && typeof authReady.then === 'function') await authReady
 
@@ -35,29 +41,30 @@ async function runEntry() {
 
   const dogs = await dogService.listDogs()
   if (!dogs.length) {
-    const url = buildQuickCreateUrl()
+    const url = buildQuickCreateUrl(options)
     navigateTo(url)
     return { status: 'profile-required', navigated: true, url }
   }
 
-  // 单狗直接打开分包选菜页，由分包在加载后完成资格检查和草稿初始化。
-  if (dogs.length === 1) {
+  // 常规单狗入口直接选菜；跳过菜单时仍由选狗分包完成资格检查和空白草稿初始化。
+  if (dogs.length === 1 && !options.skipHumanMenu) {
     const url = `${SHARED_MEAL_MENU_PATH}?dogId=${encodeURIComponent(String(dogs[0].id || ''))}`
     navigateTo(url)
     return { status: 'menu-started', navigated: true, url }
   }
 
-  navigateTo(SHARED_MEAL_FLOW_PATH)
+  const url = buildFlowUrl(options)
+  navigateTo(url)
   return {
     status: 'flow-started',
     navigated: true,
-    url: SHARED_MEAL_FLOW_PATH
+    url
   }
 }
 
-function startSharedMeal() {
+function startSharedMeal(options = {}) {
   if (activeEntry) return activeEntry
-  activeEntry = runEntry().finally(() => {
+  activeEntry = runEntry(options).finally(() => {
     activeEntry = null
   })
   return activeEntry
@@ -65,6 +72,7 @@ function startSharedMeal() {
 
 module.exports = {
   SHARED_MEAL_FLOW_PATH,
+  buildFlowUrl,
   buildQuickCreateUrl,
   startSharedMeal
 }

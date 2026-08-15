@@ -169,6 +169,7 @@ Page({
     humanMenus: [],
     humanMenuGroups: [],
     humanMealSummary: '人饭',
+    hasHumanMenus: false,
     sourcePickerExpanded: false,
     ingredients: [],
     nutrientRecords: [],
@@ -220,6 +221,7 @@ Page({
       humanMenus: draft.humanMenus,
       humanMenuGroups: groups,
       humanMealSummary: humanMealSummary(groups),
+      hasHumanMenus: draft.humanMenus.length > 0,
       ingredients: ingredientRows(draft.ingredients, [], draft.humanMenus),
       nutrientRecords: [],
       energyTargetText: energyTargetText(requirement),
@@ -316,6 +318,7 @@ Page({
   },
 
   onToggleHumanMealPicker() {
+    if (!this.data.hasHumanMenus) return
     this.setData({ sourcePickerExpanded: !this.data.sourcePickerExpanded })
   },
 

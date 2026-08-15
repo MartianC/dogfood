@@ -201,6 +201,20 @@ async function withDogSelectPage({ draft, dogs }, run) {
   }
 }
 
+test('跳过人饭菜单入口选定狗狗后直接进入空白狗饭创建', async () => {
+  await withDogSelectPage({ dogs: [createDog()] }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, { skipHumanMenu: '1' })
+    await definition.onShow.call(context)
+
+    assert.equal(context.data.skipHumanMenuSelection, true)
+    assert.match(navigations[0], /shared-meal\/compose\/index\?draftId=/)
+    assert.doesNotMatch(navigations[0], /menu-search/)
+    const draft = storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+    assert.deepEqual(draft.humanMenus, [])
+    assert.deepEqual(draft.ingredients, [])
+  })
+})
+
 test('有效草稿显示恢复选择，未选择前不导航、不写回且单狗不会抢先继续', async () => {
   const savedDog = createDog({ name: '旧名字' })
   const latestDog = createDog({ name: '新名字' })
@@ -405,6 +419,8 @@ test('compose 使用 v2 连续食材列表并保持所有自动食材克重为�
   assert.match(template, /disabled="\{\{!ingredients\.length\}\}"/)
   assert.match(template, /class="shared-meal-compose-scroll"[^>]*scroll-y/)
   assert.match(template, /class="shared-meal-compose-human-menu-button"[^>]*catchtap="onToggleHumanMealPicker"/)
+  assert.match(template, /wx:if="\{\{hasHumanMenus\}\}"[^>]*class="shared-meal-compose-human-menu-button"/s)
+  assert.match(template, /shared-meal-compose-bottom-action--save-only/)
   assert.doesNotMatch(template, /本餐能量目标/)
   assert.doesNotMatch(template, /系统不会自动生成单项克重或比例/)
   assert.doesNotMatch(template, /<ui-field[\s\S]*?item\.amountInput/)
@@ -418,6 +434,18 @@ test('compose 使用 v2 连续食材列表并保持所有自动食材克重为�
   )
   assert.match(generatedService, /sync-subpackage-services\.js 自动生成/)
   assert.match(generatedService, /\.\.\/\.\.\/\.\.\/services\/dogProfileDerivations/)
+})
+
+test('空白狗饭从目录添加首个食材时携带目录发布版本', () => {
+  const { moduleExports } = loadPageModule('subpackages/custom-recipe/ingredient-search/index.js')
+  const ingredients = moduleExports.addSharedMealIngredient(
+    { ingredients: [], dataVersions: null },
+    { ...sharedMealFixture, dataVersions: sharedMealFixture.dataVersions },
+    80
+  )
+
+  assert.equal(ingredients.length, 1)
+  assert.deepEqual(ingredients[0].dataVersions, sharedMealFixture.dataVersions)
 })
 
 test('compose 对 eligible 菜谱草稿显示能量目标且不填入食材克重', async () => {

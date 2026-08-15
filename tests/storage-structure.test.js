@@ -138,7 +138,7 @@ test('TabBar 通过 TDesign 自定义组件保留四个主路由和中央记一�
   assert.match(tabBarJs, /height: \$\{112 \+ safeAreaBottom\}rpx/)
   assert.match(tabBarJs, /tabBarContainerStyle: getTabBarContainerStyle\(\)/)
   assert.match(tabBarJs, /resize\(\)\s*\{[\s\S]*tabBarContainerStyle: getTabBarContainerStyle\(\)/)
-  assert.match(tabBarJs, /sharedMealEntryService\.startSharedMeal\(\)/)
+  assert.match(tabBarJs, /sharedMealEntryService\.startSharedMeal\(\{ skipHumanMenu: true \}\)/)
   assert.match(tabBarJs, /value: 'dogs'/)
   assert.match(tabBarJs, /width: 96rpx/)
   assert.match(tabBarJs, /height: 96rpx/)

@@ -228,6 +228,10 @@
   background: var(--df-color-surface);
 }
 
+.shared-meal-compose-bottom-action--save-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .shared-meal-compose-human-menu-trigger {
   display: flex;
   min-width: 0;

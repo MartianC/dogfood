@@ -50,7 +50,11 @@
             </view>
           </view>
         </ui-card>
-        <ui-empty wx:if="{{!ingredients.length}}" title="还没有狗饭食材" description="请从已选菜单或食材目录中添加。" />
+        <ui-empty
+          wx:if="{{!ingredients.length}}"
+          title="还没有狗饭食材"
+          description="{{hasHumanMenus ? '请从已选菜单或食材目录中添加。' : '请从食材目录中添加。'}}"
+        />
         <ui-button variant="outline" bind:tap="onAddIngredient">＋ 额外添加食材</ui-button>
       </view>
 
@@ -58,7 +62,7 @@
   </scroll-view>
 
   <view
-    wx:if="{{dog && !errorText && sourcePickerExpanded}}"
+    wx:if="{{dog && !errorText && hasHumanMenus && sourcePickerExpanded}}"
     class="shared-meal-compose-source-mask"
   >
     <view class="shared-meal-compose-source-backdrop" catchtap="onDismissHumanMealPicker"></view>
@@ -140,8 +144,12 @@
     />
   </view>
 
-  <view wx:if="{{dog && !errorText}}" class="bottom-action shared-meal-compose-bottom-action">
+  <view
+    wx:if="{{dog && !errorText}}"
+    class="bottom-action shared-meal-compose-bottom-action {{hasHumanMenus ? '' : 'shared-meal-compose-bottom-action--save-only'}}"
+  >
     <view
+      wx:if="{{hasHumanMenus}}"
       class="shared-meal-compose-human-menu-button"
       hover-class="shared-meal-compose-human-menu-button--pressed"
       catchtap="onToggleHumanMealPicker"

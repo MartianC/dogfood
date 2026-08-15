@@ -533,9 +533,13 @@ function updateDraftIngredients(draftId, ingredients) {
   if (next.some((ingredient) => !canAddIngredient(ingredient))) {
     throw new Error('被阻止的食材不可加入共享本餐')
   }
+  const dataVersions = restored.draft.dataVersions
+    || (next[0] && { ...next[0].dataVersions })
+    || null
   return saveDraft({
     ...restored.draft,
     ingredients: next,
+    dataVersions,
     latestAssessment: null,
     saveIntent: 'editing'
   })

@@ -115,7 +115,7 @@ Component({
     },
 
     onStartSharedMeal() {
-      return sharedMealEntryService.startSharedMeal()
+      return sharedMealEntryService.startSharedMeal({ skipHumanMenu: true })
     }
   }
 })

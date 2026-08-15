@@ -56,7 +56,7 @@ function addSharedMealIngredient(draft, ingredient, amount) {
       perMealAmountGram: Number(item.perMealAmountGram || 0) + grams
     } : item)
   }
-  const versions = draft.dataVersions || {}
+  const versions = draft.dataVersions || ingredient.dataVersions || {}
   return (draft.ingredients || []).concat({
     schemaVersion: 1,
     ingredientId: foodId,
@@ -75,7 +75,7 @@ function addSharedMealIngredient(draft, ingredient, amount) {
       catalogVersion: String(versions.catalogVersion || ingredient.catalogVersion || ''),
       policyVersion: String(versions.policyVersion || ingredient.policyVersion || ''),
       nutritionSourceReleaseId: String(
-        ingredient.sourceReleaseId || versions.nutritionSourceReleaseId || ''
+        versions.nutritionSourceReleaseId || ingredient.sourceReleaseId || ''
       )
     }
   })

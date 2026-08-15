@@ -371,6 +371,28 @@ test('恢复决策区分无草稿、有效草稿、空菜单草稿、旧版本�
   assert.notEqual(storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY), null)
 })
 
+test('空白狗饭草稿首次添加目录食材时采用食材发布版本', () => {
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  const draft = createDraftFromMenus({
+    id: 'draft-direct-dog-meal',
+    dog,
+    humanMenus: [],
+    sourceIngredientSelections: [],
+    dataVersions: null
+  })
+  saveDraft(draft)
+
+  const updated = updateDraftIngredients(draft.id, [{
+    ...fixture,
+    perMealAmountGram: 80,
+    sourceRefs: []
+  }])
+
+  assert.deepEqual(updated.dataVersions, fixture.dataVersions)
+  assert.equal(updated.ingredients.length, 1)
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+})
+
 test('继续与重新开始只有显式调用时才读取或清理当前草稿', () => {
   storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
   const draft = createDraftFromMenus({

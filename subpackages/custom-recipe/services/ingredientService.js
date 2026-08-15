@@ -56,6 +56,7 @@ function normalizeIngredient(item = {}) {
     policyVersion: String(item.policyVersion || item.policy_version || ''),
     policyStatus,
     sourceReleaseId: String(item.sourceReleaseId || item.source_release_id || ''),
+    dataVersions: item.dataVersions && { ...item.dataVersions },
     canonicalName: String(item.canonicalName || item.canonical_name_zh || ''),
     variantName: String(item.variantName || item.display_name_zh || ''),
     aliases: Array.isArray(item.aliases) ? item.aliases.slice() : [],
@@ -90,6 +91,17 @@ function normalizeCatalogIngredient(item = {}) {
       || item.display_name_zh,
     displayDescription: item.displayDescription || categoryLabels[item.category_code] || '其他'
   })
+}
+
+function catalogDataVersions(release) {
+  return {
+    runtimeReleaseId: String(release.release_id || ''),
+    recipeVersion: release.recipe_version == null ? null : String(release.recipe_version),
+    mappingVersion: release.mapping_version == null ? null : String(release.mapping_version),
+    catalogVersion: String(release.catalog_version || ''),
+    policyVersion: String(release.policy_version || ''),
+    nutritionSourceReleaseId: String(release.profile_release_id || '')
+  }
 }
 
 function buildMockIngredients() {
@@ -181,7 +193,10 @@ async function loadCloudIngredientCatalog() {
   }))
   const ingredientsByConcept = records
     .filter(isIngredientPolicyOpen)
-    .map(normalizeCatalogIngredient)
+    .map((item) => normalizeCatalogIngredient({
+      ...item,
+      dataVersions: catalogDataVersions(release)
+    }))
     .reduce((result, item) => {
       const key = item.conceptId || item.name
       if (!item.name || !item.foodId || !key) return result
