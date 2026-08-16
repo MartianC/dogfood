@@ -54,24 +54,38 @@ function buildRecipeDetailDisplay(recipe = {}) {
   const allowedNames = []
   const blockedNames = []
   let allowedCount = 0
-  let blockedCount = 0
 
   prepared.ingredients.forEach((ingredient) => {
     const components = Array.isArray(ingredient.components) ? ingredient.components : []
     const hasAllowed = components.some((component) => component.canSelect)
     const hasBlocked = components.some((component) => !component.canSelect)
-    if (hasAllowed) allowedCount += 1
-    if (hasBlocked) blockedCount += 1
+    const sourceName = String(ingredient.sourceText || '').trim()
+    let hasVisibleAllowed = false
+    let hasVisibleBlocked = false
+
     components.forEach((component) => {
       const name = String(component.displayName || '').trim()
-      if (component.canSelect) allowedNames.push(name)
-      else blockedNames.push(name)
+      if (!name) return
+      if (component.canSelect) {
+        allowedNames.push(name)
+        hasVisibleAllowed = true
+      } else {
+        blockedNames.push(name)
+        hasVisibleBlocked = true
+      }
     })
+
+    if (hasAllowed) {
+      allowedCount += 1
+      if (!hasVisibleAllowed && sourceName) allowedNames.push(sourceName)
+    }
+    if (hasBlocked || !components.length) {
+      if (!hasVisibleBlocked && sourceName) blockedNames.push(sourceName)
+    }
   })
 
   const summaryParts = [`${prepared.ingredients.length} 项原料`]
-  if (allowedCount) summaryParts.push(`${allowedCount} 项可共用`)
-  if (blockedCount) summaryParts.push(`${blockedCount} 项需避开`)
+  if (allowedCount) summaryParts.push(`${allowedCount} 项狗狗可吃`)
 
   return {
     ...prepared,

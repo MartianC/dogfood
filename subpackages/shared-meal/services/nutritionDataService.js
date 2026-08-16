@@ -86,7 +86,11 @@ async function loadMealAssessmentData(ingredients = []) {
     loadStandards(database),
     runtimeDataReleaseService
       .loadRuntimeRelease(database)
-      .then((release) => loadFoodNutritionProfiles(database, foodIds, release.release_id))
+      .then((release) => loadFoodNutritionProfiles(
+        database,
+        foodIds,
+        runtimeDataReleaseService.nutritionProfileReleaseId(release)
+      ))
   ])
 
   return {

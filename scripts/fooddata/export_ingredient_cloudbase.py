@@ -641,7 +641,10 @@ def catalog_documents(
             if alias != row["canonical_name_zh"]
         ]
         yield {
-            "_id": f"{release_slug(release_id)}_{row['variant_id']}",
+            "_id": (
+                f"{release_slug(release_id)}_{release_slug(version)}_"
+                f"{row['variant_id']}"
+            ),
             "release_id": release_id,
             "catalog_version": version,
             "policy_version": safety_version,
@@ -748,7 +751,11 @@ def ranking_documents(
             items.append(
                 {
                     "rank": item["rank_position"],
-                    "catalog_id": f"{release_slug(release_id)}_{item['variant_id']}",
+                    "catalog_id": (
+                        f"{release_slug(release_id)}_"
+                        f"{release_slug(str(ranking['compatible_catalog_version']))}_"
+                        f"{item['variant_id']}"
+                    ),
                     "concept_id": item["concept_id"],
                     "variant_id": item["variant_id"],
                     "food_id": f"food_{item['source_food_id']}",

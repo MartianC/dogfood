@@ -108,9 +108,44 @@ python3 scripts/fooddata/select_preferred_ingredient_sources.py \
   --report data/ingredient-catalog/releases/<catalog_version>-selection-report.json
 ```
 
-菜谱写法进入概念发现前使用 `recipeIngredientNormalization/v7` 确定性清洗。调味料和油排除，水和加工助剂分流；油类只允许完整词或受控别名匹配，避免“牛油”误伤“牛油果”。v3回填发酵辅料、腌制调味品和裸上位词，并为熟制原料保留 `mention_preparation_state` 与 `nutrition_status`；v4增加受控裸词省略；v5增加里脊肉、里脊、精肉和精瘦肉的菜谱领域默认，并修正桂圆方向；v6将九层塔按罗勒归入调味料，并为熟牛腩保留状态；v7消费 CFCT 模型终态，桂圆肉和柿饼进入 `conversion_required`，燕窝、香米、奶白菜、珍珠及配方不稳定加工品进入终态隔离，不再重复进入来源候选或模型队列。模型不判断安全，也不能绕过来源和营养门禁直接写数据库。
+需要对 USDA 全量差集做守恒整理时，先运行全量目录准备器。它会把 Foundation 与
+SR Legacy 的每条来源归入“既有目录来源、标准食材候选、重复来源、复合/非食材隔离、
+缺少营养明细或身份冲突”之一；所有剩余来源必须被精确计数，不允许静默遗漏。基础
+身份按物种、部位和受控子类型聚合，同一身份的生熟、骨皮和来源差异交给唯一来源
+选择器处理。既有重复概念会合并到自动评分更优的保留概念，旧标准名转为别名，并
+输出概念重定向供策略和菜谱审核决定复用。
 
-阶段一可使用 `scripts/fooddata/run_recipe_ingredient_stage1.py` 独立执行。执行器从当前 SQLite 读取菜谱原料、已批准别名和中文来源名，生成不可覆盖的 `stage-1-decisions.json`、`stage-1-unresolved.json` 与 `stage-1-baseline-report.json`；报告固定记录模型调用数和外部 API token 成本为0，并为决定和未决产物记录 SHA-256，支持重复运行校验。
+```bash
+python3 scripts/fooddata/prepare_complete_usda_catalog.py \
+  --sqlite fooddata-cloudbase-export/<base>/ingredient_data.sqlite \
+  --base-catalog data/ingredient-catalog/releases/<base_catalog_version>.json \
+  --catalog-version <catalog_version> \
+  --out-candidate data/ingredient-catalog/releases/<catalog_version>-candidates.json \
+  --out-report data/ingredient-catalog/releases/<catalog_version>-usda-coverage-report.json \
+  --out-safety-review data/canine-ingredient-policies/reviews/<catalog_version>-usda-review-queue.json
+```
+
+2026-08-16 的 `2026-08-16-v19` 批次审计8,262条 USDA 来源，原目录使用260条，
+其余8,002条全部完成守恒归类；4,745条剩余基础食材来源进入1,610个身份簇，连同
+既有候选共覆盖4,928个来源。最终目录含1,624个唯一概念/来源，其中831项从多个
+同种来源中择优，3组既有重复概念被合并。复合食品、项目不支持的成品类别、1条无
+营养明细来源以及36条没有可靠中文标准名的来源保留在隔离报告中，不伪装成基础
+食材。新增1,250个概念及75个来源切换项进入安全审核队列；标准名最长24字，等级、
+脂肪修剪等 USDA 技术描述残留为0。旧有证据规则迁移后，其余保持 `unknown`，不会
+自动伪造安全结论。
+
+2026-08-17 的最终 `2026-08-17-v21` 在 v19 基础上补充受控粉条身份：新增“粉条”
+概念并唯一绑定 CFCT `22203`；普通粉条以及红薯、地瓜、甘薯、番薯、蕃薯、
+山芋粉条/粉丝归入该概念，其余非组合粉丝写法归入 USDA `169884` 豆制粉丝。
+“红薯粉条”不再作为生红薯别名，“红薯粉丝”不再使用豆制粉丝营养值。该规则
+只处理单一原料写法，包含“或”、顿号、逗号等替代/组合表达仍走拆分或隔离门禁。
+初始 v20 staging 导入暴露了旧导出器目录 `_id` 未包含 `catalog_version` 的隔离缺陷；
+active v18 恢复后，v21 将目录版本加入文档 ID 与排行 `catalog_id`，导入器也改按
+`catalog_version` 验收目录计数。v20 只保留为未激活审计版本，不得激活。
+
+菜谱写法进入概念发现前使用 `recipeIngredientNormalization/v8` 确定性清洗。水和加工助剂优先分流；已发布目录的精确身份优先于宽泛调味料/油排除，未进入目录的调味料和油继续排除，避免已有可靠身份仍被旧正则吞掉。油类只允许完整词或受控别名匹配，避免“牛油”误伤“牛油果”。v3回填发酵辅料、腌制调味品和裸上位词，并为熟制原料保留 `mention_preparation_state` 与 `nutrition_status`；v4增加受控裸词省略；v5增加里脊肉、里脊、精肉和精瘦肉的菜谱领域默认，并修正桂圆方向；v6将九层塔按罗勒归入调味料，并为熟牛腩保留状态；v7消费 CFCT 模型终态，桂圆肉和柿饼进入 `conversion_required`，燕窝、香米、奶白菜、珍珠及配方不稳定加工品进入终态隔离；v8增加受控粉条/粉丝身份分流，且不覆盖组合与替代表达。模型不判断安全，也不能绕过来源和营养门禁直接写数据库。
+
+阶段一可使用 `scripts/fooddata/run_recipe_ingredient_stage1.py` 独立执行。执行器从当前 SQLite 读取菜谱原料、已批准别名和中文来源名，生成不可覆盖的 `stage-1-decisions.json`、`stage-1-unresolved.json` 与 `stage-1-baseline-report.json`；报告固定记录模型调用数和外部 API token 成本为0，并为决定和未决产物记录 SHA-256，支持重复运行校验。目录换版时必须先把目标目录写入隔离 SQLite，再以该库运行阶段一；用旧库生成决定会使别名命中旧概念 ID，并在映射写入门禁中形成悬空引用。
 
 阶段一未决项先由 `scripts/fooddata/route_recipe_ingredient_stage1_unresolved.py` 保存为来源精确、上位词歧义、辅料漏判、调味料漏判、状态换算、品牌复合食品和来源身份候选7个互斥队列。阶段二再由 `scripts/fooddata/cluster_source_food_identities.py` 解析全部英文来源档案的基础身份、物种、部位、加工状态、骨皮状态和附加处理，并从同一身份簇中选择唯一烹调基准来源。
 
@@ -435,6 +470,11 @@ python3 scripts/fooddata/import_ingredient_cloudbase.py \
 ```
 
 脚本只允许写入 `data_releases`、`food_nutrition_profiles`、`ingredient_catalog`、`canine_ingredient_policies`、`nutrient_rankings` 与 `human_recipes`，导入前校验 manifest 行数和 SHA-256，按稳定 `_id` 幂等 Upsert；各投影按 `release_id`、`policy_version`、`ranking_version` 或 `recipe_version` 核对本版本数量，不与历史版本总数混淆。v2 人饭投影从输入 `mapping_version` 派生独立的运行时 `recipe_version`、`release_id` 和文档 ID，`data_releases` 同时保留旧 active 回滚候选，禁止与历史 v1 键空间重叠。脚本不会激活 `staging` 发布。
+
+目录文档 `_id` 必须同时包含营养底库版本、`catalog_version` 和 `variant_id`；仅使用
+营养底库版本与形态 ID 会让新 staging 覆盖旧 active。网络超时可能出现“服务端已
+提交、客户端未收到响应”，导入器只对网络错误有限重试，并允许在同一包、同一批次
+大小且线上版本计数精确命中批次边界时用 `--start-batch` 续传。
 
 CloudBase staging 的历史 v1 包含107条目录项、119条安全策略、44条营养素排行和6,082条人饭菜谱。目录结果为 `allowed=11`、`conditional=25`、`blocked=4`、`unknown=67`；这些历史投影按旧规则生成并保持不变。新 v2 投影使用 `allowed|conditional|unknown` 可操作、`blocked` 拒绝的统一规则，只写 staging，不自动切换 active。
 

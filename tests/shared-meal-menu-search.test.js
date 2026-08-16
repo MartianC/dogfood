@@ -566,11 +566,7 @@ test('菜单卡的选择与展开目标独立，详情按菜谱缓存且多选�
     assert.equal(page.data.expandedRecipeId, 'recipe-1')
     assert.equal(expandedRecipe.isExpanded, true)
     assert.equal(expandedRecipe.allowedIngredientText, '牛肉')
-    assert.equal(expandedRecipe.blockedIngredientText, '洋葱')
-    assert.doesNotMatch(
-      `${expandedRecipe.allowedIngredientText}${expandedRecipe.blockedIngredientText}`,
-      /一撮盐/
-    )
+    assert.equal(expandedRecipe.blockedIngredientText, '洋葱、一撮盐')
 
     await page.onToggleRecipeSelection({
       currentTarget: { dataset: { recipeId: 'recipe-2' } }
@@ -641,6 +637,62 @@ test('搜索结果携带原料预览时展开立即显示且不再请求详情',
     assert.equal(expandedRecipe.detailLoading, false)
     assert.equal(expandedRecipe.allowedIngredientText, '胡萝卜')
     assert.equal(expandedRecipe.blockedIngredientText, '洋葱')
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('展开时保留未映射的来源原料，显示数量与原料总数一致', async () => {
+  const sourceNames = [
+    '牛里脊',
+    '姜',
+    '蒜',
+    '小葱',
+    '干辣椒',
+    '花椒',
+    '生抽',
+    '香醋',
+    '白糖',
+    '食盐',
+    '食用油'
+  ]
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes() {
+      return {
+        items: [{
+          id: 'recipe-cold-beef',
+          title: '冷吃牛肉',
+          ingredientPreviewVersion: 1,
+          ingredients: sourceNames.map((rawName, position) => ({
+            position,
+            raw_name: rawName,
+            mapping_status: position === 0 ? 'matched' : 'unmatched',
+            components: position === 0
+              ? [{ canonical_name_zh: '牛里脊', policy_status: 'allowed' }]
+              : []
+          }))
+        }],
+        nextCursor: null
+      }
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    await page.onLoad()
+
+    await page.onToggleRecipeExpansion({
+      currentTarget: { dataset: { recipeId: 'recipe-cold-beef' } }
+    })
+
+    const expandedRecipe = page.data.recipes[0]
+    const displayedNames = [
+      ...expandedRecipe.allowedIngredientText.split('、'),
+      ...expandedRecipe.blockedIngredientText.split('、')
+    ]
+    assert.equal(expandedRecipe.mappingSummary, '11 项原料 · 1 项狗狗可吃')
+    assert.deepEqual(displayedNames, sourceNames)
   } finally {
     humanRecipeService.__setAdapterForTest(mock)
   }

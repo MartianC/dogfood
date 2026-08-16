@@ -21,6 +21,10 @@ function latestRelease(releases) {
   ))[0] || null
 }
 
+function nutritionProfileReleaseId(release = {}) {
+  return String(release.profile_release_id || release.base_release_id || release.release_id || '')
+}
+
 async function loadRuntimeRelease(database) {
   if (releaseCache) return releaseCache
   releaseCache = latestRelease(await readReleases(database, 'active'))
@@ -35,5 +39,6 @@ function clearCache() {
 module.exports = {
   loadRuntimeRelease,
   clearCache,
-  latestRelease
+  latestRelease,
+  nutritionProfileReleaseId
 }

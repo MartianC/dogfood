@@ -1,0 +1,20 @@
+{
+  "report_contract": "starchNoodleCatalogIntegrationReport/v1",
+  "policy_id": "starchNoodleCatalogIntegration/v1",
+  "base_catalog_version": "2026-08-16-v19",
+  "catalog_version": "2026-08-17-v20",
+  "concept_count": 1625,
+  "added_concept_count": 1,
+  "removed_aliases": [
+    {
+      "alias": "红薯粉丝",
+      "previous_concept_id": "ingredient_auto_model_261c51c9f1cd2baf"
+    },
+    {
+      "alias": "红薯粉条",
+      "previous_concept_id": "ingredient_sweet_potato"
+    }
+  ],
+  "cfct_alias_count": 17,
+  "usda_added_alias_count": 8
+}

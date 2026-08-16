@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from copy import deepcopy
 import hashlib
 import json
 import sqlite3
@@ -59,7 +60,22 @@ def decision_type(status: str) -> str:
     }[status]
 
 
-def load_review_decisions(paths: Path | list[Path] | None) -> dict[str, dict[str, Any]]:
+def load_concept_redirects(path: Path | None) -> dict[str, str]:
+    if path is None:
+        return {}
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        str(source): str(target)
+        for source, target in document.get("complete_usda_integration", {})
+        .get("merged_concept_redirects", {})
+        .items()
+    }
+
+
+def load_review_decisions(
+    paths: Path | list[Path] | None,
+    concept_redirects: dict[str, str] | None = None,
+) -> dict[str, dict[str, Any]]:
     if paths is None:
         return {}
     values = [paths] if isinstance(paths, Path) else paths
@@ -68,7 +84,18 @@ def load_review_decisions(paths: Path | list[Path] | None) -> dict[str, dict[str
         document = json.loads(path.read_text(encoding="utf-8"))
         if document.get("contract") != "recipeIngredientReviewedDecisions/v1":
             raise ValueError("原料审核决定合同不匹配")
-        for item in document.get("items", []):
+        for source_item in document.get("items", []):
+            item = deepcopy(source_item)
+            redirects = concept_redirects or {}
+            if item.get("concept_id"):
+                item["concept_id"] = redirects.get(
+                    str(item["concept_id"]), str(item["concept_id"])
+                )
+            if isinstance(item.get("components"), list):
+                item["components"] = [
+                    redirects.get(str(value), str(value))
+                    for value in item["components"]
+                ]
             key = normalize_text(str(item["normalized_name"]))
             if key in decisions:
                 if item.get("supersedes") is True:
@@ -196,6 +223,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--unresolved", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--review-decisions", type=Path, nargs="+")
+    parser.add_argument("--catalog", type=Path)
     return parser.parse_args()
 
 
@@ -209,10 +237,12 @@ def main() -> int:
         print("拒绝覆盖已有阶段一产物", file=sys.stderr)
         return 2
     try:
-        review_decisions = load_review_decisions(args.review_decisions)
+        concept_redirects = load_concept_redirects(args.catalog)
+        review_decisions = load_review_decisions(args.review_decisions, concept_redirects)
         with sqlite3.connect(args.sqlite) as conn:
             decisions, unresolved, report = build_stage1(conn, review_decisions)
         report["review_decision_count"] = len(review_decisions)
+        report["concept_redirect_count"] = len(concept_redirects)
         decision_bytes = encoded(decisions)
         unresolved_bytes = encoded(unresolved)
         report["artifact_sha256"] = {

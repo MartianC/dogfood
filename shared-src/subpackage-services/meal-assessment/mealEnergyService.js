@@ -1,4 +1,8 @@
-const ENERGY_ID = 1008
+const DIRECT_ENERGY_SOURCES = [
+  { nutrientId: 1008, source: 'direct' },
+  { nutrientId: 2047, source: 'direct_atwater_general' },
+  { nutrientId: 2048, source: 'direct_atwater_specific' }
+]
 const PROTEIN_ID = 1003
 const FAT_ID = 1004
 const CARBOHYDRATE_ID = 1005
@@ -27,8 +31,16 @@ function recordsByFood(nutrientRecords) {
 }
 
 function energyPer100g(foodRecords) {
-  const direct = foodRecords && foodRecords[ENERGY_ID]
-  if (direct && direct.unit === 'KCAL') return { value: direct.amount, source: 'direct' }
+  const directSource = DIRECT_ENERGY_SOURCES.find(({ nutrientId }) => {
+    const record = foodRecords && foodRecords[nutrientId]
+    return record && record.unit === 'KCAL'
+  })
+  if (directSource) {
+    return {
+      value: foodRecords[directSource.nutrientId].amount,
+      source: directSource.source
+    }
+  }
   const protein = foodRecords && foodRecords[PROTEIN_ID]
   const fat = foodRecords && foodRecords[FAT_ID]
   const carbohydrate = foodRecords && foodRecords[CARBOHYDRATE_ID]

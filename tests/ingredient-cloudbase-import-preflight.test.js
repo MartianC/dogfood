@@ -39,7 +39,11 @@ function writePackage(directory) {
       }
     },
     food_nutrition_profiles: { _id: 'food-1', release_id: 'release-v1' },
-    ingredient_catalog: { _id: 'catalog-1', release_id: 'release-v1' },
+    ingredient_catalog: {
+      _id: 'catalog-1',
+      release_id: 'release-v1',
+      catalog_version: 'catalog-v1'
+    },
     canine_ingredient_policies: { _id: 'policy-1', policy_version: 'policy-v1' },
     nutrient_rankings: { _id: 'ranking-1', ranking_version: 'ranking-v1' },
     human_recipes: { _id: 'recipe-1', recipe_version: 'recipe-v1' }
