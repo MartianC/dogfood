@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Iterable
 
 
-POLICY_ID = "recipeIngredientNormalization/v7"
+POLICY_ID = "recipeIngredientNormalization/v8"
 
 SEASONING_PATTERN = re.compile(
     "|".join(
@@ -247,6 +247,7 @@ QUALITY_PREFIXES = ("新鲜", "鲜", "冷冻", "速冻")
 STATE_PREFIXES = ("生", "熟", "去皮", "去骨", "带皮", "带骨")
 CUT_SUFFIXES = ("切片", "切丝", "切丁", "切块", "片", "丝", "丁", "块", "末", "碎", "段")
 PROTECTED_SUFFIXES = ("粉丝", "吐司", "芝士")
+SWEET_POTATO_TERMS = ("红薯", "地瓜", "甘薯", "番薯", "蕃薯", "山芋")
 SAFE_ANNOTATION_PATTERN = re.compile(
     r"面团|面糊|馅|内馅|装饰|表面|刷面|腌制|焯水|泡发|洗净|切好|备用|"
     r"油酥|水油皮|油皮|派皮|可选|可不放|用$"
@@ -260,6 +261,19 @@ QUANTITY_SUFFIX_PATTERN = re.compile(
 VAGUE_QUANTITY_PATTERN = re.compile(r"(?:适量|少许|若干|一点|一些)$")
 ALTERNATIVE_SPLIT_PATTERN = re.compile(r"(?:或者|或|/)")
 COMPOSITE_SPLIT_PATTERN = re.compile(r"[、,，+]|和")
+
+
+def controlled_starch_noodle_name(value: str) -> str | None:
+    """把非组合粉条及粉丝写法收敛到项目明确指定的两个营养身份。"""
+    if ALTERNATIVE_SPLIT_PATTERN.search(value) or COMPOSITE_SPLIT_PATTERN.search(value):
+        return None
+    if "粉条" in value:
+        return "粉条"
+    if value.endswith("粉丝"):
+        if any(term in value for term in SWEET_POTATO_TERMS):
+            return "粉条"
+        return "粉丝"
+    return None
 
 
 def normalize_text(value: str) -> str:
@@ -385,6 +399,29 @@ def clean_single(
             result.cleaned_name = current
             result.rule_trace.append("state_identity_mapping_after_candidate_cleanup")
 
+    if current in AUXILIARY_TERMS:
+        result.status = "auxiliary"
+        result.rule_id = AUXILIARY_TERMS[current]
+        return result
+
+    concept_id = alias_to_concept.get(current)
+    if concept_id:
+        result.status = "matched"
+        result.rule_id = "deterministic_alias_match"
+        result.concept_id = concept_id
+        return result
+
+    starch_noodle_name = controlled_starch_noodle_name(current)
+    if starch_noodle_name:
+        concept_id = alias_to_concept.get(starch_noodle_name)
+        if concept_id:
+            result.status = "matched"
+            result.rule_id = "controlled_starch_noodle_default"
+            result.concept_id = concept_id
+            result.cleaned_name = starch_noodle_name
+            result.rule_trace.append("controlled_starch_noodle_default")
+            return result
+
     excluded = exclusion_category(current)
     if excluded:
         result.status = "excluded"
@@ -393,10 +430,6 @@ def clean_single(
         result.rule_trace.append(result.rule_id)
         return result
 
-    if current in AUXILIARY_TERMS:
-        result.status = "auxiliary"
-        result.rule_id = AUXILIARY_TERMS[current]
-        return result
     isolation_reason = TERMINAL_ISOLATIONS.get(current)
     if isolation_reason:
         result.status = "isolated"
@@ -413,12 +446,6 @@ def clean_single(
             result.cleaned_name = bare_default
             result.rule_trace.append("controlled_bare_ingredient_default")
             return result
-    concept_id = alias_to_concept.get(current)
-    if concept_id:
-        result.status = "matched"
-        result.rule_id = "deterministic_alias_match"
-        result.concept_id = concept_id
-        return result
     if current in source_names:
         result.status = "source_candidate"
         result.rule_id = "deterministic_source_name_match"

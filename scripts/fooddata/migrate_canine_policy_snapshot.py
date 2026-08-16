@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from copy import deepcopy
 import json
 import sys
 from pathlib import Path
@@ -29,6 +30,12 @@ def migrate(
     next_review_at: str,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     concept_ids = {str(item["concept_id"]) for item in catalog.get("items", [])}
+    redirects = {
+        str(source): str(target)
+        for source, target in catalog.get("complete_usda_integration", {})
+        .get("merged_concept_redirects", {})
+        .items()
+    }
     variant_ids = {
         str(variant["variant_id"])
         for item in catalog.get("items", [])
@@ -36,11 +43,22 @@ def migrate(
     }
     if not concept_ids or not variant_ids:
         raise ValueError("目标目录为空或缺少形态")
-    concept_policies = [
-        rule
-        for rule in previous.get("concept_policies", [])
-        if str(rule.get("concept_id", "")) in concept_ids
-    ]
+    concept_policies_by_id: dict[str, dict[str, Any]] = {}
+    redirected_concept_rules: dict[str, str] = {}
+    for rule in previous.get("concept_policies", []):
+        source_id = str(rule.get("concept_id", ""))
+        target_id = redirects.get(source_id, source_id)
+        if target_id not in concept_ids:
+            continue
+        migrated = deepcopy(rule)
+        migrated["concept_id"] = target_id
+        previous_rule = concept_policies_by_id.get(target_id)
+        if previous_rule and previous_rule != migrated:
+            raise ValueError(f"合并概念存在冲突安全策略：{source_id} -> {target_id}")
+        concept_policies_by_id[target_id] = migrated
+        if source_id != target_id:
+            redirected_concept_rules[source_id] = target_id
+    concept_policies = [concept_policies_by_id[key] for key in sorted(concept_policies_by_id)]
     variant_policies = [
         rule
         for rule in previous.get("variant_policies", [])
@@ -49,7 +67,7 @@ def migrate(
     dropped_concepts = sorted(
         str(rule.get("concept_id", ""))
         for rule in previous.get("concept_policies", [])
-        if str(rule.get("concept_id", "")) not in concept_ids
+        if redirects.get(str(rule.get("concept_id", "")), str(rule.get("concept_id", ""))) not in concept_ids
     )
     dropped_variants = sorted(
         str(rule.get("variant_id", ""))
@@ -70,6 +88,7 @@ def migrate(
             "rule": "仅迁移目标目录中身份和形态 ID 均未变化的显式规则；其余概念由种子器生成 unknown。",
             "dropped_concept_rules": dropped_concepts,
             "dropped_variant_rules": dropped_variants,
+            "redirected_concept_rules": redirected_concept_rules,
         },
         "evidence_library": previous["evidence_library"],
         "concept_policies": concept_policies,
@@ -86,6 +105,7 @@ def migrate(
         - len({str(rule["concept_id"]) for rule in concept_policies}),
         "dropped_concept_rules": dropped_concepts,
         "dropped_variant_rules": dropped_variants,
+        "redirected_concept_rules": redirected_concept_rules,
     }
     return output, report
 

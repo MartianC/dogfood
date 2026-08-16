@@ -1,0 +1,18 @@
+{
+  "mapping_version": "2026-08-17-v6",
+  "compatible_catalog_version": "2026-08-17-v20",
+  "compatible_policy_version": "2026-08-17-v5",
+  "source_declaration": "data/human-recipes/sources/capu-5w.json",
+  "generated_at": "2026-08-17T00:00:00Z",
+  "automatic_rules": [
+    "approved_alias_exact"
+  ],
+  "review_task_min_occurrences": 2147483647,
+  "stage1_decisions": "fooddata-cloudbase-export/2026-08-17-starch-noodle-v20/stage1/stage-1-decisions.json",
+  "stage1_decisions_sha256": "5f5451fa68868c182a861b6a692d1fbc6577502d0c90308e8bff8e25997a4453",
+  "manual_decisions": [],
+  "migration": {
+    "previous_mapping_version": "2026-08-16-v5",
+    "decision_change": "按受控规则将粉条及红薯粉丝映射到 CFCT 22203，其余粉丝映射到 USDA 169884。"
+  }
+}

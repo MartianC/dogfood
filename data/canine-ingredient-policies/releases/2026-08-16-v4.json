@@ -1,0 +1,1026 @@
+{
+  "policy_version": "2026-08-16-v4",
+  "compatible_catalog_version": "2026-08-16-v19",
+  "evidence_reviewed_at": "2026-08-15",
+  "review": {
+    "reviewed_by": "system:versioned-policy-migration（自动迁移，非专业终审）",
+    "reviewed_at": "2026-08-16",
+    "next_review_at": "2026-11-16"
+  },
+  "migration": {
+    "previous_policy_version": "2026-08-15-v3",
+    "rule": "仅迁移目标目录中身份和形态 ID 均未变化的显式规则；其余概念由种子器生成 unknown。",
+    "dropped_concept_rules": [],
+    "dropped_variant_rules": [
+      "variant_beef_meat_raw_lean",
+      "variant_pork_meat_raw_lean",
+      "variant_white_rice_long_grain_raw"
+    ],
+    "redirected_concept_rules": {
+      "ingredient_plain_greek_yogurt": "ingredient_stage2_b0df7aca2b149480"
+    }
+  },
+  "evidence_library": {
+    "aspca_avoid": {
+      "title": "People Foods to Avoid Feeding Your Pets",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/pet-care/aspca-poison-control/people-foods-avoid-feeding-your-pets",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "aspca_share": {
+      "title": "Sharing is Caring: Foods You Can Safely Share with Your Pet",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/news/sharing-caring-foods-you-can-safely-share-your-pet",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "ucd_treats": {
+      "title": "Treat Guidelines for Dogs",
+      "publisher": "UC Davis School of Veterinary Medicine",
+      "url": "https://healthtopics.vetmed.ucdavis.edu/health-topics/canine/treat-guidelines-dogs",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "tamu_people_food": {
+      "title": "The Dos and Don'ts of Feeding Pets People Food",
+      "publisher": "Texas A&M Veterinary Medicine & Biomedical Sciences",
+      "url": "https://vetmed.tamu.edu/news/pet-talk/the-dos-and-donts-of-feeding-pets-people-food/",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "ucd_raw": {
+      "title": "From Snacks to Scraps",
+      "publisher": "UC Davis School of Veterinary Medicine",
+      "url": "https://synergy.vetmed.ucdavis.edu/news-article-fall-2023/snacks-scraps",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "cornell_raw": {
+      "title": "Raw foods for dogs: Evidence-based advice",
+      "publisher": "Cornell University College of Veterinary Medicine",
+      "url": "https://www.vet.cornell.edu/departments-centers-and-institutes/riney-canine-health-center/canine-health-topics/raw-foods-dogs-evidence-based-advice-riney-canine-health-center",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "ucd_salmon": {
+      "title": "Salmon Poisoning Disease in Dogs",
+      "publisher": "UC Davis School of Veterinary Medicine",
+      "url": "https://healthtopics.vetmed.ucdavis.edu/health-topics/canine/salmon-poisoning-disease-dogs",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "cornell_ibd": {
+      "title": "Inflammatory bowel disease and the home-prepared diet",
+      "publisher": "Cornell University College of Veterinary Medicine",
+      "url": "https://www.vet.cornell.edu/departments-centers-and-institutes/riney-canine-health-center/canine-health-topics/inflammatory-bowel-disease-and-home-prepared-diet",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "cornell_diet": {
+      "title": "Re-evaluating your dog's diet",
+      "publisher": "Cornell University College of Veterinary Medicine",
+      "url": "https://www.vet.cornell.edu/departments-centers-and-institutes/riney-canine-health-center/canine-health-topics/re-evaluating-your-dogs-diet",
+      "accessed_at": "2026-07-22",
+      "species": "dog"
+    },
+    "merck_allium_2024": {
+      "title": "Garlic and Onion (Allium spp) Toxicosis in Animals",
+      "publisher": "Merck Veterinary Manual",
+      "url": "https://www.merckvetmanual.com/toxicology/food-hazards/garlic-and-onion-allium-spp-toxicosis-in-animals",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "merck_chocolate_2024": {
+      "title": "Chocolate Toxicosis in Animals",
+      "publisher": "Merck Veterinary Manual",
+      "url": "https://www.merckvetmanual.com/toxicology/food-hazards/chocolate-toxicosis-in-animals",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "aspca_chives": {
+      "title": "Chives",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants/chives",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "aspca_lemon": {
+      "title": "Lemon",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants/lemon",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "aspca_ginkgo": {
+      "title": "Fall Plants: Hazardous or Harmless?",
+      "publisher": "ASPCA Animal Poison Control Center",
+      "url": "https://www.aspca.org/news/fall-plants-hazardous-or-harmless",
+      "accessed_at": "2026-08-15",
+      "species": "pet"
+    },
+    "yamato_chive_dog_2005": {
+      "title": "Heinz body hemolytic anemia with eccentrocytosis from ingestion of Chinese chive and garlic in a dog",
+      "publisher": "Journal of the American Animal Hospital Association",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15634869/",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    },
+    "jvma_ginkgo_dog_2023": {
+      "title": "Case of Suspected Ginkgo Seed Poisoning in a Dog",
+      "publisher": "Journal of the Japan Veterinary Medical Association",
+      "url": "https://doi.org/10.12935/jvma.76.e304",
+      "accessed_at": "2026-08-15",
+      "species": "dog"
+    }
+  },
+  "concept_policies": [
+    {
+      "concept_id": "ingredient_apple",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出带皮苹果果肉；选择时仍需避免果核和籽。"
+    },
+    {
+      "concept_id": "ingredient_auto_model_42a2a51c9c828059",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": [
+        "merck_allium_2024",
+        "aspca_chives",
+        "yamato_chive_dog_2005"
+      ],
+      "rationale": "韭菜属于 Allium，已有犬摄入 Chinese chive 后发生 Heinz 小体溶血性贫血的病例证据。"
+    },
+    {
+      "concept_id": "ingredient_auto_model_888df20a1476558b",
+      "decision": "blocked",
+      "hazard_type": "citrus_peel_toxicity",
+      "evidence_ids": [
+        "aspca_lemon",
+        "aspca_avoid"
+      ],
+      "rationale": "当前概念明确指向柠檬皮，ASPCA 将果皮中的精油和补骨脂素列为犬风险成分；不能以普通清洗或烹调自动放行。"
+    },
+    {
+      "concept_id": "ingredient_banana",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出香蕉。"
+    },
+    {
+      "concept_id": "ingredient_beef_ground",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share",
+        "cornell_diet"
+      ],
+      "rationale": "无调味并彻底熟制的瘦牛肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_beef_meat",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share",
+        "cornell_diet"
+      ],
+      "rationale": "无调味并彻底熟制的瘦牛肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_beef_tenderloin",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "无骨、无调味并彻底熟制的瘦牛肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_beef_top_sirloin",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "无骨、无调味并彻底熟制的瘦牛肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_broccoli",
+      "decision": "allowed",
+      "evidence_ids": [
+        "tamu_people_food"
+      ],
+      "rationale": "兽医学院资料将西兰花列为犬可食用的无调味蔬菜候选。"
+    },
+    {
+      "concept_id": "ingredient_butternut_squash",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出烤制奶油南瓜；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_carrot",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats",
+        "tamu_people_food"
+      ],
+      "rationale": "兽医学院犬类指南明确列出胡萝卜作为可用食物示例。"
+    },
+    {
+      "concept_id": "ingredient_cfct_13f6c1e7623a0b06",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": [
+        "merck_allium_2024",
+        "yamato_chive_dog_2005"
+      ],
+      "rationale": "韭黄是 Allium tuberosum 的黄化叶，遮光栽培不是毒理去除处理。"
+    },
+    {
+      "concept_id": "ingredient_chicken_breast",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "去骨、去皮、无调味并彻底熟制的瘦鸡肉可作为狗饭候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_chicken_meat",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "去骨、去皮、无调味并彻底熟制的鸡肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_chicken_thigh",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "去骨、去皮、无调味并彻底熟制的鸡肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_coconut_oil",
+      "decision": "conditional",
+      "hazard_type": "gastrointestinal_or_high_fat",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "veterinary_or_formula_limit_confirmed",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "requires_formula_limit"
+      },
+      "evidence_ids": [
+        "aspca_avoid"
+      ],
+      "rationale": "ASPCA 提示椰子及椰子油可能造成胃肠不适，当前产品尚无经审核用量阈值。"
+    },
+    {
+      "concept_id": "ingredient_controlled_c5b69a0214b24818",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": [
+        "merck_allium_2024",
+        "yamato_chive_dog_2005"
+      ],
+      "rationale": "韭薹是 Allium tuberosum 的花薹，改变食用部位不能建立经验证的犬用安全条件。"
+    },
+    {
+      "concept_id": "ingredient_cottage_cheese",
+      "decision": "conditional",
+      "hazard_type": "dairy_tolerance",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "individual_dairy_tolerance_confirmed",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unsalted",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "requires_individual_history_and_product_check"
+      },
+      "evidence_ids": [
+        "aspca_avoid",
+        "aspca_share"
+      ],
+      "rationale": "奶酪只能少量、无调味使用，且奶制品可能造成消化不适；当前产品不能验证个体耐受和具体产品钠含量。"
+    },
+    {
+      "concept_id": "ingredient_cucumber",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "ASPCA 犬类分享食物指引明确提及黄瓜。"
+    },
+    {
+      "concept_id": "ingredient_garlic",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": [
+        "aspca_avoid",
+        "ucd_treats"
+      ],
+      "rationale": "权威犬类资料将大蒜列为应避免食材，目录中任何大蒜形态均不得进入狗饭选择链路。"
+    },
+    {
+      "concept_id": "ingredient_grape",
+      "decision": "blocked",
+      "hazard_type": "renal_toxicity",
+      "evidence_ids": [
+        "aspca_avoid",
+        "ucd_treats"
+      ],
+      "rationale": "葡萄与犬肾损伤风险相关，不能用无籽或品种差异放宽。"
+    },
+    {
+      "concept_id": "ingredient_green_beans",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats",
+        "tamu_people_food"
+      ],
+      "rationale": "兽医学院犬类资料明确列出四季豆作为无调味食物候选。"
+    },
+    {
+      "concept_id": "ingredient_onion",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": [
+        "aspca_avoid",
+        "ucd_treats"
+      ],
+      "rationale": "权威犬类资料将洋葱列为应避免食材，目录中任何洋葱形态均不得进入狗饭选择链路。"
+    },
+    {
+      "concept_id": "ingredient_peach",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出桃肉；目录形态不包含果核。"
+    },
+    {
+      "concept_id": "ingredient_pear",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出梨果肉。"
+    },
+    {
+      "concept_id": "ingredient_pork_ground",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "无调味并彻底熟制的瘦猪肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_pork_loin",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share",
+        "cornell_ibd"
+      ],
+      "rationale": "无骨、无调味并彻底熟制的猪外脊可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_pork_meat",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "无调味并彻底熟制的瘦猪肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_pork_tenderloin",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share",
+        "cornell_ibd"
+      ],
+      "rationale": "无骨、无调味并彻底熟制的猪里脊可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_pumpkin",
+      "decision": "allowed",
+      "evidence_ids": [
+        "tamu_people_food"
+      ],
+      "rationale": "无调味南瓜可作为犬食物候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_raisin",
+      "decision": "blocked",
+      "hazard_type": "renal_toxicity",
+      "evidence_ids": [
+        "aspca_avoid",
+        "ucd_treats"
+      ],
+      "rationale": "葡萄干与犬肾损伤风险相关，浓缩或干制状态不能视为安全。"
+    },
+    {
+      "concept_id": "ingredient_salmon",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_salmon"
+      ],
+      "rationale": "彻底熟制的鱼可适量使用；当前目录为生鱼营养形态，另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_spaghetti",
+      "decision": "allowed",
+      "evidence_ids": [
+        "cornell_diet"
+      ],
+      "rationale": "Cornell 犬类资料明确使用煮熟意大利面；当前干面形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_spinach",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出煮菠菜；当前目录形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_stage2_b0df7aca2b149480",
+      "decision": "conditional",
+      "hazard_type": "dairy_tolerance",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "individual_dairy_tolerance_confirmed",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "no_xylitol_or_sweetener",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "requires_individual_history_and_label_check"
+      },
+      "evidence_ids": [
+        "aspca_avoid"
+      ],
+      "rationale": "奶制品可能引起消化不适，且产品标签可能含不适合犬的甜味剂；当前产品不能验证个体耐受和标签。"
+    },
+    {
+      "concept_id": "ingredient_stage2_edb8f30ddf374568",
+      "decision": "blocked",
+      "hazard_type": "methylxanthine_toxicity",
+      "evidence_ids": [
+        "merck_chocolate_2024",
+        "aspca_avoid"
+      ],
+      "rationale": "可可粉固有的可可碱和咖啡因可导致犬心脏及中枢神经毒性，不能通过普通烹调建立可验证安全条件。"
+    },
+    {
+      "concept_id": "ingredient_stage4_0281ad73aedd22c8",
+      "decision": "blocked",
+      "hazard_type": "allium_toxicity",
+      "evidence_ids": [
+        "merck_allium_2024",
+        "aspca_chives"
+      ],
+      "rationale": "红葱头属于 Allium，生、熟、脱水或粉末形态均不能可靠消除犬氧化性溶血风险。"
+    },
+    {
+      "concept_id": "ingredient_stage4_d616c8bcd232bcf6",
+      "decision": "blocked",
+      "hazard_type": "ginkgotoxin_toxicity",
+      "evidence_ids": [
+        "aspca_ginkgo",
+        "jvma_ginkgo_dog_2023"
+      ],
+      "rationale": "白果即银杏种子，含 ginkgotoxin，已有犬摄入后出现呕吐、震颤、意识和站立异常的病例；未建立犬用安全摄入量。"
+    },
+    {
+      "concept_id": "ingredient_strawberry",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出草莓。"
+    },
+    {
+      "concept_id": "ingredient_sweet_potato",
+      "decision": "allowed",
+      "evidence_ids": [
+        "tamu_people_food",
+        "cornell_ibd"
+      ],
+      "rationale": "兽医学院资料使用熟制红薯作为犬食物；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_tilapia",
+      "decision": "allowed",
+      "evidence_ids": [
+        "cornell_ibd"
+      ],
+      "rationale": "Cornell 犬用家庭饮食资料明确使用熟制罗非鱼；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_turkey_breast",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "去皮、无骨、无调味并彻底熟制的火鸡胸肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_turkey_ground",
+      "decision": "allowed",
+      "evidence_ids": [
+        "aspca_share"
+      ],
+      "rationale": "无骨、无调味并彻底熟制的瘦火鸡肉可作为候选；当前生形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_watermelon",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "UC Davis 犬类指南明确列出西瓜果肉。"
+    },
+    {
+      "concept_id": "ingredient_white_rice",
+      "decision": "allowed",
+      "evidence_ids": [
+        "cornell_diet"
+      ],
+      "rationale": "Cornell 犬类资料明确使用普通煮熟米饭；当前生米形态另设熟制条件。"
+    },
+    {
+      "concept_id": "ingredient_zucchini",
+      "decision": "allowed",
+      "evidence_ids": [
+        "ucd_treats",
+        "tamu_people_food"
+      ],
+      "rationale": "兽医学院犬类资料明确列出西葫芦作为无调味食物候选。"
+    }
+  ],
+  "variant_policies": [
+    {
+      "variant_id": "variant_chicken_breast_raw_skinless",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生鸡胸肉，必须在喂食前彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_chicken_thigh_raw_skinless",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生鸡腿肉，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_chicken_meat_raw_skinless",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生鸡肉，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_turkey_ground_raw_93",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生火鸡肉末，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_turkey_breast_raw_skinless",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生火鸡胸肉，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_beef_ground_raw_90",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生牛肉末，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_beef_tenderloin_raw",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生牛里脊，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_beef_top_sirloin_raw",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生牛上腰肉，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_pork_ground_raw",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生猪肉末，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_pork_tenderloin_raw",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生猪里脊，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_pork_loin_raw_boneless",
+      "decision": "conditional",
+      "hazard_type": "raw_animal_product",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_raw",
+        "cornell_raw"
+      ],
+      "rationale": "营养记录对应生猪外脊，必须彻底熟制且不加调味；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_salmon_atlantic_raw",
+      "decision": "conditional",
+      "hazard_type": "raw_fish",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_salmon",
+        "ucd_raw"
+      ],
+      "rationale": "生三文鱼存在寄生虫和病原风险，必须彻底熟制；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_tilapia_raw",
+      "decision": "conditional",
+      "hazard_type": "raw_fish",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_thoroughly",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "code": "plain_unseasoned",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "cornell_ibd",
+        "ucd_raw"
+      ],
+      "rationale": "Cornell 使用熟制罗非鱼，生鱼形态必须彻底熟制；当前产品尚不能验证。"
+    },
+    {
+      "variant_id": "variant_pumpkin_raw_peeled",
+      "decision": "conditional",
+      "hazard_type": "preparation_required",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_plain",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "tamu_people_food"
+      ],
+      "rationale": "证据支持无调味处理后的南瓜，当前营养记录为生南瓜，需确认熟制。"
+    },
+    {
+      "variant_id": "variant_butternut_squash_raw",
+      "decision": "conditional",
+      "hazard_type": "preparation_required",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_plain",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "证据示例为烤制奶油南瓜，当前营养记录为生形态，需确认熟制。"
+    },
+    {
+      "variant_id": "variant_sweet_potato_raw_peeled",
+      "decision": "conditional",
+      "hazard_type": "preparation_required",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_plain",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "tamu_people_food",
+        "cornell_ibd"
+      ],
+      "rationale": "证据使用熟制红薯，当前营养记录为生形态，需确认熟制。"
+    },
+    {
+      "variant_id": "variant_spinach_baby",
+      "decision": "conditional",
+      "hazard_type": "preparation_required",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_plain",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "ucd_treats"
+      ],
+      "rationale": "证据示例为煮菠菜，当前形态未体现熟制，需确认熟制。"
+    },
+    {
+      "variant_id": "variant_spaghetti_whole_grain_dry",
+      "decision": "conditional",
+      "hazard_type": "preparation_required",
+      "conditions": {
+        "requirements": [
+          {
+            "code": "cook_plain",
+            "operator": "eq",
+            "value": true
+          }
+        ],
+        "enforceable": false,
+        "enforcement": "recipe_cooking_confirmation_required"
+      },
+      "evidence_ids": [
+        "cornell_diet"
+      ],
+      "rationale": "证据支持煮熟意大利面，当前营养记录为干面，需确认熟制。"
+    }
+  ]
+}

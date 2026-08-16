@@ -8,6 +8,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -24,7 +25,7 @@ DEFAULT_MAX_COMMAND_BYTES = 700_000
 VERSION_FIELDS = {
     "data_releases": "release_id",
     "food_nutrition_profiles": "release_id",
-    "ingredient_catalog": "release_id",
+    "ingredient_catalog": "catalog_version",
     "canine_ingredient_policies": "policy_version",
     "nutrient_rankings": "ranking_version",
     "human_recipes": "recipe_version",
@@ -38,6 +39,18 @@ ROLLBACK_CANDIDATE_FIELDS = (
     "recipe_version",
     "mapping_version",
 )
+TRANSIENT_CLI_ERRORS = (
+    "请求超时",
+    "ECONNRESET",
+    "ETIMEDOUT",
+    "socket hang up",
+)
+MAX_CLI_ATTEMPTS = 2
+
+
+def is_transient_cli_error(value: object) -> bool:
+    detail = str(value)
+    return any(marker in detail for marker in TRANSIENT_CLI_ERRORS)
 
 
 def sha256_file(path: Path) -> str:
@@ -184,25 +197,41 @@ def iter_batches(
 
 
 def run_tcb(tcb_bin: Path, env_id: str, command: str) -> dict[str, Any]:
-    result = subprocess.run(
-        [
-            str(tcb_bin),
-            "-e",
-            env_id,
-            "db",
-            "nosql",
-            "execute",
-            "--json",
-            "--command",
-            command,
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode != 0:
-        detail = (result.stderr or result.stdout).strip()
-        raise RuntimeError(f"CloudBase CLI 执行失败：{detail}")
+    for attempt in range(1, MAX_CLI_ATTEMPTS + 1):
+        result = subprocess.run(
+            [
+                str(tcb_bin),
+                "-e",
+                env_id,
+                "db",
+                "nosql",
+                "execute",
+                "--json",
+                "--command",
+                command,
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        detail = "\n".join(
+            value.strip()
+            for value in (result.stderr, result.stdout)
+            if value and value.strip()
+        )
+        if result.returncode == 0:
+            break
+        transient = is_transient_cli_error(detail)
+        if not transient or attempt == MAX_CLI_ATTEMPTS:
+            raise RuntimeError(f"CloudBase CLI 执行失败：{detail}")
+        delay_seconds = attempt * 2
+        print(
+            f"CloudBase CLI 网络错误，第 {attempt}/{MAX_CLI_ATTEMPTS} 次失败，"
+            f"{delay_seconds} 秒后重试",
+            file=sys.stderr,
+            flush=True,
+        )
+        time.sleep(delay_seconds)
 
     json_start = result.stdout.find("{")
     if json_start < 0:
@@ -246,25 +275,43 @@ def import_collection(
     path: Path,
     expected_rows: int,
     max_command_bytes: int,
+    start_batch: int,
 ) -> None:
-    imported = 0
+    processed = 0
     version_query: dict[str, Any] | None = None
     for batch_number, (documents, command) in enumerate(
         iter_batches(collection, path, max_command_bytes), start=1
     ):
-        run_tcb(tcb_bin, env_id, command)
-        imported += len(documents)
-        print(
-            f"{collection}: 批次 {batch_number} 完成，已处理 {imported}/{expected_rows}",
-            flush=True,
-        )
-
         version_field = VERSION_FIELDS.get(collection)
         if version_field and version_query is None:
             versions = {str(document.get(version_field, "")) for document in documents}
             if len(versions) != 1 or not next(iter(versions)):
                 raise ValueError(f"{collection} 批次必须且只能包含一个 {version_field}")
             version_query = {version_field: next(iter(versions))}
+        if batch_number < start_batch:
+            processed += len(documents)
+            continue
+        expected_after_batch = processed + len(documents)
+        try:
+            run_tcb(tcb_bin, env_id, command)
+        except RuntimeError as error:
+            if not is_transient_cli_error(error) or version_query is None:
+                raise
+            actual_after_timeout = count_collection(
+                tcb_bin, env_id, collection, version_query
+            )
+            if actual_after_timeout < expected_after_batch:
+                raise
+            print(
+                f"{collection}: 批次 {batch_number} 响应超时，"
+                f"线上计数 {actual_after_timeout} 已确认提交",
+                flush=True,
+            )
+        processed = expected_after_batch
+        print(
+            f"{collection}: 批次 {batch_number} 完成，已处理 {processed}/{expected_rows}",
+            flush=True,
+        )
 
     actual_rows = count_collection(tcb_bin, env_id, collection, version_query)
     if actual_rows != expected_rows:
@@ -290,6 +337,12 @@ def parse_args() -> argparse.Namespace:
         "--max-command-bytes", type=int, default=DEFAULT_MAX_COMMAND_BYTES
     )
     parser.add_argument(
+        "--start-batch",
+        type=int,
+        default=1,
+        help="从指定批次继续幂等导入；仅在已按同一包和批次大小核对线上计数后使用",
+    )
+    parser.add_argument(
         "--preflight-only",
         action="store_true",
         help="只校验 manifest、SHA-256、行数、文档 ID 和批次大小，不写 CloudBase",
@@ -306,6 +359,9 @@ def main() -> int:
     args = parse_args()
     if args.max_command_bytes <= 0 or args.max_command_bytes >= 900_000:
         print("--max-command-bytes 必须在 1 到 899999 之间", file=sys.stderr)
+        return 1
+    if args.start_batch <= 0:
+        print("--start-batch 必须为正整数", file=sys.stderr)
         return 1
     if not args.preflight_only:
         if not args.env_id:
@@ -346,6 +402,7 @@ def main() -> int:
                 path,
                 expected_rows,
                 args.max_command_bytes,
+                args.start_batch,
             )
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as error:
         print(f"导入失败：{error}", file=sys.stderr)

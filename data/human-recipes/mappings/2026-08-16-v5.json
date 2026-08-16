@@ -1,0 +1,18 @@
+{
+  "mapping_version": "2026-08-16-v5",
+  "compatible_catalog_version": "2026-08-16-v19",
+  "compatible_policy_version": "2026-08-16-v4",
+  "source_declaration": "data/human-recipes/sources/capu-5w.json",
+  "generated_at": "2026-08-16T00:00:00Z",
+  "automatic_rules": [
+    "approved_alias_exact"
+  ],
+  "review_task_min_occurrences": 2147483647,
+  "stage1_decisions": "fooddata-cloudbase-export/2026-08-16-usda-complete-v19/stage1/stage-1-decisions.json",
+  "stage1_decisions_sha256": "68c6a3d86d5b047b678ed90f4434f8758b94f1bad54b7c3dabb6f5467a867edb",
+  "manual_decisions": [],
+  "migration": {
+    "previous_mapping_version": "2026-08-15-v4",
+    "decision_change": "使用完整 USDA v19 目录重新运行阶段一确定性映射。"
+  }
+}
