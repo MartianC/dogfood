@@ -180,6 +180,16 @@ test('过敏选择页通过 TDesign 适配层集中管理已选食材', () => {
   assert.match(wxml, /bind:tap="onClearSelected"/)
 })
 
+test('档案保存与过敏确认按钮使用带安全区的贴边背景层', () => {
+  const profileWxml = readPage('subpackages/dog-profile/dog-edit', 'wxml')
+  const allergyWxml = readPage('subpackages/custom-recipe/allergy-select', 'wxml')
+  const appWxss = fs.readFileSync(path.join(root, 'app.wxss'), 'utf8')
+
+  assert.match(profileWxml, /class="bottom-action bottom-action--surface"/)
+  assert.match(allergyWxml, /class="bottom-action bottom-action--surface"/)
+  assert.match(appWxss, /\.bottom-action\.bottom-action--surface\s*\{[\s\S]*?left:\s*0;[\s\S]*?padding:[^;]*env\(safe-area-inset-bottom\)[^;]*;[\s\S]*?background:\s*var\(--df-color-surface\)/)
+})
+
 test('过敏选择页有已有选择时默认展示已选页并支持集中取消', () => {
   const { createAllergyEntry } = require('../services/dogIngredientPolicy')
   const egg = createAllergyEntry({ conceptId: 'food-egg', name: '鸡蛋' })

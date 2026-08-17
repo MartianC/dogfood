@@ -161,7 +161,7 @@
     </view>
   </view>
 
-  <view class="bottom-action">
+  <view class="bottom-action bottom-action--surface">
     <ui-button loading="{{saving}}" disabled="{{saving}}" bind:tap="onSave">保存档案</ui-button>
   </view>
 </view>
