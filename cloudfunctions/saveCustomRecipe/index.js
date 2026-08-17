@@ -4,6 +4,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
 const { loadActiveRelease, validatePublishedIngredients } = require('./publishedDataValidation')
+const { isIngredientAllergen } = require('./dogIngredientPolicy')
 
 function normalize(doc) {
   return {
@@ -30,6 +31,15 @@ exports.main = async (event) => {
   if (!Array.isArray(payload.ingredients) || !payload.ingredients.length) throw new Error('请添加食材')
   const release = await loadActiveRelease(db)
   await validatePublishedIngredients(db, payload.ingredients, release)
+  const targetDogIds = Array.isArray(payload.targetDogIds) ? payload.targetDogIds : []
+  for (const dogId of targetDogIds) {
+    const dogResult = await db.collection('dogs').doc(String(dogId)).get()
+    const dog = dogResult.data
+    if (!dog || dog._openid !== wxContext.OPENID) throw new Error('无权使用该狗狗档案')
+    if (payload.ingredients.some((ingredient) => isIngredientAllergen(ingredient, dog))) {
+      throw new Error(`${dog.name || '狗狗'}的过敏食材不能保存到食谱`)
+    }
+  }
 
   const collection = db.collection('customRecipes')
   const now = new Date()
@@ -37,7 +47,7 @@ exports.main = async (event) => {
     _openid: wxContext.OPENID,
     title: String(payload.title).trim(),
     ingredients: payload.ingredients,
-    targetDogIds: Array.isArray(payload.targetDogIds) ? payload.targetDogIds : [],
+    targetDogIds,
     targetDogSnapshots: Array.isArray(payload.targetDogSnapshots) ? payload.targetDogSnapshots : [],
     adviceSummary: String(payload.adviceSummary || ''),
     advices: Array.isArray(payload.advices) ? payload.advices : [],

@@ -20,6 +20,7 @@
 | `components/vendor/recipe-fab` | `Fab` | event `tap` |
 | `components/vendor/recipe-empty` | `Empty`、`Button` | props `icon/title/description/actionText`；event `action` |
 | `components/vendor/recipe-ingredient-search` | `Search` | props `value/loading/placeholder/actionText`；events `change/action`；页面负责决定默认、结果和无结果状态 |
+| `components/vendor/recipe-filter-tabs` | `Tabs`、`TabPanel` | props `value/items`；event `change` 仅返回稳定字符串 `value`；固定使用标签型、不可滑动切换的等距选项卡 |
 | `components/vendor/recipe-ingredient-list` | `CellGroup`、`Cell`、`Input` | props `items/mode/actionIcon`；events `select/amountchange/remove` |
 | `components/vendor/recipe-ingredient-popup` | `Popup`、`Input`、`Button` | props `visible/ingredient/loading`；events `visiblechange/cancel/confirm` |
 | `components/vendor/recipe-menu-indicator` | `Checkbox`、本地 SVG、`Loading` | props `kind/checked/disabled/icon/iconSize/tone/text`；`kind` 支持 `checkbox/icon/loading/loading-compact`，紧凑 Loading 不保留 44pt 占位；`tone` 仅支持项目语义色 `default/primary/warning/muted`；Checkbox 受控并透出 `change`，SVG 和 Loading 仅展示；不读取菜谱服务 |

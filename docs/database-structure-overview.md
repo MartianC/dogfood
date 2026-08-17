@@ -82,7 +82,7 @@ CloudBase 公共只读投影
 | `avatarUrl` | string | 头像 |
 | `neutered` | boolean | 是否绝育 |
 | `dietGoal` | `daily` / `lowFat` / `gainWeight` / `stomachFriendly` | 饮食目标 |
-| `allergens` | string[] | 过敏源，创建时初始化为空数组 |
+| `allergens` | string[] | 用户确认的过敏食材，不设数量上限；新值使用 `concept:<conceptId>|<名称>` 编码以稳定匹配目录身份，旧名称和历史 `allergenKey` 继续兼容；创建时初始化为空数组 |
 | `avoidIngredients` | string[] | 忌口，创建时初始化为空数组 |
 | `healthNotes` | string | 健康备注 |
 | `specialNutritionNeeds` | object | 用户显式确认的疾病、生殖状态和治疗性体重管理；未知值为 `null` |

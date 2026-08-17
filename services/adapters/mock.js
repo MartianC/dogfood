@@ -27,6 +27,14 @@ function validateHiddenArrays(payload = {}) {
   validateSpecialNutritionNeeds(payload.specialNutritionNeeds)
 }
 
+function validateAllergens(allergens) {
+  if (!Array.isArray(allergens)) throw new Error('过敏源数据格式不正确')
+  if (
+    allergens.some((item) => typeof item !== 'string' || !item.trim() || item.length > 300)
+  ) throw new Error('过敏食材数据格式不正确')
+  return allergens.slice()
+}
+
 async function login() {
   const user = storage.getSync('mockUser', env.mockUser)
   storage.setSync('mockUser', user)
@@ -53,7 +61,8 @@ async function getDogProfileContract() {
   return {
     contract: 'dogProfile/v3',
     schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
-    supportsSpecialNutritionNeeds: true
+    supportsSpecialNutritionNeeds: true,
+    supportsAllergenPatch: true
   }
 }
 
@@ -89,6 +98,22 @@ async function updateDog(id, payload) {
   } : dog)
   storage.setSync('mockDogs', next)
   return next.find((dog) => dog.id === id)
+}
+
+async function updateDogAllergens(id, allergens) {
+  const nextAllergens = validateAllergens(allergens)
+  const dogs = await listDogs()
+  const index = dogs.findIndex((dog) => dog.id === id)
+  if (index < 0) throw new Error('未找到狗狗档案')
+  const saved = {
+    ...dogs[index],
+    allergens: nextAllergens,
+    updatedAt: now()
+  }
+  const next = dogs.slice()
+  next[index] = saved
+  storage.setSync('mockDogs', next)
+  return saved
 }
 
 async function deleteDog(id) {
@@ -380,6 +405,7 @@ module.exports = {
   listDogs,
   createDog,
   updateDog,
+  updateDogAllergens,
   deleteDog,
   saveCustomRecipe,
   saveMealPlan,

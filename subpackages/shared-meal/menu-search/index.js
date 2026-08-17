@@ -202,6 +202,7 @@ Page({
     }
     this.setData({ draftId })
     const restored = restoreDraft(draftId)
+    this.targetDog = restored.status === 'restored' ? restored.draft.dog : null
     const storedState = restored.status === 'restored'
       ? restoreStoredMenuSearchState(restored.draft)
       : null
@@ -359,7 +360,8 @@ Page({
     const request = humanRecipeService.searchHumanRecipes({
       query: keyword,
       limit: SEARCH_PAGE_LIMIT,
-      cursor: null
+      cursor: null,
+      ...(this.targetDog ? { dog: this.targetDog } : {})
     })
     this.initialSearchPromise = request
     try {
@@ -415,7 +417,8 @@ Page({
       const result = await humanRecipeService.searchHumanRecipes({
         query: keyword,
         limit: SEARCH_PAGE_LIMIT,
-        cursor
+        cursor,
+        ...(this.targetDog ? { dog: this.targetDog } : {})
       })
       if (searchToken !== this.activeSearchToken) return false
 
@@ -535,7 +538,7 @@ Page({
 
   async fetchRecipeDetail(recipeId) {
     try {
-      const recipe = await humanRecipeService.getHumanRecipe(recipeId)
+      const recipe = await humanRecipeService.getHumanRecipe(recipeId, this.targetDog)
       const detail = buildRecipeDetailDisplay(recipe)
       this.recipeDetailsById[recipeId] = detail
       return detail

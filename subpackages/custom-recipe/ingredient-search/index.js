@@ -3,6 +3,11 @@ const ingredientWorkbench = require('../services/ingredientWorkbench')
 const nutrientIngredientService = require('../services/nutrientIngredientService')
 const draftAdapters = require('../services/draftAdapters')
 const { canAddIngredient } = require('../services/ingredientOperationRules')
+const dogService = require('../../../services/dogService')
+const {
+  applyDogAllergyPolicy,
+  applyDogAllergyPolicies
+} = require('../../../services/dogIngredientPolicy')
 
 const INGREDIENT_PAGE_SIZE = 20
 
@@ -124,10 +129,11 @@ Page({
     searchHasMore: false,
     hasSearchQuery: false,
     selectedIngredient: null,
-    popupVisible: false
+    popupVisible: false,
+    targetDog: null
   },
 
-  onLoad(rawOptions = {}) {
+  async onLoad(rawOptions = {}) {
     const options = Object.keys(rawOptions).reduce((result, key) => {
       result[key] = decodeOption(rawOptions[key])
       return result
@@ -145,8 +151,14 @@ Page({
     this.openerEventChannel = typeof this.getOpenerEventChannel === 'function'
       ? this.getOpenerEventChannel()
       : null
+    let targetDog = recipe.dog || null
+    if (!targetDog && Array.isArray(recipe.targetDogIds) && recipe.targetDogIds.length) {
+      const dogs = await dogService.listDogs()
+      targetDog = dogs.find((dog) => recipe.targetDogIds.includes(dog.id)) || null
+    }
     this.setData({
       recipe,
+      targetDog,
       draftKind,
       draftId,
       ingredients,
@@ -183,9 +195,10 @@ Page({
         offset,
         limit: INGREDIENT_PAGE_SIZE
       })
+      const projectedItems = applyDogAllergyPolicies(page.items, this.data.targetDog)
       const catalogIngredients = append
-        ? appendUniqueIngredients(this.data.catalogIngredients, page.items)
-        : page.items
+        ? appendUniqueIngredients(this.data.catalogIngredients, projectedItems)
+        : projectedItems
       this.setData({
         catalogIngredients,
         catalogLoading: false,
@@ -243,11 +256,12 @@ Page({
         offset,
         limit: INGREDIENT_PAGE_SIZE
       })
+      const projectedItems = applyDogAllergyPolicies(page.items, this.data.targetDog)
       if (requestId !== this.searchRequestId) return false
       this.setData({
         searchResults: append
-          ? appendUniqueIngredients(this.data.searchResults, page.items)
-          : page.items,
+          ? appendUniqueIngredients(this.data.searchResults, projectedItems)
+          : projectedItems,
         searchLoading: false,
         searchLoadingMore: false,
         searchError: false,
@@ -309,9 +323,10 @@ Page({
         keyword
       })
       if (activeRequestId !== this.searchRequestId) return
-      const nextData = { searchResults, searchLoading: false }
+      const projectedResults = applyDogAllergyPolicies(searchResults, this.data.targetDog)
+      const nextData = { searchResults: projectedResults, searchLoading: false }
       if (!keyword) {
-        nextData.nutrientDefaultResults = searchResults
+        nextData.nutrientDefaultResults = projectedResults
         nextData.nutrientDefaultLoaded = true
       }
       this.setData(nextData)
@@ -454,7 +469,12 @@ Page({
 
   openIngredientPopup(ingredient) {
     if (!ingredient) return
-    this.setData({ selectedIngredient: ingredient, popupVisible: true })
+    const projected = applyDogAllergyPolicy(ingredient, this.data.targetDog)
+    if (!canAddIngredient(projected)) {
+      wx.showToast({ title: projected.blockedReason || '该食材不能加入', icon: 'none' })
+      return
+    }
+    this.setData({ selectedIngredient: projected, popupVisible: true })
   },
 
   onPopupVisibleChange(event) {
@@ -470,7 +490,11 @@ Page({
   },
 
   onPopupConfirm(event) {
-    const ingredient = event.detail.ingredient
+    const ingredient = applyDogAllergyPolicy(event.detail.ingredient, this.data.targetDog)
+    if (!canAddIngredient(ingredient)) {
+      wx.showToast({ title: ingredient.blockedReason || '该食材不能加入', icon: 'none' })
+      return
+    }
     const merged = this.data.ingredients.some((item) => isSameIngredient(item, ingredient))
     let ingredients
     try {

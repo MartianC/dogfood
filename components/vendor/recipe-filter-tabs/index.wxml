@@ -1,0 +1,15 @@
+<t-tabs
+  value="{{value}}"
+  theme="tag"
+  show-bottom-line="{{false}}"
+  swipeable="{{false}}"
+  t-class="recipe-filter-tabs__root"
+  bind:change="onChange"
+>
+  <t-tab-panel
+    wx:for="{{items}}"
+    wx:key="value"
+    label="{{item.label}}"
+    value="{{item.value}}"
+  />
+</t-tabs>

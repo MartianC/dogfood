@@ -118,6 +118,23 @@
         </view>
       </view>
 
+      <ui-field label="过敏食材">
+        <view class="dog-profile-allergens">
+          <view wx:if="{{allergyDisplayItems.length}}" class="dog-profile-allergens__list">
+            <ui-tag wx:for="{{allergyDisplayItems}}" wx:key="key" variant="profile-choice-selected" size="medium">{{item.name}}</ui-tag>
+          </view>
+          <view wx:else class="dog-profile-allergens__empty">暂未设置</view>
+          <ui-button
+            variant="secondary"
+            size="small"
+            block="{{false}}"
+            disabled="{{!id}}"
+            ariaLabel="{{id ? '选择过敏食材' : '保存档案后设置过敏食材'}}"
+            bind:tap="onChooseAllergens"
+          >{{id ? '选择食材' : '保存档案后设置'}}</ui-button>
+        </view>
+      </ui-field>
+
       <ui-field label="是否有已确诊疾病">
         <view class="dog-profile-choices" aria-role="radiogroup" aria-label="是否有已确诊疾病">
           <view wx:for="{{diseaseStatusOptions}}" wx:key="label" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.hasDisease === item.value}}" data-key="hasDisease" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">

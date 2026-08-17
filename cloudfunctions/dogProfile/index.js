@@ -1,5 +1,9 @@
 const cloud = require('wx-server-sdk')
-const { fieldsForWrite, normalizeProfileDocument } = require('./profileValidation')
+const {
+  fieldsForWrite,
+  allergensForWrite,
+  normalizeProfileDocument
+} = require('./profileValidation')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
@@ -14,7 +18,8 @@ exports.main = async (event) => {
     return {
       contract: 'dogProfile/v3',
       schemaVersion: 3,
-      supportsSpecialNutritionNeeds: true
+      supportsSpecialNutritionNeeds: true,
+      supportsAllergenPatch: true
     }
   }
 
@@ -45,6 +50,20 @@ exports.main = async (event) => {
     await collection.doc(event.id).update({
       data: {
         ...fields,
+        updatedAt: new Date()
+      }
+    })
+    const saved = await collection.doc(event.id).get()
+    return normalizeProfileDocument(saved.data)
+  }
+
+  if (action === 'updateAllergens') {
+    const allergens = allergensForWrite(event.allergens)
+    const existed = await collection.doc(event.id).get()
+    if (existed.data._openid !== wxContext.OPENID) throw new Error('无权修改该档案')
+    await collection.doc(event.id).update({
+      data: {
+        allergens,
         updatedAt: new Date()
       }
     })

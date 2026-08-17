@@ -16,6 +16,7 @@ const {
   deriveActivityLevel,
   estimateExpectedAdultWeight
 } = require('../../../services/dogProfileDerivations')
+const { allergyDisplayItems } = require('../../../services/dogIngredientPolicy')
 
 function localDateText(date = new Date()) {
   const year = date.getFullYear()
@@ -114,6 +115,7 @@ Page({
     dailyActivityHoursError: '',
     today: localDateText(),
     saving: false,
+    allergyDisplayItems: [],
     defaultDogAvatar: assets.defaultDogAvatar
   },
 
@@ -130,6 +132,7 @@ Page({
     this.setData({
       id: options.id,
       form,
+      allergyDisplayItems: allergyDisplayItems(form.allergens),
       ...profileState(form),
       breedIndex: optionIndex(breedOptions, form.breed),
       goalIndex: optionIndex(dietGoalOptions, form.dietGoal)
@@ -195,6 +198,33 @@ Page({
   onSpecialNutritionNeed(event) {
     const { key, value } = event.currentTarget.dataset
     this.setData({ [`form.specialNutritionNeeds.${key}`]: value })
+  },
+
+  onChooseAllergens() {
+    if (!this.data.id) {
+      wx.showToast({ title: '请先保存狗狗档案', icon: 'none' })
+      return
+    }
+    wx.navigateTo({
+      url: '/subpackages/custom-recipe/allergy-select/index',
+      events: {
+        allergensSelected: ({ allergens }) => {
+          const next = Array.isArray(allergens) ? allergens : []
+          this.setData({
+            'form.allergens': next,
+            allergyDisplayItems: allergyDisplayItems(next)
+          })
+        }
+      },
+      success: ({ eventChannel }) => {
+        if (eventChannel && typeof eventChannel.emit === 'function') {
+          eventChannel.emit('allergySelectionInit', {
+            dogId: this.data.id,
+            allergens: this.data.form.allergens || []
+          })
+        }
+      }
+    })
   },
 
   async onChooseAvatar() {

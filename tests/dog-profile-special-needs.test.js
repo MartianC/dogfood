@@ -185,6 +185,7 @@ test('Mock 适配器公开与云函数一致的 dogProfile/v3 能力', async () 
   assert.deepEqual(await mockAdapter.getDogProfileContract(), {
     contract: 'dogProfile/v3',
     schemaVersion: 3,
-    supportsSpecialNutritionNeeds: true
+    supportsSpecialNutritionNeeds: true,
+    supportsAllergenPatch: true
   })
 })

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "过敏食材",
+  "usingComponents": {
+    "recipe-filter-tabs": "../../../components/vendor/recipe-filter-tabs/index",
+    "recipe-ingredient-search": "../../../components/vendor/recipe-ingredient-search/index",
+    "ui-button": "../../../components/ui/ui-button/index",
+    "ui-empty": "../../../components/ui/ui-empty/index"
+  }
+}

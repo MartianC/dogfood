@@ -5,7 +5,7 @@
   open-type="{{openType}}"
   aria-label="{{ariaLabel}}"
   hover-class="ui-button--pressed"
-  bindtap="handleTap"
+  catchtap="handleTap"
   bindchooseavatar="handleChooseAvatar"
 >
   <slot />

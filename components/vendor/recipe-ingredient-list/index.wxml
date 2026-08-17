@@ -4,8 +4,8 @@
     wx:key="id"
     title="{{item.name}}"
     description="{{item.displayDescription || item.categoryLabel}}"
-    hover="{{mode === 'search'}}"
-    t-class="recipe-ingredient-list__cell recipe-ingredient-list__cell--{{mode}}"
+    hover="{{mode === 'search' && !item.blockedByDogAllergy}}"
+    t-class="recipe-ingredient-list__cell recipe-ingredient-list__cell--{{mode}} {{item.blockedByDogAllergy ? 'recipe-ingredient-list__cell--blocked' : ''}}"
     data-index="{{index}}"
     bind:click="onCellClick"
   >
@@ -24,6 +24,12 @@
       />
     </view>
     <view
+      wx:if="{{item.blockedByDogAllergy}}"
+      slot="right-icon"
+      class="recipe-ingredient-list__blocked-label"
+    >不能添加</view>
+    <view
+      wx:else
       slot="right-icon"
       class="recipe-ingredient-list__action recipe-ingredient-list__action--{{mode}}"
       data-index="{{index}}"
