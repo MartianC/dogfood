@@ -9,6 +9,7 @@ const authService = require('../services/authService')
 const energyRequirementService = require('../subpackages/custom-recipe/services/energyRequirementService')
 const {
   fieldsForWrite: cloudFieldsForWrite,
+  allergensForWrite,
   normalizeProfileDocument: normalizeCloudProfile,
   shanghaiDateText,
   SUPPORTED_BREEDS: cloudSupportedBreeds
@@ -62,6 +63,106 @@ test('档案校验拒绝无效日期、品种和 Slider 数值', () => {
 
   const mixedBreed = dogService.normalizeDog({ ...puppy, breed: 'mixed-or-unknown' })
   assert.doesNotThrow(() => dogService.validateDog(mixedBreed, '2026-07-18'))
+})
+
+test('档案过敏食材不设数量上限但仍拒绝损坏条目', () => {
+  const allergens = Array.from({ length: 50 }, (_, index) => `concept:ingredient-${index}|食材${index}`)
+  assert.doesNotThrow(() => dogService.validateDog(dogService.normalizeDog({
+    ...puppy,
+    allergens
+  })))
+  assert.deepEqual(
+    cloudFieldsForWrite({ ...puppy, allergens }, { today: '2026-07-18' }).allergens,
+    allergens
+  )
+  assert.throws(
+    () => dogService.validateDog(dogService.normalizeDog({ ...puppy, allergens: [''] })),
+    /过敏食材数据格式不正确/
+  )
+})
+
+test('过敏食材专用写入校验不要求完整档案且不设数量上限', () => {
+  const allergens = Array.from({ length: 80 }, (_, index) => `concept:ingredient-${index}|食材${index}`)
+
+  assert.deepEqual(allergensForWrite(allergens), allergens)
+  assert.throws(() => allergensForWrite('鸡蛋'), { message: '过敏源数据格式不正确' })
+  assert.throws(() => allergensForWrite(['']), { message: '过敏食材数据格式不正确' })
+  assert.throws(() => allergensForWrite(['x'.repeat(301)]), { message: '过敏食材数据格式不正确' })
+})
+
+test('Mock 专用过敏更新只修改过敏食材字段', async () => {
+  storage.setSync('mockDogs', [{
+    id: 'allergy-dog',
+    name: '原名字',
+    weightKg: 8,
+    allergens: ['鸡蛋'],
+    updatedAt: '2026-08-16T00:00:00.000Z'
+  }])
+
+  const saved = await mockDogAdapter.updateDogAllergens('allergy-dog', ['牛肉'])
+
+  assert.equal(saved.name, '原名字')
+  assert.equal(saved.weightKg, 8)
+  assert.deepEqual(saved.allergens, ['牛肉'])
+  assert.notEqual(saved.updatedAt, '2026-08-16T00:00:00.000Z')
+})
+
+test('CloudBase 专用过敏更新调用最小化云函数动作', async () => {
+  const previousWx = global.wx
+  let call
+  global.wx = {
+    cloud: {
+      async callFunction(payload) {
+        call = payload
+        return { result: { id: 'dog-1', allergens: payload.data.allergens } }
+      }
+    }
+  }
+
+  try {
+    const saved = await cloudbaseAdapter.updateDogAllergens('dog-1', ['鸡蛋'])
+    assert.deepEqual(call, {
+      name: 'dogProfile',
+      data: { action: 'updateAllergens', id: 'dog-1', allergens: ['鸡蛋'] }
+    })
+    assert.deepEqual(saved.allergens, ['鸡蛋'])
+  } finally {
+    global.wx = previousWx
+  }
+})
+
+test('档案服务专用过敏更新校验返回值并刷新档案列表', async () => {
+  const originalContract = cloudbaseAdapter.getDogProfileContract
+  const originalUpdate = cloudbaseAdapter.updateDogAllergens
+  const originalList = cloudbaseAdapter.listDogs
+  let updateCalls = 0
+  cloudbaseAdapter.getDogProfileContract = async () => ({
+    contract: 'dogProfile/v3',
+    schemaVersion: 3,
+    supportsSpecialNutritionNeeds: true,
+    supportsAllergenPatch: true
+  })
+  cloudbaseAdapter.updateDogAllergens = async (id, allergens) => {
+    updateCalls += 1
+    return { id, schemaVersion: 3, specialNutritionNeeds: {}, allergens }
+  }
+  cloudbaseAdapter.listDogs = async () => [{
+    id: 'dog-1',
+    schemaVersion: 3,
+    specialNutritionNeeds: {},
+    allergens: ['鸡蛋']
+  }]
+
+  try {
+    const saved = await dogService.updateDogAllergens('dog-1', ['鸡蛋'])
+    assert.equal(updateCalls, 1)
+    assert.deepEqual(saved.allergens, ['鸡蛋'])
+  } finally {
+    cloudbaseAdapter.getDogProfileContract = originalContract
+    cloudbaseAdapter.updateDogAllergens = originalUpdate
+    cloudbaseAdapter.listDogs = originalList
+    storage.removeSync('dogsCache')
+  }
 })
 
 test('保存与读取返回运行时派生字段且编辑不会清空隐藏数组', async () => {

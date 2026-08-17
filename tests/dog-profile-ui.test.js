@@ -46,7 +46,9 @@ test('完整与快速建档只收集出生日期、品种和日均活动时长',
     const wxml = readPage(page, 'wxml')
 
     assert.doesNotMatch(js, /ageStageOptions|onAge|allergenText|avoidText/)
-    assert.doesNotMatch(wxml, /年龄阶段[^<]*<picker|活动强度|过敏源|忌口/)
+    assert.doesNotMatch(wxml, /年龄阶段[^<]*<picker|活动强度|忌口/)
+    if (page.endsWith('dog-edit')) assert.match(wxml, /label="过敏食材"/)
+    else assert.doesNotMatch(wxml, /过敏食材/)
     assert.doesNotMatch(wxml, /预计成年体重[\s\S]{0,240}<input/)
 
     assert.match(wxml, /mode="date"/)
@@ -72,14 +74,174 @@ test('完整与快速建档只收集出生日期、品种和日均活动时长',
   })
 })
 
-test('档案界面不展示实现备注且编辑保存保留隐藏数据字段', () => {
+test('档案界面不展示实现备注且编辑页可选择并保存过敏食材', () => {
   const editJs = readPage(profilePages[0], 'js')
   const allWxml = profilePages.map((page) => readPage(page, 'wxml')).join('\n')
 
   assert.doesNotMatch(allWxml, /点击可更换|点击更换|点击区|\d+\s*pt|只读实现|计算方式/)
   assert.match(editJs, /allergens:\s*Array\.isArray\(dog\.allergens\)/)
+  assert.match(editJs, /allergyDisplayItems/)
+  assert.match(editJs, /allergensSelected/)
+  assert.match(editJs, /dogId:\s*this\.data\.id/)
+  assert.match(allWxml, /选择食材/)
   assert.match(editJs, /avoidIngredients:\s*Array\.isArray\(dog\.avoidIngredients\)/)
   assert.doesNotMatch(editJs, /allergens:\s*splitText|avoidIngredients:\s*splitText/)
+})
+
+test('通用按钮阻止原生 tap 穿透组件边界', () => {
+  const wxml = readPage('components/ui/ui-button', 'wxml')
+
+  assert.match(wxml, /catchtap="handleTap"/)
+  assert.doesNotMatch(wxml, /bindtap="handleTap"/)
+})
+
+test('过敏选择确认防止重复提交并在云端保存后只返回一层', async () => {
+  const dogService = require('../services/dogService')
+  const originalUpdate = dogService.updateDogAllergens
+  const previousWx = global.wx
+  let finishSave
+  let updateCalls = 0
+  let navigateBackCalls = 0
+  let emitted = 0
+  const pending = new Promise((resolve) => { finishSave = resolve })
+  dogService.updateDogAllergens = async () => {
+    updateCalls += 1
+    await pending
+  }
+  global.wx = {
+    showToast() {},
+    navigateBack() { navigateBackCalls += 1 }
+  }
+
+  try {
+    const definition = loadPageDefinition('subpackages/custom-recipe/allergy-select')
+    const context = pageContext(definition)
+    context.data.dogId = 'dog-1'
+    context.data.selectedEntries = ['鸡蛋']
+    context.openerEventChannel = {
+      emit() { emitted += 1 }
+    }
+
+    const first = definition.onConfirm.call(context)
+    const repeated = definition.onConfirm.call(context)
+    assert.equal(updateCalls, 1)
+    assert.equal(context.data.confirming, true)
+
+    finishSave()
+    await Promise.all([first, repeated])
+    assert.equal(emitted, 1)
+    assert.equal(navigateBackCalls, 1)
+  } finally {
+    dogService.updateDogAllergens = originalUpdate
+    global.wx = previousWx
+  }
+})
+
+test('过敏食材云端保存失败时停留当前页并恢复确认按钮', async () => {
+  const dogService = require('../services/dogService')
+  const originalUpdate = dogService.updateDogAllergens
+  const previousWx = global.wx
+  let navigateBackCalls = 0
+  let toast
+  dogService.updateDogAllergens = async () => { throw new Error('保存失败') }
+  global.wx = {
+    showToast(payload) { toast = payload },
+    navigateBack() { navigateBackCalls += 1 }
+  }
+
+  try {
+    const definition = loadPageDefinition('subpackages/custom-recipe/allergy-select')
+    const context = pageContext(definition)
+    context.data.dogId = 'dog-1'
+    context.data.selectedEntries = ['鸡蛋']
+    await definition.onConfirm.call(context)
+
+    assert.equal(context.data.confirming, false)
+    assert.equal(navigateBackCalls, 0)
+    assert.match(toast.title, /保存失败/)
+  } finally {
+    dogService.updateDogAllergens = originalUpdate
+    global.wx = previousWx
+  }
+})
+
+test('过敏选择页通过 TDesign 适配层集中管理已选食材', () => {
+  const wxml = readPage('subpackages/custom-recipe/allergy-select', 'wxml')
+  const json = readPage('subpackages/custom-recipe/allergy-select', 'json')
+  const adapterWxml = readPage('components/vendor/recipe-filter-tabs', 'wxml')
+
+  assert.match(json, /"recipe-filter-tabs"/)
+  assert.doesNotMatch(wxml, /<t-tabs|<t-tab-panel/)
+  assert.match(adapterWxml, /<t-tabs/)
+  assert.match(adapterWxml, /<t-tab-panel/)
+  assert.match(wxml, /value="\{\{activeTab\}\}"/)
+  assert.match(wxml, /已选过敏食材/)
+  assert.match(wxml, /bindtap="onRemoveSelected"/)
+  assert.match(wxml, /bind:tap="onClearSelected"/)
+})
+
+test('档案保存与过敏确认按钮使用带安全区的贴边背景层', () => {
+  const profileWxml = readPage('subpackages/dog-profile/dog-edit', 'wxml')
+  const allergyWxml = readPage('subpackages/custom-recipe/allergy-select', 'wxml')
+  const appWxss = fs.readFileSync(path.join(root, 'app.wxss'), 'utf8')
+
+  assert.match(profileWxml, /class="bottom-action bottom-action--surface"/)
+  assert.match(allergyWxml, /class="bottom-action bottom-action--surface"/)
+  assert.match(appWxss, /\.bottom-action\.bottom-action--surface\s*\{[\s\S]*?left:\s*0;[\s\S]*?padding:[^;]*env\(safe-area-inset-bottom\)[^;]*;[\s\S]*?background:\s*var\(--df-color-surface\)/)
+})
+
+test('过敏选择页有已有选择时默认展示已选页并支持集中取消', () => {
+  const { createAllergyEntry } = require('../services/dogIngredientPolicy')
+  const egg = createAllergyEntry({ conceptId: 'food-egg', name: '鸡蛋' })
+  const beef = createAllergyEntry({ conceptId: 'food-beef', name: '牛肉' })
+  const definition = loadPageDefinition('subpackages/custom-recipe/allergy-select')
+  const context = pageContext(definition)
+  let initialize
+  context.getOpenerEventChannel = () => ({
+    on(name, callback) {
+      if (name === 'allergySelectionInit') initialize = callback
+    }
+  })
+  context.loadIngredients = async () => true
+
+  definition.onLoad.call(context)
+  initialize({ dogId: 'dog-1', allergens: [egg, beef] })
+
+  assert.equal(context.data.activeTab, 'selected')
+  assert.deepEqual(context.data.selectedItems.map((item) => item.name), ['鸡蛋', '牛肉'])
+  assert.equal(context.data.tabItems[1].label, '已选（2）')
+
+  definition.onRemoveSelected.call(context, { currentTarget: { dataset: { entry: egg } } })
+  assert.deepEqual(context.data.selectedEntries, [beef])
+  assert.deepEqual(context.data.selectedItems.map((item) => item.name), ['牛肉'])
+  assert.equal(context.data.tabItems[1].label, '已选（1）')
+})
+
+test('清空全部过敏食材需要二次确认且同步取消总表选中态', () => {
+  const { createAllergyEntry } = require('../services/dogIngredientPolicy')
+  const egg = createAllergyEntry({ conceptId: 'food-egg', name: '鸡蛋' })
+  const definition = loadPageDefinition('subpackages/custom-recipe/allergy-select')
+  const context = pageContext(definition)
+  const previousWx = global.wx
+  context.data.selectedEntries = [egg]
+  context.data.selectedItems = [{ raw: egg, key: 'food-egg', name: '鸡蛋' }]
+  context.data.ingredients = [{ id: 'egg', conceptId: 'food-egg', name: '鸡蛋', selected: true }]
+  global.wx = {
+    showModal(options) {
+      assert.match(options.content, /确认选择/)
+      options.success({ confirm: true })
+    }
+  }
+
+  try {
+    definition.onClearSelected.call(context)
+    assert.deepEqual(context.data.selectedEntries, [])
+    assert.deepEqual(context.data.selectedItems, [])
+    assert.equal(context.data.ingredients[0].selected, false)
+    assert.equal(context.data.tabItems[1].label, '已选（0）')
+  } finally {
+    global.wx = previousWx
+  }
 })
 
 test('编辑档案使用原生导航栏，并把删除入口放在头像右侧', () => {

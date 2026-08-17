@@ -92,3 +92,13 @@
   width: 28rpx;
   height: 28rpx;
 }
+
+.recipe-ingredient-list__cell--blocked {
+  opacity: 0.72;
+}
+
+.recipe-ingredient-list__blocked-label {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  white-space: nowrap;
+}

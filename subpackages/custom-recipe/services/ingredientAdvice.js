@@ -1,4 +1,5 @@
 const highFatKeys = ['porkBelly', 'duckSkin', 'eggYolk', 'visibleFat', 'fattyMeat']
+const { isIngredientAllergen } = require('../../../services/dogIngredientPolicy')
 
 function normalizeList(value) {
   return Array.isArray(value) ? value : []
@@ -41,7 +42,7 @@ function buildAdviceForDog(customRecipe, dog) {
     const allergens = normalizeList(dog.allergens)
     const avoidIngredients = normalizeList(dog.avoidIngredients)
 
-    if (item.allergenKey && allergens.includes(item.allergenKey)) {
+    if (isIngredientAllergen(item, dog) || (item.allergenKey && allergens.includes(item.allergenKey))) {
       return {
         ingredientName: item.name,
         level: 'avoid',

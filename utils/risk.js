@@ -10,6 +10,7 @@ const dietGoalLabels = {
   gainWeight: '增重',
   stomachFriendly: '肠胃友好'
 }
+const { isIngredientAllergen } = require('../services/dogIngredientPolicy')
 
 function normalizeList(value) {
   return Array.isArray(value) ? value : []
@@ -30,7 +31,7 @@ function checkRisk(recipe, dog) {
   const ageStage = derivedAgeStage(dog)
 
   normalizeList(recipe.ingredients).forEach((ingredient) => {
-    if (ingredient.allergenKey && allergens.includes(ingredient.allergenKey)) {
+    if (isIngredientAllergen(ingredient, dog) || (ingredient.allergenKey && allergens.includes(ingredient.allergenKey))) {
       warnings.push({
         level: 'danger',
         msg: `不建议选择：${dog.name}的档案里标记了${ingredient.name}过敏。`

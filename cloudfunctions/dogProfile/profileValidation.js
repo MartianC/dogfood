@@ -145,13 +145,20 @@ function validateProfilePayload(profile, { today, now } = {}) {
   validateSpecialNutritionNeeds(profile.specialNutritionNeeds)
 }
 
+function allergensForWrite(value) {
+  if (!Array.isArray(value)) throw new Error('过敏源数据格式不正确')
+  if (
+    value.some((item) => typeof item !== 'string' || !item.trim() || item.length > 300)
+  ) throw new Error('过敏食材数据格式不正确')
+  return value.slice()
+}
+
 function fieldsForWrite(payload = {}, options = {}) {
   const fields = normalizedFields(payload)
   validateProfilePayload(fields, options)
 
   if (hasOwn(payload, 'allergens')) {
-    if (!Array.isArray(payload.allergens)) throw new Error('过敏源数据格式不正确')
-    fields.allergens = payload.allergens.slice()
+    fields.allergens = allergensForWrite(payload.allergens)
   } else if (options.initializeHiddenFields) {
     fields.allergens = []
   }
@@ -171,5 +178,6 @@ module.exports = {
   shanghaiDateText,
   normalizeProfileDocument,
   validateProfilePayload,
+  allergensForWrite,
   fieldsForWrite
 }

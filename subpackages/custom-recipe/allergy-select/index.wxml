@@ -1,0 +1,96 @@
+<view class="page allergy-select-page with-bottom-action">
+  <view class="allergy-select-intro">
+    <view class="allergy-select-intro__title">选择确认会过敏的食材</view>
+    <view class="allergy-select-intro__desc">确认后会立即保存，并阻止这些食材用于这只狗狗的配餐。</view>
+  </view>
+
+  <recipe-filter-tabs
+    value="{{activeTab}}"
+    items="{{tabItems}}"
+    bind:change="onTabChange"
+  />
+
+  <block wx:if="{{activeTab === 'all'}}">
+    <view class="allergy-select-search">
+      <recipe-ingredient-search
+        value="{{searchValue}}"
+        action-text="清空"
+        bind:change="onSearchChange"
+        bind:action="onSearchAction"
+      />
+    </view>
+
+    <view class="allergy-select-summary">已选 {{selectedEntries.length}} 种</view>
+
+    <view wx:if="{{loading}}" class="allergy-select-state">正在读取食材</view>
+    <view wx:elif="{{error}}" class="allergy-select-state allergy-select-state--action" bindtap="onRetry">加载失败，点此重试</view>
+    <view wx:elif="{{!ingredients.length}}" class="allergy-select-state">没有找到相关食材</view>
+    <view wx:else class="allergy-select-list">
+      <view
+        wx:for="{{ingredients}}"
+        wx:key="id"
+        class="allergy-select-row {{item.selected ? 'allergy-select-row--selected' : ''}}"
+        data-index="{{index}}"
+        bindtap="onToggleIngredient"
+        aria-role="checkbox"
+        aria-checked="{{item.selected}}"
+        aria-label="{{item.selected ? '取消选择' : '选择'}}{{item.name}}"
+      >
+        <view class="allergy-select-row__content">
+          <view class="allergy-select-row__name">{{item.name}}</view>
+          <view class="allergy-select-row__desc">{{item.categoryLabel}}</view>
+        </view>
+        <view class="allergy-select-row__check">{{item.selected ? '✓' : ''}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{loadingMore}}" class="allergy-select-state">正在加载更多</view>
+  </block>
+
+  <block wx:else>
+    <view wx:if="{{selectedItems.length}}" class="allergy-select-selected-header">
+      <view>
+        <view class="allergy-select-selected-header__title">已选过敏食材</view>
+        <view class="allergy-select-selected-header__desc">点击食材即可取消选择</view>
+      </view>
+      <ui-button
+        variant="warning-outline"
+        size="small"
+        block="{{false}}"
+        bind:tap="onClearSelected"
+      >清空全部</ui-button>
+    </view>
+
+    <view wx:if="{{!selectedItems.length}}" class="allergy-select-empty">
+      <ui-empty
+        title="还没有选择过敏食材"
+        description="可前往全部食材继续选择"
+        actionText="前往全部食材"
+        bind:action="onShowAll"
+      />
+    </view>
+
+    <view wx:else class="allergy-select-list">
+      <view
+        wx:for="{{selectedItems}}"
+        wx:key="key"
+        class="allergy-select-row allergy-select-row--selected"
+        data-entry="{{item.raw}}"
+        bindtap="onRemoveSelected"
+        aria-role="checkbox"
+        aria-checked="true"
+        aria-label="取消选择{{item.name}}"
+      >
+        <view class="allergy-select-row__content">
+          <view class="allergy-select-row__name">{{item.name}}</view>
+          <view class="allergy-select-row__desc">点击取消选择</view>
+        </view>
+        <view class="allergy-select-row__check">✓</view>
+      </view>
+    </view>
+  </block>
+
+  <view class="bottom-action bottom-action--surface">
+    <ui-button loading="{{confirming}}" disabled="{{confirming}}" bind:tap="onConfirm">确认选择（{{selectedEntries.length}}）</ui-button>
+  </view>
+</view>

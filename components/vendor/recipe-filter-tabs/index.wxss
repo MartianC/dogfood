@@ -1,0 +1,18 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  display: block;
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-light: var(--df-color-primary-soft);
+  --td-text-color-primary: var(--df-color-text-secondary);
+  --td-bg-color-container: transparent;
+  --td-bg-color-secondarycontainer: var(--df-color-surface-muted);
+  --td-tab-item-height: 88rpx;
+  --td-tab-item-tag-height: 72rpx;
+  --td-tab-font: var(--df-font-md) / 36rpx -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+
+.recipe-filter-tabs__root {
+  overflow: hidden;
+  border-radius: var(--df-radius-pill);
+}

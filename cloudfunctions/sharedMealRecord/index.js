@@ -3,6 +3,7 @@ const {
   fingerprint
 } = require('./sharedMealContract')
 const { canAddIngredient } = require('./ingredientOperationRules')
+const { isIngredientAllergen } = require('./dogIngredientPolicy')
 
 const MAX_PAGE_SIZE = 20
 
@@ -96,6 +97,7 @@ function assertActiveVersions(candidate, release) {
 async function validateOwnershipAndCatalog(database, openId, validated) {
   const dogResult = await database.collection('dogs').doc(validated.candidate.targetDogId).get()
   if (!dogResult.data || dogResult.data._openid !== openId) fail('FORBIDDEN_DOG', '无权使用该狗狗档案')
+  const dog = dogResult.data
   const release = await loadActiveRelease(database)
   assertActiveVersions(validated.candidate, release)
   await Promise.all(validated.ingredients.map(async (ingredient) => {
@@ -111,6 +113,9 @@ async function validateOwnershipAndCatalog(database, openId, validated) {
     }
     if (!canAddIngredient(current)) {
       fail('BLOCKED_INGREDIENT', '被阻止食材不可保存')
+    }
+    if (isIngredientAllergen({ ...current, name: ingredient.name }, dog)) {
+      fail('DOG_ALLERGEN', `${dog.name || '狗狗'}对此食材过敏，不能保存`)
     }
   }))
 }

@@ -229,6 +229,34 @@
   min-height: 132rpx;
 }
 
+.dog-profile-allergens {
+  display: flex;
+  min-height: 64rpx;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-3);
+}
+
+.dog-profile-allergens__list {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.dog-profile-allergens__empty {
+  color: var(--df-profile-color-muted);
+  font-size: var(--df-font-sm);
+}
+
+.dog-profile-allergens__hint {
+  margin-top: 8rpx;
+  color: var(--df-profile-color-muted);
+  font-size: var(--df-font-xs);
+  line-height: 32rpx;
+}
+
 .dog-profile-field-error {
   margin-top: 4rpx;
   color: var(--df-color-warning);

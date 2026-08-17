@@ -59,6 +59,17 @@ page {
   z-index: 20;
 }
 
+.bottom-action.bottom-action--surface {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  padding: 24rpx 32rpx calc(28rpx + constant(safe-area-inset-bottom));
+  padding: 24rpx 32rpx calc(28rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid var(--df-color-line);
+  background: var(--df-color-surface);
+}
+
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;

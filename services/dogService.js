@@ -75,9 +75,23 @@ function validateDog(dog, today) {
   if (hasOwn(dog, 'allergens') && !Array.isArray(dog.allergens)) {
     throw new Error('过敏源数据格式不正确')
   }
+  if (
+    hasOwn(dog, 'allergens')
+    && dog.allergens.some((item) => (
+      typeof item !== 'string' || !item.trim() || item.length > 300
+    ))
+  ) throw new Error('过敏食材数据格式不正确')
   if (hasOwn(dog, 'avoidIngredients') && !Array.isArray(dog.avoidIngredients)) {
     throw new Error('忌口数据格式不正确')
   }
+}
+
+function normalizeAllergens(value) {
+  if (!Array.isArray(value)) throw new Error('过敏源数据格式不正确')
+  if (
+    value.some((item) => typeof item !== 'string' || !item.trim() || item.length > 300)
+  ) throw new Error('过敏食材数据格式不正确')
+  return value.slice()
 }
 
 function decorateSavedDog(dog, today) {
@@ -125,6 +139,14 @@ async function ensureDogProfileWriteCapability() {
     if (/档案服务版本过旧/.test(String(error && error.message))) throw error
     throw new Error('档案服务版本过旧，请更新 dogProfile 云函数后重试')
   }
+}
+
+async function ensureDogProfileAllergenWriteCapability() {
+  const contract = await ensureDogProfileWriteCapability()
+  if (contract.supportsAllergenPatch !== true) {
+    throw new Error('档案服务版本过旧，请更新 dogProfile 云函数后重试')
+  }
+  return contract
 }
 
 function readDogsCache() {
@@ -186,6 +208,21 @@ async function updateDog(id, payload) {
   return decorateSavedDog(saved)
 }
 
+async function updateDogAllergens(id, allergens) {
+  const dogId = String(id || '').trim()
+  if (!dogId) throw new Error('未找到狗狗档案')
+  const nextAllergens = normalizeAllergens(allergens)
+  await ensureDogProfileAllergenWriteCapability()
+  const saved = await adapter.updateDogAllergens(dogId, nextAllergens)
+  if (
+    !saved
+    || JSON.stringify(normalizeAllergens(saved.allergens)) !== JSON.stringify(nextAllergens)
+  ) throw new Error('过敏食材保存结果不一致，请重试')
+  const dogs = await listDogs()
+  authService.refreshState(dogs)
+  return decorateSavedDog(saved)
+}
+
 async function deleteDog(id) {
   const result = await adapter.deleteDog(id)
   const dogs = await listDogs()
@@ -197,9 +234,11 @@ module.exports = {
   listDogs,
   createDog,
   updateDog,
+  updateDogAllergens,
   deleteDog,
   normalizeDog,
   validateDog,
+  normalizeAllergens,
   decorateSavedDog,
   assertSavedProfileContract,
   assertDogProfileServiceContract

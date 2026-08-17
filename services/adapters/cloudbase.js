@@ -98,6 +98,11 @@ async function updateDog(id, payload) {
   return callFunction('dogProfile', { action: 'update', id, payload })
 }
 
+async function updateDogAllergens(id, allergens) {
+  if (!canUseCloud()) return mock.updateDogAllergens(id, allergens)
+  return callFunction('dogProfile', { action: 'updateAllergens', id, allergens })
+}
+
 async function deleteDog(id) {
   if (!canUseCloud()) return mock.deleteDog(id)
   return callFunction('dogProfile', { action: 'delete', id })
@@ -164,6 +169,7 @@ module.exports = {
   listDogs,
   createDog,
   updateDog,
+  updateDogAllergens,
   deleteDog,
   saveCustomRecipe,
   saveMealPlan,

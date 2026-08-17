@@ -1,0 +1,126 @@
+@import "../../../styles/tokens.wxss";
+
+page {
+  background: var(--df-color-bg);
+}
+
+.allergy-select-page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding-top: 24rpx;
+}
+
+.allergy-select-intro {
+  margin-bottom: var(--df-space-5);
+}
+
+.allergy-select-search {
+  margin-top: var(--df-space-4);
+}
+
+.allergy-select-intro__title {
+  color: var(--df-color-text);
+  font-size: var(--df-font-lg);
+  font-weight: 700;
+  line-height: 46rpx;
+}
+
+.allergy-select-intro__desc,
+.allergy-select-summary,
+.allergy-select-row__desc,
+.allergy-select-state {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 34rpx;
+}
+
+.allergy-select-intro__desc {
+  margin-top: 8rpx;
+}
+
+.allergy-select-summary {
+  margin: 28rpx 0 12rpx;
+}
+
+.allergy-select-selected-header {
+  display: flex;
+  min-height: 112rpx;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--df-space-4);
+  margin-top: var(--df-space-4);
+}
+
+.allergy-select-selected-header__title {
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  font-weight: 700;
+  line-height: 40rpx;
+}
+
+.allergy-select-selected-header__desc {
+  margin-top: 4rpx;
+  color: var(--df-color-muted);
+  font-size: var(--df-font-sm);
+  line-height: 34rpx;
+}
+
+.allergy-select-empty {
+  margin-top: var(--df-space-4);
+}
+
+.allergy-select-list {
+  overflow: hidden;
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-xl);
+  background: var(--df-color-surface);
+}
+
+.allergy-select-row {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 112rpx;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid var(--df-color-line);
+}
+
+.allergy-select-row:last-child {
+  border-bottom: 0;
+}
+
+.allergy-select-row--selected {
+  background: var(--df-color-primary-soft);
+}
+
+.allergy-select-row__name {
+  color: var(--df-color-text);
+  font-size: var(--df-font-md);
+  font-weight: 600;
+}
+
+.allergy-select-row__check {
+  width: 48rpx;
+  height: 48rpx;
+  border: 2rpx solid var(--df-color-line-strong);
+  border-radius: var(--df-radius-pill);
+  color: var(--df-color-primary);
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 44rpx;
+  text-align: center;
+}
+
+.allergy-select-row--selected .allergy-select-row__check {
+  border-color: var(--df-color-primary);
+}
+
+.allergy-select-state {
+  padding: 48rpx 0;
+  text-align: center;
+}
+
+.allergy-select-state--action {
+  color: var(--df-color-primary);
+}

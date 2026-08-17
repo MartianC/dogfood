@@ -45,6 +45,17 @@ COMPOSITE_BASE_PATTERN = re.compile(
     r"(?:baby|cand|cake|cookie|dessert|dressing|formula|ice_cream|meal|pie|"
     r"pizza|pudding|restaurant|sandwich|snack|soup|waffle)"
 )
+ANIMAL_BASES = ("beef", "chicken", "duck", "goose", "lamb", "pork", "turkey")
+
+
+def granular_animal_description(value: str) -> bool:
+    text = str(value or "").lower()
+    if not re.match(r"^(?:beef|chicken|duck|goose|lamb|pork|turkey),", text):
+        return False
+    return "," in text and (
+        bool(re.search(r"variety[ _]meats|mechanically separated", text))
+        or len(text.split(",")) >= 3
+    )
 PART_LABELS = {
     "back": "背肉", "brain": "脑", "breast": "胸肉", "chuck": "肩胛",
     "feet": "脚", "foot": "脚", "heart": "心", "hock": "肘",
@@ -296,7 +307,9 @@ def choose_name(row: dict[str, Any], occupied: set[str]) -> str | None:
     return None
 
 
-def is_catalog_identity(rows: list[dict[str, Any]]) -> tuple[bool, str]:
+def is_catalog_identity(
+    rows: list[dict[str, Any]], *, strict_basic_identities: bool = False
+) -> tuple[bool, str]:
     first = rows[0]
     if first.get("category_code") is None:
         return False, "unsupported_or_composite_category"
@@ -307,6 +320,15 @@ def is_catalog_identity(rows: list[dict[str, Any]]) -> tuple[bool, str]:
         return False, "composite_sweet_food"
     if COMPOSITE_BASE_PATTERN.search(base_identity):
         return False, "composite_food_identity"
+    if strict_basic_identities and (
+        base_identity.startswith(tuple(f"{prefix}_" for prefix in ANIMAL_BASES))
+        or granular_animal_description(str(first.get("description", "")))
+        or re.search(r"variety[ _]meats", str(first.get("description", "")).lower())
+        or any(term in str(first.get("description", "")).lower() for term in (
+            "mechanically separated", "processed", "cured", "sausage"
+        ))
+    ):
+        return False, "granular_animal_cut_or_by_product"
     return True, "base_food_identity"
 
 
@@ -318,6 +340,8 @@ def prepare_catalog(
     conn: sqlite3.Connection,
     base_catalog: dict[str, Any],
     catalog_version: str,
+    *,
+    strict_basic_identities: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     rows = load_usda_rows(conn)
     row_by_key = {(str(row["source_version"]), int(row["fdc_id"])): row for row in rows}
@@ -332,8 +356,28 @@ def prepare_catalog(
         "policy_id": POLICY_ID,
         "base_catalog_version": str(base_catalog["catalog_version"]),
         "source_versions": sorted(SOURCE_VERSIONS),
+        "strict_basic_identities": strict_basic_identities,
     }
     items_by_id = {str(item["concept_id"]): item for item in output["items"]}
+
+    removed_existing_usda_concepts: list[dict[str, Any]] = []
+    if strict_basic_identities:
+        kept_items = []
+        for item in output["items"]:
+            variants = item.get("variants", [])
+            descriptions = [v.get("description_contains", "") for v in variants]
+            if str(item.get("concept_id", "")).startswith("ingredient_usda_") and any(
+                granular_animal_description(description) for description in descriptions
+            ):
+                removed_existing_usda_concepts.append({
+                    "concept_id": item["concept_id"],
+                    "canonical_name_zh": item["canonical_name_zh"],
+                    "reason": "granular_animal_cut_or_by_product",
+                })
+                items_by_id.pop(str(item["concept_id"]), None)
+                continue
+            kept_items.append(item)
+        output["items"] = kept_items
 
     owners_by_cluster: dict[str, set[str]] = defaultdict(set)
     source_owner_by_key: dict[tuple[str, int], str] = {}
@@ -427,7 +471,9 @@ def prepare_catalog(
             })
         if not remaining_rows:
             continue
-        eligible, reason = is_catalog_identity(cluster_rows)
+        eligible, reason = is_catalog_identity(
+            cluster_rows, strict_basic_identities=strict_basic_identities
+        )
         owners = owners_by_cluster.get(cluster_id, set())
         if len(owners) > 1:
             eligible, reason = False, "existing_identity_conflict"
@@ -553,6 +599,7 @@ def prepare_catalog(
     output["complete_usda_integration"]["merged_concept_redirects"] = dict(
         sorted(merged_concept_redirects.items())
     )
+    output["complete_usda_integration"]["removed_existing_usda_concepts"] = removed_existing_usda_concepts
     remaining_count = len(rows) - len(existing_source_keys)
     accounted_remaining = sum(
         count for key, count in classifications.items() if key != "existing_catalog_source"
@@ -575,6 +622,8 @@ def prepare_catalog(
         "new_concept_count": len(new_concept_ids),
         "merged_existing_concept_count": len(merged_concept_redirects),
         "merged_existing_concept_redirects": dict(sorted(merged_concept_redirects.items())),
+        "removed_existing_usda_concept_count": len(removed_existing_usda_concepts),
+        "removed_existing_usda_concepts": removed_existing_usda_concepts,
         "changed_source_concept_count": len(changed_source_concept_ids),
         "candidate_source_count": len(candidate_source_keys),
         "isolated_cluster_count": len(isolated),
@@ -625,6 +674,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out-candidate", type=Path, required=True)
     parser.add_argument("--out-report", type=Path, required=True)
     parser.add_argument("--out-safety-review", type=Path, required=True)
+    parser.add_argument(
+        "--strict-basic-identities",
+        action="store_true",
+        help="重清洗批次仅接纳基础动物身份，隔离零售切块和副产品",
+    )
     return parser.parse_args()
 
 
@@ -642,7 +696,10 @@ def main() -> int:
         base_catalog = json.loads(args.base_catalog.read_text(encoding="utf-8"))
         with sqlite3.connect(args.sqlite) as conn:
             candidate, report, safety_review = prepare_catalog(
-                conn, base_catalog, args.catalog_version
+                conn,
+                base_catalog,
+                args.catalog_version,
+                strict_basic_identities=args.strict_basic_identities,
             )
         for path in outputs:
             path.parent.mkdir(parents=True, exist_ok=True)

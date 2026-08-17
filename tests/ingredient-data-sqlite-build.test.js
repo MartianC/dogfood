@@ -1492,6 +1492,19 @@ print(json.dumps({
   assert.equal(value.safety.items[0].review_status, 'pending')
 })
 
+test('USDA 严格重清洗隔离动物切块与副产品', () => {
+  const result = runPython(`
+import sys
+sys.path.insert(0, 'scripts/fooddata')
+from prepare_complete_usda_catalog import is_catalog_identity
+rows = [{'base_identity': 'beef', 'category_code': 'meat', 'food_category_id': 5, 'nutrient_count': 2,
+         'description': 'Beef, chuck, steak, raw'}]
+print(is_catalog_identity(rows, strict_basic_identities=True)[1])
+`)
+  assert.equal(result.status, 0, result.stderr)
+  assert.equal(result.stdout.trim(), 'granular_animal_cut_or_by_product')
+})
+
 test('USDA 全量身份不会把不同肉类切块和奶酪品种错误去重', () => {
   const result = runPython(`
 import json

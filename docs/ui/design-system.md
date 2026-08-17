@@ -60,7 +60,7 @@
 
 `styles/utilities.wxss` 只保留少量可复用布局工具：`df-stack`、`df-row`、`df-page`、`df-page-with-bottom-action`。页面 WXSS 应只负责列表间距、分区布局、固定底部操作等页面结构，不重新实现按钮、卡片、标签、提示和表单字段。
 
-固定底部操作只用于必须常驻的主动作。单按钮页面使用 `.page.with-bottom-action`；两个固定按钮页面同时加 `.with-stacked-actions`。动态表单页面优先使用页面内流动操作区，避免遮挡新增项、选择器或安全区。
+固定底部操作只用于必须常驻的主动作。单按钮页面使用 `.page.with-bottom-action`；两个固定按钮页面同时加 `.with-stacked-actions`。需要用不透明贴边背景隔开滚动内容时，为操作容器增加 `.bottom-action--surface`，由该变体统一提供横向内边距、顶部边线和底部安全区。动态表单页面优先使用页面内流动操作区，避免遮挡新增项、选择器或安全区。
 
 ## 基础组件
 
