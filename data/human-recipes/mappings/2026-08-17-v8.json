@@ -1,0 +1,27 @@
+{
+  "mapping_version": "2026-08-17-v8",
+  "compatible_catalog_version": "2026-08-17-v22",
+  "compatible_policy_version": "2026-08-17-v7",
+  "source_declaration": "data/human-recipes/sources/capu-5w.json",
+  "generated_at": "2026-08-17T00:00:00Z",
+  "automatic_rules": [
+    "approved_alias_exact"
+  ],
+  "review_task_min_occurrences": 2147483647,
+  "stage1_decisions": "fooddata-cloudbase-export/2026-08-17-usda-strict-v22/stage1/stage-1-decisions.json",
+  "stage1_decisions_sha256": "e4a38ddd8f028d53ae7c610de5e4e3da9bac1ef0238d54e2dddb510bc740052d",
+  "manual_decisions": [],
+  "migration": {
+    "previous_mapping_version": "2026-08-17-v7",
+    "decision_change": "catalog_v22_strict_cleanup",
+    "catalog_identity_redirects": {
+      "ingredient_usda_129d7942a10ec607a462": "ingredient_usda_366044c9444dc63a46d8"
+    },
+    "removed_component_policy": "已删除的细粒度目录组件转为 isolated；仅剩一个有效组件的 composite/alternative 收敛为 mapped_existing；不使用相似食材代理。",
+    "stage1_catalog_migration": {
+      "changed_item_count": 38,
+      "isolated_item_count": 28,
+      "removed_component_count": 9
+    }
+  }
+}
