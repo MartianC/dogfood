@@ -28,6 +28,60 @@ const COMMON_INGREDIENTS = [
   { id: 'common_broccoli', name: '西兰花', category: 'vegetable' }
 ]
 
+// 目录底层保留完整营养身份；选择入口只展示少量代表项，避免 USDA 细分名称淹没常用食材。
+const INGREDIENT_SELECTION_GROUPS = [
+  {
+    id: 'flour',
+    category: 'carb',
+    representativeConceptIds: new Set([
+      'ingredient_auto_model_21eaff4331362c33',
+      'ingredient_auto_model_f90d535503573e75'
+    ]),
+    namePattern: /(?:面粉|小麦粉|全麦粉|麦粉|粗面粉|粗麦粉|杜兰|斯佩尔特)/,
+    keywordPattern: /(?:面粉|小麦粉|全麦粉|麦粉|粗面粉|粗麦粉|杜兰|斯佩尔特|高筋|低筋)/
+  },
+  {
+    id: 'cheese',
+    category: 'dairy',
+    representativeConceptIds: new Set([
+      'ingredient_auto_667e81096d909865',
+      'ingredient_auto_model_c53f731e04c2ac9e'
+    ]),
+    namePattern: /(?:奶酪|芝士|乳酪|干酪)/,
+    keywordPattern: /(?:奶酪|芝士|乳酪|干酪|切达|车打|马苏里拉|帕尔马)/
+  }
+]
+
+function ingredientSearchText(item = {}) {
+  return [
+    item.name,
+    item.canonicalName,
+    item.canonical_name_zh,
+    item.display_name_zh,
+    ...(Array.isArray(item.aliases) ? item.aliases : [])
+  ].filter(Boolean).join('|')
+}
+
+function selectionGroupForIngredient(item = {}) {
+  const category = String(item.category || item.category_code || '')
+  const text = ingredientSearchText(item)
+  return INGREDIENT_SELECTION_GROUPS.find((group) => (
+    group.category === category && group.namePattern.test(text)
+  )) || null
+}
+
+function selectionGroupForKeyword(keyword) {
+  const text = String(keyword || '').trim()
+  return INGREDIENT_SELECTION_GROUPS.find((group) => group.keywordPattern.test(text)) || null
+}
+
+function isIngredientSelectionRepresentative(item = {}) {
+  const group = selectionGroupForIngredient(item)
+  if (!group) return true
+  const conceptId = String(item.conceptId || item.concept_id || '')
+  return group.representativeConceptIds.has(conceptId)
+}
+
 function normalizeIngredient(item = {}) {
   const category = item.category || item.category_code || 'other'
   const categoryLabel = item.categoryLabel || categoryLabels[category] || '其他'
@@ -190,6 +244,15 @@ function catalogWhere(database, release, keyword) {
     is_default: true
   }
   if (!keyword) return base
+  const selectionGroup = selectionGroupForKeyword(keyword)
+  if (selectionGroup) {
+    return database.command.and([
+      base,
+      {
+        concept_id: database.command.in([...selectionGroup.representativeConceptIds])
+      }
+    ])
+  }
   const pattern = database.RegExp({
     regexp: escapeRegularExpression(keyword),
     options: 'i'
@@ -208,6 +271,7 @@ function normalizeCatalogPage(records, release, keyword) {
   const seen = new Set()
   return records
     .filter(isIngredientPolicyOpen)
+    .filter(isIngredientSelectionRepresentative)
     .map((item) => normalizeCatalogIngredient({
       ...item,
       dataVersions: catalogDataVersions(release)
@@ -252,12 +316,15 @@ async function loadIngredientPage(rawOptions = {}) {
 function catalogItemMatches(item, keyword) {
   const normalizedKeyword = String(keyword || '').trim().toLocaleLowerCase()
   if (!normalizedKeyword) return true
-  return [
+  const directMatch = [
     item.name,
     item.canonicalName,
     item.variantName,
     ...(Array.isArray(item.aliases) ? item.aliases : [])
   ].some((value) => String(value || '').toLocaleLowerCase().includes(normalizedKeyword))
+  if (directMatch) return true
+  const selectionGroup = selectionGroupForKeyword(normalizedKeyword)
+  return Boolean(selectionGroup && selectionGroupForIngredient(item)?.id === selectionGroup.id)
 }
 
 function clearCache() {
@@ -270,7 +337,9 @@ module.exports = {
   recordRecentIngredient,
   normalizeIngredient,
   normalizeCatalogIngredient,
+  normalizeCatalogPage,
   isIngredientPolicyOpen,
+  isIngredientSelectionRepresentative,
   catalogItemMatches,
   clearCache,
   buildMockIngredients
