@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 const root = path.join(__dirname, '..')
+const { breedOptions } = require('../subpackages/dog-profile/data/options')
 const profilePages = [
   'subpackages/dog-profile/dog-edit',
   'subpackages/dog-profile/dog-quick-create'
@@ -293,8 +294,9 @@ test('建档字段变化实时刷新阶段、品种估算和纯时长活动档�
     assert.equal(context.data.lifeStageLabel, '幼犬晚期')
     assert.equal(context.data.isPuppy, true)
 
-    definition.onBreed.call(context, { detail: { value: 0 } })
+    definition.applyBreed.call(context, 'shiba-inu')
     assert.equal(context.data.form.breed, 'shiba-inu')
+    assert.equal(context.data.breedLabel, '柴犬')
     assert.equal(context.data.expectedAdultWeightKg, 10.5)
 
     definition.onActivityHours.call(context, { detail: { value: 3 } })

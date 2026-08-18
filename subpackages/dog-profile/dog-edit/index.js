@@ -35,6 +35,11 @@ function optionIndex(options, value, fallback = 0) {
   return index >= 0 ? index : fallback
 }
 
+function breedLabelOf(value) {
+  const option = breedOptions.find((item) => item.value === value)
+  return option ? option.label : ''
+}
+
 function profileErrors(message) {
   return {
     birthDateError: /出生日期/.test(message) ? message : '',
@@ -108,7 +113,7 @@ Page({
     diseaseStatusOptions,
     reproductiveStatusOptions,
     therapeuticWeightManagementOptions,
-    breedIndex: 0,
+    breedLabel: '',
     goalIndex: 0,
     birthDateError: '',
     breedError: '',
@@ -134,7 +139,7 @@ Page({
       form,
       allergyDisplayItems: allergyDisplayItems(form.allergens),
       ...profileState(form),
-      breedIndex: optionIndex(breedOptions, form.breed),
+      breedLabel: breedLabelOf(form.breed),
       goalIndex: optionIndex(dietGoalOptions, form.dietGoal)
     })
   },
@@ -156,16 +161,25 @@ Page({
     })
   },
 
-  onBreed(event) {
-    const breedIndex = Number(event.detail.value)
-    const option = this.data.breedOptions[breedIndex]
+  applyBreed(value) {
+    const option = this.data.breedOptions.find((item) => item.value === value)
+    if (!option) return
     const estimate = estimateExpectedAdultWeight(option.value)
     this.setData({
-      breedIndex,
       'form.breed': option.value,
+      breedLabel: option.label,
       expectedAdultWeightKg: estimate.expectedAdultWeightKg,
       adultWeightEstimateReason: estimate.adultWeightEstimateReason,
       breedError: ''
+    })
+  },
+
+  onChooseBreed() {
+    wx.navigateTo({
+      url: '/subpackages/dog-profile/breed-select/index?selected=' + encodeURIComponent(this.data.form.breed || ''),
+      events: {
+        breedSelected: (payload) => this.applyBreed(payload.value)
+      }
     })
   },
 

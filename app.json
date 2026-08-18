@@ -18,6 +18,7 @@
       "pages": [
         "dog-edit/index",
         "dog-quick-create/index",
+        "breed-select/index",
         "care-record/index",
         "care-edit/index",
         "weight/index",

@@ -179,7 +179,7 @@ test('保存与读取返回运行时派生字段且编辑不会清空隐藏数�
   assert.equal(created.ageStage, 'senior')
   assert.equal(created.lifeStage.energyStage, 'senior')
   assert.equal(created.expectedAdultWeightKg, 10.5)
-  assert.equal(created.breedCatalogVersion, '2026-07-19.v1')
+  assert.equal(created.breedCatalogVersion, '2026-08-19.v2')
 
   const updated = await dogService.updateDog(created.id, {
     ...puppy,

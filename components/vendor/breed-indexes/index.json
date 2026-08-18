@@ -1,0 +1,12 @@
+{
+  "component": true,
+  "styleIsolation": "isolated",
+  "usingComponents": {
+    "t-search": "tdesign-miniprogram/search/search",
+    "t-indexes": "tdesign-miniprogram/indexes/indexes",
+    "t-indexes-anchor": "tdesign-miniprogram/indexes-anchor/indexes-anchor",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-empty": "tdesign-miniprogram/empty/empty"
+  }
+}

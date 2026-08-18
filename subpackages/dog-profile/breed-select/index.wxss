@@ -1,0 +1,6 @@
+@import "../../../styles/tokens.wxss";
+
+.breed-select-page {
+  min-height: 100vh;
+  background: var(--df-color-bg);
+}

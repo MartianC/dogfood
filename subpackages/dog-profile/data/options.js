@@ -7,7 +7,7 @@ const dietGoalOptions = [
   { value: 'stomachFriendly', label: '肠胃友好' }
 ]
 
-const breedOptions = breedAdultWeightCatalog.map(({ value, label }) => ({ value, label }))
+const breedOptions = breedAdultWeightCatalog.map(({ value, label, pinyinInitial }) => ({ value, label, pinyinInitial }))
 
 const activityDurationBands = [
   { min: 0, maxExclusive: 1, value: 'low', label: '低活动' },

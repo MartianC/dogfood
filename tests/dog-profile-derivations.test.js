@@ -10,6 +10,7 @@ const {
   activityDurationBands,
   bodyConditionOptions
 } = require('../subpackages/dog-profile/data/options')
+const { breedAdultWeightCatalog } = require('../data/breedAdultWeightCatalog')
 
 test('活动水平只按 0–6 小时的固定时长边界派生', () => {
   assert.equal(deriveActivityLevel(0), 'low')
@@ -31,7 +32,7 @@ test('预计成年体重来自可审计的版本化品种目录', () => {
 
   assert.equal(shiba.available, true)
   assert.equal(shiba.expectedAdultWeightKg, 10.5)
-  assert.equal(shiba.breedCatalogVersion, '2026-07-19.v1')
+  assert.equal(shiba.breedCatalogVersion, '2026-08-19.v2')
   assert.match(shiba.sourceUrl, /^https:\/\/www\.akc\.org\//)
   assert.equal(shiba.sourceWeightRange, '17–23 lb')
   assert.equal(shiba.estimatePolicy, 'approved-product-single-point')
@@ -45,13 +46,13 @@ test('预计成年体重来自可审计的版本化品种目录', () => {
   assert.equal(unavailable.available, false)
   assert.equal(unavailable.expectedAdultWeightKg, null)
   assert.equal(unavailable.adultWeightEstimateReason, 'breed_estimate_unavailable')
-  assert.equal(unavailable.breedCatalogVersion, '2026-07-19.v1')
+  assert.equal(unavailable.breedCatalogVersion, '2026-08-19.v2')
 })
 
 test('档案选项与派生目录保持同一受控值集合', () => {
   assert.deepEqual(
     breedOptions.map((item) => item.value),
-    ['shiba-inu', 'labrador-retriever', 'mixed-or-unknown']
+    breedAdultWeightCatalog.map((item) => item.value)
   )
   assert.deepEqual(
     activityDurationBands.map((item) => item.label),

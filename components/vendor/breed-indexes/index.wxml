@@ -1,0 +1,47 @@
+<view class="breed-indexes">
+  <view class="breed-indexes__search">
+    <t-search
+      value="{{keyword}}"
+      placeholder="搜索品种，如 柴犬"
+      clearable
+      bind:change="onSearchChange"
+    />
+  </view>
+
+  <block wx:if="{{hasKeyword}}">
+    <scroll-view scroll-y class="breed-indexes__results" style="height: {{height}}px;">
+      <t-cell-group wx:if="{{filtered.length}}">
+        <t-cell
+          wx:for="{{filtered}}"
+          wx:key="value"
+          title="{{item.label}}"
+          arrow="{{false}}"
+          bind:click="onSelect"
+          data-value="{{item.value}}"
+        >
+          <view slot="right-icon" wx:if="{{item.value === selectedValue}}" class="breed-indexes__check">✓</view>
+        </t-cell>
+      </t-cell-group>
+      <t-empty wx:else description="没有匹配的品种" />
+    </scroll-view>
+  </block>
+
+  <t-indexes wx:else index-list="{{indexList}}" height="{{height}}">
+    <block wx:for="{{groups}}" wx:key="index" wx:for-item="group">
+      <t-indexes-anchor index="{{group.index}}" />
+      <t-cell-group>
+        <t-cell
+          wx:for="{{group.items}}"
+          wx:key="value"
+          wx:for-item="breed"
+          title="{{breed.label}}"
+          arrow="{{false}}"
+          bind:click="onSelect"
+          data-value="{{breed.value}}"
+        >
+          <view slot="right-icon" wx:if="{{breed.value === selectedValue}}" class="breed-indexes__check">✓</view>
+        </t-cell>
+      </t-cell-group>
+    </block>
+  </t-indexes>
+</view>

@@ -1,0 +1,13 @@
+<view class="page breed-select-page">
+  <breed-indexes
+    groups="{{groups}}"
+    filtered="{{filtered}}"
+    hasKeyword="{{hasKeyword}}"
+    selectedValue="{{selectedValue}}"
+    keyword="{{keyword}}"
+    indexList="{{indexList}}"
+    height="{{indexesHeight}}"
+    bind:search="onSearchChange"
+    bind:select="onSelect"
+  />
+</view>

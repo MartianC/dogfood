@@ -30,16 +30,14 @@
         </ui-field>
       </view>
 
-      <ui-field variant="profile" label="狗狗品种" errorText="{{breedError}}">
-        <picker range="{{breedOptions}}" range-key="label" value="{{breedIndex}}" bindchange="onBreed">
-          <view class="dog-profile-select">
+        <ui-field variant="profile" label="狗狗品种" errorText="{{breedError}}">
+          <view class="dog-profile-select" bindtap="onChooseBreed">
             <view class="dog-profile-picker-value {{form.breed ? '' : 'dog-profile-picker-value--empty'}}">
-              {{form.breed ? breedOptions[breedIndex].label : '请选择'}}
+              {{form.breed ? breedLabel : '请选择'}}
             </view>
             <view class="dog-profile-chevron" aria-hidden="true"></view>
           </view>
-        </picker>
-      </ui-field>
+        </ui-field>
 
       <ui-field variant="profile-stage" label="系统估算阶段">
         <view class="dog-profile-readonly">{{lifeStageLabel}}</view>

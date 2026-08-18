@@ -20,11 +20,9 @@
         </view>
 
         <ui-field label="爱宠品种" errorText="{{breedError}}">
-          <picker range="{{breedOptions}}" range-key="label" value="{{breedIndex}}" bindchange="onBreed">
-            <view class="dog-profile-picker-value {{form.breed ? '' : 'dog-profile-picker-value--empty'}}">
-              {{form.breed ? breedOptions[breedIndex].label : '请选择'}}
-            </view>
-          </picker>
+          <view class="dog-profile-picker-value {{form.breed ? '' : 'dog-profile-picker-value--empty'}}" bindtap="onChooseBreed">
+            {{form.breed ? breedLabel : '请选择'}}
+          </view>
         </ui-field>
 
         <ui-field label="系统估算阶段">

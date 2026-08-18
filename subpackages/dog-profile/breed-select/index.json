@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "选择狗狗品种",
+  "usingComponents": {
+    "breed-indexes": "../../../components/vendor/breed-indexes/index"
+  }
+}

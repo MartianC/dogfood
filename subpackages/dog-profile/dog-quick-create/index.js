@@ -73,7 +73,7 @@ Page({
     diseaseStatusOptions,
     reproductiveStatusOptions,
     therapeuticWeightManagementOptions,
-    breedIndex: 0,
+    breedLabel: '',
     goalIndex: 0,
     lifeStageLabel: '阶段待完善',
     isPuppy: false,
@@ -111,16 +111,25 @@ Page({
     })
   },
 
-  onBreed(event) {
-    const breedIndex = Number(event.detail.value)
-    const option = this.data.breedOptions[breedIndex]
+  applyBreed(value) {
+    const option = this.data.breedOptions.find((item) => item.value === value)
+    if (!option) return
     const estimate = estimateExpectedAdultWeight(option.value)
     this.setData({
-      breedIndex,
       'form.breed': option.value,
+      breedLabel: option.label,
       expectedAdultWeightKg: estimate.expectedAdultWeightKg,
       adultWeightEstimateReason: estimate.adultWeightEstimateReason,
       breedError: ''
+    })
+  },
+
+  onChooseBreed() {
+    wx.navigateTo({
+      url: '/subpackages/dog-profile/breed-select/index?selected=' + encodeURIComponent(this.data.form.breed || ''),
+      events: {
+        breedSelected: (payload) => this.applyBreed(payload.value)
+      }
     })
   },
 

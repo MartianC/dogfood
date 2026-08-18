@@ -1,0 +1,46 @@
+@import "../../../styles/tokens.wxss";
+
+:host {
+  /* 把 TDesign 默认蓝映射成狗饭品牌主色，统一索引页主题色 */
+  --td-brand-color: var(--df-color-primary);
+  --td-brand-color-active: var(--df-color-primary-pressed);
+  --td-indexes-sidebar-color: var(--df-color-muted);
+  --td-indexes-sidebar-active-bg-color: var(--df-color-primary);
+  --td-indexes-sidebar-active-color: var(--df-color-on-primary);
+  --td-indexes-anchor-active-color: var(--df-color-primary);
+  --td-indexes-anchor-bg-color: var(--df-color-surface-muted);
+  --td-cell-bg-color: var(--df-color-surface);
+  --td-cell-title-color: var(--df-color-text);
+  --td-cell-hover-color: var(--df-color-surface-pressed);
+  --td-cell-border-color: var(--df-color-line);
+  --td-cell-right-icon-color: var(--df-color-muted);
+  --td-bg-color-container: var(--df-color-surface);
+  --td-search-bg-color: var(--df-color-surface-muted);
+  --td-search-border-color: var(--df-color-line);
+  --td-search-text-color: var(--df-color-text);
+  --td-search-placeholder-color: var(--df-color-muted);
+  --td-search-icon-color: var(--df-color-muted);
+  --td-search-clear-icon-color: var(--df-color-muted);
+  --td-search-action-color: var(--df-color-primary);
+}
+
+.breed-indexes {
+  display: block;
+  min-height: 100%;
+}
+
+.breed-indexes__search {
+  padding: 16rpx 24rpx;
+  background: var(--df-color-surface);
+}
+
+.breed-indexes__results {
+  box-sizing: border-box;
+}
+
+.breed-indexes__check {
+  color: var(--df-color-primary);
+  font-size: 34rpx;
+  font-weight: 600;
+  line-height: 1;
+}
