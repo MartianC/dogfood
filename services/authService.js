@@ -2,6 +2,7 @@ const env = require('../config/env')
 const storage = require('../utils/storage')
 const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./adapters/mock')
 const { isDogsCacheValid } = require('./dogProfileContract')
+const dataInvalidationService = require('./dataInvalidationService')
 
 let authState = 'guest'
 let currentUser = null
@@ -40,6 +41,7 @@ async function login() {
     const dogService = require('./dogService')
     const dogs = await dogService.listDogs()
     setAuth(result.user, dogs)
+    dataInvalidationService.markDirty()
     return true
   } catch (error) {
     if (typeof wx !== 'undefined') {
@@ -72,6 +74,7 @@ function logout() {
   storage.removeSync('access_token')
   storage.removeSync('currentUser')
   setAuth(null, [])
+  dataInvalidationService.markDirty()
 }
 
 function refreshState(dogs) {

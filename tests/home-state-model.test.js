@@ -125,12 +125,14 @@ test('今天没有记录时提供记一顿主任务，并保留真实最近一�
 
   assert.equal(state.status, HOME_STATUS.TODAY_EMPTY)
   assert.equal(state.primaryTask.type, PRIMARY_TASK_TYPE.START_SHARED_MEAL)
+  assert.equal(state.primaryTask.title, '准备今天这一顿')
+  assert.equal(state.primaryTask.label, '记一顿')
   assert.equal(state.todaySummary.status, 'empty')
   assert.equal(state.recentRecord.id, 'recent-1')
   assert.equal(state.recentRecord.snapshotText, '查看保存时快照')
 })
 
-test('今天有记录时主任务转为查看记录，并按最新时间展示真实快照', () => {
+test('今天有记录时主任务仍为记一顿，并按最新时间展示真实快照', () => {
   const state = buildHomeState({
     authState: 'has-profile',
     dogs: [dog],
@@ -142,7 +144,10 @@ test('今天有记录时主任务转为查看记录，并按最新时间展示�
   })
 
   assert.equal(state.status, HOME_STATUS.TODAY_HAS_RECORDS)
-  assert.equal(state.primaryTask.type, PRIMARY_TASK_TYPE.VIEW_TODAY_RECORDS)
+  assert.equal(state.primaryTask.type, PRIMARY_TASK_TYPE.START_SHARED_MEAL)
+  assert.equal(state.primaryTask.title, '准备下一顿')
+  assert.equal(state.primaryTask.label, '记一顿')
+  assert.equal(state.primaryTask.description, '布丁今天已记录 2 次，继续记录下一顿。')
   assert.equal(state.todaySummary.count, 2)
   assert.deepEqual(state.todaySummary.dogNames, ['布丁'])
   assert.equal(state.recentRecord.menuText, '牛肉饭')
@@ -217,8 +222,8 @@ test('首页将档案、体重和护理事项合并为最多三条，并保留�
         action: 'open-care',
         dogId: 'dog-1',
         dogName: '布丁',
-        title: '狂犬病疫苗',
-        description: '你填写的下次日期：2026年8月8日'
+        title: '计划中的下次「疫苗」：2026年8月8日',
+        description: '布丁 · 狂犬病疫苗'
       },
       {
         key: 'weight:dog-1:weight-1',
@@ -235,8 +240,8 @@ test('首页将档案、体重和护理事项合并为最多三条，并保留�
         action: 'open-care',
         dogId: 'dog-1',
         dogName: '布丁',
-        title: '体内驱虫',
-        description: '你填写的下次日期：2026年9月8日'
+        title: '计划中的下次「体内驱虫」：2026年9月8日',
+        description: '布丁'
       },
       {
         key: 'care:dog-1:care-3',
@@ -244,8 +249,8 @@ test('首页将档案、体重和护理事项合并为最多三条，并保留�
         action: 'open-care',
         dogId: 'dog-1',
         dogName: '布丁',
-        title: '其他护理',
-        description: '你填写的下次日期：2026年10月8日'
+        title: '计划中的下次「其他护理」：2026年10月8日',
+        description: '布丁'
       }
     ]
   )

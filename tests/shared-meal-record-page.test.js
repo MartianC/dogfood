@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const vm = require('node:vm')
 const { createUnifiedRecordTimelineModel } = require('../services/unifiedRecordTimelineModel')
+const { createDataInvalidationState, DATA_SCOPE } = require('../services/dataInvalidationService')
 
 const root = path.resolve(__dirname, '..')
 
@@ -15,7 +16,8 @@ function loadRecordsPage(
   recordService,
   entryService = { startSharedMeal: async () => ({ status: 'flow-started' }) },
   wx = {},
-  app = { globalData: { authReady: Promise.resolve() } }
+  app = { globalData: { authReady: Promise.resolve() } },
+  dataInvalidation = createDataInvalidationState()
 ) {
   const source = read('pages/records/index.js')
   let definition
@@ -24,6 +26,7 @@ function loadRecordsPage(
     require(request) {
       if (request === '../../services/sharedMealRecordService') return recordService
       if (request === '../../services/sharedMealEntryService') return entryService
+      if (request === '../../services/dataInvalidationService') return dataInvalidation
       throw new Error(`测试未提供依赖：${request}`)
     },
     module: { exports: {} },
@@ -283,7 +286,7 @@ test('记录页等待应用认证初始化后再开始查询记录', async () =>
   assert.equal(loadCalls, 1)
 })
 
-test('记录页从体重或护理任务返回时强制刷新当前月份', async () => {
+test('记录页数据版本变化时强制刷新当前月份', async () => {
   const timelineState = createTimelineState({
     '2026-08': { meal: { items: [] } }
   })
@@ -293,18 +296,19 @@ test('记录页从体重或护理任务返回时强制刷新当前月份', async
     calls.push({ monthKey, ...options })
     return originalLoad(monthKey, options)
   }
+  const dataInvalidation = createDataInvalidationState()
   const { definition } = loadRecordsPage(
     { createUnifiedRecordTimelineState: () => timelineState },
     undefined,
-    { navigateTo() {} }
+    { navigateTo() {} },
+    undefined,
+    dataInvalidation
   )
   const page = createPageContext(definition)
   page.now = () => new Date('2026-08-05T04:00:00.000Z')
 
   await page.onShow()
-  page.onOpenRecord({
-    currentTarget: { dataset: { source: 'weight', dogId: 'dog-1' } }
-  })
+  dataInvalidation.markDirty(DATA_SCOPE.PROFILE)
   await page.onShow()
 
   assert.equal(calls.length, 2)

@@ -22,8 +22,7 @@ const PRIMARY_TASK_TYPE = Object.freeze({
   LOGIN_AND_CONTINUE: 'login-and-continue',
   CREATE_PROFILE: 'create-profile',
   RESUME_DRAFT: 'resume-draft',
-  START_SHARED_MEAL: 'start-shared-meal',
-  VIEW_TODAY_RECORDS: 'view-today-records'
+  START_SHARED_MEAL: 'start-shared-meal'
 })
 
 const PROFILE_ISSUE_COPY = Object.freeze({
@@ -412,6 +411,7 @@ function createPrimaryTask(status, context) {
   if (status === HOME_STATUS.INITIALIZING) {
     return {
       type: null,
+      title: '准备首页',
       label: '正在准备首页',
       description: '正在确认登录状态，请稍候。',
       preserveMealIntent: false
@@ -420,6 +420,7 @@ function createPrimaryTask(status, context) {
   if (status === HOME_STATUS.GUEST) {
     return {
       type: PRIMARY_TASK_TYPE.LOGIN_AND_CONTINUE,
+      title: '继续你的记餐计划',
       label: '登录并继续',
       description: '登录后继续原来的记餐意图。',
       preserveMealIntent: true
@@ -428,6 +429,7 @@ function createPrimaryTask(status, context) {
   if (status === HOME_STATUS.DATA_ERROR) {
     return {
       type: PRIMARY_TASK_TYPE.START_SHARED_MEAL,
+      title: '继续记餐',
       label: '记一顿',
       description: error.description,
       preserveMealIntent: false
@@ -436,6 +438,7 @@ function createPrimaryTask(status, context) {
   if (status === HOME_STATUS.DRAFT) {
     return {
       type: PRIMARY_TASK_TYPE.RESUME_DRAFT,
+      title: '继续这份草稿',
       label: '查看草稿',
       description: `${draft.dogName} · ${draft.updatedAtText}`,
       draftId: draft.id,
@@ -445,6 +448,7 @@ function createPrimaryTask(status, context) {
   if (status === HOME_STATUS.PROFILE_REQUIRED) {
     return {
       type: PRIMARY_TASK_TYPE.CREATE_PROFILE,
+      title: '先完善狗狗档案',
       label: '新增狗狗档案',
       description: '保存后会回到当前记餐流程。',
       preserveMealIntent: true
@@ -452,16 +456,18 @@ function createPrimaryTask(status, context) {
   }
   if (status === HOME_STATUS.TODAY_HAS_RECORDS) {
     return {
-      type: PRIMARY_TASK_TYPE.VIEW_TODAY_RECORDS,
-      label: '查看今天的本餐记录',
-      description: `${subjectText(todayNames)} · ${todayRecords.length} 次保存快照`,
+      type: PRIMARY_TASK_TYPE.START_SHARED_MEAL,
+      title: '准备下一顿',
+      label: '记一顿',
+      description: `${subjectText(todayNames)}今天已记录 ${todayRecords.length} 次，继续记录下一顿。`,
       preserveMealIntent: false
     }
   }
   return {
     type: PRIMARY_TASK_TYPE.START_SHARED_MEAL,
+    title: '准备今天这一顿',
     label: '记一顿',
-    description: '记录今天和狗狗共享的一顿饭。',
+    description: '选好菜单，开始记录和狗狗共享的一顿饭。',
     preserveMealIntent: false
   }
 }

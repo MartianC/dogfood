@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "使用帮助",
+  "usingComponents": {
+    "ui-card": "../../../components/ui/ui-card/index"
+  }
+}

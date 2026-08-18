@@ -18,4 +18,61 @@
       <ui-tag variant="{{authState === 'guest' ? 'neutral' : 'good'}}" size="small">{{authState === 'guest' ? '未登录' : '已登录'}}</ui-tag>
     </view>
   </ui-card>
+
+  <view class="profile-sections">
+    <view class="profile-section">
+      <view class="profile-section__heading">使用帮助</view>
+      <ui-card padding="none">
+        <navigator class="profile-item" url="/pages/profile/help/index" aria-label="如何开始记录第一顿">
+          <view class="profile-item__content">
+            <view class="profile-item__title">如何开始记录第一顿</view>
+            <view class="profile-item__description">从登录、添加狗狗到保存本餐</view>
+          </view>
+          <view class="profile-item__chevron" aria-hidden="true">›</view>
+        </navigator>
+        <view class="profile-item__divider" aria-hidden="true"></view>
+        <navigator class="profile-item" url="/pages/profile/help/index?topic=assessment" aria-label="本餐评估说明">
+          <view class="profile-item__content">
+            <view class="profile-item__title">本餐评估说明</view>
+            <view class="profile-item__description">了解能量、营养参考和使用边界</view>
+          </view>
+          <view class="profile-item__chevron" aria-hidden="true">›</view>
+        </navigator>
+      </ui-card>
+    </view>
+
+    <view class="profile-section">
+      <view class="profile-section__heading">账号与数据</view>
+      <ui-card padding="none">
+        <navigator class="profile-item" url="/pages/profile/privacy/index" aria-label="隐私与数据说明">
+          <view class="profile-item__content">
+            <view class="profile-item__title">隐私与数据说明</view>
+            <view class="profile-item__description">了解头像、档案和本餐记录的使用方式</view>
+          </view>
+          <view class="profile-item__chevron" aria-hidden="true">›</view>
+        </navigator>
+      </ui-card>
+    </view>
+
+    <view class="profile-section profile-section--about">
+      <view class="profile-section__heading">关于爪饭</view>
+      <ui-card padding="none">
+        <navigator class="profile-item" url="/pages/profile/feedback/index" aria-label="交流与反馈">
+          <view class="profile-item__content">
+            <view class="profile-item__title">交流与反馈</view>
+            <view class="profile-item__description">欢迎加群，反馈问题或与其他爪饭用户交流</view>
+          </view>
+          <view class="profile-item__chevron" aria-hidden="true">›</view>
+        </navigator>
+        <view class="profile-item__divider" aria-hidden="true"></view>
+        <view class="profile-item profile-item--static">
+          <view class="profile-item__content">
+            <view class="profile-item__title">版本</view>
+          </view>
+          <view class="profile-item__value">0.1.0</view>
+        </view>
+      </ui-card>
+      <view class="profile-about-note">爪饭，帮你把每一顿记清楚。</view>
+    </view>
+  </view>
 </view>

@@ -1,0 +1,22 @@
+<view class="page profile-feedback-page">
+  <view class="profile-feedback__intro">
+    <view class="profile-feedback__title">交流与反馈</view>
+    <view class="profile-feedback__description">欢迎加群，反馈问题或与其他爪饭用户交流</view>
+  </view>
+
+  <ui-card padding="large">
+    <image
+      wx:if="{{!qrLoadError}}"
+      class="profile-feedback__qr"
+      src="{{feedbackQrImage}}"
+      mode="aspectFit"
+      aria-label="交流与反馈二维码，点击可放大查看"
+      bindtap="onPreviewQr"
+      binderror="onQrError"
+    />
+    <view wx:else class="profile-feedback__error">二维码暂时无法显示，请稍后再试。</view>
+    <view class="profile-feedback__hint">长按或点击二维码即可识别</view>
+  </ui-card>
+
+  <view class="profile-feedback__footer">感谢你的反馈，爪饭会认真看每一条建议。</view>
+</view>

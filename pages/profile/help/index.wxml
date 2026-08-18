@@ -1,0 +1,43 @@
+<view class="page profile-help-page">
+  <view class="profile-help__intro">
+    <view class="profile-help__eyebrow">使用帮助</view>
+    <view class="profile-help__title">把每一顿记清楚</view>
+    <view class="profile-help__description">爪饭会根据狗狗档案和本餐食材，帮助你完成一顿饭的记录与参考。</view>
+  </view>
+
+  <ui-card wx:if="{{topic === 'start'}}">
+    <view class="profile-help__section-title">如何开始记录第一顿</view>
+    <view class="profile-help__step">
+      <view class="profile-help__step-number">1</view>
+      <view class="profile-help__step-content">
+        <view class="profile-help__step-title">登录并添加狗狗</view>
+        <view class="profile-help__step-description">先在“爱宠”中建立狗狗档案，填写体重、年龄等基础信息。</view>
+      </view>
+    </view>
+    <view class="profile-help__step">
+      <view class="profile-help__step-number">2</view>
+      <view class="profile-help__step-content">
+        <view class="profile-help__step-title">点击“记一顿”</view>
+        <view class="profile-help__step-description">选择本次狗狗和人饭菜单，再按页面提示补充狗饭食材与克重。</view>
+      </view>
+    </view>
+    <view class="profile-help__step">
+      <view class="profile-help__step-number">3</view>
+      <view class="profile-help__step-content">
+        <view class="profile-help__step-title">完成评估并保存</view>
+        <view class="profile-help__step-description">确认本餐信息后保存，之后可以在“记录”中按日期回看。</view>
+      </view>
+    </view>
+  </ui-card>
+
+  <ui-card wx:else>
+    <view class="profile-help__section-title">本餐评估说明</view>
+    <view class="profile-help__paragraph">评估结果用于本餐份量和配方参考，会结合狗狗档案、食材数据与当前参考标准计算。</view>
+    <view class="profile-help__paragraph">本餐评估不代表一顿饭已经营养完整，也不代表适合长期重复喂养。狗狗有疾病或特殊营养需求时，请咨询兽医或宠物营养专业人士。</view>
+    <view class="profile-help__subsection-title">为什么需要完善档案</view>
+    <view class="profile-help__paragraph">年龄、体重和生活阶段会影响能量与营养参考。档案信息不完整时，部分结果可能无法计算或需要你手动确认。</view>
+  </ui-card>
+
+  <navigator wx:if="{{topic === 'start'}}" class="profile-help__switch" url="/pages/profile/help/index?topic=assessment">查看本餐评估说明 ›</navigator>
+  <navigator wx:else class="profile-help__switch" url="/pages/profile/help/index">查看如何开始记录第一顿 ›</navigator>
+</view>

@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="28" fill="#ffffff"/>
+  <rect x="48" y="48" width="136" height="136" rx="12" fill="#17201b"/>
+  <rect x="80" y="80" width="72" height="72" rx="8" fill="#ffffff"/>
+  <rect x="104" y="104" width="24" height="24" fill="#17201b"/>
+  <rect x="328" y="48" width="136" height="136" rx="12" fill="#17201b"/>
+  <rect x="360" y="80" width="72" height="72" rx="8" fill="#ffffff"/>
+  <rect x="384" y="104" width="24" height="24" fill="#17201b"/>
+  <rect x="48" y="328" width="136" height="136" rx="12" fill="#17201b"/>
+  <rect x="80" y="360" width="72" height="72" rx="8" fill="#ffffff"/>
+  <rect x="104" y="384" width="24" height="24" fill="#17201b"/>
+  <path fill="#17201b" d="M232 48h32v32h-32zM280 48h24v24h-24zM208 96h32v24h-32zM256 88h32v40h-32zM304 96h24v24h-24zM208 144h24v40h-24zM248 144h40v24h-40zM304 144h40v40h-40zM368 216h40v24h-40zM416 216h48v32h-48zM48 216h40v32h-40zM104 216h40v24h-40zM160 216h40v32h-40zM216 216h24v48h-24zM256 208h32v32h-32zM304 224h24v40h-24zM352 256h32v24h-32zM400 264h64v32h-64zM48 280h32v24h-32zM96 272h24v40h-24zM144 280h40v24h-40zM208 296h40v24h-40zM264 280h24v40h-24zM304 304h40v32h-40zM352 312h24v40h-24zM400 320h32v24h-32zM208 352h32v32h-32zM256 352h24v48h-24zM296 360h40v24h-40zM344 384h32v40h-32zM400 368h64v32h-64zM208 424h40v40h-40zM272 424h24v40h-24zM312 424h40v24h-40z"/>
+  <rect x="176" y="190" width="160" height="132" rx="18" fill="#e3f0e8"/>
+  <text x="256" y="242" fill="#25684a" font-size="26" font-family="sans-serif" text-anchor="middle">反馈二维码</text>
+  <text x="256" y="282" fill="#6f7b73" font-size="22" font-family="sans-serif" text-anchor="middle">待替换</text>
+</svg>

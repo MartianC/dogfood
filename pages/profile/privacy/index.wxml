@@ -1,0 +1,23 @@
+<view class="page profile-privacy-page">
+  <view class="profile-privacy__intro">
+    <view class="profile-privacy__title">隐私与数据说明</view>
+    <view class="profile-privacy__description">这里只说明爪饭当前功能会使用到的数据。</view>
+  </view>
+
+  <ui-card>
+    <view class="profile-privacy__section">
+      <view class="profile-privacy__section-title">账号信息</view>
+      <view class="profile-privacy__paragraph">登录后，头像和昵称用于展示当前账号。头像更换后会保存到当前账号，游客模式不会关联账号历史数据。</view>
+    </view>
+    <view class="profile-privacy__section">
+      <view class="profile-privacy__section-title">狗狗档案</view>
+      <view class="profile-privacy__paragraph">狗狗档案用于计算本餐的能量和营养参考，并只在当前账号下使用。</view>
+    </view>
+    <view class="profile-privacy__section">
+      <view class="profile-privacy__section-title">本餐记录</view>
+      <view class="profile-privacy__paragraph">保存后的本餐记录会保留狗狗、人饭菜单、狗饭食材、评估结果和版本信息，方便你之后按日期回看。</view>
+    </view>
+  </ui-card>
+
+  <view class="profile-privacy__footer">如需了解具体数据处理方式，欢迎通过“交流与反馈”联系我。</view>
+</view>

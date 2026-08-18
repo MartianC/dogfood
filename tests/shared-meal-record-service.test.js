@@ -3,6 +3,7 @@ const assert = require('node:assert/strict')
 const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const storage = require('../utils/storage')
 const recordService = require('../services/sharedMealRecordService')
+const dataInvalidationService = require('../services/dataInvalidationService')
 const { fingerprint } = require('../subpackages/shared-meal/services/sharedMealContract')
 
 function intent() {
@@ -32,7 +33,11 @@ function intent() {
 test('Mock 记录保存幂等、同 key 异内容冲突并可稳定回看快照', async () => {
   storage.removeSync('mockSharedMealRecords')
   const saveIntent = intent()
+  const before = dataInvalidationService.getSnapshot()
   const first = await recordService.save(saveIntent)
+  const after = dataInvalidationService.getSnapshot()
+  assert.equal(after.meals, before.meals + 1)
+  assert.equal(after.profile, before.profile)
   const repeated = await recordService.save(saveIntent)
   assert.equal(repeated.id, first.id)
   assert.equal((await recordService.list()).items.length, 1)

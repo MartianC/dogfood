@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "交流与反馈",
+  "usingComponents": {
+    "ui-card": "../../../components/ui/ui-card/index"
+  }
+}

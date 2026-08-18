@@ -115,7 +115,7 @@ test('微信头像加载失败时回退到默认用户 SVG', () => {
   assert.equal(viewData.avatarUrl, '')
 })
 
-test('我的页面只保留账号卡，不暴露狗狗或旧兼容入口', () => {
+test('我的页面按使用帮助、账号与数据、关于爪饭分组，不暴露狗狗或旧兼容入口', () => {
   const root = path.join(__dirname, '..', 'pages/profile/index')
   const js = fs.readFileSync(path.join(root, 'index.js'), 'utf8')
   const wxml = fs.readFileSync(path.join(root, 'index.wxml'), 'utf8')
@@ -131,5 +131,15 @@ test('我的页面只保留账号卡，不暴露狗狗或旧兼容入口', () =>
   assert.match(wxml, /openType="chooseAvatar"/)
   assert.match(wxml, /defaultUserAvatar/)
   assert.match(wxml, /bind:error="onAvatarError"/)
+  assert.match(wxml, /使用帮助/)
+  assert.match(wxml, /账号与数据/)
+  assert.match(wxml, /关于爪饭/)
+  assert.match(wxml, /如何开始记录第一顿/)
+  assert.match(wxml, /本餐评估说明/)
+  assert.match(wxml, /隐私与数据说明/)
+  assert.match(wxml, /交流与反馈/)
+  assert.match(wxml, /url="\/pages\/profile\/feedback\/index"/)
+  assert.ok(wxml.indexOf('使用帮助') < wxml.indexOf('账号与数据'))
+  assert.ok(wxml.indexOf('账号与数据') < wxml.indexOf('关于爪饭'))
   assert.ok(fs.existsSync(path.join(__dirname, '..', 'assets/profile/default-user-avatar.svg')))
 })

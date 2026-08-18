@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "隐私与数据说明",
+  "usingComponents": {
+    "ui-card": "../../../components/ui/ui-card/index"
+  }
+}

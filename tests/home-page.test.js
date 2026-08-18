@@ -6,6 +6,7 @@ const vm = require('node:vm')
 
 const homeStateModel = require('../services/homeStateModel')
 const homeStartupTiming = require('../services/homeStartupTiming')
+const { createDataInvalidationState, DATA_SCOPE } = require('../services/dataInvalidationService')
 
 const FIXED_NOW = new Date('2026-08-02T04:00:00.000Z')
 
@@ -18,6 +19,7 @@ function loadHomePage({
   draft = null,
   now = FIXED_NOW,
   globalData = {},
+  dataInvalidation = createDataInvalidationState(),
   wx = {}
 }) {
   const source = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.js'), 'utf8')
@@ -28,6 +30,7 @@ function loadHomePage({
     '../../services/sharedMealRecordService': recordService,
     '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'flow-started' }) },
     '../../services/homeItemService': homeItemService,
+    '../../services/dataInvalidationService': dataInvalidation,
     '../../services/homeStartupTiming': homeStartupTiming,
     '../../services/homeDraftSummaryService': {
       getDraftSummary() { return draft }
@@ -198,6 +201,7 @@ test('已登录首页在记录服务失败时展示稳定错误降级，仍保�
     setData(data) { viewData = data }
   })
   assert.equal(viewData.homeState.status, homeStateModel.HOME_STATUS.DATA_ERROR)
+  assert.equal(viewData.homeState.primaryTask.title, '继续记餐')
   assert.equal(viewData.homeState.primaryTask.label, '记一顿')
   assert.equal(viewData.homeState.recentRecord, null)
 })
@@ -285,10 +289,12 @@ test('主页显示可恢复草稿状态且不自动导航', async () => {
   })
   assert.equal(viewData.homeState.status, homeStateModel.HOME_STATUS.DRAFT)
   assert.equal(viewData.homeState.draft.dogName, '布丁')
+  assert.equal(viewData.homeState.primaryTask.title, '继续这份草稿')
   assert.equal(viewData.homeState.primaryTask.label, '查看草稿')
 })
 
-test('今天有记录时主任务打开记录页，而不是重复启动记餐流程', async () => {
+test('今天有记录时主任务仍启动记餐流程，不自动打开记录页', async () => {
+  let started = false
   let switchedTo = ''
   const definition = loadHomePage({
     authState: 'has-profile',
@@ -302,12 +308,86 @@ test('今天有记录时主任务打开记录页，而不是重复启动记餐�
     setData(data) { viewData = data }
   })
   definition.onOpenRecords = () => { switchedTo = 'records' }
+  definition.onCreateMeal = () => { started = true }
   await definition.onPrimaryTask.call({
     data: viewData,
     onOpenRecords: definition.onOpenRecords,
     onCreateMeal: definition.onCreateMeal
   })
-  assert.equal(switchedTo, 'records')
+  assert.equal(started, true)
+  assert.equal(switchedTo, '')
+})
+
+test('首页普通 Tab 往返复用已有数据，不重复请求或先清空内容', async () => {
+  let recordCalls = 0
+  const dataInvalidation = createDataInvalidationState()
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    dataInvalidation,
+    dogService: { listDogs: async () => [{ id: 'dog-1', name: '布丁' }] },
+    recordService: {
+      list: async () => {
+        recordCalls += 1
+        return { items: [record()] }
+      }
+    }
+  })
+  const updates = []
+  const page = {
+    data: structuredClone(definition.data),
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) {
+      Object.assign(this.data, data)
+      updates.push(data)
+    }
+  }
+
+  await definition.onShow.call(page)
+  updates.length = 0
+  await definition.onShow.call(page)
+
+  assert.equal(recordCalls, 1)
+  assert.equal(updates.length, 0)
+  assert.equal(page.data.homeState.todaySummary.count, 1)
+  assert.ok(page.data.homeState.recentRecord)
+})
+
+test('首页数据变脏时保留旧快照并在后台刷新', async () => {
+  let recordCalls = 0
+  const dataInvalidation = createDataInvalidationState()
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    dataInvalidation,
+    dogService: { listDogs: async () => [{ id: 'dog-1', name: '布丁' }] },
+    recordService: {
+      list: async () => {
+        recordCalls += 1
+        return { items: [record({ id: `record-${recordCalls}` })] }
+      }
+    }
+  })
+  const updates = []
+  const page = {
+    data: structuredClone(definition.data),
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) {
+      Object.assign(this.data, data)
+      updates.push(data)
+    }
+  }
+
+  await definition.onShow.call(page)
+  updates.length = 0
+  dataInvalidation.markDirty(DATA_SCOPE.MEALS)
+  await definition.onShow.call(page)
+
+  assert.equal(recordCalls, 2)
+  assert.equal(updates[0].homeRefreshing, true)
+  assert.equal(updates[0].homeState, undefined)
+  assert.equal(page.data.homeState.todaySummary.count, 1)
+  assert.equal(page.data.homeRefreshing, false)
 })
 
 test('首页体重和护理事项进入对应狗狗记录页，档案事项仍进入编辑页', () => {
@@ -358,11 +438,17 @@ test('首页 WXML 覆盖六类模型状态并保留 UI Kernel 与底部安全区
   assert.match(wxml, /homeState\.status !== 'initializing'/)
   assert.match(wxml, /homeState\.status === 'initializing'/)
   assert.match(wxml, /homeState\.primaryTask/)
+  assert.match(wxml, /homeState\.primaryTask\.title/)
+  assert.match(wxml, /<view class="home-primary__eyebrow">接下来<\/view>/)
   assert.match(wxml, /homeState\.todaySummary/)
   assert.match(wxml, /homeState\.draft/)
   assert.match(wxml, /homeState\.profileIssues/)
   assert.match(wxml, /data-action="\{\{item\.action\}\}"/)
   assert.match(wxml, /homeState\.recentRecord/)
+  assert.match(wxml, /homeRefreshing/)
+  assert.match(wxml, /homeRefreshError/)
+  assert.match(wxml, /<view class="df-heading-lg">护理安排<\/view>/)
+  assert.doesNotMatch(wxml, /照护/)
   assert.match(wxml, /class="page with-tab-bar home-page"/)
   assert.match(wxml, /<ui-card\s+variant="plain"\s+padding="large"/)
   assert.doesNotMatch(wxml, /homeState\.status === 'data-error' \? 'plain' : 'primary'/)

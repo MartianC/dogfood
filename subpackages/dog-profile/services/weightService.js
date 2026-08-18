@@ -4,6 +4,7 @@ const {
   normalizeWeightMeasurementInput,
   normalizeWeightMeasurement
 } = require('../../../services/weightContract')
+const dataInvalidationService = require('../../../services/dataInvalidationService')
 const cloudAdapter = require('./weightCloudbaseAdapter')
 const mockAdapter = require('./weightMockAdapter')
 
@@ -135,6 +136,7 @@ async function create(payload = {}) {
   })
   await ensureCapability()
   const result = await execute('create', () => adapter.createWeightMeasurement(input))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return {
     measurement: normalizeWeightMeasurement(result.measurement),
     currentWeight: result.currentWeight
@@ -150,6 +152,7 @@ async function update(recordId, payload = {}) {
   })
   await ensureCapability()
   const result = await execute('update', () => adapter.updateWeightMeasurement(id, input))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return {
     replacedMeasurementId: result.replacedMeasurementId,
     replacement: normalizeWeightMeasurement(result.replacement),
@@ -169,6 +172,7 @@ async function remove(recordId) {
   if (!id) throw new Error('体重测量记录 ID 无效')
   await ensureCapability()
   const result = await execute('delete', () => adapter.deleteWeightMeasurement(id))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return {
     dogId: result.dogId,
     deletedMeasurementId: result.deletedMeasurementId,

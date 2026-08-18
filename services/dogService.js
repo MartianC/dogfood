@@ -6,6 +6,7 @@ const { breedAdultWeightCatalog } = require('../data/breedAdultWeightCatalog')
 const { deriveActivityLevel, estimateExpectedAdultWeight } = require('./dogProfileDerivations')
 const { estimateLifeStage, decorateDog } = require('./lifeStageEstimator')
 const { normalizeLegacyWeightKg } = require('./weightContract')
+const dataInvalidationService = require('./dataInvalidationService')
 const {
   DOG_PROFILE_SCHEMA_VERSION,
   DOGS_CACHE_SCHEMA_VERSION,
@@ -194,6 +195,7 @@ async function createDog(payload) {
   assertSavedProfileContract(saved, dog)
   const dogs = await listDogs()
   authService.refreshState(dogs)
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return decorateSavedDog(saved)
 }
 
@@ -205,6 +207,7 @@ async function updateDog(id, payload) {
   assertSavedProfileContract(saved, dog)
   const dogs = await listDogs()
   authService.refreshState(dogs)
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return decorateSavedDog(saved)
 }
 
@@ -220,6 +223,7 @@ async function updateDogAllergens(id, allergens) {
   ) throw new Error('过敏食材保存结果不一致，请重试')
   const dogs = await listDogs()
   authService.refreshState(dogs)
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return decorateSavedDog(saved)
 }
 
@@ -227,6 +231,7 @@ async function deleteDog(id) {
   const result = await adapter.deleteDog(id)
   const dogs = await listDogs()
   authService.refreshState(dogs)
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return result
 }
 

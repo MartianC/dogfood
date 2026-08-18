@@ -1,5 +1,6 @@
 const env = require('../../../config/env')
 const contract = require('../../../contracts/care/careRecordContract')
+const dataInvalidationService = require('../../../services/dataInvalidationService')
 const adapter = env.useCloudBase
   ? require('./careRecordCloudbaseAdapter')
   : require('./careRecordMockAdapter')
@@ -145,7 +146,9 @@ async function execute(operation, invoke) {
 
 async function create(payload) {
   const input = normalizeWritePayload(payload, 'create')
-  return execute('create', () => adapter.createCareRecord(input))
+  const result = await execute('create', () => adapter.createCareRecord(input))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
+  return result
 }
 
 async function update(recordId, payload) {
@@ -153,14 +156,18 @@ async function update(recordId, payload) {
     throw invalidInput(new Error('护理记录 ID 无效'), 'update')
   }
   const input = normalizeWritePayload(payload, 'update')
-  return execute('update', () => adapter.updateCareRecord(String(recordId), input))
+  const result = await execute('update', () => adapter.updateCareRecord(String(recordId), input))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
+  return result
 }
 
 async function remove(recordId) {
   if (!String(recordId || '').trim()) {
     throw invalidInput(new Error('护理记录 ID 无效'), 'delete')
   }
-  return execute('delete', () => adapter.deleteCareRecord(String(recordId)))
+  const result = await execute('delete', () => adapter.deleteCareRecord(String(recordId)))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
+  return result
 }
 
 function list(options = {}) {

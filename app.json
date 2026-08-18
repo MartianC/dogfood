@@ -4,6 +4,9 @@
     "pages/records/index",
     "pages/dogs/index",
     "pages/profile/index/index",
+    "pages/profile/help/index",
+    "pages/profile/privacy/index",
+    "pages/profile/feedback/index",
     "pages/recipes/list/index",
     "pages/recipes/detail/index",
     "pages/plan/index/index"

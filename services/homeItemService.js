@@ -84,14 +84,15 @@ function careItem(dog, record, now) {
   const nextDateText = formatUserDate(normalized.nextDate)
   if (!nextDateText) return null
   const typeLabel = careContract.CARE_RECORD_TYPE_LABELS[normalized.type] || '其他护理'
+  const detailText = [dogNameOf(dog), normalized.name].filter(Boolean).join(' · ')
   return {
     key: `care:${normalized.dogId}:${normalized.id}`,
     kind: 'care',
     action: 'open-care',
     dogId: normalized.dogId,
     dogName: dogNameOf(dog),
-    title: normalized.name || typeLabel,
-    description: `${typeLabel} · 你填写的下次日期：${nextDateText}`,
+    title: `计划中的下次「${typeLabel}」：${nextDateText}`,
+    description: detailText,
     recordId: normalized.id,
     nextDate: normalized.nextDate
   }

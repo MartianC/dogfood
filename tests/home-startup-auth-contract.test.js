@@ -8,18 +8,21 @@ const storage = require('../utils/storage')
 const authService = require('../services/authService')
 const homeStateModel = require('../services/homeStateModel')
 const homeStartupTiming = require('../services/homeStartupTiming')
+const { createDataInvalidationState } = require('../services/dataInvalidationService')
 
 const FIXED_NOW = new Date('2026-08-02T04:00:00.000Z')
 const HOME_SOURCE = fs.readFileSync(path.join(__dirname, '..', 'pages/home/index.js'), 'utf8')
 
 function loadHomePage({ dogs, authState, records, draft = null, listDogs, listRecords, listHomeItems }) {
   let definition
+  const dataInvalidation = createDataInvalidationState()
   const dependencies = {
     '../../services/dogService': { listDogs: listDogs || (async () => dogs) },
     '../../services/authService': { getAuthState: () => authState },
     '../../services/sharedMealRecordService': { list: listRecords || (async () => records) },
     '../../services/sharedMealEntryService': { startSharedMeal: async () => ({ status: 'started' }) },
     '../../services/homeItemService': { listForDogs: listHomeItems || (async () => []) },
+    '../../services/dataInvalidationService': dataInvalidation,
     '../../services/homeStartupTiming': homeStartupTiming,
     '../../services/homeDraftSummaryService': { getDraftSummary: () => draft },
     '../../services/homeStateModel': homeStateModel,

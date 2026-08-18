@@ -72,8 +72,10 @@ test('首页事项只读取真实体重和用户填写的护理日期，并支�
     'care:dog-1:care-1',
     'weight:dog-1:weight-1'
   ])
-  assert.equal(items[0].title, '疫苗')
-  assert.match(items[0].description, /你填写的下次日期：2026年8月6日/)
+  assert.equal(items[0].title, '计划中的下次「疫苗」：2026年8月6日')
+  assert.equal(items[0].description, '布丁')
+  assert.equal(items[1].title, '计划中的下次「疫苗」：2026年8月8日')
+  assert.equal(items[1].description, '布丁 · 狂犬病疫苗')
   assert.equal(items[2].description, '上次记录于 1 天前')
   assert.equal(
     calls.filter((call) => call.kind === 'care' && call.options.dogId === 'dog-1').length,

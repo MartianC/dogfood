@@ -12,8 +12,8 @@
     padding="large"
   >
     <view class="home-primary home-primary--{{homeState.status}}">
-      <view class="home-primary__eyebrow">当前主任务</view>
-      <view class="home-primary__title">{{homeState.primaryTask.label}}</view>
+      <view class="home-primary__eyebrow">接下来</view>
+      <view class="home-primary__title">{{homeState.primaryTask.title}}</view>
       <view class="home-primary__description">{{homeState.primaryTask.description}}</view>
       <view wx:if="{{homeState.status === 'initializing'}}" class="home-primary__loading" aria-live="polite">请稍候</view>
       <ui-button
@@ -23,6 +23,17 @@
       >{{homeState.primaryTask.label}}</ui-button>
     </view>
   </ui-card>
+
+  <ui-notice wx:if="{{homeRefreshing}}" variant="neutral">
+    正在更新首页内容
+  </ui-notice>
+
+  <ui-notice wx:if="{{homeRefreshError}}" variant="warning">
+    <view class="home-error">
+      <view class="home-error__description">{{homeRefreshError}}</view>
+      <ui-button variant="secondary" size="small" bind:tap="onRetryHome">重新加载</ui-button>
+    </view>
+  </ui-notice>
 
   <ui-notice
     wx:if="{{homeState.status === 'data-error'}}"
@@ -65,20 +76,21 @@
 
   <view wx:if="{{homeState.authState !== 'guest' && homeState.authState !== 'unknown'}}" class="home-section home-items">
     <view class="home-section__head">
-      <view class="df-heading-lg">体重与护理</view>
+      <view class="df-heading-lg">护理安排</view>
       <view class="home-section__hint">最多显示 3 条</view>
     </view>
     <ui-card padding="small">
-      <view wx:if="{{homeState.homeItemsStatus === 'loading'}}" class="home-section__state" aria-live="polite">正在加载体重与护理事项</view>
+      <view wx:if="{{homeState.homeItemsStatus === 'loading'}}" class="home-section__state" aria-live="polite">正在加载护理安排</view>
       <view wx:elif="{{homeState.homeItemsStatus === 'error'}}" class="home-section__state home-section__state--error">
-        <view>体重与护理事项暂时无法读取</view>
+        <view>护理安排暂时无法读取</view>
         <ui-button variant="secondary" size="small" bind:tap="onRetryHome">重新加载</ui-button>
       </view>
-      <view wx:elif="{{homeState.homeItemsStatus === 'empty'}}" class="home-section__state">暂无需要处理的事项</view>
+      <view wx:elif="{{homeState.homeItemsStatus === 'empty'}}" class="home-section__state">暂无体重或护理安排</view>
       <view wx:else class="home-issue-list">
         <view wx:for="{{homeState.profileIssues}}" wx:key="key" class="home-issue home-issue--compact" data-dog-id="{{item.dogId}}" data-action="{{item.action}}" aria-role="button" bind:tap="onOpenProfileIssue">
           <view class="home-issue__copy">
-            <view class="home-issue__title">{{item.dogName}} · {{item.title}}</view>
+            <view wx:if="{{item.kind === 'care'}}" class="home-issue__title">{{item.title}}</view>
+            <view wx:else class="home-issue__title">{{item.dogName}} · {{item.title}}</view>
             <view class="home-issue__description">{{item.description}}</view>
           </view>
           <view class="home-issue__chevron" aria-hidden="true">›</view>

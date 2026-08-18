@@ -1,5 +1,6 @@
 const sharedMealRecordService = require('../../services/sharedMealRecordService')
 const sharedMealEntryService = require('../../services/sharedMealEntryService')
+const dataInvalidationService = require('../../services/dataInvalidationService')
 
 const SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000
 const SOURCE_LABELS = Object.freeze({
@@ -7,6 +8,7 @@ const SOURCE_LABELS = Object.freeze({
   weight: '体重',
   care: '护理'
 })
+const RECORD_DATA_SCOPES = dataInvalidationService.ALL_SCOPES
 
 function pad(value) {
   return String(value).padStart(2, '0')
@@ -181,6 +183,7 @@ Page({
   async loadMonth(monthKey, selectedDateKey, options = {}) {
     if (!monthKey) return
     const state = this.ensureTimelineState()
+    const requestRevision = dataInvalidationService.getSnapshot()
     const request = state.load(monthKey, {
       selectedDateKey,
       force: Boolean(options.force)
@@ -192,6 +195,7 @@ Page({
       // 错误状态由统一时间轴模型保存，页面继续保留当前月份和已加载结果。
     }
     this.syncTimelineView()
+    this._timelineRevision = requestRevision
   },
 
   async onShow() {
@@ -204,10 +208,14 @@ Page({
     if (tabBar) tabBar.setData({ selected: 'records' })
     const hasShownTimeline = Boolean(this.hasShownTimeline)
     const needsTimelineRefresh = Boolean(this.needsTimelineRefresh)
+    const state = this.ensureTimelineState().getState()
+    const hasDirtyData = Boolean(
+      this._timelineRevision
+      && dataInvalidationService.hasChanged(this._timelineRevision, RECORD_DATA_SCOPES)
+    )
     this.hasShownTimeline = true
     this.needsTimelineRefresh = false
-    const state = this.ensureTimelineState().getState()
-    if (hasShownTimeline && state.activeMonthKey && !needsTimelineRefresh) {
+    if (hasShownTimeline && state.activeMonthKey && !needsTimelineRefresh && !hasDirtyData) {
       this.syncTimelineView()
       return
     }
@@ -216,12 +224,8 @@ Page({
     await this.loadMonth(
       state.activeMonthKey || monthKeyFromDateKey(selectedDateKey),
       selectedDateKey,
-      { force: needsTimelineRefresh && Boolean(state.activeMonthKey) }
+      { force: (needsTimelineRefresh || hasDirtyData) && Boolean(state.activeMonthKey) }
     )
-  },
-
-  refreshTimelineOnReturn() {
-    this.needsTimelineRefresh = true
   },
 
   async onCalendarSelect(event) {
@@ -290,12 +294,10 @@ Page({
         url: `/subpackages/shared-meal/record-detail/index?recordId=${encodeURIComponent(sourceId)}`
       })
     } else if (source === 'weight' && dogId) {
-      this.refreshTimelineOnReturn()
       wx.navigateTo({
         url: `/subpackages/dog-profile/weight/index?dogId=${encodeURIComponent(dogId)}`
       })
     } else if (source === 'care' && dogId) {
-      this.refreshTimelineOnReturn()
       wx.navigateTo({
         url: `/subpackages/dog-profile/care-record/index?dogId=${encodeURIComponent(dogId)}`
       })
@@ -303,12 +305,10 @@ Page({
   },
 
   onAddDog() {
-    this.refreshTimelineOnReturn()
     wx.navigateTo({ url: '/subpackages/dog-profile/dog-edit/index' })
   },
 
   onCreateMeal() {
-    this.refreshTimelineOnReturn()
     return sharedMealEntryService.startSharedMeal()
   }
 })

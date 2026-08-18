@@ -1,0 +1,46 @@
+@import "../../../styles/tokens.wxss";
+
+.profile-privacy__intro {
+  padding: 8rpx 4rpx 28rpx;
+}
+
+.profile-privacy__title {
+  color: var(--df-color-text);
+  font-size: 36rpx;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.profile-privacy__description,
+.profile-privacy__paragraph,
+.profile-privacy__footer {
+  color: var(--df-color-muted);
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.profile-privacy__description {
+  margin-top: 12rpx;
+}
+
+.profile-privacy__section + .profile-privacy__section {
+  margin-top: 28rpx;
+  padding-top: 28rpx;
+  border-top: 1rpx solid var(--df-color-line);
+}
+
+.profile-privacy__section-title {
+  color: var(--df-color-text);
+  font-size: 27rpx;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.profile-privacy__paragraph {
+  margin-top: 8rpx;
+}
+
+.profile-privacy__footer {
+  padding: 24rpx 4rpx;
+  text-align: center;
+}

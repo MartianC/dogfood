@@ -2,6 +2,7 @@ const env = require('../config/env')
 const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./adapters/mock')
 const monthState = require('./sharedMealRecordMonthState')
 const calendarModel = require('./sharedMealRecordCalendarModel')
+const dataInvalidationService = require('./dataInvalidationService')
 
 const ERROR_DEFINITIONS = [
   {
@@ -93,7 +94,9 @@ async function save(saveIntent) {
   if (!saveIntent || !saveIntent.idempotencyKey || !saveIntent.requestFingerprint) {
     throw new Error('本餐保存意图无效')
   }
-  return executeRecordOperation('save', () => adapter.saveSharedMealRecord(saveIntent))
+  const result = await executeRecordOperation('save', () => adapter.saveSharedMealRecord(saveIntent))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.MEALS)
+  return result
 }
 
 function list(options = {}) {
