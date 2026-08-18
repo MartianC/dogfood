@@ -6,6 +6,12 @@
   gap: 24rpx;
 }
 
+.profile-account-entry {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .profile-avatar {
   width: 96rpx;
   height: 96rpx;
@@ -105,6 +111,14 @@
   flex: none;
   color: var(--df-color-muted);
   font-size: 23rpx;
+}
+
+.profile-account-entry__chevron {
+  flex: none;
+  color: var(--df-color-muted);
+  font-size: 44rpx;
+  font-weight: 300;
+  line-height: 1;
 }
 
 .profile-about-note {

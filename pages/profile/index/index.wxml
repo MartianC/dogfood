@@ -1,23 +1,17 @@
 <view class="page with-tab-bar profile-page">
-  <ui-card>
-    <view class="profile-card">
-      <ui-button
-        variant="avatar"
-        block="{{false}}"
-        openType="chooseAvatar"
-        bind:chooseavatar="onChooseAvatar"
-        disabled="{{authState === 'guest'}}"
-        ariaLabel="{{authState === 'guest' ? '默认用户头像' : '微信头像，点击可更换'}}"
-      >
+  <navigator class="profile-account-entry" url="/pages/profile/account/index" aria-label="账号信息">
+    <ui-card>
+      <view class="profile-card">
         <image class="profile-avatar" src="{{avatarUrl || defaultUserAvatar}}" mode="aspectFill" bind:error="onAvatarError" />
-      </ui-button>
-      <view class="profile-main">
-        <view class="profile-title">{{authState === 'guest' ? '游客模式' : displayNickname}}</view>
-        <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案和本餐记录' : '本餐记录会保存到当前账号'}}</view>
+        <view class="profile-main">
+          <view class="profile-title">{{authState === 'guest' ? '游客模式' : displayNickname}}</view>
+          <view class="profile-meta">{{authState === 'guest' ? '登录后管理狗狗档案和本餐记录' : '点击编辑资料'}}</view>
+        </view>
+        <ui-tag variant="{{authState === 'guest' ? 'neutral' : 'good'}}" size="small">{{authState === 'guest' ? '未登录' : '已登录'}}</ui-tag>
+        <view class="profile-account-entry__chevron" aria-hidden="true">›</view>
       </view>
-      <ui-tag variant="{{authState === 'guest' ? 'neutral' : 'good'}}" size="small">{{authState === 'guest' ? '未登录' : '已登录'}}</ui-tag>
-    </view>
-  </ui-card>
+    </ui-card>
+  </navigator>
 
   <view class="profile-sections">
     <view class="profile-section">

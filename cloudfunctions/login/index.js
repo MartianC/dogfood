@@ -8,11 +8,16 @@ function normalizeAvatarUrl(value) {
   return typeof value === 'string' ? value.trim().slice(0, 2048) : ''
 }
 
+function normalizeNickname(value) {
+  const nickname = typeof value === 'string' ? value.trim().slice(0, 20) : ''
+  return nickname || '爪饭用户'
+}
+
 function toClientUser(user) {
   return {
     id: user._id,
     openId: user.openId,
-    nickname: user.nickname,
+    nickname: normalizeNickname(user.nickname),
     avatarUrl: user.avatarUrl || '',
     createdAt: user.createdAt,
     updatedAt: user.updatedAt
@@ -31,19 +36,23 @@ exports.main = async (event = {}) => {
     user = existed.data[0]
     if (event.action === 'updateProfile') {
       const avatarUrl = normalizeAvatarUrl(event.profile && event.profile.avatarUrl)
+      const nickname = normalizeNickname(event.profile && event.profile.nickname || user.nickname)
       await users.doc(user._id).update({
-        data: { avatarUrl, updatedAt: now }
+        data: { avatarUrl, nickname, updatedAt: now }
       })
-      user = { ...user, avatarUrl, updatedAt: now }
+      user = { ...user, avatarUrl, nickname, updatedAt: now }
     }
   } else {
     const avatarUrl = event.action === 'updateProfile'
       ? normalizeAvatarUrl(event.profile && event.profile.avatarUrl)
       : ''
+    const nickname = event.action === 'updateProfile'
+      ? normalizeNickname(event.profile && event.profile.nickname)
+      : '爪饭用户'
     const result = await users.add({
       data: {
         openId,
-        nickname: '爪饭用户',
+        nickname,
         avatarUrl,
         createdAt: now,
         updatedAt: now
@@ -52,7 +61,7 @@ exports.main = async (event = {}) => {
     user = {
       _id: result._id,
       openId,
-      nickname: '爪饭用户',
+      nickname,
       avatarUrl,
       createdAt: now,
       updatedAt: now

@@ -54,7 +54,10 @@ async function login() {
 async function updateCurrentUserProfile(profile = {}) {
   if (!currentUser) return null
   const nextProfile = {
-    avatarUrl: typeof profile.avatarUrl === 'string' ? profile.avatarUrl : currentUser.avatarUrl || ''
+    avatarUrl: typeof profile.avatarUrl === 'string' ? profile.avatarUrl : currentUser.avatarUrl || '',
+    nickname: typeof profile.nickname === 'string'
+      ? profile.nickname.trim().slice(0, 20)
+      : currentUser.nickname || ''
   }
   const localUser = { ...currentUser, ...nextProfile }
   currentUser = localUser

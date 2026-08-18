@@ -29,6 +29,15 @@
   display: block;
 }
 
+.profile-feedback__loading {
+  height: 520rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--df-color-muted);
+  font-size: 24rpx;
+}
+
 .profile-feedback__error {
   height: 520rpx;
   display: flex;

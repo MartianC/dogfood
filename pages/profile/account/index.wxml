@@ -1,0 +1,51 @@
+<view class="page profile-account-page">
+  <view wx:if="{{authState === 'guest'}}">
+    <ui-card>
+      <view class="profile-account__guest-title">登录后管理账号</view>
+      <view class="profile-account__guest-description">登录后可以修改头像和昵称，账号信息会同步到当前账号。</view>
+      <view class="profile-account__guest-action">
+        <ui-button bind:tap="onLogin">微信登录</ui-button>
+      </view>
+    </ui-card>
+  </view>
+
+  <block wx:else>
+    <ui-card>
+      <view class="profile-account__avatar-row">
+        <ui-button
+          variant="avatar"
+          block="{{false}}"
+          openType="chooseAvatar"
+          bind:chooseavatar="onChooseAvatar"
+          ariaLabel="选择微信头像"
+        >
+          <image class="profile-account__avatar" src="{{avatarUrl || defaultUserAvatar}}" mode="aspectFill" bind:error="onAvatarError" />
+        </ui-button>
+        <view class="profile-account__avatar-copy">
+          <view class="profile-account__avatar-title">头像</view>
+          <view class="profile-account__avatar-description">点击头像可以更换</view>
+        </view>
+      </view>
+    </ui-card>
+
+    <view class="profile-account__nickname-card">
+      <ui-card>
+        <ui-field variant="profile" label="昵称" helpText="用于展示在账号卡中，最多 20 个字。">
+          <input
+            class="profile-account__input"
+            type="text"
+            value="{{nickname}}"
+            maxlength="20"
+            placeholder="请输入昵称"
+            aria-label="昵称"
+            bindinput="onNicknameInput"
+          />
+        </ui-field>
+      </ui-card>
+    </view>
+
+    <view class="profile-account__save-action">
+      <ui-button loading="{{saving}}" disabled="{{saving}}" bind:tap="onSave">保存修改</ui-button>
+    </view>
+  </block>
+</view>

@@ -45,9 +45,13 @@ async function login() {
 }
 
 async function updateUserProfile(profile = {}) {
+  const currentUser = storage.getSync('mockUser', env.mockUser)
   const user = {
-    ...storage.getSync('mockUser', env.mockUser),
-    avatarUrl: typeof profile.avatarUrl === 'string' ? profile.avatarUrl : ''
+    ...currentUser,
+    avatarUrl: typeof profile.avatarUrl === 'string' ? profile.avatarUrl : currentUser.avatarUrl || '',
+    nickname: typeof profile.nickname === 'string' && profile.nickname.trim()
+      ? profile.nickname.trim().slice(0, 20)
+      : currentUser.nickname || '爪饭用户'
   }
   storage.setSync('mockUser', user)
   return user

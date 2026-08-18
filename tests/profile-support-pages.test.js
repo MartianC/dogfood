@@ -6,7 +6,7 @@ const vm = require('node:vm')
 
 const root = path.join(__dirname, '..')
 
-function loadFeedbackPage({ feedbackQrImage = '/assets/profile/feedback-qr-placeholder.svg' } = {}) {
+function loadFeedbackPage({ feedbackQrImage = 'https://example.com/feedback-qr.png' } = {}) {
   const source = fs.readFileSync(path.join(root, 'pages/profile/feedback/index.js'), 'utf8')
   let definition
   const previewCalls = []
@@ -15,7 +15,11 @@ function loadFeedbackPage({ feedbackQrImage = '/assets/profile/feedback-qr-place
       definition = page
     },
     require(request) {
-      if (request === '../../../config/profile') return { feedbackQrImage }
+      if (request === '../../../services/feedbackQrService') {
+        return {
+          resolveFeedbackQrImage: async () => ({ imageUrl: feedbackQrImage, error: null })
+        }
+      }
       throw new Error(`测试未提供依赖：${request}`)
     },
     wx: {
@@ -37,7 +41,8 @@ test('反馈二维码配置集中在单一入口，并注册相关页面', () =>
   const config = require('../config/profile')
   const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
 
-  assert.equal(config.feedbackQrImage, '/assets/profile/feedback-qr-placeholder.svg')
+  assert.equal(config.feedbackQrFileId, '')
+  assert.equal(config.feedbackQrFallbackImage, '/assets/profile/feedback-qr-placeholder.svg')
   assert.ok(fs.existsSync(path.join(root, 'assets/profile/feedback-qr-placeholder.svg')))
   assert.ok(appConfig.pages.includes('pages/profile/help/index'))
   assert.ok(appConfig.pages.includes('pages/profile/privacy/index'))
@@ -48,7 +53,11 @@ test('反馈二维码页使用配置图片并支持点击预览', () => {
   const { definition, previewCalls } = loadFeedbackPage({
     feedbackQrImage: 'https://example.com/feedback-qr.png'
   })
-  let state = { ...definition.data }
+  let state = {
+    ...definition.data,
+    feedbackQrImage: 'https://example.com/feedback-qr.png',
+    qrLoading: false
+  }
 
   definition.onPreviewQr.call({
     data: state

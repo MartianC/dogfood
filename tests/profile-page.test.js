@@ -75,35 +75,6 @@ test('我的页面将旧品牌默认昵称显示为爪饭用户', async () => {
   assert.equal(viewData.displayNickname, '爪饭用户')
 })
 
-test('登录用户选择微信头像后持久化并立即更新账号卡', async () => {
-  const user = { id: 'user-1', nickname: '小明', avatarUrl: '' }
-  const calls = []
-  const definition = loadProfilePage({
-    authState: 'logged-in',
-    user,
-    async saveAvatar(tempFilePath, userId) {
-      calls.push(['save', tempFilePath, userId])
-      return 'cloud://user-avatars/user-1/avatar'
-    },
-    async updateCurrentUserProfile(profile) {
-      calls.push(['update', profile])
-      return { ...user, ...profile }
-    }
-  })
-  let viewData
-
-  await definition.onChooseAvatar.call({
-    data: { authState: 'logged-in', user },
-    setData(data) { viewData = data }
-  }, { detail: { avatarUrl: 'wxfile://tmp-avatar' } })
-
-  assert.deepEqual(calls[0], ['save', 'wxfile://tmp-avatar', 'user-1'])
-  assert.equal(calls[1][0], 'update')
-  assert.equal(calls[1][1].avatarUrl, 'cloud://user-avatars/user-1/avatar')
-  assert.equal(viewData.user.avatarUrl, 'cloud://user-avatars/user-1/avatar')
-  assert.equal(viewData.avatarUrl, 'cloud://user-avatars/user-1/avatar')
-})
-
 test('微信头像加载失败时回退到默认用户 SVG', () => {
   const definition = loadProfilePage()
   let viewData
@@ -123,14 +94,15 @@ test('我的页面按使用帮助、账号与数据、关于爪饭分组，不�
 
   assert.doesNotMatch(js, /dogService|onLogin|onAddDog|onEditDog|onHistory|onCustomRecipes/)
   assert.doesNotMatch(wxml, /dogs|dog-profile|empty-state|历史清单|自定义食谱/)
-  assert.deepEqual(Object.keys(json.usingComponents).sort(), ['ui-button', 'ui-card', 'ui-tag'])
+  assert.deepEqual(Object.keys(json.usingComponents).sort(), ['ui-card', 'ui-tag'])
   assert.match(wxml, /profile-card/)
   assert.match(wxml, /ui-card/)
   assert.match(wxml, /ui-tag/)
-  assert.match(wxml, /<ui-button/)
-  assert.match(wxml, /openType="chooseAvatar"/)
+  assert.doesNotMatch(wxml, /<ui-button|openType="chooseAvatar"|bind:chooseavatar/)
   assert.match(wxml, /defaultUserAvatar/)
   assert.match(wxml, /bind:error="onAvatarError"/)
+  assert.match(wxml, /url="\/pages\/profile\/account\/index"/)
+  assert.match(wxml, /profile-account-entry__chevron/)
   assert.match(wxml, /使用帮助/)
   assert.match(wxml, /账号与数据/)
   assert.match(wxml, /关于爪饭/)

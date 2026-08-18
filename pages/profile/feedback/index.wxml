@@ -5,8 +5,9 @@
   </view>
 
   <ui-card padding="large">
+    <view wx:if="{{qrLoading}}" class="profile-feedback__loading">二维码加载中…</view>
     <image
-      wx:if="{{!qrLoadError}}"
+      wx:elif="{{!qrLoadError}}"
       class="profile-feedback__qr"
       src="{{feedbackQrImage}}"
       mode="aspectFit"

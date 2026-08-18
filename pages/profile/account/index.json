@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "账号信息",
+  "usingComponents": {
+    "ui-button": "../../../components/ui/ui-button/index",
+    "ui-card": "../../../components/ui/ui-card/index",
+    "ui-field": "../../../components/ui/ui-field/index"
+  }
+}

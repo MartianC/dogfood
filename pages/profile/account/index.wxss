@@ -1,0 +1,60 @@
+@import "../../../styles/tokens.wxss";
+
+.profile-account__guest-title {
+  color: var(--df-color-text);
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.profile-account__guest-description,
+.profile-account__avatar-description {
+  margin-top: 10rpx;
+  color: var(--df-color-muted);
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.profile-account__guest-action {
+  margin-top: 24rpx;
+}
+
+.profile-account__avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.profile-account__avatar {
+  width: 96rpx;
+  height: 96rpx;
+  display: block;
+}
+
+.profile-account__avatar-copy {
+  min-width: 0;
+}
+
+.profile-account__avatar-title {
+  color: var(--df-color-text);
+  font-size: 29rpx;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.profile-account__nickname-card {
+  margin-top: 20rpx;
+}
+
+.profile-account__input {
+  width: 100%;
+  min-height: 58rpx;
+  box-sizing: border-box;
+  color: var(--df-color-text);
+  font-size: 30rpx;
+  line-height: 1.4;
+}
+
+.profile-account__save-action {
+  margin-top: 24rpx;
+}
