@@ -14,7 +14,6 @@
 
 .home-header__date,
 .home-header__copy,
-.home-summary__description,
 .home-draft__meta,
 .home-issue__description,
 .home-record__meta,
@@ -24,7 +23,6 @@
 
 .home-header__title,
 .home-primary__title,
-.home-summary__title,
 .home-draft__title,
 .home-issue__title,
 .home-record__title,
@@ -104,6 +102,10 @@
   gap: var(--df-space-3);
 }
 
+.home-recent .home-section__head {
+  position: relative;
+}
+
 .home-section__hint {
   flex: none;
   font-size: var(--df-font-xs);
@@ -119,16 +121,17 @@
   font-weight: 700;
 }
 
-.home-summary,
+.home-recent .home-section__action {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
 .home-draft {
   display: flex;
   flex-direction: column;
   gap: var(--df-space-2);
-}
-
-.home-summary {
-  min-height: 132rpx;
-  justify-content: center;
 }
 
 .home-section__state {
@@ -159,7 +162,6 @@
   padding: var(--df-space-2) 0;
 }
 
-.home-summary__title,
 .home-draft__title,
 .home-record__title {
   color: var(--df-color-text);
@@ -173,24 +175,6 @@
 .home-issue__description,
 .home-record__meta {
   line-height: 1.5;
-}
-
-.home-summary__dogs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--df-space-1);
-  padding-top: var(--df-space-1);
-}
-
-.home-summary__dog {
-  box-sizing: border-box;
-  max-width: 100%;
-  padding: 8rpx 16rpx;
-  border-radius: var(--df-radius-pill);
-  color: var(--df-color-primary);
-  background: var(--df-color-primary-soft);
-  font-size: var(--df-font-sm);
-  overflow-wrap: anywhere;
 }
 
 .home-issue-list {

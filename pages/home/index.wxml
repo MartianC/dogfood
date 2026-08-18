@@ -46,18 +46,39 @@
     </view>
   </ui-notice>
 
-  <view class="home-section">
+  <view class="home-section home-recent">
     <view class="home-section__head">
-      <view class="df-heading-lg">今天</view>
+      <view class="df-heading-lg">最近一顿</view>
+      <view
+        wx:if="{{homeState.status !== 'guest' && homeState.status !== 'initializing'}}"
+        class="home-section__action"
+        aria-role="button"
+        aria-label="查看全部本餐记录"
+        bind:tap="onOpenRecords"
+      >全部记录</view>
     </view>
-    <ui-card padding="medium">
-      <view class="home-summary">
-        <view class="home-summary__title">{{homeState.todaySummary.title}}</view>
-        <view class="home-summary__description">{{homeState.todaySummary.description}}</view>
-        <view wx:if="{{homeState.todaySummary.status === 'error'}}" class="home-section__state home-section__state--error">记录暂时不可用，可以稍后重试。</view>
-        <view wx:if="{{homeState.todaySummary.count}}" class="home-summary__dogs">
-          <text wx:for="{{homeState.todaySummary.dogNames}}" wx:key="*this" class="home-summary__dog">{{item}}</text>
+    <ui-card wx:if="{{homeState.recentRecord}}" padding="medium">
+      <view
+        class="home-record"
+        aria-role="button"
+        aria-label="查看{{homeState.recentRecord.dogName}}的最近一顿记录"
+        bind:tap="onOpenLatestRecord"
+      >
+        <view class="home-record__copy">
+          <view class="home-record__title">{{homeState.recentRecord.dogName}} · {{homeState.recentRecord.menuText}}</view>
+          <view class="home-record__meta">{{homeState.recentRecord.ingredientCount}} 种狗饭食材 · {{homeState.recentRecord.snapshotText}}</view>
         </view>
+        <view class="home-record__chevron" aria-hidden="true">›</view>
+      </view>
+    </ui-card>
+    <ui-card wx:elif="{{homeState.recentSummary.status === 'loading'}}" padding="small">
+      <view class="home-section__state" aria-live="polite">{{homeState.recentSummary.title}}</view>
+    </ui-card>
+    <ui-empty wx:elif="{{homeState.recentSummary.status === 'empty'}}" title="{{homeState.status === 'guest' ? '登录后查看最近记录' : homeState.recentSummary.title}}" description="{{homeState.status === 'guest' ? '登录后可以查看真实的本餐快照。' : homeState.recentSummary.description}}" />
+    <ui-card wx:elif="{{homeState.recentSummary.status === 'error'}}" padding="small">
+      <view class="home-section__state home-section__state--error" aria-live="polite">
+        <view>{{homeState.recentSummary.title}}</view>
+        <view class="home-section__state-copy">{{homeState.recentSummary.description}}</view>
       </view>
     </ui-card>
   </view>
@@ -99,32 +120,4 @@
     </ui-card>
   </view>
 
-  <view class="home-section home-recent">
-    <view class="home-section__head">
-      <view class="df-heading-lg">最近一顿</view>
-      <view
-        wx:if="{{homeState.status !== 'guest' && homeState.status !== 'initializing'}}"
-        class="home-section__action"
-        aria-role="button"
-        aria-label="查看全部本餐记录"
-        bind:tap="onOpenRecords"
-      >全部记录</view>
-    </view>
-    <ui-card wx:if="{{homeState.recentRecord}}" padding="medium">
-      <view
-        class="home-record"
-        aria-role="button"
-        aria-label="查看{{homeState.recentRecord.dogName}}的最近一顿记录"
-        bind:tap="onOpenLatestRecord"
-      >
-        <view class="home-record__copy">
-          <view class="home-record__title">{{homeState.recentRecord.dogName}} · {{homeState.recentRecord.menuText}}</view>
-          <view class="home-record__meta">{{homeState.recentRecord.ingredientCount}} 种狗饭食材 · {{homeState.recentRecord.snapshotText}}</view>
-        </view>
-        <view class="home-record__chevron" aria-hidden="true">›</view>
-      </view>
-    </ui-card>
-    <ui-empty wx:elif="{{homeState.recentSummary.status === 'empty'}}" title="{{homeState.status === 'guest' ? '登录后查看最近记录' : homeState.recentSummary.title}}" description="{{homeState.status === 'guest' ? '登录后可以查看真实的本餐快照。' : homeState.recentSummary.description}}" />
-    <view wx:else class="home-section__state {{homeState.recentSummary.status === 'error' ? 'home-section__state--error' : ''}}" aria-live="polite">{{homeState.recentSummary.title}}<view class="home-section__state-copy">{{homeState.recentSummary.description}}</view></view>
-  </view>
 </view>
