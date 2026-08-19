@@ -1,0 +1,647 @@
+{
+  "contract": "ingredientCatalogCurationReview/v1",
+  "catalog_version": "2026-08-19-v25",
+  "base_catalog_version": "2026-08-19-v24",
+  "base_concept_count": 1034,
+  "catalog_concept_count": 945,
+  "removed_concept_count": 89,
+  "changed_name_count": 21,
+  "merged_concept_count": 1,
+  "alias_conflict_count": 2,
+  "dropped_conflicting_aliases": [
+    {
+      "alias": "菊苣",
+      "normalized_alias": "菊苣",
+      "kept_concept_id": "ingredient_usda_8fbacd1e1669133950b0",
+      "dropped_concept_id": "ingredient_controlled_88aa79dc3e869d8e"
+    },
+    {
+      "alias": "嫩西葫芦",
+      "normalized_alias": "嫩西葫芦",
+      "kept_concept_id": "ingredient_usda_c17b9d209aa061ef2269",
+      "dropped_concept_id": "ingredient_zucchini"
+    }
+  ],
+  "manual_curation_review": {
+    "contract": "ingredientCatalogCurationReview/v1",
+    "marked_count": 130,
+    "kept_count": 18,
+    "removed_count": 89,
+    "renamed_count": 21,
+    "unchanged_rename_count": 2,
+    "unknown_concept_count": 0,
+    "unknown_concept_ids": [],
+    "kept_concept_ids": [
+      "ingredient_auto_84b8f82ce164d1ec",
+      "ingredient_auto_fc482ae520263327",
+      "ingredient_controlled_29913aea852fb1ad",
+      "ingredient_controlled_359ca18192e7151b",
+      "ingredient_corn_oil",
+      "ingredient_olive_oil",
+      "ingredient_soybean_oil",
+      "ingredient_stage4_09f00a522e023e1d",
+      "ingredient_usda_0dfb36e40647b0fbf094",
+      "ingredient_usda_10d00c0cde4a1074ca33",
+      "ingredient_usda_290709b65f75e886d3db",
+      "ingredient_usda_2c1b73c04cc2b4b9915b",
+      "ingredient_usda_5499d21c66a5f97eb937",
+      "ingredient_usda_756e607bfa3dfbb96e61",
+      "ingredient_usda_95c582d9b9968ab7471b",
+      "ingredient_usda_b520244f62b2d940d234",
+      "ingredient_usda_b861e3e24564ba28dfca",
+      "ingredient_usda_cf002bb5195dcfcecd9d"
+    ],
+    "redirects": {
+      "ingredient_cfct_498fd93cef03aa6a": "ingredient_usda_db53f2c348fa86f06792"
+    },
+    "removed_concepts": [
+      {
+        "concept_id": "ingredient_auto_44325756df7ced9e",
+        "canonical_name_zh": "红花籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_auto_613dff39e10a2b40",
+        "canonical_name_zh": "黄芥末酱",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_auto_946f5c718eb0f002",
+        "canonical_name_zh": "糯米粉",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_cfct_498fd93cef03aa6a",
+        "canonical_name_zh": "桂圆",
+        "reason": "manual_catalog_review_remove",
+        "redirected_to": "ingredient_usda_db53f2c348fa86f06792"
+      },
+      {
+        "concept_id": "ingredient_stage3_bf9065be71c939e8",
+        "canonical_name_zh": "强化鸡蛋面",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_stage4_72755f4d8309e206",
+        "canonical_name_zh": "琼脂",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_stage4_a76f0d3014543252",
+        "canonical_name_zh": "吉利丁",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_stage4_d3f8582f11d960d1",
+        "canonical_name_zh": "白米粉",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_01a7a5a850886a910de2",
+        "canonical_name_zh": "奶油替代品",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_03420dcaeed5d3dc1f2d",
+        "canonical_name_zh": "高油酸红花籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_0503d825d2e5331bd860",
+        "canonical_name_zh": "欧洲防风根",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_06b472982efa052e94d4",
+        "canonical_name_zh": "椰子面粉",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_06f8378b2f0215837101",
+        "canonical_name_zh": "木瓜花蜜",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_07835360c86e21865120",
+        "canonical_name_zh": "植物油黄油酱",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_09f5ef08f4757f0b7ac9",
+        "canonical_name_zh": "葡萄籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_0bddbacaf5f10f82fa2c",
+        "canonical_name_zh": "棕榈仁填充脂",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_0d2301d7e86654e7ce0e",
+        "canonical_name_zh": "甜青豆(加盐加糖沥干并冲洗)",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_0fdcc20604b42220ea37",
+        "canonical_name_zh": "牛脂棉籽炸油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_0fe65dca103cf6e41e73",
+        "canonical_name_zh": "棉籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_122e6a0bcf739a48b2da",
+        "canonical_name_zh": "大豆蛋白分离物",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_1347454d903ec622992d",
+        "canonical_name_zh": "软体动物海螺或烤",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_157b43bf9c8a7475f252",
+        "canonical_name_zh": "芥末油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_16b58691969a233511e0",
+        "canonical_name_zh": "玉米菜籽混合油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_1814145b15ea3d5385be",
+        "canonical_name_zh": "高油酸葵花籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_205edd46afb9318a5f66",
+        "canonical_name_zh": "大豆棉籽混合油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_215904ac2ad5e85a8c54",
+        "canonical_name_zh": "杏仁油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_33ba7409d17ef2d80ae8",
+        "canonical_name_zh": "牛油果油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_367fd9f97345c482e839",
+        "canonical_name_zh": "人造黄油状酥油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_388f62c112dddcd7826e",
+        "canonical_name_zh": "榛果咖啡伴侣",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_3a240d571b9dbbabfbbf",
+        "canonical_name_zh": "甘油二酯烹饪油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_420927511d87da5d018b",
+        "canonical_name_zh": "冬化大豆油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_4d3b0234a8842b1b39bc",
+        "canonical_name_zh": "精炼大豆油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_4de43c34ef1930dcb00a",
+        "canonical_name_zh": "中油酸葵花籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_4eae46618b017eff9ce3",
+        "canonical_name_zh": "棕榈仁油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_4f87cfee98c8404a81de",
+        "canonical_name_zh": "大豆烘焙酥油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_5a656cacc5c40f17c4b4",
+        "canonical_name_zh": "氢化棕榈仁油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_5ff8e3c1ebaa0a64d76c",
+        "canonical_name_zh": "高油酸菜籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_6159bc81bee0bc75326f",
+        "canonical_name_zh": "大豆卵磷脂",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_62436f47c8b942277ee7",
+        "canonical_name_zh": "人造黄油状",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_6ab6d70b38040fce6801",
+        "canonical_name_zh": "拼写",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_7425227392e72f5acad3",
+        "canonical_name_zh": "鸡蛋替代品",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_7583bdae1c69622f96cb",
+        "canonical_name_zh": "匈牙利辣椒",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_7a6532a98762b0077891",
+        "canonical_name_zh": "素食汉堡或大豆汉堡",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_9a45b3c353bdf1d01931",
+        "canonical_name_zh": "黄油替代品",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_9dba6271f360363f3774",
+        "canonical_name_zh": "氢化菜籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_9de026686caa29f4b9d6",
+        "canonical_name_zh": "氢化椰子油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_9f2e564d9de099fce20e",
+        "canonical_name_zh": "罂粟籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_a3c5e4306b991d57c7e7",
+        "canonical_name_zh": "橄榄油浸加盐罐装鳀鱼(沥干)",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_a51953ee6214e97489bc",
+        "canonical_name_zh": "安乔辣椒",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_a5f42eb2b9d0b428b55e",
+        "canonical_name_zh": "大豆棕榈酥油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_aba555983d1f514e9eb5",
+        "canonical_name_zh": "氢化亚油酸型葵花籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_ad913ea62928aded8b6e",
+        "canonical_name_zh": "乳木果油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_ae0b78b686fb97f16533",
+        "canonical_name_zh": "酥油炸(重量)",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_aff786d27fe0ea617824",
+        "canonical_name_zh": "冷榨亚麻籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_b13e649b9584d5483d19",
+        "canonical_name_zh": "干辣椒",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_b40d5871559c18a8aae4",
+        "canonical_name_zh": "强化细黄玉米粉",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_b55747f5867a576fafa7",
+        "canonical_name_zh": "罐装青辣椒",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_b6e7b3152daf342b1d28",
+        "canonical_name_zh": "含消泡剂菜籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_b91619e8ab11c669debc",
+        "canonical_name_zh": "未成熟斑豆",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_b9ce2cc73c21f1128e5c",
+        "canonical_name_zh": "缩短糖果",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_ba78377450b652cccc3d",
+        "canonical_name_zh": "皮条",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_bd9ac3bd464287fb968c",
+        "canonical_name_zh": "肉类扩展器",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_bdc0f8f6cc60a50c5628",
+        "canonical_name_zh": "全氢化棉籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_bfa0f8a4958e94a48999",
+        "canonical_name_zh": "塞拉诺辣椒",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_c027e563c1b49bebf568",
+        "canonical_name_zh": "缩短工业",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_c179f9d4c00a73251acb",
+        "canonical_name_zh": "茶籽油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_c401eb32782dc0966096",
+        "canonical_name_zh": "人乳",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_c6c026cb2cc3fb64e016",
+        "canonical_name_zh": "无脂酸奶油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_c71d644301884dfbfc86",
+        "canonical_name_zh": "烹饪喷雾油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_cbb2e8632abdee76f934",
+        "canonical_name_zh": "蛋白质补充剂",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_cc302f82d407b74b028b",
+        "canonical_name_zh": "沙丁鱼鱼油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_ced1cee216b76045b3b2",
+        "canonical_name_zh": "未强化未漂白糕点粉",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_d1ee1008851cfcfe028c",
+        "canonical_name_zh": "人造黄油样酱",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_d4925fcdadaed524a8dd",
+        "canonical_name_zh": "豆乳咖啡伴侣",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_d830714afaf39841aa95",
+        "canonical_name_zh": "大豆非乳制黄油风味油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_d90c38b1909a0c391234",
+        "canonical_name_zh": "干未强化红米",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_d9db86173ea35091fa89",
+        "canonical_name_zh": "特淡橄榄油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_da2d56592916e96bb0a9",
+        "canonical_name_zh": "素食罐装墨西哥炒豆泥",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_da8c162bf066a20efdfc",
+        "canonical_name_zh": "榛子油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_dbf890174a9da7d215f0",
+        "canonical_name_zh": "人造黄油状植物油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_dc41fa30a2ca7b941941",
+        "canonical_name_zh": "去籽香蕉椒或匈牙利蜡椒",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_e084d019c04d8fd5fe85",
+        "canonical_name_zh": "燕麦油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_e09946920cc704754e5d",
+        "canonical_name_zh": "玉米花生橄榄混合油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_e339b6c5f5095f349ea8",
+        "canonical_name_zh": "工业用椰子油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_e5b16c55c9113a2e2d04",
+        "canonical_name_zh": "工业用精炼大豆油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_ed01da0186dc3e47a1ee",
+        "canonical_name_zh": "无脂打发配料",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_f912e861d7231219c2e6",
+        "canonical_name_zh": "去籽塞拉诺辣椒",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_fe414f38fa07740f38cf",
+        "canonical_name_zh": "普通橄榄油",
+        "reason": "manual_catalog_review_remove"
+      },
+      {
+        "concept_id": "ingredient_usda_fea79a90b993a5026255",
+        "canonical_name_zh": "亚油酸型葵花籽油",
+        "reason": "manual_catalog_review_remove"
+      }
+    ],
+    "renamed_names": [
+      {
+        "concept_id": "ingredient_usda_6a315bbd8a76ddfb895c",
+        "from": "加拿大鹅",
+        "to": "加拿大鹅胸去皮",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_738dbfed947930d8d3d7",
+        "from": "鸡肉无肉",
+        "to": "植物鸡肉",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_7c0a42535a319efbeb6e",
+        "from": "欧米伽-3 花生酱",
+        "to": "欧米伽-3花生酱",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_7c37442325830abb596e",
+        "from": "干未强化珍珠白高粱粉",
+        "to": "珍珠白高粱粉",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_7cdff3c472028674ae27",
+        "from": "爸爸",
+        "to": "印度脆饼",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_7e38e699bf657000e18e",
+        "from": "萨波特",
+        "to": "美果",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_8d26c0b4d712435aaddf",
+        "from": "蒲公英绿",
+        "to": "蒲公英叶",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_8fbacd1e1669133950b0",
+        "from": "内向",
+        "to": "菊苣",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_9d750ab3100f4eb11e8e",
+        "from": "大豆蛋白浓缩物",
+        "to": "大豆蛋白",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_a381613fc5d6133f67fa",
+        "from": "酸奶油替代品",
+        "to": "酸奶油",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_a549ef0dd3a73d78ebb5",
+        "from": "碧根果仁(半粒)",
+        "to": "碧根果仁",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_a89fc954c1b6850e52a9",
+        "from": "米饭白米饭蒸中餐馆",
+        "to": "白米饭",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_ad9fba7d3cb631f8ecf5",
+        "from": "家庭食品优质豆腐",
+        "to": "家庭豆腐",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_adf1c5bd0802d1c2ff6c",
+        "from": "市售鹰嘴豆泥",
+        "to": "鹰嘴豆泥",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_adfa53cf161761496f29",
+        "from": "蔓越莓汁混合物",
+        "to": "蔓越莓汁",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_b8149c76ce37cd2b6c9f",
+        "from": "海军豆(加盐沥干并冲洗)",
+        "to": "海军豆",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_c1631c0a59114a1dbdc6",
+        "from": "李子泥",
+        "to": "西梅泥",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_c17b9d209aa061ef2269",
+        "from": "南瓜西葫芦宝贝",
+        "to": "嫩西葫芦",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_db53f2c348fa86f06792",
+        "from": "龙干",
+        "to": "桂圆",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_e8dcdb4c2f11cc4d840f",
+        "from": "浅红腰豆(加盐加糖沥干并冲洗)",
+        "to": "浅红腰豆",
+        "reason": "manual_catalog_review_rename"
+      },
+      {
+        "concept_id": "ingredient_usda_f5765ee046065100abee",
+        "from": "芋头射击",
+        "to": "芋头芽",
+        "reason": "manual_catalog_review_rename"
+      }
+    ],
+    "unchanged_renames": [
+      {
+        "concept_id": "ingredient_usda_66d949efba3373bb5c3b",
+        "canonical_name_zh": "杏味 2% 脂肪希腊酸奶",
+        "new_name": "杏味 2% 脂肪希腊酸奶"
+      },
+      {
+        "concept_id": "ingredient_usda_a4a0ab539bd0b32e3afb",
+        "canonical_name_zh": "軟體動物魷魚混合物種",
+        "new_name": "軟體動物魷魚混合物種"
+      }
+    ]
+  },
+  "unmodified_machine_translation_candidates": []
+}

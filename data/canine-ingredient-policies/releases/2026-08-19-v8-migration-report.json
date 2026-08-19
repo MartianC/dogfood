@@ -1,0 +1,14 @@
+{
+  "policy_version": "2026-08-19-v8",
+  "compatible_catalog_version": "2026-08-19-v23",
+  "catalog_concepts": 1078,
+  "catalog_variants": 1078,
+  "migrated_concept_rules": 45,
+  "migrated_variant_rules": 18,
+  "default_unknown_concepts": 1033,
+  "dropped_concept_rules": [
+    "ingredient_cottage_cheese"
+  ],
+  "dropped_variant_rules": [],
+  "redirected_concept_rules": {}
+}

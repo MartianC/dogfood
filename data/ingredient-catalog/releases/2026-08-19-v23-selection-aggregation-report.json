@@ -1,0 +1,1599 @@
+{
+  "contract": "ingredientCatalogSelectionAggregation/v1",
+  "catalog_version": "2026-08-19-v23",
+  "base_catalog_version": "2026-08-17-v22",
+  "base_concept_count": 1189,
+  "catalog_concept_count": 1078,
+  "removed_concept_count": 111,
+  "representative_concept_ids": [
+    "ingredient_auto_667e81096d909865",
+    "ingredient_auto_model_21eaff4331362c33",
+    "ingredient_auto_model_c53f731e04c2ac9e",
+    "ingredient_auto_model_f90d535503573e75"
+  ],
+  "groups": [
+    {
+      "group_id": "flour_and_wheat_flour",
+      "label_zh": "面粉/麦粉",
+      "before_count": 29,
+      "retained_count": 2,
+      "removed_count": 27,
+      "representative_concept_ids": [
+        "ingredient_auto_model_21eaff4331362c33",
+        "ingredient_auto_model_f90d535503573e75"
+      ],
+      "removed_concepts": [
+        {
+          "concept_id": "ingredient_auto_b18d446ab751c950",
+          "canonical_name_zh": "荞麦粉",
+          "variant_ids": [
+            "variant_auto_b18d446ab751c950_b18d446ab751"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_auto_f01be17aaa6a5bd3",
+          "canonical_name_zh": "黑麦粉",
+          "variant_ids": [
+            "variant_auto_f01be17aaa6a5bd3_f01be17aaa6a"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_auto_model_310604136757ec38",
+          "canonical_name_zh": "低筋面粉",
+          "variant_ids": [
+            "variant_auto_model_310604136757ec38_a919ea72f83950a2"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_auto_model_68247edb8b567452",
+          "canonical_name_zh": "高筋面粉",
+          "variant_ids": [
+            "variant_auto_model_68247edb8b567452_d315af5c3fe2d5ac"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_065550cbc7e9accf17b9",
+          "canonical_name_zh": "蒸粗麦粉",
+          "variant_ids": [
+            "variant_usda_4d68f493396069875588"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_0f233ba5e609e287eb54",
+          "canonical_name_zh": "斯佩尔特全麦粉",
+          "variant_ids": [
+            "variant_usda_6c8f2626effe36c7f4bd"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_11ea0b01ca44b3bde703",
+          "canonical_name_zh": "小麦粉白色玉米饼混合物浓缩",
+          "variant_ids": [
+            "variant_usda_756805b9808b42b47185"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_18c854c2f085287b61b8",
+          "canonical_name_zh": "细粒杜兰小麦粉",
+          "variant_ids": [
+            "variant_usda_b4c8bf43551129f0f74d"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_3905daedad888eb4a1bc",
+          "canonical_name_zh": "小麦粉白色10%蛋白质漂白浓缩",
+          "variant_ids": [
+            "variant_usda_93758231ea515905264d"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_413cd23c43931f70642b",
+          "canonical_name_zh": "意大利面全谷物51%全麦剩余的未浓缩粗面粉干",
+          "variant_ids": [
+            "variant_usda_3c657b54b1129b8e4e97"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_5aa8b13d46b57bb30719",
+          "canonical_name_zh": "燕麦粉",
+          "variant_ids": [
+            "variant_usda_04519fd3e34675353200"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_5c1f9e0fc25ad15ece2f",
+          "canonical_name_zh": "小麦粉白色13%蛋白质漂白浓缩",
+          "variant_ids": [
+            "variant_usda_1e1041ed87b380252cbc"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_6561efda1cc4535f25bd",
+          "canonical_name_zh": "意大利面无麸质玉米粉和藜麦粉古代收获",
+          "variant_ids": [
+            "variant_usda_3d80dcfd8be630d113f4"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_6a6cd256ee16e4bc3dbf",
+          "canonical_name_zh": "粗面粉",
+          "variant_ids": [
+            "variant_usda_f11c788efb5422f11882"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_72fa268f03128ba9cbef",
+          "canonical_name_zh": "粗粒及半粗粒粗麦粉",
+          "variant_ids": [
+            "variant_usda_43f73de18e33efa1ef24"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_82181daa56354729dcdd",
+          "canonical_name_zh": "小麦粉",
+          "variant_ids": [
+            "variant_usda_bd7abbaac512e01abb5e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_910fd25c143d384c2ce0",
+          "canonical_name_zh": "小麦粉全谷物软小麦",
+          "variant_ids": [
+            "variant_usda_725051439bff9b7eb7a9"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_995a230a9a961a03e1e4",
+          "canonical_name_zh": "藜麦粉",
+          "variant_ids": [
+            "variant_usda_f3686a6902f819f38e7e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_a5f38a62656d75d0bc36",
+          "canonical_name_zh": "黑小麦面粉",
+          "variant_ids": [
+            "variant_usda_121f207135c7a8c76682"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_b496e613fc3884a1d8fc",
+          "canonical_name_zh": "大麦粉",
+          "variant_ids": [
+            "variant_usda_9b5f8813a6a7001105d4"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_b6fa8488c2e43e657694",
+          "canonical_name_zh": "全谷物燕麦粉",
+          "variant_ids": [
+            "variant_usda_00073f455e9c2d51c3a1"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_b87010f8fd3e36913cf4",
+          "canonical_name_zh": "未强化全麦粉",
+          "variant_ids": [
+            "variant_usda_2c6d7436955d94fc8bb1"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_bf831c800d423a6a359e",
+          "canonical_name_zh": "00号面粉",
+          "variant_ids": [
+            "variant_usda_dc58a78fc884924d6445"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_d39f6209f4cfb16c1f01",
+          "canonical_name_zh": "小麦粉白色11.5%蛋白质漂白浓缩",
+          "variant_ids": [
+            "variant_usda_7e71cacb09bde701bd27"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_d6ec37fc126cae48f206",
+          "canonical_name_zh": "小麦粉白色9%蛋白质漂白浓缩",
+          "variant_ids": [
+            "variant_usda_20e0c78bcfa4e5d2270e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_df3f929d57abb98d5a18",
+          "canonical_name_zh": "小麦粉白色15%蛋白质漂白浓缩",
+          "variant_ids": [
+            "variant_usda_61813dd2fb3e529e044a"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_f46dd367e4ed053a8826",
+          "canonical_name_zh": "未强化未漂白通用小麦粉",
+          "variant_ids": [
+            "variant_usda_d53f346e2b0a08c81cf8"
+          ],
+          "reason": "selection_catalog_aggregation"
+        }
+      ]
+    },
+    {
+      "group_id": "cheese",
+      "label_zh": "奶酪",
+      "before_count": 86,
+      "retained_count": 2,
+      "removed_count": 84,
+      "representative_concept_ids": [
+        "ingredient_auto_667e81096d909865",
+        "ingredient_auto_model_c53f731e04c2ac9e"
+      ],
+      "removed_concepts": [
+        {
+          "concept_id": "ingredient_auto_45903480176c1abb",
+          "canonical_name_zh": "帕尔马干酪",
+          "variant_ids": [
+            "variant_auto_45903480176c1abb_45903480176c"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_cottage_cheese",
+          "canonical_name_zh": "茅屋奶酪",
+          "variant_ids": [
+            "variant_cottage_cheese_full_fat"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_stage4_d3f24f45bda00767",
+          "canonical_name_zh": "奶油奶酪",
+          "variant_ids": [
+            "variant_stage4_44d60ae639c2a4ba"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_051afd7a2c80ad2f9fd8",
+          "canonical_name_zh": "奶酪山羊硬型",
+          "variant_ids": [
+            "variant_usda_ce1a3cd1be6cfd13226f"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_08ad37f811c202445f22",
+          "canonical_name_zh": "2%低脂茅屋奶酪",
+          "variant_ids": [
+            "variant_usda_3140948d4155cc1f6e6e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_0fd0b2a9ddfb1179dcb5",
+          "canonical_name_zh": "奶酪格吕耶尔奶酪",
+          "variant_ids": [
+            "variant_usda_80aea2e18b6e9503d4b1"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_1391d942e3fcc09fce80",
+          "canonical_name_zh": "奶酪帕尔马干酪干磨碎减脂",
+          "variant_ids": [
+            "variant_usda_5a8af6cd4b94f2afb06e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_15e2a0f14015cf6d35da",
+          "canonical_name_zh": "奶酪柴郡",
+          "variant_ids": [
+            "variant_usda_c4bcdf44a787194710a9"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_1c7b6181990f5dadb1c7",
+          "canonical_name_zh": "奶酪巴氏杀菌工艺辣椒",
+          "variant_ids": [
+            "variant_usda_e755426df19a4e99edf0"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_1d91dc95e7a09e7f2170",
+          "canonical_name_zh": "奶酪山羊软型",
+          "variant_ids": [
+            "variant_usda_9768a14798fe712bffa5"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_1f8a30b1d7d7d4e96618",
+          "canonical_name_zh": "美国奶酪",
+          "variant_ids": [
+            "variant_usda_b200aa365bd4add0cef2"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_1fbbb2a6867b6bda85b2",
+          "canonical_name_zh": "奶酪替代品",
+          "variant_ids": [
+            "variant_usda_113aa2a5f3ebeabf7830"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_1fe8251599a03921240a",
+          "canonical_name_zh": "奶酪食品",
+          "variant_ids": [
+            "variant_usda_b710fd2b006b30e2bdd9"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_21d37100371084bb2b69",
+          "canonical_name_zh": "奶酪乳清干酪部分脱脂牛奶",
+          "variant_ids": [
+            "variant_usda_432caa395a977ef13bbb"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_269752f4fd2d06222208",
+          "canonical_name_zh": "奶酪帕尔马干酪硬",
+          "variant_ids": [
+            "variant_usda_04eb14e8472967390616"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_272ce739bb0e67b23d22",
+          "canonical_name_zh": "奶酪瑞士奶酪无脂或无脂",
+          "variant_ids": [
+            "variant_usda_7f09620d7cfde9ae9800"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_275e2c81fbcfff39066a",
+          "canonical_name_zh": "蒙特雷杰克奶酪块",
+          "variant_ids": [
+            "variant_usda_a4e339e0fd8534cfec8e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_28d49e1dc6d7c72fc6ef",
+          "canonical_name_zh": "瓦哈卡奶酪块",
+          "variant_ids": [
+            "variant_usda_f5611c4d27eaf9961212"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_29a078ca3c6e78a1b10c",
+          "canonical_name_zh": "瑞士奶酪",
+          "variant_ids": [
+            "variant_usda_dc9dab303b9a2f768646"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_29bd4f001dab80d7ff49",
+          "canonical_name_zh": "奶酪无脂无奶油干大或小凝乳",
+          "variant_ids": [
+            "variant_usda_4f52e390aab490658c9c"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_2dadfc80b87710de51e1",
+          "canonical_name_zh": "奶酪奶油",
+          "variant_ids": [
+            "variant_usda_9f6b866b0d26288eb089"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_365b4e45cf1185ea9bba",
+          "canonical_name_zh": "奶酪瑞士低脂",
+          "variant_ids": [
+            "variant_usda_d1b8a363e92eee4ee017"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_37a6ba63b99a230492bf",
+          "canonical_name_zh": "奶酪汉堡",
+          "variant_ids": [
+            "variant_usda_df1c3c3a14cd8feea88c"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_3ed0708686d8e7dcf275",
+          "canonical_name_zh": "KRAFT VELVEETA巴氏杀菌工艺奶酪酱",
+          "variant_ids": [
+            "variant_usda_464d843318a65534ca49"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_3fa3913963dc7ea7ab8f",
+          "canonical_name_zh": "奶酪奶油无脂肪",
+          "variant_ids": [
+            "variant_usda_51b4704ecbeaf6a93eb8"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_429a150cde277e637bb7",
+          "canonical_name_zh": "奶酪edam",
+          "variant_ids": [
+            "variant_usda_471f4cc8916b493449cc"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_4593a1265bf985a648e6",
+          "canonical_name_zh": "奶酪卡蒙特",
+          "variant_ids": [
+            "variant_usda_4c747cb4269a44901ac1"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_46981592f6c793ed6765",
+          "canonical_name_zh": "奶酪蒙特雷低脂",
+          "variant_ids": [
+            "variant_usda_e1ecddcdb449427bfe89"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_47f90e47c38328ad148f",
+          "canonical_name_zh": "奶酪马苏里拉奶酪低钠",
+          "variant_ids": [
+            "variant_usda_2ca78a43d076dd11178a"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_4af0690851392836db34",
+          "canonical_name_zh": "奶酪古达",
+          "variant_ids": [
+            "variant_usda_d7e1d937d3777a77c807"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_4e9660389e10213a43e7",
+          "canonical_name_zh": "奶酪白色白奶酪",
+          "variant_ids": [
+            "variant_usda_2977be56d0d96675f336"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_4f718e8186b2515c819d",
+          "canonical_name_zh": "奶酪奶油大或小凝乳",
+          "variant_ids": [
+            "variant_usda_30b893429313e08198b6"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_4f75902864fe2bc9bf67",
+          "canonical_name_zh": "奶酪切达干酪尖的切片",
+          "variant_ids": [
+            "variant_usda_bb9a5e033c169ea9d6cb"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_51655abf0d079b4cb140",
+          "canonical_name_zh": "奶酪马苏里拉奶酪无脂",
+          "variant_ids": [
+            "variant_usda_17a500b61a63e7cdd55f"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_53dc2b7d4af69a4f054d",
+          "canonical_name_zh": "奶酪墨西哥",
+          "variant_ids": [
+            "variant_usda_b6045ee48edf5b3a64bb"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_55d46b7747a2838a5934",
+          "canonical_name_zh": "瑞可塔奶酪",
+          "variant_ids": [
+            "variant_usda_2a229f8df62950b7d99e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_57b6da970b9eceb2b0bb",
+          "canonical_name_zh": "奶酪罗克福",
+          "variant_ids": [
+            "variant_usda_b3e496c6710ab19aa2a2"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_5c36b98a02bd8ae94e5e",
+          "canonical_name_zh": "奶酪美式无脂或无脂",
+          "variant_ids": [
+            "variant_usda_2d8e7221976c943ae883"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_60f593f95a300d954111",
+          "canonical_name_zh": "奶酪奶酪壁画",
+          "variant_ids": [
+            "variant_usda_c2cd532f85a97751497d"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_61251ed96ab9fb01e494",
+          "canonical_name_zh": "普罗沃洛奶酪片",
+          "variant_ids": [
+            "variant_usda_18fa315d4c34b013e90e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_625b5d88aa4ef167ed71",
+          "canonical_name_zh": "奶酪香菜",
+          "variant_ids": [
+            "variant_usda_69c0136e165ecae85458"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_65df30c61bf9ba1f8241",
+          "canonical_name_zh": "科蒂哈奶酪块",
+          "variant_ids": [
+            "variant_usda_774561f0a6a2ac9dd95b"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_6c25e1900ef4ca6ae798",
+          "canonical_name_zh": "奶酪奶油低脂",
+          "variant_ids": [
+            "variant_usda_a5f00779399faa376895"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_74563c906a692afc62ed",
+          "canonical_name_zh": "奶酪切达干酪",
+          "variant_ids": [
+            "variant_usda_734940c08b5106815dc1"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_752d804ae0a167bcd76d",
+          "canonical_name_zh": "奶酪酱",
+          "variant_ids": [
+            "variant_usda_9a3dd77e4edc0224e83d"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_8264c2d62537c6825794",
+          "canonical_name_zh": "奶酪科尔比",
+          "variant_ids": [
+            "variant_usda_5c3727525ba752419834"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_827b8725d443b0422e73",
+          "canonical_name_zh": "墨西哥鲜奶酪块",
+          "variant_ids": [
+            "variant_usda_1fbe7ef0dea5236502d1"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_82f1d2584ee02cf1e324",
+          "canonical_name_zh": "奶酪墨西哥吉娃娃奶酪",
+          "variant_ids": [
+            "variant_usda_13a7f48de29aa20b8330"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_83b6e02186f3a8ec1c2f",
+          "canonical_name_zh": "奶酪帕尔马干酪低钠",
+          "variant_ids": [
+            "variant_usda_6e0e11bb348ad75dec8a"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_865ac28f473f1bfa4bfa",
+          "canonical_name_zh": "奶酪neufchatel",
+          "variant_ids": [
+            "variant_usda_71c6845f2a53b1f38ea6"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_892a66e4182c0703c93f",
+          "canonical_name_zh": "奶酪巴氏杀菌工藝切達乾酪或美式低钠",
+          "variant_ids": [
+            "variant_usda_b3569bceb64c7909eb8f"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_8b6e0106e2f1dcc091f0",
+          "canonical_name_zh": "奶酪马苏里拉奶酪部分脱脂牛奶",
+          "variant_ids": [
+            "variant_usda_7f37a5590ecd24ac35ef"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_8d3221889e197802902e",
+          "canonical_name_zh": "奶酪砖块",
+          "variant_ids": [
+            "variant_usda_378d59dd4b17d71db765"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_90a9066fc6e165388443",
+          "canonical_name_zh": "奶酪敬礼",
+          "variant_ids": [
+            "variant_usda_f49a388661ff15320d82"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_9944d66d37c4b2893fe9",
+          "canonical_name_zh": "奶酪羊奶酪",
+          "variant_ids": [
+            "variant_usda_f569dbe84d3ce21936c9"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_9af1742918cedcb360b5",
+          "canonical_name_zh": "奶酪瑞士低钠",
+          "variant_ids": [
+            "variant_usda_13d40f4c95b747a81d3a"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_9d5870bd7a3292b26e15",
+          "canonical_name_zh": "仿奶酪",
+          "variant_ids": [
+            "variant_usda_e22d3ee1b25dc5c37809"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_9e0e15175965722d463b",
+          "canonical_name_zh": "奶酪巴氏杀菌工艺瑞士",
+          "variant_ids": [
+            "variant_usda_a88fbaf094428a3f4f2e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_9ea90dcdbc2977762215",
+          "canonical_name_zh": "奶酪低钠奶酪切达奶酪或科尔比奶酪",
+          "variant_ids": [
+            "variant_usda_0282c4435893a521ad04"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_a0c7f5eb2cb7ac492c85",
+          "canonical_name_zh": "奶酪蒙斯特低脂",
+          "variant_ids": [
+            "variant_usda_9fdecfb54e7c1f5bc112"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_a2325fa7b50b6f604ee4",
+          "canonical_name_zh": "帕尔马干酪浇头",
+          "variant_ids": [
+            "variant_usda_876418ac008c3d4a237a"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_a440ec72d37463fef38c",
+          "canonical_name_zh": "奶酪山羊半软型",
+          "variant_ids": [
+            "variant_usda_a7003e717b18cb2483d5"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_a5bfd0ad81fa09b85902",
+          "canonical_name_zh": "奶酪墨西哥混合",
+          "variant_ids": [
+            "variant_usda_11528e38d2e37a2309d8"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_a7416b6535c2d607d98f",
+          "canonical_name_zh": "奶酪gjetost",
+          "variant_ids": [
+            "variant_usda_6851a3576f9c5d2f65e8"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_a95183f5e3758a61d9ad",
+          "canonical_name_zh": "奶酪帕尔马干酪切碎",
+          "variant_ids": [
+            "variant_usda_d3e2995befc6e9819596"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_aa6e0ffa826c0cb97ec8",
+          "canonical_name_zh": "干白奶酪",
+          "variant_ids": [
+            "variant_usda_7090eee0bf8bdc6a7373"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_b18f14132c127a9a3c2f",
+          "canonical_name_zh": "奶酪美国切达干酪仿制",
+          "variant_ids": [
+            "variant_usda_2575a32b4d27eebd84bb"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_b1ec9480bc1eff9f6345",
+          "canonical_name_zh": "奶酪普罗沃隆奶酪减脂",
+          "variant_ids": [
+            "variant_usda_da645835177b820645a2"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_b24df2b1cd08485db2d2",
+          "canonical_name_zh": "奶酪蓝色",
+          "variant_ids": [
+            "variant_usda_21490bae60fc2d2f2bd6"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_b4653470e1c2807d4248",
+          "canonical_name_zh": "奶酪马苏里拉奶酪全脂牛奶",
+          "variant_ids": [
+            "variant_usda_616619e38bb74d33b4a2"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_bb3347dd13c02deb62f7",
+          "canonical_name_zh": "奶酪提尔西",
+          "variant_ids": [
+            "variant_usda_e827fc48c1aa98021f8e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_bded8b4a450110465f2a",
+          "canonical_name_zh": "奶酪产品",
+          "variant_ids": [
+            "variant_usda_83741c20186de3c1120e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_c5d53d2de0a6e2186258",
+          "canonical_name_zh": "奶酪布里奶酪",
+          "variant_ids": [
+            "variant_usda_2d45e7b7fcb0c29b8ab8"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_cc7cbd4c0196c1d0f32d",
+          "canonical_name_zh": "奶酪普罗沃隆奶酪",
+          "variant_ids": [
+            "variant_usda_5ae1ee8c40734785a1ed"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_d68a273c033c88b771cf",
+          "canonical_name_zh": "奶酪墨西哥奶酪",
+          "variant_ids": [
+            "variant_usda_1358cac6cf630cbb90d6"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_e7e4a11f7829cc4945b5",
+          "canonical_name_zh": "奶酪低脂切达干酪或科尔比",
+          "variant_ids": [
+            "variant_usda_90bdc9366497ce35ff5b"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_ea88046f481350104262",
+          "canonical_name_zh": "奶酪小屋配蔬菜",
+          "variant_ids": [
+            "variant_usda_b14f4dccc88c3214b89c"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_ec0fb5aa78b978ae0255",
+          "canonical_name_zh": "奶酪罗马诺",
+          "variant_ids": [
+            "variant_usda_ebe74d222d9db9d75187"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_ecb150dbf2624555e860",
+          "canonical_name_zh": "奶酪丰蒂娜",
+          "variant_ids": [
+            "variant_usda_6335743d16a276949c1e"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_ed61ad382f608cce3482",
+          "canonical_name_zh": "奶酪穆恩斯特",
+          "variant_ids": [
+            "variant_usda_9cb13a2321e8d73cb385"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_ef7f79ac185eea036d47",
+          "canonical_name_zh": "乳酪切達乾酪無脂或無脂",
+          "variant_ids": [
+            "variant_usda_716b240d97ab21941367"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_f644cbce2e83301c911e",
+          "canonical_name_zh": "全脂菲达奶酪碎",
+          "variant_ids": [
+            "variant_usda_4b76ff85039a5d6589cf"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_fb6d8e8e6ebacc2b58f3",
+          "canonical_name_zh": "奶酪切达干酪减脂",
+          "variant_ids": [
+            "variant_usda_b4d5a9ac5e8cd25e7259"
+          ],
+          "reason": "selection_catalog_aggregation"
+        },
+        {
+          "concept_id": "ingredient_usda_fc4199392f46e52839c7",
+          "canonical_name_zh": "奶酪蒙特雷",
+          "variant_ids": [
+            "variant_usda_fd695545a252c78faa69"
+          ],
+          "reason": "selection_catalog_aggregation"
+        }
+      ]
+    }
+  ],
+  "removed_concepts": [
+    {
+      "concept_id": "ingredient_auto_45903480176c1abb",
+      "canonical_name_zh": "帕尔马干酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_auto_b18d446ab751c950",
+      "canonical_name_zh": "荞麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_auto_f01be17aaa6a5bd3",
+      "canonical_name_zh": "黑麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_auto_model_310604136757ec38",
+      "canonical_name_zh": "低筋面粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_auto_model_68247edb8b567452",
+      "canonical_name_zh": "高筋面粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_cottage_cheese",
+      "canonical_name_zh": "茅屋奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_stage4_d3f24f45bda00767",
+      "canonical_name_zh": "奶油奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_051afd7a2c80ad2f9fd8",
+      "canonical_name_zh": "奶酪山羊硬型",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_065550cbc7e9accf17b9",
+      "canonical_name_zh": "蒸粗麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_08ad37f811c202445f22",
+      "canonical_name_zh": "2%低脂茅屋奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_0f233ba5e609e287eb54",
+      "canonical_name_zh": "斯佩尔特全麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_0fd0b2a9ddfb1179dcb5",
+      "canonical_name_zh": "奶酪格吕耶尔奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_11ea0b01ca44b3bde703",
+      "canonical_name_zh": "小麦粉白色玉米饼混合物浓缩",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_1391d942e3fcc09fce80",
+      "canonical_name_zh": "奶酪帕尔马干酪干磨碎减脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_15e2a0f14015cf6d35da",
+      "canonical_name_zh": "奶酪柴郡",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_18c854c2f085287b61b8",
+      "canonical_name_zh": "细粒杜兰小麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_1c7b6181990f5dadb1c7",
+      "canonical_name_zh": "奶酪巴氏杀菌工艺辣椒",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_1d91dc95e7a09e7f2170",
+      "canonical_name_zh": "奶酪山羊软型",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_1f8a30b1d7d7d4e96618",
+      "canonical_name_zh": "美国奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_1fbbb2a6867b6bda85b2",
+      "canonical_name_zh": "奶酪替代品",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_1fe8251599a03921240a",
+      "canonical_name_zh": "奶酪食品",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_21d37100371084bb2b69",
+      "canonical_name_zh": "奶酪乳清干酪部分脱脂牛奶",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_269752f4fd2d06222208",
+      "canonical_name_zh": "奶酪帕尔马干酪硬",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_272ce739bb0e67b23d22",
+      "canonical_name_zh": "奶酪瑞士奶酪无脂或无脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_275e2c81fbcfff39066a",
+      "canonical_name_zh": "蒙特雷杰克奶酪块",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_28d49e1dc6d7c72fc6ef",
+      "canonical_name_zh": "瓦哈卡奶酪块",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_29a078ca3c6e78a1b10c",
+      "canonical_name_zh": "瑞士奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_29bd4f001dab80d7ff49",
+      "canonical_name_zh": "奶酪无脂无奶油干大或小凝乳",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_2dadfc80b87710de51e1",
+      "canonical_name_zh": "奶酪奶油",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_365b4e45cf1185ea9bba",
+      "canonical_name_zh": "奶酪瑞士低脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_37a6ba63b99a230492bf",
+      "canonical_name_zh": "奶酪汉堡",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_3905daedad888eb4a1bc",
+      "canonical_name_zh": "小麦粉白色10%蛋白质漂白浓缩",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_3ed0708686d8e7dcf275",
+      "canonical_name_zh": "KRAFT VELVEETA巴氏杀菌工艺奶酪酱",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_3fa3913963dc7ea7ab8f",
+      "canonical_name_zh": "奶酪奶油无脂肪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_413cd23c43931f70642b",
+      "canonical_name_zh": "意大利面全谷物51%全麦剩余的未浓缩粗面粉干",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_429a150cde277e637bb7",
+      "canonical_name_zh": "奶酪edam",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_4593a1265bf985a648e6",
+      "canonical_name_zh": "奶酪卡蒙特",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_46981592f6c793ed6765",
+      "canonical_name_zh": "奶酪蒙特雷低脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_47f90e47c38328ad148f",
+      "canonical_name_zh": "奶酪马苏里拉奶酪低钠",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_4af0690851392836db34",
+      "canonical_name_zh": "奶酪古达",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_4e9660389e10213a43e7",
+      "canonical_name_zh": "奶酪白色白奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_4f718e8186b2515c819d",
+      "canonical_name_zh": "奶酪奶油大或小凝乳",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_4f75902864fe2bc9bf67",
+      "canonical_name_zh": "奶酪切达干酪尖的切片",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_51655abf0d079b4cb140",
+      "canonical_name_zh": "奶酪马苏里拉奶酪无脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_53dc2b7d4af69a4f054d",
+      "canonical_name_zh": "奶酪墨西哥",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_55d46b7747a2838a5934",
+      "canonical_name_zh": "瑞可塔奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_57b6da970b9eceb2b0bb",
+      "canonical_name_zh": "奶酪罗克福",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_5aa8b13d46b57bb30719",
+      "canonical_name_zh": "燕麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_5c1f9e0fc25ad15ece2f",
+      "canonical_name_zh": "小麦粉白色13%蛋白质漂白浓缩",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_5c36b98a02bd8ae94e5e",
+      "canonical_name_zh": "奶酪美式无脂或无脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_60f593f95a300d954111",
+      "canonical_name_zh": "奶酪奶酪壁画",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_61251ed96ab9fb01e494",
+      "canonical_name_zh": "普罗沃洛奶酪片",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_625b5d88aa4ef167ed71",
+      "canonical_name_zh": "奶酪香菜",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_6561efda1cc4535f25bd",
+      "canonical_name_zh": "意大利面无麸质玉米粉和藜麦粉古代收获",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_65df30c61bf9ba1f8241",
+      "canonical_name_zh": "科蒂哈奶酪块",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_6a6cd256ee16e4bc3dbf",
+      "canonical_name_zh": "粗面粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_6c25e1900ef4ca6ae798",
+      "canonical_name_zh": "奶酪奶油低脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_72fa268f03128ba9cbef",
+      "canonical_name_zh": "粗粒及半粗粒粗麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_74563c906a692afc62ed",
+      "canonical_name_zh": "奶酪切达干酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_752d804ae0a167bcd76d",
+      "canonical_name_zh": "奶酪酱",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_82181daa56354729dcdd",
+      "canonical_name_zh": "小麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_8264c2d62537c6825794",
+      "canonical_name_zh": "奶酪科尔比",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_827b8725d443b0422e73",
+      "canonical_name_zh": "墨西哥鲜奶酪块",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_82f1d2584ee02cf1e324",
+      "canonical_name_zh": "奶酪墨西哥吉娃娃奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_83b6e02186f3a8ec1c2f",
+      "canonical_name_zh": "奶酪帕尔马干酪低钠",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_865ac28f473f1bfa4bfa",
+      "canonical_name_zh": "奶酪neufchatel",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_892a66e4182c0703c93f",
+      "canonical_name_zh": "奶酪巴氏杀菌工藝切達乾酪或美式低钠",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_8b6e0106e2f1dcc091f0",
+      "canonical_name_zh": "奶酪马苏里拉奶酪部分脱脂牛奶",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_8d3221889e197802902e",
+      "canonical_name_zh": "奶酪砖块",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_90a9066fc6e165388443",
+      "canonical_name_zh": "奶酪敬礼",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_910fd25c143d384c2ce0",
+      "canonical_name_zh": "小麦粉全谷物软小麦",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_9944d66d37c4b2893fe9",
+      "canonical_name_zh": "奶酪羊奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_995a230a9a961a03e1e4",
+      "canonical_name_zh": "藜麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_9af1742918cedcb360b5",
+      "canonical_name_zh": "奶酪瑞士低钠",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_9d5870bd7a3292b26e15",
+      "canonical_name_zh": "仿奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_9e0e15175965722d463b",
+      "canonical_name_zh": "奶酪巴氏杀菌工艺瑞士",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_9ea90dcdbc2977762215",
+      "canonical_name_zh": "奶酪低钠奶酪切达奶酪或科尔比奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_a0c7f5eb2cb7ac492c85",
+      "canonical_name_zh": "奶酪蒙斯特低脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_a2325fa7b50b6f604ee4",
+      "canonical_name_zh": "帕尔马干酪浇头",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_a440ec72d37463fef38c",
+      "canonical_name_zh": "奶酪山羊半软型",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_a5bfd0ad81fa09b85902",
+      "canonical_name_zh": "奶酪墨西哥混合",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_a5f38a62656d75d0bc36",
+      "canonical_name_zh": "黑小麦面粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_a7416b6535c2d607d98f",
+      "canonical_name_zh": "奶酪gjetost",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_a95183f5e3758a61d9ad",
+      "canonical_name_zh": "奶酪帕尔马干酪切碎",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_aa6e0ffa826c0cb97ec8",
+      "canonical_name_zh": "干白奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_b18f14132c127a9a3c2f",
+      "canonical_name_zh": "奶酪美国切达干酪仿制",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_b1ec9480bc1eff9f6345",
+      "canonical_name_zh": "奶酪普罗沃隆奶酪减脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_b24df2b1cd08485db2d2",
+      "canonical_name_zh": "奶酪蓝色",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_b4653470e1c2807d4248",
+      "canonical_name_zh": "奶酪马苏里拉奶酪全脂牛奶",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_b496e613fc3884a1d8fc",
+      "canonical_name_zh": "大麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_b6fa8488c2e43e657694",
+      "canonical_name_zh": "全谷物燕麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_b87010f8fd3e36913cf4",
+      "canonical_name_zh": "未强化全麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_bb3347dd13c02deb62f7",
+      "canonical_name_zh": "奶酪提尔西",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_bded8b4a450110465f2a",
+      "canonical_name_zh": "奶酪产品",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_bf831c800d423a6a359e",
+      "canonical_name_zh": "00号面粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_c5d53d2de0a6e2186258",
+      "canonical_name_zh": "奶酪布里奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_cc7cbd4c0196c1d0f32d",
+      "canonical_name_zh": "奶酪普罗沃隆奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_d39f6209f4cfb16c1f01",
+      "canonical_name_zh": "小麦粉白色11.5%蛋白质漂白浓缩",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_d68a273c033c88b771cf",
+      "canonical_name_zh": "奶酪墨西哥奶酪",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_d6ec37fc126cae48f206",
+      "canonical_name_zh": "小麦粉白色9%蛋白质漂白浓缩",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_df3f929d57abb98d5a18",
+      "canonical_name_zh": "小麦粉白色15%蛋白质漂白浓缩",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_e7e4a11f7829cc4945b5",
+      "canonical_name_zh": "奶酪低脂切达干酪或科尔比",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_ea88046f481350104262",
+      "canonical_name_zh": "奶酪小屋配蔬菜",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_ec0fb5aa78b978ae0255",
+      "canonical_name_zh": "奶酪罗马诺",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_ecb150dbf2624555e860",
+      "canonical_name_zh": "奶酪丰蒂娜",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_ed61ad382f608cce3482",
+      "canonical_name_zh": "奶酪穆恩斯特",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_ef7f79ac185eea036d47",
+      "canonical_name_zh": "乳酪切達乾酪無脂或無脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_f46dd367e4ed053a8826",
+      "canonical_name_zh": "未强化未漂白通用小麦粉",
+      "group_id": "flour_and_wheat_flour",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_f644cbce2e83301c911e",
+      "canonical_name_zh": "全脂菲达奶酪碎",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_fb6d8e8e6ebacc2b58f3",
+      "canonical_name_zh": "奶酪切达干酪减脂",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    },
+    {
+      "concept_id": "ingredient_usda_fc4199392f46e52839c7",
+      "canonical_name_zh": "奶酪蒙特雷",
+      "group_id": "cheese",
+      "reason": "selection_catalog_aggregation"
+    }
+  ],
+  "removed_concept_policy": "不建立营养身份重定向；阶段一映射中的旧概念进入 isolated，历史记录保留旧版本回滚能力。"
+}

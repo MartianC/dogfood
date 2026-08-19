@@ -1,0 +1,3532 @@
+{
+  "contract": "ingredientCatalogNameNormalization/v1",
+  "catalog_version": "2026-08-19-v24",
+  "base_catalog_version": "2026-08-19-v23",
+  "base_concept_count": 1078,
+  "catalog_concept_count": 1034,
+  "removed_concept_count": 44,
+  "changed_name_count": 346,
+  "merged_concept_count": 44,
+  "alias_conflict_count": 21,
+  "dropped_conflicting_aliases": [
+    {
+      "alias": "芥菜",
+      "normalized_alias": "芥菜",
+      "kept_concept_id": "ingredient_usda_a00e8a0f390c879e3c69",
+      "dropped_concept_id": "ingredient_auto_model_1906de36592cbd21"
+    },
+    {
+      "alias": "粉丝",
+      "normalized_alias": "粉丝",
+      "kept_concept_id": "ingredient_usda_6d1315f856ef102e17d6",
+      "dropped_concept_id": "ingredient_auto_model_261c51c9f1cd2baf"
+    },
+    {
+      "alias": "罗马生菜",
+      "normalized_alias": "罗马生菜",
+      "kept_concept_id": "ingredient_romaine_lettuce",
+      "dropped_concept_id": "ingredient_auto_model_9a5267bf4b3a8a82"
+    },
+    {
+      "alias": "大白菜",
+      "normalized_alias": "大白菜",
+      "kept_concept_id": "ingredient_usda_b2e5b83b93c98ffa4a84",
+      "dropped_concept_id": "ingredient_auto_model_9b8bc1b61d692685"
+    },
+    {
+      "alias": "青甜椒",
+      "normalized_alias": "青甜椒",
+      "kept_concept_id": "ingredient_usda_ee5c7604502ce8348c4b",
+      "dropped_concept_id": "ingredient_auto_model_ca90ce4930a1fb8e"
+    },
+    {
+      "alias": "红甜椒",
+      "normalized_alias": "红甜椒",
+      "kept_concept_id": "ingredient_usda_e541e240571420ff44aa",
+      "dropped_concept_id": "ingredient_auto_model_df20c6fe0c8700f1"
+    },
+    {
+      "alias": "比目鱼",
+      "normalized_alias": "比目鱼",
+      "kept_concept_id": "ingredient_usda_7ec2c9b9e7f4de8bc7ae",
+      "dropped_concept_id": "ingredient_auto_model_ed5171af2e41e536"
+    },
+    {
+      "alias": "甘蓝",
+      "normalized_alias": "甘蓝",
+      "kept_concept_id": "ingredient_usda_3fc9471aaf22849055b6",
+      "dropped_concept_id": "ingredient_green_cabbage"
+    },
+    {
+      "alias": "红腰豆",
+      "normalized_alias": "红腰豆",
+      "kept_concept_id": "ingredient_usda_604f85a395969c3c42a2",
+      "dropped_concept_id": "ingredient_kidney_beans"
+    },
+    {
+      "alias": "意大利面",
+      "normalized_alias": "意大利面",
+      "kept_concept_id": "ingredient_usda_1335f716b10cfcb0b55e",
+      "dropped_concept_id": "ingredient_spaghetti"
+    },
+    {
+      "alias": "意大利细面",
+      "normalized_alias": "意大利细面",
+      "kept_concept_id": "ingredient_stage3_c28b395c975568ab",
+      "dropped_concept_id": "ingredient_spaghetti"
+    },
+    {
+      "alias": "希腊酸奶",
+      "normalized_alias": "希腊酸奶",
+      "kept_concept_id": "ingredient_usda_eb17f4a50b2baff8b585",
+      "dropped_concept_id": "ingredient_stage2_b0df7aca2b149480"
+    },
+    {
+      "alias": "鲈鱼",
+      "normalized_alias": "鲈鱼",
+      "kept_concept_id": "ingredient_usda_3aeb582dacc83ab1c8bc",
+      "dropped_concept_id": "ingredient_stage4_5653c77d3e940a1f"
+    },
+    {
+      "alias": "嫩豆腐",
+      "normalized_alias": "嫩豆腐",
+      "kept_concept_id": "ingredient_usda_d70a654a0d9e616bf0a9",
+      "dropped_concept_id": "ingredient_tofu"
+    },
+    {
+      "alias": "黄鳍金枪鱼",
+      "normalized_alias": "黄鳍金枪鱼",
+      "kept_concept_id": "ingredient_usda_52ac10d71bda5f72acbf",
+      "dropped_concept_id": "ingredient_tuna"
+    },
+    {
+      "alias": "鱼，鲈鱼，混合物种，生的",
+      "normalized_alias": "鱼，鲈鱼，混合物种，生的",
+      "kept_concept_id": "ingredient_stage4_5653c77d3e940a1f",
+      "dropped_concept_id": "ingredient_usda_3aeb582dacc83ab1c8bc"
+    },
+    {
+      "alias": "原味脱脂酸奶",
+      "normalized_alias": "原味脱脂酸奶",
+      "kept_concept_id": "ingredient_usda_1e3d0c33f0e35f0aa6f5",
+      "dropped_concept_id": "ingredient_usda_529cf886e32bd1c4f422"
+    },
+    {
+      "alias": "原味脱脂酸奶",
+      "normalized_alias": "原味脱脂酸奶",
+      "kept_concept_id": "ingredient_usda_1e3d0c33f0e35f0aa6f5",
+      "dropped_concept_id": "ingredient_usda_529cf886e32bd1c4f422"
+    },
+    {
+      "alias": "泡菜",
+      "normalized_alias": "泡菜",
+      "kept_concept_id": "ingredient_usda_f978fe295c9bcbbc2f7f",
+      "dropped_concept_id": "ingredient_usda_56c61c7240c5d3a33f58"
+    },
+    {
+      "alias": "蘑菇，香菇，生的",
+      "normalized_alias": "蘑菇，香菇，生的",
+      "kept_concept_id": "ingredient_auto_11baeb27adb35043",
+      "dropped_concept_id": "ingredient_usda_dcd31855d5d05974b2e5"
+    },
+    {
+      "alias": "黄鳍金枪鱼",
+      "normalized_alias": "黄鳍金枪鱼",
+      "kept_concept_id": "ingredient_usda_52ac10d71bda5f72acbf",
+      "dropped_concept_id": "ingredient_usda_f021b78da1263b18fcc3"
+    }
+  ],
+  "changed_names": [
+    {
+      "concept_id": "ingredient_auto_model_1906de36592cbd21",
+      "from": "芥菜",
+      "to": "瑞士甜菜",
+      "source_description": "Chard, swiss, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_auto_model_261c51c9f1cd2baf",
+      "from": "粉丝",
+      "to": "豆制粉丝",
+      "source_description": "Vermicelli, made from soy",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_auto_model_ed5171af2e41e536",
+      "from": "比目鱼",
+      "to": "鲽鱼",
+      "source_description": "Fish, flatfish (flounder and sole species), raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_controlled_88aa79dc3e869d8e",
+      "from": "菊苣",
+      "to": "菊苣叶",
+      "source_description": "Chicory greens, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_herring",
+      "from": "鲱鱼",
+      "to": "大西洋鲱鱼",
+      "source_description": "Fish, herring, Atlantic, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_kidney_beans",
+      "from": "红腰豆",
+      "to": "腰豆",
+      "source_description": "Beans, kidney, all types, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_mackerel",
+      "from": "鲭鱼",
+      "to": "大西洋鲭鱼",
+      "source_description": "Fish, mackerel, Atlantic, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_olive_oil",
+      "from": "橄榄油",
+      "to": "特级初榨橄榄油",
+      "source_description": "Oil, olive, extra virgin",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_salmon",
+      "from": "三文鱼",
+      "to": "养殖大西洋三文鱼",
+      "source_description": "Fish, salmon, Atlantic, farm raised, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_sardine",
+      "from": "沙丁鱼",
+      "to": "番茄酱沙丁鱼",
+      "source_description": "Fish, sardine, Pacific, canned in tomato sauce, drained solids with bone",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_spaghetti",
+      "from": "意大利面",
+      "to": "全麦意大利面",
+      "source_description": "Pasta, dry, whole grain, spaghetti",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_stage2_8825e76530f87ff5",
+      "from": "牛奶",
+      "to": "低脂牛奶",
+      "source_description": "Milk, reduced fat, fluid, 2% milkfat, without added vitamin A and vitamin D",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_stage3_bf9065be71c939e8",
+      "from": "面条",
+      "to": "强化鸡蛋面",
+      "source_description": "Noodles, egg, dry, enriched",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_stage4_5653c77d3e940a1f",
+      "from": "鲈鱼",
+      "to": "海鲈鱼",
+      "source_description": "Fish, sea bass, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_stage4_f80aa812ef3df00c",
+      "from": "鲶鱼",
+      "to": "养殖鲶鱼",
+      "source_description": "Fish, catfish, farm raised, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_tilapia",
+      "from": "罗非鱼",
+      "to": "养殖罗非鱼",
+      "source_description": "Fish, tilapia, farm raised, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_001915929c41b127747e",
+      "from": "酸奶水果低脂每8盎司10克蛋白质",
+      "to": "低脂水果酸奶",
+      "source_description": "Yogurt, fruit, low fat, 10 grams protein per 8 ounce",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_00ad39e188654ebe8970",
+      "from": "酸奶希腊蓝莓CHOBANI",
+      "to": "蓝莓希腊酸奶",
+      "source_description": "Yogurt, Greek, Blueberry, CHOBANI",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_010ae5a973597e95b899",
+      "from": "豆子辣椒烧烤牧场风格",
+      "to": "烧烤风味辣豆",
+      "source_description": "Beans, chili, barbecue, ranch style, cooked",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_03420dcaeed5d3dc1f2d",
+      "from": "油红花沙拉或烹饪高油酸",
+      "to": "高油酸红花籽油",
+      "source_description": "Oil, safflower, salad or cooking, high oleic (primary safflower oil of commerce)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_04dd6fd7eadd20187daf",
+      "from": "鱼鳟鱼彩虹养殖",
+      "to": "养殖虹鳟",
+      "source_description": "Fish, trout, rainbow, farmed, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0601343827b6eb88acd2",
+      "from": "豆子粉红色成熟的种子",
+      "to": "粉红豆",
+      "source_description": "Beans, pink, mature seeds, raw",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_0719557c7889216a6830",
+      "from": "酸奶希腊香草无脂",
+      "to": "香草无脂希腊酸奶",
+      "source_description": "Yogurt, Greek, vanilla, nonfat",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0771745a75dc17fcc067",
+      "from": "豆子碎黄色",
+      "to": "黄四季豆",
+      "source_description": "Beans, snap, yellow, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_07e2f76a4e7fc5d36ea0",
+      "from": "由大豆(塔马里)制成的酱油",
+      "to": "日式酱油（塔马里）",
+      "source_description": "Soy sauce made from soy (tamari)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0896768428517df727ab",
+      "from": "丝绸黑樱桃大豆酸奶",
+      "to": "黑樱桃豆乳酸奶",
+      "source_description": "SILK Black Cherry soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_09f5ef08f4757f0b7ac9",
+      "from": "油葡萄籽",
+      "to": "葡萄籽油",
+      "source_description": "Oil, grapeseed",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0ac3b673ec6e698c575f",
+      "from": "丝绸香草大豆酸奶(单份)",
+      "to": "香草豆乳酸奶",
+      "source_description": "SILK Vanilla soy yogurt (single serving size)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0afc01a2bde13513d785",
+      "from": "大米棕色中粒",
+      "to": "中粒糙米",
+      "source_description": "Rice, brown, medium-grain, raw (Includes foods for USDA's Food Distribution Program)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0bddbacaf5f10f82fa2c",
+      "from": "油工业棕榈仁和棕榈仁填充脂肪",
+      "to": "棕榈仁填充脂",
+      "source_description": "Oil, industrial, palm and palm kernel, filling fat (non-hydrogenated)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0c41400db83e104638e5",
+      "from": "油肉豆蔻黄油",
+      "to": "肉豆蔻脂",
+      "source_description": "Oil, nutmeg butter",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0c81f33397b9ad6ead8a",
+      "from": "卷心菜普通(丹麦国内和尖型)新鲜收获",
+      "to": "普通甘蓝",
+      "source_description": "Cabbage, common (danish, domestic, and pointed types), freshly harvest, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0cd809c1dfbb8966c2cb",
+      "from": "鱼鲻鱼条纹",
+      "to": "条纹鲻鱼",
+      "source_description": "Fish, mullet, striped, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0cfd27d1d6c00f9533aa",
+      "from": "面条鸡蛋干未浓缩",
+      "to": "鸡蛋面",
+      "source_description": "Noodles, egg, dry, unenriched",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0d8a0352610f78e70a7a",
+      "from": "豆子绿豆成熟种子发芽罐头",
+      "to": "绿豆芽",
+      "source_description": "Beans, mung, mature seeds, sprouted, canned, drained solids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0dfb36e40647b0fbf094",
+      "from": "鱼黄油鱼",
+      "to": "鲳鱼",
+      "source_description": "Fish, butterfish, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0e120a09079162262cd5",
+      "from": "角瓜(Kiwano)",
+      "to": "刺角瓜",
+      "source_description": "Horned melon (Kiwano)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0e1d0c56f758abe25a40",
+      "from": "豆子蚕豆豆荚",
+      "to": "鲜蚕豆荚",
+      "source_description": "Beans, fava, in pod, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0e3c3e598c96530efefa",
+      "from": "豆子的罐头的普通的或素食的",
+      "to": "焗豆",
+      "source_description": "Beans, baked, canned, plain or vegetarian",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0eb7163cb95b8257865d",
+      "from": "豆子海军成熟的种子",
+      "to": "白腰豆",
+      "source_description": "Beans, navy, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0f378c24323fad0df1fe",
+      "from": "种子从壳中剥离的葵花籽仁干烤加盐",
+      "to": "葵花籽仁",
+      "source_description": "Seeds, sunflower seed kernels from shell, dry roasted, with salt added",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0f90d623ca83f08e0c5d",
+      "from": "鱼岩鱼太平洋混合物种",
+      "to": "太平洋岩鱼",
+      "source_description": "Fish, rockfish, Pacific, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0fa82289dca105b8ff79",
+      "from": "糖尿病患者的营养补充剂",
+      "to": "糖尿病营养补充液",
+      "source_description": "Nutritional supplement for people with diabetes, liquid",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0fc9bc1f207bacaa1a95",
+      "from": "意大利面全麦",
+      "to": "全麦意大利面",
+      "source_description": "Pasta, whole-wheat, cooked (Includes foods for USDA's Food Distribution Program)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0fdcc20604b42220ea37",
+      "from": "酥油炸(重型)",
+      "to": "牛脂棉籽炸油",
+      "source_description": "Shortening frying (heavy duty), beef tallow and cottonseed",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_0fe65dca103cf6e41e73",
+      "from": "油棉籽沙拉或烹饪",
+      "to": "棉籽油",
+      "source_description": "Oil, cottonseed, salad or cooking",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_10331b402b132baacfd1",
+      "from": "蘑菇白色沥干不加盐",
+      "to": "白蘑菇",
+      "source_description": "Mushrooms, white, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_10d00c0cde4a1074ca33",
+      "from": "种子",
+      "to": "芝麻酱",
+      "source_description": "Seeds, sesame butter, tahini, from raw and stone ground kernels",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_12a34d130b09537da3c8",
+      "from": "甲壳类动物小龙虾混合物种野生",
+      "to": "野生小龙虾",
+      "source_description": "Crustaceans, crayfish, mixed species, wild, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1335f716b10cfcb0b55e",
+      "from": "意大利面干未浓缩",
+      "to": "意大利面",
+      "source_description": "Pasta, dry, unenriched",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_157b43bf9c8a7475f252",
+      "from": "油芥末",
+      "to": "芥末油",
+      "source_description": "Oil, mustard",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_157b5c451470f88f1a6e",
+      "from": "酸奶巧克力以外的口味低脂",
+      "to": "低脂冷冻酸奶",
+      "source_description": "Yogurt, frozen, flavors other than chocolate, lowfat",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_16544502e9db60495a37",
+      "from": "酸奶希腊无脂草莓DANNON OIKOS",
+      "to": "草莓无脂希腊酸奶",
+      "source_description": "Yogurt, Greek, nonfat, strawberry, DANNON OIKOS",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_165fbcf6c266b71f9b26",
+      "from": "酸奶希腊整个普通CHOBANI",
+      "to": "原味全脂希腊酸奶",
+      "source_description": "Yogurt, Greek, whole, plain, CHOBANI",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_16b58691969a233511e0",
+      "from": "油玉米和油菜籽",
+      "to": "玉米菜籽混合油",
+      "source_description": "Oil, corn and canola",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1751ce946a188347bb64",
+      "from": "丝绸巧克力",
+      "to": "巧克力豆乳",
+      "source_description": "SILK Chocolate, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_17d9f5d53c1276abffee",
+      "from": "丝绸青柠大豆酸奶",
+      "to": "青柠豆乳酸奶",
+      "source_description": "SILK Key Lime soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_17f78fcbf8cc91a40377",
+      "from": "豆子肾脏加州红成熟种子",
+      "to": "加州红腰豆",
+      "source_description": "Beans, kidney, california red, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1814145b15ea3d5385be",
+      "from": "油向日葵高油酸",
+      "to": "高油酸葵花籽油",
+      "source_description": "Oil, sunflower, high oleic (70% and over)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_186387596292b150f426",
+      "from": "豌豆裂开成熟种子煮沸不加盐",
+      "to": "干豌豆",
+      "source_description": "Peas, split, mature seeds, cooked, boiled, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_190bc5da119bc2ccf224",
+      "from": "坚果pilinuts干燥",
+      "to": "皮利坚果",
+      "source_description": "Nuts, pilinuts, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1956fb6fe6ff611e24da",
+      "from": "豌豆绿色分裂成熟种子",
+      "to": "干青豌豆",
+      "source_description": "Peas, green, split, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_196ea8010e64b9fc84c5",
+      "from": "KRAFT BREAKSTONE的减脂酸奶油",
+      "to": "低脂酸奶油",
+      "source_description": "KRAFT BREAKSTONE'S Reduced Fat Sour Cream",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_198cd97f7d33f9c3f66e",
+      "from": "辣椒甜黄",
+      "to": "黄甜椒",
+      "source_description": "Peppers, sweet, yellow, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1acd54277db87dfdb527",
+      "from": "鱼牛奶鱼",
+      "to": "虱目鱼",
+      "source_description": "Fish, milkfish, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1ae2910e24d9771011d6",
+      "from": "豆子炖蚕豆的液体",
+      "to": "炖腰豆汤汁",
+      "source_description": "Beans, liquid from stewed kidney beans",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1c289a1eb1d8c7ef8fae",
+      "from": "鱼鲟鱼混合物种",
+      "to": "鲟鱼",
+      "source_description": "Fish, sturgeon, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1cdaf38fc2447f86b781",
+      "from": "白菜中国白菜沥干不加盐",
+      "to": "小白菜",
+      "source_description": "Cabbage, chinese (pak-choi), cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1cef29acd81b0c2d1cfb",
+      "from": "坚果椰子奶油",
+      "to": "椰浆（椰肉提取）",
+      "source_description": "Nuts, coconut cream, raw (liquid expressed from grated meat)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1d5a72c249abe4d44f81",
+      "from": "鱼金枪鱼沙拉",
+      "to": "金枪鱼沙拉",
+      "source_description": "Fish, tuna salad",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1d6a4a1fffde3fee5529",
+      "from": "鱼鱼子混合物种",
+      "to": "鱼卵",
+      "source_description": "Fish, roe, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1dc68dc2ee59c4bad424",
+      "from": "牛奶浓缩加糖",
+      "to": "炼乳",
+      "source_description": "Milk, canned, condensed, sweetened",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_1e3d0c33f0e35f0aa6f5",
+      "from": "酸奶原味脱脂牛奶",
+      "to": "原味脱脂酸奶",
+      "source_description": "Yogurt, plain, skim milk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1e80d42c861b4741dde9",
+      "from": "辣椒",
+      "to": "罐装甜椒",
+      "source_description": "Pimento, canned",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_1f2fb624249e5f02e9b2",
+      "from": "卷心菜红煮沥干不加盐",
+      "to": "紫甘蓝",
+      "source_description": "Cabbage, red, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_205edd46afb9318a5f66",
+      "from": "油工业大豆和棉籽主要用作玉米饼酥油",
+      "to": "大豆棉籽混合油",
+      "source_description": "Oil, industrial, soy (partially hydrogenated)  and cottonseed, principal use as a tortilla shortening",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_215904ac2ad5e85a8c54",
+      "from": "油杏仁",
+      "to": "杏仁油",
+      "source_description": "Oil, almond",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2400ba57c095598b2fa9",
+      "from": "鹰嘴豆粉(贝桑)",
+      "to": "鹰嘴豆粉",
+      "source_description": "Chickpea flour (besan)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_250a1d88d32d89dd827d",
+      "from": "丝绸咖啡",
+      "to": "咖啡豆乳",
+      "source_description": "SILK Coffee, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_25a3aeda74a0e2ddca95",
+      "from": "意大利面干浓缩",
+      "to": "强化意大利面",
+      "source_description": "Pasta, dry, enriched",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_25e7d393030b274e8159",
+      "from": "鱼鼓淡水",
+      "to": "淡水石首鱼",
+      "source_description": "Fish, drum, freshwater, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_262be5b140e7b0dec7c5",
+      "from": "鱼羊头鱼",
+      "to": "羊头鱼",
+      "source_description": "Fish, sheepshead, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_26e790fa850983607acb",
+      "from": "种子奇亚籽干",
+      "to": "奇亚籽",
+      "source_description": "Seeds, chia seeds, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_272b75fb99fcd413a5e8",
+      "from": "意大利面无麸质玉米和米粉",
+      "to": "无麸质玉米米粉意大利面",
+      "source_description": "Pasta, gluten-free, corn and rice flour, cooked",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_28e797866ab0e55dfd32",
+      "from": "海藻加拿大栽培的EMI-TSUNOMATA干",
+      "to": "EMI-TSUNOMATA 海藻",
+      "source_description": "Seaweed, Canadian Cultivated EMI-TSUNOMATA, dry",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_290709b65f75e886d3db",
+      "from": "由大豆和小麦(酱油)制成的酱油",
+      "to": "低钠酱油",
+      "source_description": "Soy sauce made from soy and wheat (shoyu), low sodium",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_295010784361a9605657",
+      "from": "豆子平託豆罐頭瀝乾的固體",
+      "to": "斑豆",
+      "source_description": "Beans, pinto, canned, drained solids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2a0904561b1a825bee14",
+      "from": "油核桃",
+      "to": "核桃油",
+      "source_description": "Oil, walnut",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2a2cfe6cc163809ca3dc",
+      "from": "鱼白鱼混合物种",
+      "to": "白鱼",
+      "source_description": "Fish, whitefish, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2a3feaf8b12905d7ea09",
+      "from": "豆子平托成熟的种子发芽的",
+      "to": "发芽斑豆",
+      "source_description": "Beans, pinto, mature seeds, sprouted, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2a7533cb76a36af63454",
+      "from": "豌豆绿色常规包装",
+      "to": "罐装青豌豆",
+      "source_description": "Peas, green, canned, regular pack, solids and liquids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2a86a3cbb940258afc49",
+      "from": "Vitasoy USA有机Nasoya",
+      "to": "超硬豆腐",
+      "source_description": "Vitasoy USA Organic Nasoya, Tofu Plus Extra Firm",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2b4a8deb08f7b661e708",
+      "from": "油工业棕榈仁糖果脂肪用途类似于优质可可脂",
+      "to": "棕榈仁糖果脂",
+      "source_description": "Oil, industrial, palm kernel, confection fat, uses similar to high quality cocoa butter",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2bb1caf6db6687141dd6",
+      "from": "种子葵花籽仁干燥",
+      "to": "葵花籽仁",
+      "source_description": "Seeds, sunflower seed kernels, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2e3552a50e038c8e01cb",
+      "from": "豆子的自制的",
+      "to": "焗豆",
+      "source_description": "Beans, baked, home prepared",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_2f9a2083164affc71135",
+      "from": "种子面包坚果树种子",
+      "to": "面包坚果籽",
+      "source_description": "Seeds, breadnut tree seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3082f9c1cfeaae7654d8",
+      "from": "鱼太阳鱼南瓜籽",
+      "to": "太阳鱼",
+      "source_description": "Fish, sunfish, pumpkin seed, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3276ee2edda2cc0aa096",
+      "from": "由水解植物蛋白制成的酱油",
+      "to": "水解植物蛋白酱油",
+      "source_description": "Soy sauce made from hydrolyzed vegetable protein",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_33ba7409d17ef2d80ae8",
+      "from": "油鳄梨",
+      "to": "牛油果油",
+      "source_description": "Oil, avocado",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_341584d9139fad6a7db7",
+      "from": "HORMEL加拿大式培根",
+      "to": "加拿大培根",
+      "source_description": "HORMEL Canadian Style Bacon",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_34817054fa8972f94ad4",
+      "from": "面条鸡蛋菠菜浓缩干",
+      "to": "菠菜鸡蛋面",
+      "source_description": "Noodles, egg, spinach, enriched, dry",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_349cfd8fe7bc1b6d7d48",
+      "from": "Chayote水果",
+      "to": "佛手瓜",
+      "source_description": "Chayote, fruit, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_34f0911cc3fb09390398",
+      "from": "种子南瓜和南瓜籽整个不加盐",
+      "to": "南瓜籽",
+      "source_description": "Seeds, pumpkin and squash seeds, whole, roasted, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_35b86510b7455e40f129",
+      "from": "鱼鳟鱼混合物种",
+      "to": "海鳟",
+      "source_description": "Fish, seatrout, mixed species, raw",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_36861adf0c0ca9564bbe",
+      "from": "鱼撅嘴海洋",
+      "to": "海鳕",
+      "source_description": "Fish, pout, ocean, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_37aab9742cd547db17cf",
+      "from": "大米白色中粒浓缩的",
+      "to": "强化中粒白米",
+      "source_description": "Rice, white, medium-grain, raw, enriched",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_38642aa9c40c5a58d1a7",
+      "from": "牛奶山羊液体添加维生素D",
+      "to": "山羊奶",
+      "source_description": "Milk, goat, fluid, with added vitamin D",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_388f62c112dddcd7826e",
+      "from": "丝绸榛子奶油",
+      "to": "榛果咖啡伴侣",
+      "source_description": "SILK Hazelnut Creamer",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_38ef7c99a25d90c62035",
+      "from": "蘑菇",
+      "to": "羊肚菌",
+      "source_description": "Mushrooms, morel, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_39d08544689c8b51faef",
+      "from": "豆类大北方成熟种子",
+      "to": "大北方豆",
+      "source_description": "Beans, great northern, mature seeds, raw (Includes foods for USDA's Food Distribution Program)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3a240d571b9dbbabfbbf",
+      "from": "油烹饪和沙拉ENOVA80%的甘油二酯",
+      "to": "甘油二酯烹饪油",
+      "source_description": "Oil, cooking and salad, ENOVA, 80% diglycerides",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3a8aaca4bf883c79987b",
+      "from": "面条日本somen干",
+      "to": "日式素面",
+      "source_description": "Noodles, japanese, somen, dry",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3a8b9b72571197b15f3d",
+      "from": "鱼彩虹",
+      "to": "虹胡瓜鱼",
+      "source_description": "Fish, smelt, rainbow, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3aeb582dacc83ab1c8bc",
+      "from": "鱼鲈鱼混合物种",
+      "to": "鲈鱼",
+      "source_description": "Fish, perch, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3b4c5d01582570a337ee",
+      "from": "豆子的罐头的配弗兰克",
+      "to": "香肠焗豆",
+      "source_description": "Beans, baked, canned, with franks",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3b99e8dfbae3790ea8ce",
+      "from": "鱼蓬帕诺佛罗里达",
+      "to": "佛罗里达鲳鱼",
+      "source_description": "Fish, pompano, florida, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3cdf9170c93809e948ef",
+      "from": "鱼斑",
+      "to": "斑点鱼",
+      "source_description": "Fish, spot, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3d714b00c49f59e40c64",
+      "from": "米饭棕色煮干本叔叔的",
+      "to": "蒸煮糙米",
+      "source_description": "Rice, brown, parboiled, dry, UNCLE BEN'S",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_3fc9471aaf22849055b6",
+      "from": "卷心菜沥干不加盐",
+      "to": "甘蓝",
+      "source_description": "Cabbage, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_40fd7e05b24c263a7605",
+      "from": "豆子罐头配牛肉",
+      "to": "牛肉焗豆",
+      "source_description": "Beans, baked, canned, with beef",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_420927511d87da5d018b",
+      "from": "油工业大豆和大豆可倒的透明油炸食品",
+      "to": "冬化大豆油",
+      "source_description": "Oil, industrial, soy (partially hydrogenated ) and soy (winterized), pourable clear fry",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_42bc83d3267560ca28e3",
+      "from": "丝绸加欧米茄-3 DHA",
+      "to": "欧米伽-3 豆乳",
+      "source_description": "SILK Plus Omega-3 DHA, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_430c736845b13b087ebc",
+      "from": "酸奶香草或柠檬味脱脂牛奶用低热量甜味剂加甜",
+      "to": "香草或柠檬味无脂酸奶",
+      "source_description": "Yogurt, vanilla or lemon flavor, nonfat milk, sweetened with low-calorie sweetener, fortified with vitamin D",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_445c24411b8208b6ab4c",
+      "from": "面条中国炒面",
+      "to": "中式炒面",
+      "source_description": "Noodles, chinese, chow mein",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_44e83119c9bea9802479",
+      "from": "鱼狼鱼大西洋",
+      "to": "大西洋狼鱼",
+      "source_description": "Fish, wolffish, Atlantic, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_44ff9c823927ddda67cd",
+      "from": "鱼鲶鱼大西洋",
+      "to": "大西洋黄鱼",
+      "source_description": "Fish, croaker, Atlantic, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_49beb7b62c34958369ea",
+      "from": "辣椒绿色",
+      "to": "青辣椒",
+      "source_description": "Peppers, hot chili, green, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4aec4ee756b4beeca529",
+      "from": "卷心菜萨沃伊沥干不加盐",
+      "to": "皱叶甘蓝",
+      "source_description": "Cabbage, savoy, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4cbab84aa024f80b1d25",
+      "from": "坚果橡子",
+      "to": "橡子",
+      "source_description": "Nuts, acorns, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4d3b0234a8842b1b39bc",
+      "from": "油植物大豆精制",
+      "to": "精炼大豆油",
+      "source_description": "Oil, vegetable, soybean, refined",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4d783b8b9f5580be2053",
+      "from": "豌豆绿色",
+      "to": "青豌豆",
+      "source_description": "Peas, green, frozen, unprepared (Includes foods for USDA's Food Distribution Program)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4de43c34ef1930dcb00a",
+      "from": "油工业中油酸向日葵",
+      "to": "中油酸葵花籽油",
+      "source_description": "Oil, industrial, mid-oleic, sunflower",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4eae46618b017eff9ce3",
+      "from": "植物油",
+      "to": "棕榈仁油",
+      "source_description": "Vegetable oil, palm kernel",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4f16c7b89079e7fccd65",
+      "from": "豆子罐头配猪肉和甜酱",
+      "to": "甜酱猪肉焗豆",
+      "source_description": "Beans, baked, canned, with pork and sweet sauce",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_4f87cfee98c8404a81de",
+      "from": "用于烘焙和糖果的酥油",
+      "to": "大豆烘焙酥油",
+      "source_description": "Shortening, industrial, soy (partially hydrogenated ) for baking and confections",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_523a0f317da15b06802c",
+      "from": "豆子黑海龟成熟的种子",
+      "to": "黑豆",
+      "source_description": "Beans, black turtle, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_529cf886e32bd1c4f422",
+      "from": "原味脱脂酸奶",
+      "to": "原味无脂酸奶",
+      "source_description": "Yogurt, plain, nonfat",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_52ac10d71bda5f72acbf",
+      "from": "鱼金枪鱼黄鳍鱼",
+      "to": "黄鳍金枪鱼",
+      "source_description": "Fish, tuna, fresh, yellowfin, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_539524f726193d6674e2",
+      "from": "MORI-NU豆腐丝绸结实",
+      "to": "硬豆腐",
+      "source_description": "MORI-NU, Tofu, silken, firm",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5689697621784f44a804",
+      "from": "豌豆绿色罐头不加盐",
+      "to": "青豌豆",
+      "source_description": "Peas, green, canned, no salt added, solids and liquids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_56c61c7240c5d3a33f58",
+      "from": "泡菜",
+      "to": "甜酸瓜菜",
+      "source_description": "Pickle relish, sweet",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_57159ccde3fd349509c9",
+      "from": "丝绸原味大豆酸奶",
+      "to": "原味豆乳酸奶",
+      "source_description": "SILK Plain soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_58b4657dfc9cea8260c6",
+      "from": "鱼cusk",
+      "to": "鳕形鱼",
+      "source_description": "Fish, cusk, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_59e661b409cd055b0633",
+      "from": "鱼蓝鱼",
+      "to": "蓝鱼",
+      "source_description": "Fish, bluefish, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5a11f1a432abb8892bee",
+      "from": "豆子小豆成熟的种子煮沸加盐",
+      "to": "红豆",
+      "source_description": "Beans, adzuki, mature seed, cooked, boiled, with salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5a656cacc5c40f17c4b4",
+      "from": "油工业棕榈仁用于打发配料非乳制品",
+      "to": "氢化棕榈仁油",
+      "source_description": "Oil, industrial, palm kernel (hydrogenated) , used for whipped toppings, non-dairy",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5ab8915c9843cc00b5ca",
+      "from": "种子面包果种子",
+      "to": "面包果籽",
+      "source_description": "Seeds, breadfruit seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5abd9ccfa8b17befa90b",
+      "from": "豌豆和洋蔥",
+      "to": "豌豆洋葱",
+      "source_description": "Peas and onions, frozen, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5bb2a99d81215a2c483e",
+      "from": "鱼黄尾鱼混合物种",
+      "to": "黄尾鱼",
+      "source_description": "Fish, yellowtail, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5be71e37c8b41097aa60",
+      "from": "意大利面新鲜冷藏普通如购买",
+      "to": "新鲜意大利面",
+      "source_description": "Pasta, fresh-refrigerated, plain, as purchased",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5c552313f2c6e5a5668b",
+      "from": "牛奶羊液体",
+      "to": "羊奶",
+      "source_description": "Milk, sheep, fluid",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5ce7cd4bdfc450ac348f",
+      "from": "黄鳍金枪鱼",
+      "to": "鲯鳅",
+      "source_description": "Mahi mahi, frozen, wild caught",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5d086a95cb165ab65bf2",
+      "from": "坚果椰子水",
+      "to": "椰子水",
+      "source_description": "Nuts, coconut water (liquid from coconuts)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5dd4c88b266b9a4c8cbb",
+      "from": "鱼貂鱼",
+      "to": "银鳕鱼",
+      "source_description": "Fish, sablefish, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_5ff8e3c1ebaa0a64d76c",
+      "from": "石油工业油菜籽高油酸",
+      "to": "高油酸菜籽油",
+      "source_description": "Oil, industrial, canola, high oleic",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_601c506ff9fb13657f96",
+      "from": "豆子蔓越莓成熟的种子",
+      "to": "花豆",
+      "source_description": "Beans, cranberry (roman), mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_604f85a395969c3c42a2",
+      "from": "豆子肾脏红色成熟的种子",
+      "to": "红腰豆",
+      "source_description": "Beans, kidney, red, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6159bc81bee0bc75326f",
+      "from": "油大豆卵磷脂",
+      "to": "大豆卵磷脂",
+      "source_description": "Oil, soybean lecithin",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6290c11c5c286ab9c5b6",
+      "from": "豆类平托成熟种子",
+      "to": "斑豆",
+      "source_description": "Beans, pinto, mature seeds, raw (Includes foods for USDA's Food Distribution Program)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_63025c3215d3e7c92d09",
+      "from": "油大豆沙拉或烹饪",
+      "to": "普通大豆油",
+      "source_description": "Oil, soybean, salad or cooking",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6312a9c3fea7f3152e6f",
+      "from": "鱼surimi",
+      "to": "鱼糜",
+      "source_description": "Fish, surimi",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_63f361ebd3b1961e490f",
+      "from": "种子南瓜和南瓜籽仁干燥",
+      "to": "南瓜籽仁",
+      "source_description": "Seeds, pumpkin and squash seed kernels, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_65752a4d917e053ce1e9",
+      "from": "蘑菇舞茸",
+      "to": "舞茸",
+      "source_description": "Mushrooms, maitake, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6670f28dd7da74fb802e",
+      "from": "辣椒配豆子",
+      "to": "豆豉辣椒",
+      "source_description": "Chili with beans, canned",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_66d949efba3373bb5c3b",
+      "from": "酸奶希腊2%脂肪杏子CHOBANI",
+      "to": "杏味 2% 脂肪希腊酸奶",
+      "source_description": "Yogurt, Greek, 2% fat, apricot, CHOBANI",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_672188f18285e361bd49",
+      "from": "丝绸法式香草奶精",
+      "to": "法式香草咖啡伴侣",
+      "source_description": "SILK French Vanilla Creamer",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_67f25553351f7a6038c1",
+      "from": "坚果黄油坚果干",
+      "to": "黄油坚果",
+      "source_description": "Nuts, butternuts, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6814c68c4e577806c61e",
+      "from": "蘑菇稻草罐头",
+      "to": "草菇",
+      "source_description": "Mushrooms, straw, canned, drained solids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_68b1ff9f726cd71cfdbb",
+      "from": "种子西瓜籽仁干燥",
+      "to": "西瓜籽仁",
+      "source_description": "Seeds, watermelon seed kernels, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6d1315f856ef102e17d6",
+      "from": "面条中国菜玻璃钢或长米脱水",
+      "to": "粉丝",
+      "source_description": "Noodles, chinese, cellophane or long rice (mung beans), dehydrated",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6dc99fe9595900d5a0df",
+      "from": "Ruffed Grouse胸肉无皮",
+      "to": "松鸡胸肉",
+      "source_description": "Ruffed Grouse, breast meat, skinless, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6ee1b5a2a052f0b0a460",
+      "from": "丝绸淡巧克力",
+      "to": "淡巧克力豆乳",
+      "source_description": "SILK Light Chocolate, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6f2964ef9908f2b6f72d",
+      "from": "油可可脂",
+      "to": "可可脂",
+      "source_description": "Oil, cocoa butter",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6f693facad0f7d25158d",
+      "from": "种子棉籽仁",
+      "to": "棉籽仁",
+      "source_description": "Seeds, cottonseed kernels, roasted (glandless)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6f82625bfac2abfe8445",
+      "from": "鱼scup",
+      "to": "鲷鱼（Scup）",
+      "source_description": "Fish, scup, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_6fa268ec3762af16f252",
+      "from": "豌豆可食用的豆荚沥干不加盐",
+      "to": "荷兰豆",
+      "source_description": "Peas, edible-podded, frozen, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_70f9cd4d0c6edd7fb6a1",
+      "from": "丝绸香蕉草莓大豆酸奶",
+      "to": "香蕉草莓豆乳酸奶",
+      "source_description": "SILK Banana-Strawberry soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_71c233283d0745b65b83",
+      "from": "HORMEL总是嫩",
+      "to": "无骨猪里脊",
+      "source_description": "HORMEL ALWAYS TENDER, Boneless Pork Loin, Fresh Pork",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7410348bba118a946bf2",
+      "from": "卷心菜中国白菜",
+      "to": "小白菜",
+      "source_description": "Cabbage, chinese (pak-choi), raw",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_756e607bfa3dfbb96e61",
+      "from": "油亚麻籽含有添加的切片亚麻籽",
+      "to": "亚麻籽油",
+      "source_description": "Oil, flaxseed, contains added sliced flaxseed",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7583bdae1c69622f96cb",
+      "from": "辣椒匈牙利",
+      "to": "匈牙利辣椒",
+      "source_description": "Peppers, hungarian, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7595f67ce367437bfaee",
+      "from": "豌豆和胡萝卜",
+      "to": "豌豆胡萝卜",
+      "source_description": "Peas and carrots, frozen, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7602cbf5f9f885ed9555",
+      "from": "种子红花种子仁干燥",
+      "to": "红花籽仁",
+      "source_description": "Seeds, safflower seed kernels, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_764f309559239f41cb6e",
+      "from": "豌豆绿色沥干不加盐",
+      "to": "青豌豆",
+      "source_description": "Peas, green, frozen, cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_766fbc32173ed4dd14f5",
+      "from": "蘑菇棕色意大利或crimini",
+      "to": "褐蘑菇",
+      "source_description": "Mushrooms, brown, italian, or crimini, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7695e5d019d3ddd8db7f",
+      "from": "豆子黃色成熟種子",
+      "to": "黄豆类",
+      "source_description": "Beans, yellow, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_78bf2ad45dc3a3383480",
+      "from": "蘑菇白色",
+      "to": "白蘑菇",
+      "source_description": "Mushrooms, white, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_79d4eadfa94ea5d5969a",
+      "from": "种子亚麻籽",
+      "to": "亚麻籽",
+      "source_description": "Seeds, flaxseed",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_7addbd62c08adca5281d",
+      "from": "丝绸桃子大豆酸奶",
+      "to": "桃味豆乳酸奶",
+      "source_description": "SILK Peach soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7b6dbeb2f6a26f6cef7e",
+      "from": "鱼鲷鱼混合物种",
+      "to": "笛鲷",
+      "source_description": "Fish, snapper, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7c0a42535a319efbeb6e",
+      "from": "含欧米茄-3的花生酱",
+      "to": "欧米伽-3 花生酱",
+      "source_description": "Peanut butter with omega-3, creamy",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7cff4dd73134d40f41a3",
+      "from": "丝绸香草大豆酸奶(家庭尺寸)",
+      "to": "香草豆乳酸奶",
+      "source_description": "SILK Vanilla soy yogurt (family size)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7e66f7464566126d4b04",
+      "from": "鱼沙德美式",
+      "to": "美洲西鲱",
+      "source_description": "Fish, shad, american, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7ec238e427c83e214fe7",
+      "from": "SILK Plus用于骨骼健康",
+      "to": "强化钙豆乳",
+      "source_description": "SILK Plus for Bone Health, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7ec2c9b9e7f4de8bc7ae",
+      "from": "鱼比目鱼大西洋和太平洋",
+      "to": "比目鱼",
+      "source_description": "Fish, halibut, Atlantic and Pacific, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_7ffe6b72c032677f0616",
+      "from": "蘑菇罐头",
+      "to": "罐装蘑菇",
+      "source_description": "Mushrooms, canned, drained solids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_81778af9e60e1e372abb",
+      "from": "油棕榈",
+      "to": "棕榈油",
+      "source_description": "Oil, palm",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_818532a0c75c8b2724e0",
+      "from": "红宝石葡萄柚汁混合物(葡萄柚",
+      "to": "红宝石葡萄柚复合果汁",
+      "source_description": "Ruby Red grapefruit juice blend (grapefruit, grape, apple), OCEAN SPRAY, bottled, with added vitamin C",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_81ae697e3fa641f7093e",
+      "from": "坚果杏仁黄油原味不加盐",
+      "to": "杏仁酱",
+      "source_description": "Nuts, almond butter, plain, without salt added",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_82bbe2139ac0abd4584d",
+      "from": "卷心菜日式腌制",
+      "to": "日式腌白菜",
+      "source_description": "Cabbage, japanese style, fresh, pickled",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_8312b736a58858da54f3",
+      "from": "蘑菇白色暴露在紫外线下",
+      "to": "白蘑菇",
+      "source_description": "Mushroom, white, exposed to ultraviolet light, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_83b1e7d294e0fb3cdf0f",
+      "from": "鱼gefiltefish商业甜食谱",
+      "to": "甜味鱼丸",
+      "source_description": "Fish, gefiltefish, commercial, sweet recipe",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_87bf3eb697567b0903fd",
+      "from": "鱼瓷砖鱼",
+      "to": "方头鱼",
+      "source_description": "Fish, tilefish, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_88277f8d7eeadf424624",
+      "from": "酸奶巧克力脱脂牛奶富含维生素D",
+      "to": "巧克力无脂酸奶",
+      "source_description": "Yogurt, chocolate, nonfat milk, fortified with vitamin D",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_882f50f110b54f3b9365",
+      "from": "辣椒墨西哥辣椒",
+      "to": "墨西哥辣椒",
+      "source_description": "Peppers, jalapeno, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_88478718cd3e7fb05941",
+      "from": "坚果杏仁酱",
+      "to": "杏仁膏",
+      "source_description": "Nuts, almond paste",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_887118616e71f809ba57",
+      "from": "油cupu assu",
+      "to": "库普阿苏油",
+      "source_description": "Oil, cupu assu",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_8a8ba0d85f83bd3ac251",
+      "from": "豌豆绿色罐头用自来水冲洗",
+      "to": "青豌豆",
+      "source_description": "Peas, green, canned, drained solids, rinsed in tap water",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_8acd8ec01ee7bcb66bab",
+      "from": "Nance不加糖",
+      "to": "南美酸浆果",
+      "source_description": "Nance, frozen, unsweetened",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_8ae167f78ccc9c5f0099",
+      "from": "蘑菇波塔贝拉",
+      "to": "波特贝勒蘑菇",
+      "source_description": "Mushrooms, portabella, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_8b66b775daea137d058d",
+      "from": "牛奶蒸发2%脂肪添加维生素A和维生素D",
+      "to": "淡奶",
+      "source_description": "Milk, evaporated, 2% fat, with added vitamin A and vitamin D",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_8c414f7738812d48ae8d",
+      "from": "丝绸草莓大豆酸奶",
+      "to": "草莓豆乳酸奶",
+      "source_description": "SILK Strawberry soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_8dd42b46458e00d65831",
+      "from": "鱼",
+      "to": "长吻鳕",
+      "source_description": "Fish, lingcod, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_904450c6c24303cab913",
+      "from": "辣椒帕西拉干",
+      "to": "帕西拉辣椒",
+      "source_description": "Peppers, pasilla, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_92169fb52237219b586a",
+      "from": "丝绸蓝莓大豆酸奶",
+      "to": "蓝莓豆乳酸奶",
+      "source_description": "SILK Blueberry soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9238ab2818c19350d094",
+      "from": "油乌库巴黄油",
+      "to": "乌库巴脂",
+      "source_description": "Oil, ucuhuba butter",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_92483ed80c631e5a2bee",
+      "from": "牛奶替代品",
+      "to": "奶类替代饮品",
+      "source_description": "Milk substitutes, fluid, with lauric acid oil",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_94c07abe475827d7e5c9",
+      "from": "意大利面全麦干",
+      "to": "全麦意大利面",
+      "source_description": "Pasta, whole-wheat, dry (Includes foods for USDA's Food Distribution Program)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_94e6a00bbf0a8736b4de",
+      "from": "HORMEL总是很嫩",
+      "to": "猪里脊排",
+      "source_description": "HORMEL ALWAYS TENDER, Center Cut Chops, Fresh Pork",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_95c582d9b9968ab7471b",
+      "from": "油芝麻沙拉或烹饪",
+      "to": "芝麻油",
+      "source_description": "Oil, sesame, salad or cooking",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9a5051e1f18ec88ad72a",
+      "from": "意大利面无麸质米粉和米糠提取物DE BOLES",
+      "to": "无麸质米粉意大利面",
+      "source_description": "Pasta, gluten-free, rice flour and rice bran extract, cooked, DE BOLES",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9b3671cd80a8bd348adf",
+      "from": "鱼海洋鲈鱼大西洋",
+      "to": "大西洋红鱼",
+      "source_description": "Fish, ocean perch, Atlantic, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9d6aea5322d2bc9c2cd0",
+      "from": "丝绸柴",
+      "to": "奶茶风味豆乳",
+      "source_description": "SILK Chai, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9d750ab3100f4eb11e8e",
+      "from": "酒精提取产生的大豆蛋白浓缩物",
+      "to": "大豆蛋白浓缩物",
+      "source_description": "Soy protein concentrate, produced by alcohol extraction",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9dba6271f360363f3774",
+      "from": "油工业油油菜籽油用于油炸",
+      "to": "氢化菜籽油",
+      "source_description": "Oil, industrial, canola (partially hydrogenated) oil for deep fat frying",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9de026686caa29f4b9d6",
+      "from": "油工业椰子用于打发配料和咖啡加白剂",
+      "to": "氢化椰子油",
+      "source_description": "Oil, industrial, coconut (hydrogenated), used for whipped toppings and coffee whiteners",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_9f2e564d9de099fce20e",
+      "from": "油罂粟籽",
+      "to": "罂粟籽油",
+      "source_description": "Oil, poppyseed",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a00e8a0f390c879e3c69",
+      "from": "卷心菜芥末咸的",
+      "to": "芥菜",
+      "source_description": "Cabbage, mustard, salted",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a0a6806680cfcc99959a",
+      "from": "豆子海军成熟种子发芽",
+      "to": "发芽白腰豆",
+      "source_description": "Beans, navy, mature seeds, sprouted, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a37aed32175c2012c441",
+      "from": "卷心菜萨沃伊",
+      "to": "皱叶甘蓝",
+      "source_description": "Cabbage, savoy, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a381613fc5d6133f67fa",
+      "from": "酸奶油",
+      "to": "酸奶油替代品",
+      "source_description": "Sour cream, imitation, cultured",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a3a9aff768be1a8f2f79",
+      "from": "HORMELCure 81火腿",
+      "to": "腌制火腿",
+      "source_description": "HORMEL, Cure 81 Ham",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a50f1d1ac7a51d2207da",
+      "from": "鱼鲈鱼条纹",
+      "to": "条纹鲈鱼",
+      "source_description": "Fish, bass, striped, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a51953ee6214e97489bc",
+      "from": "辣椒ancho干",
+      "to": "安乔辣椒",
+      "source_description": "Peppers, ancho, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a5f42eb2b9d0b428b55e",
+      "from": "缩短家用大豆(氢化)和棕榈",
+      "to": "大豆棕榈酥油",
+      "source_description": "Shortening household soybean (hydrogenated) and palm",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a6b9352df28b02bc035a",
+      "from": "的鴿子(包括squab)",
+      "to": "乳鸽肉",
+      "source_description": "Dove, cooked (includes squab)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_a842ddf1af2798e1fcc3",
+      "from": "坚果腰果黄油纯色不加盐",
+      "to": "腰果酱",
+      "source_description": "Nuts, cashew butter, plain, without salt added",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_aa5fe5ef4c76a58ce281",
+      "from": "丝绸加纤维",
+      "to": "高纤豆乳",
+      "source_description": "SILK Plus Fiber, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_aa9ca2a4b644aea0ab0c",
+      "from": "瓶装的石榴汁",
+      "to": "石榴汁",
+      "source_description": "Pomegranate juice, bottled",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ab9f0f4a41dd286a3c0e",
+      "from": "油花生沙拉或烹饪",
+      "to": "花生油",
+      "source_description": "Oil, peanut, salad or cooking",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_aba555983d1f514e9eb5",
+      "from": "油向日葵亚油酸",
+      "to": "氢化亚油酸型葵花籽油",
+      "source_description": "Oil, sunflower, linoleic, (partially hydrogenated)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ac7af4a7cd100d6b2612",
+      "from": "鱼鱼条准备好",
+      "to": "鱼柳",
+      "source_description": "Fish, fish sticks, frozen, prepared",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_aca1b363ebb5c1fadb3d",
+      "from": "种子葵花籽粉部分脱脂",
+      "to": "葵花籽粉",
+      "source_description": "Seeds, sunflower seed flour, partially defatted",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ad913ea62928aded8b6e",
+      "from": "油香菜",
+      "to": "乳木果油",
+      "source_description": "Oil, sheanut",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ada1a49ecfba22850a0a",
+      "from": "Naranjilla(lulo)果肉",
+      "to": "鲁洛果果肉",
+      "source_description": "Naranjilla (lulo) pulp, frozen, unsweetened",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_af13a9b40232b525559c",
+      "from": "种子大麻种子去壳",
+      "to": "火麻仁",
+      "source_description": "Seeds, hemp seed, hulled",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_af3dc076a18519c6eeb3",
+      "from": "面条扁平松脆中餐馆",
+      "to": "中式脆炒面",
+      "source_description": "Noodles, flat, crunchy, Chinese restaurant",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_afc9962826d29e16d950",
+      "from": "丝绸覆盆子大豆酸奶",
+      "to": "覆盆子豆乳酸奶",
+      "source_description": "SILK Raspberry soy yogurt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_aff786d27fe0ea617824",
+      "from": "油亚麻籽冷榨",
+      "to": "冷榨亚麻籽油",
+      "source_description": "Oil, flaxseed, cold pressed",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b133244af62b7ed9a733",
+      "from": "豆子肾脏成熟的种子发芽的",
+      "to": "发芽腰豆",
+      "source_description": "Beans, kidney, mature seeds, sprouted, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b13e649b9584d5483d19",
+      "from": "辣椒晒干",
+      "to": "干辣椒",
+      "source_description": "Peppers, hot chile, sun-dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b254f71aee9930328531",
+      "from": "种子棉籽粉部分脱脂",
+      "to": "棉籽粉",
+      "source_description": "Seeds, cottonseed flour, partially defatted (glandless)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b2e5b83b93c98ffa4a84",
+      "from": "卷心菜中国菜",
+      "to": "大白菜",
+      "source_description": "Cabbage, chinese (pe-tsai), raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b52c757afb0dde1adcc1",
+      "from": "大米白色短粒未浓缩的",
+      "to": "短粒白米",
+      "source_description": "Rice, white, short-grain, raw, unenriched",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b55747f5867a576fafa7",
+      "from": "辣椒绿色罐头",
+      "to": "罐装青辣椒",
+      "source_description": "Peppers, chili, green, canned",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b6c478c79a5f650c5ae8",
+      "from": "鱼吸盘白色",
+      "to": "白吸盘鱼",
+      "source_description": "Fish, sucker, white, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b6e7b3152daf342b1d28",
+      "from": "油工业含有消泡剂的油菜籽主要使用沙拉",
+      "to": "含消泡剂菜籽油",
+      "source_description": "Oil, industrial, canola with antifoaming agent, principal uses salads, woks and light frying",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b6ec855f518541220f43",
+      "from": "油巴巴苏",
+      "to": "巴巴苏油",
+      "source_description": "Oil, babassu",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b7faf3e6e1a42ae9eb51",
+      "from": "鱼鲨鱼混合物种",
+      "to": "鲨鱼",
+      "source_description": "Fish, shark, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b822c2b3d61a958b0200",
+      "from": "酸奶香草味低脂牛奶用低热量甜味剂加糖",
+      "to": "香草低脂酸奶",
+      "source_description": "Yogurt, vanilla flavor, lowfat milk, sweetened with low calorie sweetener",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b861e3e24564ba28dfca",
+      "from": "油小麦胚芽",
+      "to": "小麦胚芽油",
+      "source_description": "Oil, wheat germ",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b91619e8ab11c669debc",
+      "from": "豆子平托未成熟的种子的未准备好的",
+      "to": "未成熟斑豆",
+      "source_description": "Beans, pinto, immature seeds, frozen, unprepared",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b9948a88bf88ecb855f7",
+      "from": "丝绸淡香草",
+      "to": "淡香草豆乳",
+      "source_description": "SILK Light Vanilla, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_b9ddc90f752ac0aa6847",
+      "from": "丝绸摩卡",
+      "to": "摩卡豆乳",
+      "source_description": "SILK Mocha, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ba5f762302aa9f780c3d",
+      "from": "坚果椰子肉",
+      "to": "椰肉",
+      "source_description": "Nuts, coconut meat, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_bc25f6d74509bbab38b7",
+      "from": "鱼梭子鱼北方",
+      "to": "北方狗鱼",
+      "source_description": "Fish, pike, northern, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_bd36bf3614bd76e77593",
+      "from": "鱼burbot",
+      "to": "江鳕",
+      "source_description": "Fish, burbot, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_bd854c4a178276f19b70",
+      "from": "意大利面自制用鸡蛋制作",
+      "to": "鸡蛋意大利面",
+      "source_description": "Pasta, homemade, made with egg, cooked",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_bdc0f8f6cc60a50c5628",
+      "from": "油工业棉籽全氢化",
+      "to": "全氢化棉籽油",
+      "source_description": "Oil, industrial, cottonseed, fully hydrogenated",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_bfa0f8a4958e94a48999",
+      "from": "辣椒塞拉诺",
+      "to": "塞拉诺辣椒",
+      "source_description": "Peppers, serrano, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c097f19305885806851f",
+      "from": "鱼石斑鱼混合物种",
+      "to": "石斑鱼",
+      "source_description": "Fish, grouper, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c179f9d4c00a73251acb",
+      "from": "油挑逗",
+      "to": "茶籽油",
+      "source_description": "Oil, teaseed",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c1aaba9a2c7fcfd7b672",
+      "from": "种子葵花籽黄油不加盐",
+      "to": "葵花籽酱",
+      "source_description": "Seeds, sunflower seed butter, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c38e8f469933ec293a89",
+      "from": "鱼比目鱼欧洲",
+      "to": "欧洲大菱鲆",
+      "source_description": "Fish, turbot, european, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c3fae3904f35eaaa00fa",
+      "from": "鱼cisco",
+      "to": "湖白鲑",
+      "source_description": "Fish, cisco, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c401eb32782dc0966096",
+      "from": "牛奶人类成熟液体",
+      "to": "人乳",
+      "source_description": "Milk, human, mature, fluid",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c64aeac049b71ba904b5",
+      "from": "酸奶原味低脂",
+      "to": "原味低脂酸奶",
+      "source_description": "Yogurt, plain, low fat",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c6945ee5c3eb77bbd6fb",
+      "from": "豆子腎皇家红成熟的种子",
+      "to": "皇家红腰豆",
+      "source_description": "Beans, kidney, royal red, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c6c026cb2cc3fb64e016",
+      "from": "KRAFT BREAKSTONE的免费无脂酸奶油",
+      "to": "无脂酸奶油",
+      "source_description": "KRAFT BREAKSTONE'S FREE Fat Free Sour Cream",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c71d644301884dfbfc86",
+      "from": "油PAM烹饪喷雾原装",
+      "to": "烹饪喷雾油",
+      "source_description": "Oil, PAM cooking spray, original",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_c843840083fa95d864de",
+      "from": "豆子白色成熟的种子",
+      "to": "白豆",
+      "source_description": "Beans, white, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ca012c3f77c8840787a3",
+      "from": "Escarole煮沸沥干不加盐",
+      "to": "菊苣（Escarole）",
+      "source_description": "Escarole, cooked, boiled, drained, no salt added",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_cc302f82d407b74b028b",
+      "from": "鱼油沙丁鱼",
+      "to": "沙丁鱼鱼油",
+      "source_description": "Fish oil, sardine",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_cd84452ccad2bbb8df58",
+      "from": "蘑菇白色炒",
+      "to": "白蘑菇",
+      "source_description": "Mushrooms, white, stir-fried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ce9df3ee5f448ed205f0",
+      "from": "意大利面无麸质糙米粉TINKYADA",
+      "to": "无麸质糙米意大利面",
+      "source_description": "Pasta, gluten-free, brown rice flour, cooked, TINKYADA",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ceeaf643e1dc3c01b32e",
+      "from": "豆子罐头不加盐",
+      "to": "焗豆",
+      "source_description": "Beans, baked, canned, no salt added",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_cfb3daa47a566dd0af64",
+      "from": "意大利面自制不加鸡蛋",
+      "to": "无蛋意大利面",
+      "source_description": "Pasta, homemade, made without egg, cooked",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d0b820b25d3162707781",
+      "from": "坚果山毛榉干",
+      "to": "山毛榉坚果",
+      "source_description": "Nuts, beechnuts, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d0cbecf412c7eefc116b",
+      "from": "Vitasoy美国有机纳索亚发芽",
+      "to": "超硬发芽豆腐",
+      "source_description": "Vitasoy USA Organic Nasoya Sprouted, Tofu Plus Super Firm",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d0e9ff5c8a3f9d903166",
+      "from": "酸奶水果品種無脂富含維生素D",
+      "to": "水果无脂酸奶",
+      "source_description": "Yogurt, fruit variety, nonfat, fortified with vitamin D",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d153c034885932f0cf08",
+      "from": "鱼鳗鱼混合物种",
+      "to": "鳗鱼",
+      "source_description": "Fish, eel, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d2fbcf3a53d38eb2d33a",
+      "from": "酸奶水果低脂低热量甜味剂富含维生素D",
+      "to": "低脂加甜水果酸奶",
+      "source_description": "Yogurt, fruit, lowfat, with low calorie sweetener, fortified with vitamin D",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d4925fcdadaed524a8dd",
+      "from": "丝绸原装奶油",
+      "to": "豆乳咖啡伴侣",
+      "source_description": "SILK Original Creamer",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d4cf92b4fa5f3ea2296f",
+      "from": "蘑菇波塔贝拉暴露在紫外线下",
+      "to": "波特贝勒蘑菇",
+      "source_description": "Mushrooms, portabella, exposed to ultraviolet light, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d4ea9ff3d3f8ccb9f7f2",
+      "from": "油米糠",
+      "to": "米糠油",
+      "source_description": "Oil, rice bran",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d68ac1b30f3fdb527c4b",
+      "from": "卷心菜普通沥干加盐",
+      "to": "普通甘蓝",
+      "source_description": "Cabbage, common, cooked, boiled, drained, with salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d70a654a0d9e616bf0a9",
+      "from": "Vitasoy USA Azumaya丝豆腐",
+      "to": "嫩豆腐",
+      "source_description": "Vitasoy USA Azumaya, Silken Tofu",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_d830714afaf39841aa95",
+      "from": "油工业大豆多用途非乳制品黄油味",
+      "to": "大豆非乳制黄油风味油",
+      "source_description": "Oil, industrial, soy (partially hydrogenated), multiuse for non-dairy butter flavor",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_da289462fe8630f8d9ef",
+      "from": "酸奶香草低脂肪。",
+      "to": "低脂香草酸奶",
+      "source_description": "Yogurt, vanilla, low fat.",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_da8c162bf066a20efdfc",
+      "from": "油榛子",
+      "to": "榛子油",
+      "source_description": "Oil, hazelnut",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_dad555dd8dc7642f0424",
+      "from": "意大利面新鲜冷藏菠菜如购",
+      "to": "菠菜意大利面",
+      "source_description": "Pasta, fresh-refrigerated, spinach, as purchased",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_dc2a3e7570741320072f",
+      "from": "种子sisymbrium sp.种子整个干燥",
+      "to": "Sisymbrium 种子",
+      "source_description": "Seeds, sisymbrium sp. seeds, whole, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_dcd31855d5d05974b2e5",
+      "from": "蘑菇香菇",
+      "to": "鸡油菌",
+      "source_description": "Mushrooms, Chanterelle, raw",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_dd1d653ecb27f74e2a8f",
+      "from": "鱼粗糙橙色",
+      "to": "橙鲷鱼",
+      "source_description": "Fish, roughy, orange, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_dfcd22b6320bc21f51cd",
+      "from": "Malabar菠菜",
+      "to": "木耳菜",
+      "source_description": "Malabar spinach, cooked",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e084d019c04d8fd5fe85",
+      "from": "油燕麦",
+      "to": "燕麦油",
+      "source_description": "Oil, oat",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e09946920cc704754e5d",
+      "from": "油玉米花生和橄榄",
+      "to": "玉米花生橄榄混合油",
+      "source_description": "Oil, corn, peanut, and olive",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e0d251ef5140434e0e1b",
+      "from": "卷心菜中国菜沥干不加盐",
+      "to": "大白菜",
+      "source_description": "Cabbage, chinese (pe-tsai), cooked, boiled, drained, without salt",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e1076515487a94749134",
+      "from": "坚果混合坚果干烤配花生不加盐",
+      "to": "混合坚果",
+      "source_description": "Nuts, mixed nuts, dry roasted, with peanuts, without salt added",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_e13655b00e227ebf8994",
+      "from": "蘑菇白色微波炉",
+      "to": "白蘑菇",
+      "source_description": "Mushrooms, white, microwaved",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e202d0c6f6e23b3ff323",
+      "from": "油番茄籽",
+      "to": "番茄籽油",
+      "source_description": "Oil, tomatoseed",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e2cd04bad4acd64c8e57",
+      "from": "鱼凤尾鱼欧洲",
+      "to": "欧洲鳀鱼",
+      "source_description": "Fish, anchovy, european, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e339b6c5f5095f349ea8",
+      "from": "油工业椰子主要用途糖果涂层油喷雾坚果",
+      "to": "工业用椰子油",
+      "source_description": "Oil, industrial, coconut, principal uses candy coatings, oil sprays, roasting nuts",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e434da801de34b5274bb",
+      "from": "豌豆成熟种子发芽",
+      "to": "发芽豌豆",
+      "source_description": "Peas, mature seeds, sprouted, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e541e240571420ff44aa",
+      "from": "辣椒甜红",
+      "to": "红甜椒",
+      "source_description": "Peppers, sweet, red, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_e5b16c55c9113a2e2d04",
+      "from": "油工业大豆精制用于炒锅和轻度油炸",
+      "to": "工业用精炼大豆油",
+      "source_description": "Oil, industrial, soy, refined, for woks and light frying",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_eb17f4a50b2baff8b585",
+      "from": "酸奶希腊水果全脂牛奶",
+      "to": "希腊酸奶",
+      "source_description": "Yogurt, Greek, fruit, whole milk",
+      "method": "structured_fallback"
+    },
+    {
+      "concept_id": "ingredient_usda_ebf544dba0a00a2b697c",
+      "from": "油植物Natreon油菜籽高稳定性非反式高油酸",
+      "to": "高油酸菜籽油",
+      "source_description": "Oil, vegetable, Natreon canola, high stability, non trans, high oleic (70%)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ec554956428994e88d61",
+      "from": "鱼箭鱼",
+      "to": "剑鱼",
+      "source_description": "Fish, swordfish, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ecb0c2d52e00fea463d9",
+      "from": "酸奶香草无脂",
+      "to": "无脂香草酸奶",
+      "source_description": "Yogurt, vanilla, non-fat",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ecff1cedd504f9b86bdc",
+      "from": "蘑菇香菇炒",
+      "to": "香菇",
+      "source_description": "Mushrooms, shiitake, stir-fried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ed01da0186dc3e47a1ee",
+      "from": "Reddi Wip无脂鞭打配料",
+      "to": "无脂打发配料",
+      "source_description": "Reddi Wip Fat Free Whipped Topping",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ee5c7604502ce8348c4b",
+      "from": "辣椒甜绿色",
+      "to": "青甜椒",
+      "source_description": "Peppers, sweet, green, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_eeef6a9f4b086e8543b6",
+      "from": "油工业油油菜籽沙拉炒锅和轻度油炸",
+      "to": "菜籽油",
+      "source_description": "Oil, industrial, canola for salads, woks and light frying",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ef1f94205a69b5f57e54",
+      "from": "坚果橡子粉全脂",
+      "to": "橡子粉",
+      "source_description": "Nuts, acorn flour, full fat",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ef7141692adbd1d060e7",
+      "from": "魚魚子醬黑色和紅色顆粒狀",
+      "to": "黑红鱼子酱",
+      "source_description": "Fish, caviar, black and red, granular",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f021b78da1263b18fcc3",
+      "from": "鱼马希马希",
+      "to": "鲯鳅",
+      "source_description": "Fish, mahimahi, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f023c136aa2b5beeee59",
+      "from": "意大利面无麸质玉米干",
+      "to": "无麸质玉米意大利面",
+      "source_description": "Pasta, gluten-free, corn, dry",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f3dfb01cb4bb830199a8",
+      "from": "辣椒热腌制罐头",
+      "to": "罐装腌辣椒",
+      "source_description": "Peppers, hot pickled, canned",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f4150301ce7f3d565752",
+      "from": "豌豆绿色调味",
+      "to": "调味青豌豆",
+      "source_description": "Peas, green, canned, seasoned, solids and liquids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f5123a908766fbc9a800",
+      "from": "坚果山核桃干",
+      "to": "山核桃",
+      "source_description": "Nuts, hickorynuts, dried",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f6782ac6f24cf56f56f6",
+      "from": "Hominy罐头白色",
+      "to": "罐装玉米碴",
+      "source_description": "Hominy, canned, white",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f6cb8a18002d2ebf5c84",
+      "from": "豆子卡扣各种款式调味",
+      "to": "调味四季豆",
+      "source_description": "Beans, snap, canned, all styles, seasoned, solids and liquids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f8de27195abb7b1b1919",
+      "from": "海藻加拿大栽培的EMI-TSUNOMATA再水合",
+      "to": "EMI-TSUNOMATA 海藻",
+      "source_description": "Seaweed, Canadian Cultivated EMI-TSUNOMATA, rehydrated",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f92a3fa530c2f762f234",
+      "from": "油玉米工业和零售通用沙拉或烹饪",
+      "to": "普通玉米油",
+      "source_description": "Oil, corn, industrial and retail, all purpose salad or cooking",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f978fe295c9bcbbc2f7f",
+      "from": "卷心菜泡菜",
+      "to": "泡菜",
+      "source_description": "Cabbage, kimchi",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f982a50eff8584972e89",
+      "from": "鱼油鳕鱼肝",
+      "to": "鳕鱼肝油",
+      "source_description": "Fish oil, cod liver",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f9909eccaf07514faaef",
+      "from": "豆类贝类",
+      "to": "嫩豆",
+      "source_description": "Beans, shellie, canned, solids and liquids",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_f9f8e504902bf74d778b",
+      "from": "丝绸平原",
+      "to": "原味豆乳",
+      "source_description": "SILK Plain, soymilk",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_fa7b2741c996523e512a",
+      "from": "豆子法国成熟的种子",
+      "to": "法国豆",
+      "source_description": "Beans, french, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_fbd24d0eebc48493b11e",
+      "from": "甲壳类动物带刺龙虾混合物种",
+      "to": "刺龙虾",
+      "source_description": "Crustaceans, spiny lobster, mixed species, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_fc5fe63126e936c29153",
+      "from": "豆子小白豆成熟种子",
+      "to": "小白豆",
+      "source_description": "Beans, small white, mature seeds, raw",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_fd0993ee93323115726e",
+      "from": "酸奶非巧克力口味脱脂牛奶含低熱量甜味劑",
+      "to": "无脂冷冻酸奶",
+      "source_description": "Yogurt, frozen, flavors not chocolate, nonfat milk, with low-calorie sweetener",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_fe414f38fa07740f38cf",
+      "from": "油橄榄沙拉或烹饪",
+      "to": "普通橄榄油",
+      "source_description": "Oil, olive, salad or cooking",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_fea79a90b993a5026255",
+      "from": "油葵花籽油酸",
+      "to": "亚油酸型葵花籽油",
+      "source_description": "Oil, sunflower, linoleic (less than 60%)",
+      "method": "exact_description_curation"
+    },
+    {
+      "concept_id": "ingredient_usda_ff23748f491813679e7c",
+      "from": "丝绸香草",
+      "to": "香草豆乳",
+      "source_description": "SILK Vanilla, soymilk",
+      "method": "exact_description_curation"
+    }
+  ],
+  "merged_groups": [
+    {
+      "group_id": "sweetened_condensed_milk",
+      "label_zh": "炼乳",
+      "retained_concept_id": "ingredient_auto_f054f4c5ecfd08bc",
+      "removed_concept_ids": [
+        "ingredient_usda_1dc68dc2ee59c4bad424"
+      ],
+      "rule_zh": "同一甜炼乳身份仅因来源目录或罐装表述不同，合并为炼乳。"
+    },
+    {
+      "group_id": "white_rice_flour",
+      "label_zh": "白米粉",
+      "retained_concept_id": "ingredient_stage4_d3f8582f11d960d1",
+      "removed_concept_ids": [
+        "ingredient_usda_16a1fa4275ed3f84dbba"
+      ],
+      "rule_zh": "同一白米粉身份仅因 Flour/Rice flour 来源描述不同，合并为白米粉。"
+    },
+    {
+      "group_id": "red_leaf_lettuce",
+      "label_zh": "红叶生菜",
+      "retained_concept_id": "ingredient_usda_84b9127f5c8073f5d690",
+      "removed_concept_ids": [
+        "ingredient_usda_0b80fb387404dcbb7b50"
+      ],
+      "rule_zh": "同一红叶生菜身份仅因 leaf/red 词序不同，合并为红叶生菜。"
+    },
+    {
+      "group_id": "green_leaf_lettuce",
+      "label_zh": "绿叶生菜",
+      "retained_concept_id": "ingredient_usda_c8f21318b943dff50c54",
+      "removed_concept_ids": [
+        "ingredient_usda_58d4493494c5fd099f2b"
+      ],
+      "rule_zh": "同一绿叶生菜身份仅因 leaf/green 词序不同，合并为绿叶生菜。"
+    },
+    {
+      "group_id": "soy_flour",
+      "label_zh": "大豆粉",
+      "retained_concept_id": "ingredient_usda_e71d4dff16ab27138465",
+      "removed_concept_ids": [
+        "ingredient_usda_56554550b0d941868993"
+      ],
+      "rule_zh": "同一全脂大豆粉身份仅因 Soy/Flour 词序不同，合并为大豆粉。"
+    },
+    {
+      "group_id": "potato_flour",
+      "label_zh": "土豆粉",
+      "retained_concept_id": "ingredient_usda_a5522802873fba7e9d92",
+      "removed_concept_ids": [
+        "ingredient_usda_6e5ef0848420a971c8a7"
+      ],
+      "rule_zh": "同一土豆粉身份仅因 potato/flour 来源名称不同，合并为土豆粉。"
+    },
+    {
+      "group_id": "whole_wheat_pasta",
+      "label_zh": "全麦意大利面",
+      "retained_concept_id": "ingredient_spaghetti",
+      "removed_concept_ids": [
+        "ingredient_usda_0fc9bc1f207bacaa1a95",
+        "ingredient_usda_94c07abe475827d7e5c9"
+      ],
+      "rule_zh": "同一全麦意大利面仅因干制/熟制不同，合并为一个食材；默认来源保留熟制前的稳定基准。"
+    },
+    {
+      "group_id": "emi_tsunomata_seaweed",
+      "label_zh": "海藻（EMI-TSUNOMATA）",
+      "retained_concept_id": "ingredient_usda_28e797866ab0e55dfd32",
+      "removed_concept_ids": [
+        "ingredient_usda_f8de27195abb7b1b1919"
+      ],
+      "rule_zh": "同一 EMI-TSUNOMATA 海藻仅因干制/复水不同，合并为一个食材。"
+    },
+    {
+      "group_id": "shiitake_mushroom_preparation",
+      "label_zh": "香菇",
+      "retained_concept_id": "ingredient_auto_11baeb27adb35043",
+      "removed_concept_ids": [
+        "ingredient_usda_ecff1cedd504f9b86bdc"
+      ],
+      "rule_zh": "同一香菇仅因生食/炒制不同，合并为香菇。"
+    },
+    {
+      "group_id": "white_button_mushroom_preparation",
+      "label_zh": "白蘑菇",
+      "retained_concept_id": "ingredient_auto_64d2d61b21ee1ec6",
+      "removed_concept_ids": [
+        "ingredient_usda_10331b402b132baacfd1",
+        "ingredient_usda_78bf2ad45dc3a3383480",
+        "ingredient_usda_8312b736a58858da54f3",
+        "ingredient_usda_cd84452ccad2bbb8df58",
+        "ingredient_usda_e13655b00e227ebf8994"
+      ],
+      "rule_zh": "同一白蘑菇仅因生食、熟制、微波或紫外线处理不同，合并为白蘑菇。"
+    },
+    {
+      "group_id": "peanut_oil_preparation",
+      "label_zh": "花生油",
+      "retained_concept_id": "ingredient_auto_84b8f82ce164d1ec",
+      "removed_concept_ids": [
+        "ingredient_usda_ab9f0f4a41dd286a3c0e"
+      ],
+      "rule_zh": "同一花生油仅因用途写成 salad/cooking 不同，合并为花生油。"
+    },
+    {
+      "group_id": "red_leaf_cabbage_preparation",
+      "label_zh": "紫甘蓝",
+      "retained_concept_id": "ingredient_auto_model_aff28826f1d12c2a",
+      "removed_concept_ids": [
+        "ingredient_usda_1f2fb624249e5f02e9b2"
+      ],
+      "rule_zh": "同一紫甘蓝仅因生食/煮制不同，合并为紫甘蓝。"
+    },
+    {
+      "group_id": "adzuki_bean_preparation",
+      "label_zh": "红豆",
+      "retained_concept_id": "ingredient_auto_model_e9e73aa2dd8c70bc",
+      "removed_concept_ids": [
+        "ingredient_usda_5a11f1a432abb8892bee"
+      ],
+      "rule_zh": "同一红豆仅因生食/煮制不同，合并为红豆。"
+    },
+    {
+      "group_id": "bok_choy_preparation",
+      "label_zh": "小白菜",
+      "retained_concept_id": "ingredient_bok_choy",
+      "removed_concept_ids": [
+        "ingredient_usda_1cdaf38fc2447f86b781",
+        "ingredient_usda_7410348bba118a946bf2"
+      ],
+      "rule_zh": "同一小白菜仅因 bok choy/pak-choi 词名和生熟状态不同，合并为小白菜。"
+    },
+    {
+      "group_id": "green_pea_preparation",
+      "label_zh": "青豌豆",
+      "retained_concept_id": "ingredient_green_peas",
+      "removed_concept_ids": [
+        "ingredient_usda_4d783b8b9f5580be2053",
+        "ingredient_usda_5689697621784f44a804",
+        "ingredient_usda_764f309559239f41cb6e",
+        "ingredient_usda_8a8ba0d85f83bd3ac251"
+      ],
+      "rule_zh": "同一青豌豆仅因冷冻、罐装、煮制或冲洗不同，合并为青豌豆；裂豆和发芽豌豆保留独立身份。"
+    },
+    {
+      "group_id": "pinto_bean_preparation",
+      "label_zh": "斑豆",
+      "retained_concept_id": "ingredient_usda_6290c11c5c286ab9c5b6",
+      "removed_concept_ids": [
+        "ingredient_usda_295010784361a9605657"
+      ],
+      "rule_zh": "同一斑豆仅因生食/罐装不同，合并为斑豆。"
+    },
+    {
+      "group_id": "canadian_bacon_preparation",
+      "label_zh": "加拿大培根",
+      "retained_concept_id": "ingredient_usda_df47baa0860b42dfbd15",
+      "removed_concept_ids": [
+        "ingredient_usda_341584d9139fad6a7db7"
+      ],
+      "rule_zh": "同一加拿大培根仅因品牌和未准备状态不同，合并为加拿大培根。"
+    },
+    {
+      "group_id": "savoy_cabbage_preparation",
+      "label_zh": "皱叶甘蓝",
+      "retained_concept_id": "ingredient_usda_a37aed32175c2012c441",
+      "removed_concept_ids": [
+        "ingredient_usda_4aec4ee756b4beeca529"
+      ],
+      "rule_zh": "同一皱叶甘蓝仅因生食/煮制不同，合并为皱叶甘蓝。"
+    },
+    {
+      "group_id": "common_cabbage_preparation",
+      "label_zh": "普通甘蓝",
+      "retained_concept_id": "ingredient_usda_0c81f33397b9ad6ead8a",
+      "removed_concept_ids": [
+        "ingredient_usda_d68ac1b30f3fdb527c4b"
+      ],
+      "rule_zh": "同一普通甘蓝仅因生食/煮制不同，合并为普通甘蓝。"
+    },
+    {
+      "group_id": "sunflower_seed_preparation",
+      "label_zh": "葵花籽仁",
+      "retained_concept_id": "ingredient_usda_2bb1caf6db6687141dd6",
+      "removed_concept_ids": [
+        "ingredient_usda_0f378c24323fad0df1fe",
+        "ingredient_usda_b3fa84f3a38e8a0ae741"
+      ],
+      "rule_zh": "同一葵花籽仁仅因生食、干制或烘烤不同，合并为葵花籽仁。"
+    },
+    {
+      "group_id": "pumpkin_seed_preparation",
+      "label_zh": "南瓜籽仁",
+      "retained_concept_id": "ingredient_usda_d9788c64f476aea33db9",
+      "removed_concept_ids": [
+        "ingredient_usda_63f361ebd3b1961e490f"
+      ],
+      "rule_zh": "同一南瓜籽仁仅因生食/干制不同，合并为南瓜籽仁。"
+    },
+    {
+      "group_id": "portabella_mushroom_preparation",
+      "label_zh": "波特贝勒蘑菇",
+      "retained_concept_id": "ingredient_usda_8ae167f78ccc9c5f0099",
+      "removed_concept_ids": [
+        "ingredient_usda_d4cf92b4fa5f3ea2296f"
+      ],
+      "rule_zh": "同一波特贝勒蘑菇仅因紫外线处理不同，合并为波特贝勒蘑菇。"
+    },
+    {
+      "group_id": "napa_cabbage_preparation",
+      "label_zh": "大白菜",
+      "retained_concept_id": "ingredient_usda_b2e5b83b93c98ffa4a84",
+      "removed_concept_ids": [
+        "ingredient_usda_e0d251ef5140434e0e1b"
+      ],
+      "rule_zh": "同一大白菜仅因生食/煮制不同，合并为大白菜。"
+    },
+    {
+      "group_id": "vanilla_soy_yogurt_serving_size",
+      "label_zh": "香草豆乳酸奶",
+      "retained_concept_id": "ingredient_usda_0ac3b673ec6e698c575f",
+      "removed_concept_ids": [
+        "ingredient_usda_7cff4dd73134d40f41a3"
+      ],
+      "rule_zh": "同一香草豆乳酸奶仅因单份/家庭装不同，合并为香草豆乳酸奶。"
+    },
+    {
+      "group_id": "canola_oil_use_description",
+      "label_zh": "菜籽油",
+      "retained_concept_id": "ingredient_canola_oil",
+      "removed_concept_ids": [
+        "ingredient_usda_eeef6a9f4b086e8543b6"
+      ],
+      "rule_zh": "同一菜籽油仅因用途写成 salad/wok/light frying 不同，合并为菜籽油。"
+    },
+    {
+      "group_id": "straw_mushroom_preparation",
+      "label_zh": "草菇",
+      "retained_concept_id": "ingredient_controlled_735dcd75a186c543",
+      "removed_concept_ids": [
+        "ingredient_usda_6814c68c4e577806c61e"
+      ],
+      "rule_zh": "同一草菇仅因罐装状态不同，合并为草菇。"
+    },
+    {
+      "group_id": "green_mung_sprout_preparation",
+      "label_zh": "绿豆芽",
+      "retained_concept_id": "ingredient_stage4_36427b57cff86836",
+      "removed_concept_ids": [
+        "ingredient_usda_0d8a0352610f78e70a7a"
+      ],
+      "rule_zh": "同一绿豆芽仅因生食/罐装不同，合并为绿豆芽。"
+    },
+    {
+      "group_id": "black_bean_preparation",
+      "label_zh": "黑豆",
+      "retained_concept_id": "ingredient_stage4_40ed07c0bf135492",
+      "removed_concept_ids": [
+        "ingredient_usda_523a0f317da15b06802c",
+        "ingredient_usda_aca083a7d01099ff9a5d"
+      ],
+      "rule_zh": "同一黑豆仅因 black/black turtle 来源表述不同，合并为黑豆。"
+    },
+    {
+      "group_id": "snow_pea_preparation",
+      "label_zh": "荷兰豆",
+      "retained_concept_id": "ingredient_stage4_f530ae90343a12a3",
+      "removed_concept_ids": [
+        "ingredient_usda_6fa268ec3762af16f252"
+      ],
+      "rule_zh": "同一荷兰豆仅因生食/冷冻熟制不同，合并为荷兰豆。"
+    },
+    {
+      "group_id": "baked_bean_preparation",
+      "label_zh": "焗豆",
+      "retained_concept_id": "ingredient_usda_0e3c3e598c96530efefa",
+      "removed_concept_ids": [
+        "ingredient_usda_2e3552a50e038c8e01cb",
+        "ingredient_usda_ceeaf643e1dc3c01b32e"
+      ],
+      "rule_zh": "同一 plain/no-salt/home-prepared 焗豆仅因准备和罐装状态不同，合并为焗豆。"
+    },
+    {
+      "group_id": "mahi_mahi_preparation",
+      "label_zh": "鲯鳅",
+      "retained_concept_id": "ingredient_usda_f021b78da1263b18fcc3",
+      "removed_concept_ids": [
+        "ingredient_usda_5ce7cd4bdfc450ac348f"
+      ],
+      "rule_zh": "同一鲯鳅仅因生食/冷冻不同，合并为鲯鳅。"
+    },
+    {
+      "group_id": "high_oleic_canola_oil",
+      "label_zh": "高油酸菜籽油",
+      "retained_concept_id": "ingredient_usda_5ff8e3c1ebaa0a64d76c",
+      "removed_concept_ids": [
+        "ingredient_usda_ebf544dba0a00a2b697c"
+      ],
+      "rule_zh": "同一高油酸菜籽油仅因产品名和工业用途描述不同，合并为高油酸菜籽油。"
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "sweetened_condensed_milk",
+      "label_zh": "炼乳",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_auto_f054f4c5ecfd08bc"
+      ],
+      "rule_zh": "同一甜炼乳身份仅因来源目录或罐装表述不同，合并为炼乳。"
+    },
+    {
+      "group_id": "white_rice_flour",
+      "label_zh": "白米粉",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_stage4_d3f8582f11d960d1"
+      ],
+      "rule_zh": "同一白米粉身份仅因 Flour/Rice flour 来源描述不同，合并为白米粉。"
+    },
+    {
+      "group_id": "red_leaf_lettuce",
+      "label_zh": "红叶生菜",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_84b9127f5c8073f5d690"
+      ],
+      "rule_zh": "同一红叶生菜身份仅因 leaf/red 词序不同，合并为红叶生菜。"
+    },
+    {
+      "group_id": "green_leaf_lettuce",
+      "label_zh": "绿叶生菜",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_c8f21318b943dff50c54"
+      ],
+      "rule_zh": "同一绿叶生菜身份仅因 leaf/green 词序不同，合并为绿叶生菜。"
+    },
+    {
+      "group_id": "soy_flour",
+      "label_zh": "大豆粉",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_e71d4dff16ab27138465"
+      ],
+      "rule_zh": "同一全脂大豆粉身份仅因 Soy/Flour 词序不同，合并为大豆粉。"
+    },
+    {
+      "group_id": "potato_flour",
+      "label_zh": "土豆粉",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_a5522802873fba7e9d92"
+      ],
+      "rule_zh": "同一土豆粉身份仅因 potato/flour 来源名称不同，合并为土豆粉。"
+    },
+    {
+      "group_id": "whole_wheat_pasta",
+      "label_zh": "全麦意大利面",
+      "before_count": 3,
+      "retained_count": 1,
+      "removed_count": 2,
+      "representative_concept_ids": [
+        "ingredient_spaghetti"
+      ],
+      "rule_zh": "同一全麦意大利面仅因干制/熟制不同，合并为一个食材；默认来源保留熟制前的稳定基准。"
+    },
+    {
+      "group_id": "emi_tsunomata_seaweed",
+      "label_zh": "海藻（EMI-TSUNOMATA）",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_28e797866ab0e55dfd32"
+      ],
+      "rule_zh": "同一 EMI-TSUNOMATA 海藻仅因干制/复水不同，合并为一个食材。"
+    },
+    {
+      "group_id": "shiitake_mushroom_preparation",
+      "label_zh": "香菇",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_auto_11baeb27adb35043"
+      ],
+      "rule_zh": "同一香菇仅因生食/炒制不同，合并为香菇。"
+    },
+    {
+      "group_id": "white_button_mushroom_preparation",
+      "label_zh": "白蘑菇",
+      "before_count": 6,
+      "retained_count": 1,
+      "removed_count": 5,
+      "representative_concept_ids": [
+        "ingredient_auto_64d2d61b21ee1ec6"
+      ],
+      "rule_zh": "同一白蘑菇仅因生食、熟制、微波或紫外线处理不同，合并为白蘑菇。"
+    },
+    {
+      "group_id": "peanut_oil_preparation",
+      "label_zh": "花生油",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_auto_84b8f82ce164d1ec"
+      ],
+      "rule_zh": "同一花生油仅因用途写成 salad/cooking 不同，合并为花生油。"
+    },
+    {
+      "group_id": "red_leaf_cabbage_preparation",
+      "label_zh": "紫甘蓝",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_auto_model_aff28826f1d12c2a"
+      ],
+      "rule_zh": "同一紫甘蓝仅因生食/煮制不同，合并为紫甘蓝。"
+    },
+    {
+      "group_id": "adzuki_bean_preparation",
+      "label_zh": "红豆",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_auto_model_e9e73aa2dd8c70bc"
+      ],
+      "rule_zh": "同一红豆仅因生食/煮制不同，合并为红豆。"
+    },
+    {
+      "group_id": "bok_choy_preparation",
+      "label_zh": "小白菜",
+      "before_count": 3,
+      "retained_count": 1,
+      "removed_count": 2,
+      "representative_concept_ids": [
+        "ingredient_bok_choy"
+      ],
+      "rule_zh": "同一小白菜仅因 bok choy/pak-choi 词名和生熟状态不同，合并为小白菜。"
+    },
+    {
+      "group_id": "green_pea_preparation",
+      "label_zh": "青豌豆",
+      "before_count": 5,
+      "retained_count": 1,
+      "removed_count": 4,
+      "representative_concept_ids": [
+        "ingredient_green_peas"
+      ],
+      "rule_zh": "同一青豌豆仅因冷冻、罐装、煮制或冲洗不同，合并为青豌豆；裂豆和发芽豌豆保留独立身份。"
+    },
+    {
+      "group_id": "pinto_bean_preparation",
+      "label_zh": "斑豆",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_6290c11c5c286ab9c5b6"
+      ],
+      "rule_zh": "同一斑豆仅因生食/罐装不同，合并为斑豆。"
+    },
+    {
+      "group_id": "canadian_bacon_preparation",
+      "label_zh": "加拿大培根",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_df47baa0860b42dfbd15"
+      ],
+      "rule_zh": "同一加拿大培根仅因品牌和未准备状态不同，合并为加拿大培根。"
+    },
+    {
+      "group_id": "savoy_cabbage_preparation",
+      "label_zh": "皱叶甘蓝",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_a37aed32175c2012c441"
+      ],
+      "rule_zh": "同一皱叶甘蓝仅因生食/煮制不同，合并为皱叶甘蓝。"
+    },
+    {
+      "group_id": "common_cabbage_preparation",
+      "label_zh": "普通甘蓝",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_0c81f33397b9ad6ead8a"
+      ],
+      "rule_zh": "同一普通甘蓝仅因生食/煮制不同，合并为普通甘蓝。"
+    },
+    {
+      "group_id": "sunflower_seed_preparation",
+      "label_zh": "葵花籽仁",
+      "before_count": 3,
+      "retained_count": 1,
+      "removed_count": 2,
+      "representative_concept_ids": [
+        "ingredient_usda_2bb1caf6db6687141dd6"
+      ],
+      "rule_zh": "同一葵花籽仁仅因生食、干制或烘烤不同，合并为葵花籽仁。"
+    },
+    {
+      "group_id": "pumpkin_seed_preparation",
+      "label_zh": "南瓜籽仁",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_d9788c64f476aea33db9"
+      ],
+      "rule_zh": "同一南瓜籽仁仅因生食/干制不同，合并为南瓜籽仁。"
+    },
+    {
+      "group_id": "portabella_mushroom_preparation",
+      "label_zh": "波特贝勒蘑菇",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_8ae167f78ccc9c5f0099"
+      ],
+      "rule_zh": "同一波特贝勒蘑菇仅因紫外线处理不同，合并为波特贝勒蘑菇。"
+    },
+    {
+      "group_id": "napa_cabbage_preparation",
+      "label_zh": "大白菜",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_b2e5b83b93c98ffa4a84"
+      ],
+      "rule_zh": "同一大白菜仅因生食/煮制不同，合并为大白菜。"
+    },
+    {
+      "group_id": "vanilla_soy_yogurt_serving_size",
+      "label_zh": "香草豆乳酸奶",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_0ac3b673ec6e698c575f"
+      ],
+      "rule_zh": "同一香草豆乳酸奶仅因单份/家庭装不同，合并为香草豆乳酸奶。"
+    },
+    {
+      "group_id": "canola_oil_use_description",
+      "label_zh": "菜籽油",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_canola_oil"
+      ],
+      "rule_zh": "同一菜籽油仅因用途写成 salad/wok/light frying 不同，合并为菜籽油。"
+    },
+    {
+      "group_id": "straw_mushroom_preparation",
+      "label_zh": "草菇",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_controlled_735dcd75a186c543"
+      ],
+      "rule_zh": "同一草菇仅因罐装状态不同，合并为草菇。"
+    },
+    {
+      "group_id": "green_mung_sprout_preparation",
+      "label_zh": "绿豆芽",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_stage4_36427b57cff86836"
+      ],
+      "rule_zh": "同一绿豆芽仅因生食/罐装不同，合并为绿豆芽。"
+    },
+    {
+      "group_id": "black_bean_preparation",
+      "label_zh": "黑豆",
+      "before_count": 3,
+      "retained_count": 1,
+      "removed_count": 2,
+      "representative_concept_ids": [
+        "ingredient_stage4_40ed07c0bf135492"
+      ],
+      "rule_zh": "同一黑豆仅因 black/black turtle 来源表述不同，合并为黑豆。"
+    },
+    {
+      "group_id": "snow_pea_preparation",
+      "label_zh": "荷兰豆",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_stage4_f530ae90343a12a3"
+      ],
+      "rule_zh": "同一荷兰豆仅因生食/冷冻熟制不同，合并为荷兰豆。"
+    },
+    {
+      "group_id": "baked_bean_preparation",
+      "label_zh": "焗豆",
+      "before_count": 3,
+      "retained_count": 1,
+      "removed_count": 2,
+      "representative_concept_ids": [
+        "ingredient_usda_0e3c3e598c96530efefa"
+      ],
+      "rule_zh": "同一 plain/no-salt/home-prepared 焗豆仅因准备和罐装状态不同，合并为焗豆。"
+    },
+    {
+      "group_id": "mahi_mahi_preparation",
+      "label_zh": "鲯鳅",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_f021b78da1263b18fcc3"
+      ],
+      "rule_zh": "同一鲯鳅仅因生食/冷冻不同，合并为鲯鳅。"
+    },
+    {
+      "group_id": "high_oleic_canola_oil",
+      "label_zh": "高油酸菜籽油",
+      "before_count": 2,
+      "retained_count": 1,
+      "removed_count": 1,
+      "representative_concept_ids": [
+        "ingredient_usda_5ff8e3c1ebaa0a64d76c"
+      ],
+      "rule_zh": "同一高油酸菜籽油仅因产品名和工业用途描述不同，合并为高油酸菜籽油。"
+    }
+  ],
+  "redirects": {
+    "ingredient_usda_1dc68dc2ee59c4bad424": "ingredient_auto_f054f4c5ecfd08bc",
+    "ingredient_usda_16a1fa4275ed3f84dbba": "ingredient_stage4_d3f8582f11d960d1",
+    "ingredient_usda_0b80fb387404dcbb7b50": "ingredient_usda_84b9127f5c8073f5d690",
+    "ingredient_usda_58d4493494c5fd099f2b": "ingredient_usda_c8f21318b943dff50c54",
+    "ingredient_usda_56554550b0d941868993": "ingredient_usda_e71d4dff16ab27138465",
+    "ingredient_usda_6e5ef0848420a971c8a7": "ingredient_usda_a5522802873fba7e9d92",
+    "ingredient_usda_0fc9bc1f207bacaa1a95": "ingredient_spaghetti",
+    "ingredient_usda_94c07abe475827d7e5c9": "ingredient_spaghetti",
+    "ingredient_usda_f8de27195abb7b1b1919": "ingredient_usda_28e797866ab0e55dfd32",
+    "ingredient_usda_ecff1cedd504f9b86bdc": "ingredient_auto_11baeb27adb35043",
+    "ingredient_usda_10331b402b132baacfd1": "ingredient_auto_64d2d61b21ee1ec6",
+    "ingredient_usda_78bf2ad45dc3a3383480": "ingredient_auto_64d2d61b21ee1ec6",
+    "ingredient_usda_8312b736a58858da54f3": "ingredient_auto_64d2d61b21ee1ec6",
+    "ingredient_usda_cd84452ccad2bbb8df58": "ingredient_auto_64d2d61b21ee1ec6",
+    "ingredient_usda_e13655b00e227ebf8994": "ingredient_auto_64d2d61b21ee1ec6",
+    "ingredient_usda_ab9f0f4a41dd286a3c0e": "ingredient_auto_84b8f82ce164d1ec",
+    "ingredient_usda_1f2fb624249e5f02e9b2": "ingredient_auto_model_aff28826f1d12c2a",
+    "ingredient_usda_5a11f1a432abb8892bee": "ingredient_auto_model_e9e73aa2dd8c70bc",
+    "ingredient_usda_1cdaf38fc2447f86b781": "ingredient_bok_choy",
+    "ingredient_usda_7410348bba118a946bf2": "ingredient_bok_choy",
+    "ingredient_usda_4d783b8b9f5580be2053": "ingredient_green_peas",
+    "ingredient_usda_5689697621784f44a804": "ingredient_green_peas",
+    "ingredient_usda_764f309559239f41cb6e": "ingredient_green_peas",
+    "ingredient_usda_8a8ba0d85f83bd3ac251": "ingredient_green_peas",
+    "ingredient_usda_295010784361a9605657": "ingredient_usda_6290c11c5c286ab9c5b6",
+    "ingredient_usda_341584d9139fad6a7db7": "ingredient_usda_df47baa0860b42dfbd15",
+    "ingredient_usda_4aec4ee756b4beeca529": "ingredient_usda_a37aed32175c2012c441",
+    "ingredient_usda_d68ac1b30f3fdb527c4b": "ingredient_usda_0c81f33397b9ad6ead8a",
+    "ingredient_usda_0f378c24323fad0df1fe": "ingredient_usda_2bb1caf6db6687141dd6",
+    "ingredient_usda_b3fa84f3a38e8a0ae741": "ingredient_usda_2bb1caf6db6687141dd6",
+    "ingredient_usda_63f361ebd3b1961e490f": "ingredient_usda_d9788c64f476aea33db9",
+    "ingredient_usda_d4cf92b4fa5f3ea2296f": "ingredient_usda_8ae167f78ccc9c5f0099",
+    "ingredient_usda_e0d251ef5140434e0e1b": "ingredient_usda_b2e5b83b93c98ffa4a84",
+    "ingredient_usda_7cff4dd73134d40f41a3": "ingredient_usda_0ac3b673ec6e698c575f",
+    "ingredient_usda_eeef6a9f4b086e8543b6": "ingredient_canola_oil",
+    "ingredient_usda_6814c68c4e577806c61e": "ingredient_controlled_735dcd75a186c543",
+    "ingredient_usda_0d8a0352610f78e70a7a": "ingredient_stage4_36427b57cff86836",
+    "ingredient_usda_523a0f317da15b06802c": "ingredient_stage4_40ed07c0bf135492",
+    "ingredient_usda_aca083a7d01099ff9a5d": "ingredient_stage4_40ed07c0bf135492",
+    "ingredient_usda_6fa268ec3762af16f252": "ingredient_stage4_f530ae90343a12a3",
+    "ingredient_usda_2e3552a50e038c8e01cb": "ingredient_usda_0e3c3e598c96530efefa",
+    "ingredient_usda_ceeaf643e1dc3c01b32e": "ingredient_usda_0e3c3e598c96530efefa",
+    "ingredient_usda_5ce7cd4bdfc450ac348f": "ingredient_usda_f021b78da1263b18fcc3",
+    "ingredient_usda_ebf544dba0a00a2b697c": "ingredient_usda_5ff8e3c1ebaa0a64d76c"
+  },
+  "removed_concepts": [
+    {
+      "concept_id": "ingredient_usda_0b80fb387404dcbb7b50",
+      "canonical_name_zh": "菜红叶",
+      "redirected_to": "ingredient_usda_84b9127f5c8073f5d690",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_0d8a0352610f78e70a7a",
+      "canonical_name_zh": "豆子绿豆成熟种子发芽罐头",
+      "redirected_to": "ingredient_stage4_36427b57cff86836",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_0f378c24323fad0df1fe",
+      "canonical_name_zh": "种子从壳中剥离的葵花籽仁干烤加盐",
+      "redirected_to": "ingredient_usda_2bb1caf6db6687141dd6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_0fc9bc1f207bacaa1a95",
+      "canonical_name_zh": "意大利面全麦",
+      "redirected_to": "ingredient_spaghetti",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_10331b402b132baacfd1",
+      "canonical_name_zh": "蘑菇白色沥干不加盐",
+      "redirected_to": "ingredient_auto_64d2d61b21ee1ec6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_16a1fa4275ed3f84dbba",
+      "canonical_name_zh": "未强化白米粉",
+      "redirected_to": "ingredient_stage4_d3f8582f11d960d1",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_1cdaf38fc2447f86b781",
+      "canonical_name_zh": "白菜中国白菜沥干不加盐",
+      "redirected_to": "ingredient_bok_choy",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_1dc68dc2ee59c4bad424",
+      "canonical_name_zh": "牛奶浓缩加糖",
+      "redirected_to": "ingredient_auto_f054f4c5ecfd08bc",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_1f2fb624249e5f02e9b2",
+      "canonical_name_zh": "卷心菜红煮沥干不加盐",
+      "redirected_to": "ingredient_auto_model_aff28826f1d12c2a",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_295010784361a9605657",
+      "canonical_name_zh": "豆子平託豆罐頭瀝乾的固體",
+      "redirected_to": "ingredient_usda_6290c11c5c286ab9c5b6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_2e3552a50e038c8e01cb",
+      "canonical_name_zh": "豆子的自制的",
+      "redirected_to": "ingredient_usda_0e3c3e598c96530efefa",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_341584d9139fad6a7db7",
+      "canonical_name_zh": "HORMEL加拿大式培根",
+      "redirected_to": "ingredient_usda_df47baa0860b42dfbd15",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_4aec4ee756b4beeca529",
+      "canonical_name_zh": "卷心菜萨沃伊沥干不加盐",
+      "redirected_to": "ingredient_usda_a37aed32175c2012c441",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_4d783b8b9f5580be2053",
+      "canonical_name_zh": "豌豆绿色",
+      "redirected_to": "ingredient_green_peas",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_523a0f317da15b06802c",
+      "canonical_name_zh": "豆子黑海龟成熟的种子",
+      "redirected_to": "ingredient_stage4_40ed07c0bf135492",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_56554550b0d941868993",
+      "canonical_name_zh": "全脂大豆粉",
+      "redirected_to": "ingredient_usda_e71d4dff16ab27138465",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_5689697621784f44a804",
+      "canonical_name_zh": "豌豆绿色罐头不加盐",
+      "redirected_to": "ingredient_green_peas",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_58d4493494c5fd099f2b",
+      "canonical_name_zh": "菜绿叶",
+      "redirected_to": "ingredient_usda_c8f21318b943dff50c54",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_5a11f1a432abb8892bee",
+      "canonical_name_zh": "豆子小豆成熟的种子煮沸加盐",
+      "redirected_to": "ingredient_auto_model_e9e73aa2dd8c70bc",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_5ce7cd4bdfc450ac348f",
+      "canonical_name_zh": "黄鳍金枪鱼",
+      "redirected_to": "ingredient_usda_f021b78da1263b18fcc3",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_63f361ebd3b1961e490f",
+      "canonical_name_zh": "种子南瓜和南瓜籽仁干燥",
+      "redirected_to": "ingredient_usda_d9788c64f476aea33db9",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_6814c68c4e577806c61e",
+      "canonical_name_zh": "蘑菇稻草罐头",
+      "redirected_to": "ingredient_controlled_735dcd75a186c543",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_6e5ef0848420a971c8a7",
+      "canonical_name_zh": "马铃薯粉",
+      "redirected_to": "ingredient_usda_a5522802873fba7e9d92",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_6fa268ec3762af16f252",
+      "canonical_name_zh": "豌豆可食用的豆荚沥干不加盐",
+      "redirected_to": "ingredient_stage4_f530ae90343a12a3",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_7410348bba118a946bf2",
+      "canonical_name_zh": "卷心菜中国白菜",
+      "redirected_to": "ingredient_bok_choy",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_764f309559239f41cb6e",
+      "canonical_name_zh": "豌豆绿色沥干不加盐",
+      "redirected_to": "ingredient_green_peas",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_78bf2ad45dc3a3383480",
+      "canonical_name_zh": "蘑菇白色",
+      "redirected_to": "ingredient_auto_64d2d61b21ee1ec6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_7cff4dd73134d40f41a3",
+      "canonical_name_zh": "丝绸香草大豆酸奶(家庭尺寸)",
+      "redirected_to": "ingredient_usda_0ac3b673ec6e698c575f",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_8312b736a58858da54f3",
+      "canonical_name_zh": "蘑菇白色暴露在紫外线下",
+      "redirected_to": "ingredient_auto_64d2d61b21ee1ec6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_8a8ba0d85f83bd3ac251",
+      "canonical_name_zh": "豌豆绿色罐头用自来水冲洗",
+      "redirected_to": "ingredient_green_peas",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_94c07abe475827d7e5c9",
+      "canonical_name_zh": "意大利面全麦干",
+      "redirected_to": "ingredient_spaghetti",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_ab9f0f4a41dd286a3c0e",
+      "canonical_name_zh": "油花生沙拉或烹饪",
+      "redirected_to": "ingredient_auto_84b8f82ce164d1ec",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_aca083a7d01099ff9a5d",
+      "canonical_name_zh": "黑豆(加盐沥干并冲洗)",
+      "redirected_to": "ingredient_stage4_40ed07c0bf135492",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_b3fa84f3a38e8a0ae741",
+      "canonical_name_zh": "葵花籽仁",
+      "redirected_to": "ingredient_usda_2bb1caf6db6687141dd6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_cd84452ccad2bbb8df58",
+      "canonical_name_zh": "蘑菇白色炒",
+      "redirected_to": "ingredient_auto_64d2d61b21ee1ec6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_ceeaf643e1dc3c01b32e",
+      "canonical_name_zh": "豆子罐头不加盐",
+      "redirected_to": "ingredient_usda_0e3c3e598c96530efefa",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_d4cf92b4fa5f3ea2296f",
+      "canonical_name_zh": "蘑菇波塔贝拉暴露在紫外线下",
+      "redirected_to": "ingredient_usda_8ae167f78ccc9c5f0099",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_d68ac1b30f3fdb527c4b",
+      "canonical_name_zh": "卷心菜普通沥干加盐",
+      "redirected_to": "ingredient_usda_0c81f33397b9ad6ead8a",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_e0d251ef5140434e0e1b",
+      "canonical_name_zh": "卷心菜中国菜沥干不加盐",
+      "redirected_to": "ingredient_usda_b2e5b83b93c98ffa4a84",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_e13655b00e227ebf8994",
+      "canonical_name_zh": "蘑菇白色微波炉",
+      "redirected_to": "ingredient_auto_64d2d61b21ee1ec6",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_ebf544dba0a00a2b697c",
+      "canonical_name_zh": "油植物Natreon油菜籽高稳定性非反式高油酸",
+      "redirected_to": "ingredient_usda_5ff8e3c1ebaa0a64d76c",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_ecff1cedd504f9b86bdc",
+      "canonical_name_zh": "蘑菇香菇炒",
+      "redirected_to": "ingredient_auto_11baeb27adb35043",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_eeef6a9f4b086e8543b6",
+      "canonical_name_zh": "油工业油油菜籽沙拉炒锅和轻度油炸",
+      "redirected_to": "ingredient_canola_oil",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    },
+    {
+      "concept_id": "ingredient_usda_f8de27195abb7b1b1919",
+      "canonical_name_zh": "海藻加拿大栽培的EMI-TSUNOMATA再水合",
+      "redirected_to": "ingredient_usda_28e797866ab0e55dfd32",
+      "reason": "same_ingredient_different_preparation_or_source_wording"
+    }
+  ],
+  "unmodified_machine_translation_candidates": []
+}

@@ -33,6 +33,21 @@ def append_trace(item: dict[str, Any], trace: str) -> None:
         values.append(trace)
 
 
+def catalog_removal_ids(catalog: dict[str, Any]) -> set[str]:
+    aggregation = catalog.get("selection_aggregation", {})
+    values = aggregation.get("removed_concept_ids", [])
+    if not isinstance(values, list):
+        raise ValueError("目录聚合 removed_concept_ids 必须是数组")
+    removed = {str(value) for value in values if str(value).strip()}
+    manual_values = catalog.get("complete_usda_integration", {}).get(
+        "manual_removed_concept_ids", []
+    )
+    if not isinstance(manual_values, list):
+        raise ValueError("目录人工整理 manual_removed_concept_ids 必须是数组")
+    removed.update(str(value) for value in manual_values if str(value).strip())
+    return removed
+
+
 def migrate(
     previous: dict[str, Any],
     catalog: dict[str, Any],
@@ -47,6 +62,7 @@ def migrate(
     }
     if not catalog_ids:
         raise ValueError("目标目录为空")
+    removed_catalog_ids = catalog_removal_ids(catalog)
 
     output = deepcopy(previous)
     changed_items: list[dict[str, Any]] = []
@@ -79,7 +95,7 @@ def migrate(
                 item["concept_id"] = None
                 item["decision"] = "isolated"
                 item["exclusion_category"] = "catalog_concept_removed"
-                append_trace(item, "catalog_v22_removed_concept")
+                append_trace(item, "catalog_removed_concept")
                 isolated_count += 1
         elif decision in {"composite", "alternative"}:
             if len(valid_components) >= 2:
@@ -95,7 +111,7 @@ def migrate(
                 item["exclusion_category"] = "catalog_concept_removed"
                 isolated_count += 1
             if removed_components:
-                append_trace(item, "catalog_v22_removed_component")
+                append_trace(item, "catalog_removed_component")
         else:
             if old_concept and new_concept in catalog_ids:
                 item["concept_id"] = new_concept
@@ -142,6 +158,8 @@ def migrate(
         "redirect_count": redirect_count,
         "isolated_item_count": isolated_count,
         "removed_component_count": reduced_component_count,
+        "removed_catalog_concept_count": len(removed_catalog_ids),
+        "removed_catalog_concept_ids": sorted(removed_catalog_ids),
         "changed_items": changed_items,
     }
     return output, output["migration"]
@@ -157,6 +175,11 @@ def main() -> int:
         action="append",
         default=[],
         help="重复指定旧概念到新概念的重定向，格式为 old_id=new_id",
+    )
+    parser.add_argument(
+        "--report",
+        type=Path,
+        help="可选的迁移报告输出路径；不提供时仍打印到标准输出",
     )
     args = parser.parse_args()
     if not args.previous.is_file() or not args.catalog.is_file():
@@ -183,6 +206,14 @@ def main() -> int:
             json.dumps(output, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+        if args.report:
+            if args.report.exists():
+                raise ValueError(f"拒绝覆盖已有阶段一迁移报告：{args.report}")
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            args.report.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:

@@ -77,6 +77,74 @@
       {
         "value": "AGENTS.md",
         "type": "file"
+      },
+      {
+        "value": "fooddata-cloudbase-export",
+        "type": "folder"
+      },
+      {
+        "value": "scripts",
+        "type": "folder"
+      },
+      {
+        "value": "contracts",
+        "type": "folder"
+      },
+      {
+        "value": "anypal-uia",
+        "type": "folder"
+      },
+      {
+        "value": "tools",
+        "type": "folder"
+      },
+      {
+        "value": "tmp",
+        "type": "folder"
+      },
+      {
+        "value": "data/canine-ingredient-policies",
+        "type": "folder"
+      },
+      {
+        "value": "data/cfct",
+        "type": "folder"
+      },
+      {
+        "value": "data/human-recipes",
+        "type": "folder"
+      },
+      {
+        "value": "data/ingredient-catalog",
+        "type": "folder"
+      },
+      {
+        "value": "data/ingredient-gap-classification",
+        "type": "folder"
+      },
+      {
+        "value": "data/ingredient-identity-lexicon",
+        "type": "folder"
+      },
+      {
+        "value": "data/ingredient-review-decisions",
+        "type": "folder"
+      },
+      {
+        "value": "data/nutrient-rankings",
+        "type": "folder"
+      },
+      {
+        "value": "data/pet-nutrition-standards",
+        "type": "folder"
+      },
+      {
+        "value": "data/usda-localized-names",
+        "type": "folder"
+      },
+      {
+        "value": "data/recipes.json",
+        "type": "file"
       }
     ],
     "include": [

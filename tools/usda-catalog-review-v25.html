@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>USDA 目录审核台 · v25</title>
+  <style>
+    :root {
+      --ink: #19352d;
+      --ink-muted: #61716b;
+      --ink-soft: #8a9892;
+      --forest: #216b56;
+      --forest-dark: #164b3b;
+      --forest-pale: #e5f0eb;
+      --amber: #bd7122;
+      --amber-pale: #fff0d9;
+      --red: #ad4e42;
+      --red-pale: #fae8e3;
+      --blue: #4d6e92;
+      --blue-pale: #e8eff7;
+      --paper: #f4f3ed;
+      --surface: #fffdf9;
+      --surface-raised: #ffffff;
+      --line: #dedfd7;
+      --line-strong: #c9cdc3;
+      --shadow: 0 14px 35px rgba(38, 55, 47, 0.08);
+      --shadow-small: 0 5px 16px rgba(38, 55, 47, 0.07);
+      --radius: 18px;
+      --radius-small: 10px;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 88% -8%, rgba(185, 215, 199, .32), transparent 25rem),
+        var(--paper);
+      font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", system-ui, -apple-system, sans-serif;
+      line-height: 1.55;
+      min-width: 320px;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(33, 107, 86, .28);
+      outline-offset: 2px;
+    }
+    .shell { width: min(1440px, calc(100% - 48px)); margin: 0 auto; padding: 34px 0 72px; }
+
+    .masthead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 27px;
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--forest);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 760px;
+      margin-bottom: 12px;
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      font-size: clamp(34px, 4.1vw, 58px);
+      letter-spacing: -.055em;
+      line-height: 1.07;
+      font-weight: 700;
+    }
+    .lede { max-width: 720px; margin: 0; color: var(--ink-muted); font-size: 15px; }
+    .head-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .button {
+      min-height: 42px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 0 17px;
+      color: var(--ink);
+      background: rgba(255, 253, 249, .78);
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .button:hover { transform: translateY(-1px); border-color: var(--forest); background: var(--surface-raised); }
+    .button--primary { color: white; border-color: var(--forest); background: var(--forest); }
+    .button--primary:hover { border-color: var(--forest-dark); background: var(--forest-dark); }
+    .button--quiet { color: var(--ink-muted); border-color: transparent; background: transparent; }
+    .button--quiet:hover { background: var(--forest-pale); }
+    .button--danger { color: var(--red); border-color: #e2bdb4; background: var(--red-pale); }
+
+    .source-strip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--ink-muted);
+      background: rgba(255, 253, 249, .73);
+      font-size: 12px;
+    }
+    .source-strip strong { color: var(--ink); }
+    .source-strip .dot { color: var(--line-strong); }
+    .load-state { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; }
+    .load-state::before { content: ""; width: 7px; height: 7px; border-radius: 99px; background: var(--forest); }
+    .load-state[data-kind="warn"]::before { background: var(--amber); }
+
+    .notice {
+      display: none;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 16px 0;
+      padding: 15px 17px;
+      border: 1px solid #e2c191;
+      border-radius: var(--radius-small);
+      color: #774c1d;
+      background: var(--amber-pale);
+      font-size: 13px;
+    }
+    .notice.is-visible { display: flex; }
+    .notice strong { display: block; margin-bottom: 2px; color: #653c14; }
+    .notice p { margin: 0; }
+
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .8fr); gap: 17px; margin: 24px 0 18px; }
+    .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-small); }
+    .hero-card { position: relative; min-height: 260px; overflow: hidden; padding: 27px 29px; background: #e7f1eb; }
+    .hero-card::after {
+      position: absolute;
+      right: -92px;
+      bottom: -120px;
+      width: 340px;
+      height: 340px;
+      border: 1px solid rgba(33, 107, 86, .17);
+      border-radius: 50%;
+      content: "";
+      box-shadow: 0 0 0 24px rgba(33, 107, 86, .035), 0 0 0 49px rgba(33, 107, 86, .028);
+    }
+    .hero-card > * { position: relative; z-index: 1; }
+    .hero-kicker { margin-bottom: 32px; color: var(--forest); font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+    .hero-number { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+    .hero-number strong { font-family: "Noto Serif SC", "Songti SC", Georgia, serif; font-size: clamp(58px, 7vw, 86px); letter-spacing: -.08em; line-height: .9; }
+    .hero-number span { color: var(--forest); font-size: 14px; font-weight: 700; }
+    .hero-copy { max-width: 520px; margin: 19px 0 0; color: #4b655c; font-size: 13px; }
+    .metric-stack { display: grid; grid-template-rows: 1fr 1fr; gap: 17px; }
+    .metric-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 121px; padding: 20px 21px; }
+    .metric-label { color: var(--ink-muted); font-size: 12px; }
+    .metric-value { margin-top: 10px; font-family: "Noto Serif SC", "Songti SC", Georgia, serif; font-size: 35px; font-weight: 700; letter-spacing: -.05em; line-height: 1; }
+    .metric-note { margin-top: 7px; color: var(--ink-soft); font-size: 11px; }
+    .metric-card--risk { background: #fff8ea; border-color: #ecd7b3; }
+    .metric-card--risk .metric-value { color: var(--amber); }
+
+    .tabs { display: flex; gap: 6px; margin: 18px 0 15px; padding: 5px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 253, 249, .65); width: fit-content; }
+    .tab { min-height: 38px; padding: 0 16px; border: 0; border-radius: 10px; color: var(--ink-muted); background: transparent; font-size: 13px; font-weight: 700; }
+    .tab:hover { color: var(--ink); background: #f0f1eb; }
+    .tab[aria-selected="true"] { color: white; background: var(--forest); box-shadow: 0 4px 10px rgba(33, 107, 86, .2); }
+    .view { display: none; }
+    .view.is-active { display: block; }
+
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin: 28px 0 14px; }
+    .section-head h2 { margin-bottom: 4px; font-family: "Noto Serif SC", "Songti SC", Georgia, serif; font-size: 23px; letter-spacing: -.035em; }
+    .section-head p { margin: 0; color: var(--ink-muted); font-size: 13px; }
+    .section-head .section-meta { color: var(--ink-soft); font-size: 12px; text-align: right; }
+
+    .overview-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 17px; }
+    .card-pad { padding: 22px; }
+    .card-title { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; margin-bottom: 19px; }
+    .card-title h3 { margin: 0; font-size: 15px; }
+    .card-title span { color: var(--ink-soft); font-size: 11px; }
+    .bar-row { display: grid; grid-template-columns: 155px minmax(70px, 1fr) 55px; align-items: center; gap: 12px; min-height: 33px; border-bottom: 1px solid #ecece6; }
+    .bar-row:last-child { border-bottom: 0; }
+    .bar-label { color: var(--ink-muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track { height: 8px; border-radius: 999px; overflow: hidden; background: #edf0e9; }
+    .bar-fill { height: 100%; border-radius: inherit; background: var(--forest); transition: width .4s ease; }
+    .bar-fill--risk { background: #d89337; }
+    .bar-fill--soft { background: #98b8aa; }
+    .bar-count { color: var(--ink); font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; }
+    .category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .category-item { display: flex; justify-content: space-between; gap: 8px; padding: 10px 11px; border: 1px solid #e7e7df; border-radius: 10px; background: #fcfcf8; font-size: 12px; }
+    .category-item span { color: var(--ink-muted); }
+    .category-item strong { font-variant-numeric: tabular-nums; }
+    .progress-wrap { margin-top: 22px; }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--ink-muted); font-size: 12px; }
+    .progress { height: 9px; overflow: hidden; border-radius: 999px; background: #eceee8; }
+    .progress > span { display: block; height: 100%; border-radius: inherit; background: var(--forest); transition: width .4s ease; }
+    .audit-note { display: flex; gap: 11px; margin-top: 19px; padding: 13px 14px; border-radius: 11px; color: #665b44; background: #fbf5e9; font-size: 12px; }
+    .audit-note::before { flex: 0 0 auto; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #d6913a; content: ""; }
+
+    .filter-panel { padding: 15px; margin: 13px 0; }
+    .filter-row { display: grid; grid-template-columns: minmax(200px, 1.6fr) repeat(3, minmax(128px, .55fr)) auto; gap: 9px; align-items: center; }
+    .catalog-filter-row { grid-template-columns: minmax(200px, 1.5fr) repeat(4, minmax(118px, .55fr)) auto; }
+    .field, .search-field { width: 100%; min-height: 41px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fff; padding: 0 12px; }
+    .search-field { padding-left: 37px; }
+    .search-wrap { position: relative; }
+    .search-wrap::before { position: absolute; left: 13px; top: 10px; color: var(--ink-soft); content: "⌕"; font-size: 20px; line-height: 1; }
+    .filter-hint { margin: 10px 2px 0; color: var(--ink-soft); font-size: 11px; }
+
+    .table-shell { overflow: hidden; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 780px; }
+    th, td { padding: 13px 16px; border-bottom: 1px solid #e9e9e3; text-align: left; vertical-align: middle; }
+    th { color: var(--ink-soft); background: #f8f8f3; font-size: 11px; font-weight: 800; letter-spacing: .03em; white-space: nowrap; }
+    td { color: var(--ink-muted); font-size: 12px; }
+    tbody tr { transition: background .13s ease; }
+    tbody tr:hover, tbody tr.is-selected { background: #f3f8f4; }
+    tbody tr { cursor: pointer; }
+    tbody tr:last-child td { border-bottom: 0; }
+    .item-name { max-width: 320px; color: var(--ink); font-weight: 700; }
+    .item-id { display: block; max-width: 320px; margin-top: 2px; color: var(--ink-soft); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tag { display: inline-flex; align-items: center; min-height: 23px; padding: 0 8px; border-radius: 999px; font-size: 10px; font-weight: 800; white-space: nowrap; }
+    .tag--keep { color: var(--forest); background: var(--forest-pale); }
+    .tag--remove { color: var(--red); background: var(--red-pale); }
+    .tag--add { color: var(--blue); background: var(--blue-pale); }
+    .tag--change { color: #80611f; background: #f9efd3; }
+    .tag--pending { color: #745f3f; background: #f8efdb; }
+    .tag--done { color: var(--forest); background: var(--forest-pale); }
+    .tag--review { color: var(--red); background: var(--red-pale); }
+    .tag--skip { color: var(--ink-muted); background: #eceeea; }
+    .tag--business { color: #9a5c13; background: #ffebc6; }
+    .tag--action-keep { color: var(--forest); background: var(--forest-pale); }
+    .tag--action-remove { color: var(--red); background: var(--red-pale); }
+    .tag--action-rename { color: #80611f; background: #f9efd3; }
+    .tag--action-pending { color: var(--ink-soft); background: #f0f1ed; }
+    .diff-arrow { color: var(--ink-soft); padding: 0 4px; }
+    .variant-text { max-width: 275px; line-height: 1.45; }
+    .catalog-action-cell { min-width: 265px; }
+    .action-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+    .action-button { min-height: 27px; padding: 0 8px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink-muted); background: #fff; font-size: 10px; font-weight: 800; }
+    .action-button:hover { border-color: var(--forest); color: var(--forest); }
+    .action-button[data-active="true"] { color: white; border-color: var(--forest); background: var(--forest); }
+    .action-button[data-action="remove"][data-active="true"] { border-color: var(--red); background: var(--red); }
+    .action-button[data-action="rename"][data-active="true"] { border-color: #9b7729; background: #9b7729; }
+    .action-button--clear { color: var(--ink-soft); border-style: dashed; }
+    .rename-editor { display: flex; flex: 1 1 100%; gap: 5px; margin-top: 3px; }
+    .rename-field { min-width: 120px; width: 100%; min-height: 31px; padding: 0 8px; border: 1px solid #d8bd79; border-radius: 7px; color: var(--ink); background: #fffdf4; font-size: 11px; }
+    .rename-save { min-height: 31px; padding: 0 9px; border: 0; border-radius: 7px; color: #fff; background: #9b7729; font-size: 10px; font-weight: 800; white-space: nowrap; }
+    .action-hint { flex: 1 1 100%; margin-top: 2px; color: var(--ink-soft); font-size: 10px; }
+    .empty { display: none; padding: 45px 20px; color: var(--ink-muted); text-align: center; font-size: 13px; }
+    .empty.is-visible { display: block; }
+    .table-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 13px 16px; border-top: 1px solid #ecece6; color: var(--ink-soft); font-size: 11px; }
+
+    .audit-layout { display: grid; grid-template-columns: minmax(0, 1fr) 385px; gap: 17px; align-items: start; }
+    .detail-panel { position: sticky; top: 18px; max-height: calc(100vh - 36px); overflow: auto; }
+    .detail-empty { padding: 35px 25px; color: var(--ink-muted); text-align: center; font-size: 13px; }
+    .detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 21px 21px 17px; border-bottom: 1px solid #e9e9e3; }
+    .detail-head h3 { margin: 0 0 5px; font-family: "Noto Serif SC", "Songti SC", Georgia, serif; font-size: 22px; letter-spacing: -.04em; line-height: 1.22; }
+    .detail-id { color: var(--ink-soft); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; overflow-wrap: anywhere; }
+    .detail-body { padding: 19px 21px 22px; }
+    .decision-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin: 0 0 21px; }
+    .decision { min-height: 36px; padding: 0 7px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink-muted); background: white; font-size: 11px; font-weight: 800; }
+    .decision:hover { border-color: var(--forest); color: var(--forest); }
+    .decision[data-active="true"] { color: white; border-color: var(--forest); background: var(--forest); }
+    .decision[data-decision="review"][data-active="true"] { border-color: var(--red); background: var(--red); }
+    .decision[data-decision="skip"][data-active="true"] { border-color: var(--ink-muted); background: var(--ink-muted); }
+    .detail-section { margin-top: 19px; }
+    .detail-section h4 { margin: 0 0 9px; color: var(--ink-muted); font-size: 11px; letter-spacing: .04em; }
+    .detail-section p { margin: 0; color: var(--ink); font-size: 12px; }
+    .detail-list { margin: 0; padding: 0; list-style: none; }
+    .detail-list li { padding: 8px 0; border-bottom: 1px solid #ededeb; font-size: 11px; }
+    .detail-list li:last-child { border-bottom: 0; }
+    .detail-list .muted { color: var(--ink-soft); }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .compare-col { min-width: 0; padding: 11px; border: 1px solid #e7e7df; border-radius: 10px; background: #fbfbf8; }
+    .compare-col--removed { border-color: #edcbc5; background: #fff8f6; }
+    .compare-col--new { border-color: #c8ded4; background: #f5fbf7; }
+    .compare-label { margin-bottom: 7px; color: var(--ink-soft); font-size: 10px; font-weight: 800; }
+    .compare-value { color: var(--ink); font-size: 12px; font-weight: 700; line-height: 1.45; overflow-wrap: anywhere; }
+    .source-box { padding: 11px; border-left: 3px solid var(--forest); border-radius: 0 9px 9px 0; background: #f2f7f4; }
+    .source-box .source-label { margin-bottom: 5px; color: var(--forest); font-size: 10px; font-weight: 800; }
+    .source-box p { color: #36574b; font-size: 11px; }
+    .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
+    .detail-footer { display: flex; justify-content: space-between; gap: 8px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9e9e3; }
+
+    .file-dock { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 17px; }
+    .file-card { position: relative; display: flex; flex-direction: column; gap: 8px; min-height: 84px; padding: 13px 14px; border: 1px dashed var(--line-strong); border-radius: 13px; background: rgba(255, 253, 249, .66); }
+    .file-card strong { font-size: 12px; }
+    .file-card span { color: var(--ink-soft); font-size: 10px; line-height: 1.35; }
+    .file-card input { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; opacity: 0; }
+    .file-card:hover { border-color: var(--forest); background: var(--surface); }
+    .file-card.is-loaded { border-style: solid; border-color: #a9c8ba; background: #f3faf6; }
+    .file-card.is-loaded::after { position: absolute; top: 12px; right: 13px; color: var(--forest); content: "✓"; font-weight: 900; }
+
+    .footer-note { margin-top: 34px; color: var(--ink-soft); font-size: 11px; text-align: center; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .num { font-variant-numeric: tabular-nums; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 1100px) {
+      .filter-row { grid-template-columns: minmax(190px, 1.5fr) repeat(2, minmax(128px, .7fr)); }
+      .filter-row > :nth-child(4) { grid-column: 2; }
+      .filter-row > :last-child { grid-column: 3; grid-row: 1; }
+      .catalog-filter-row { grid-template-columns: minmax(190px, 1.35fr) repeat(3, minmax(118px, .7fr)); }
+      .catalog-filter-row > :nth-child(5) { grid-column: 2; }
+      .catalog-filter-row > :last-child { grid-column: 3; grid-row: 2; }
+      .audit-layout { grid-template-columns: minmax(0, 1fr) 330px; }
+    }
+    @media (max-width: 840px) {
+      .shell { width: min(100% - 28px, 720px); padding-top: 22px; }
+      .masthead { display: block; }
+      .head-actions { justify-content: flex-start; margin-top: 18px; }
+      .hero-grid, .overview-grid, .audit-layout { grid-template-columns: 1fr; }
+      .metric-stack { grid-template-columns: 1fr 1fr; grid-template-rows: none; }
+      .detail-panel { position: static; max-height: none; }
+      .file-dock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filter-row { grid-template-columns: 1fr 1fr; }
+      .filter-row > :nth-child(1) { grid-column: span 2; }
+      .filter-row > :nth-child(4), .filter-row > :last-child { grid-column: auto; grid-row: auto; }
+      .filter-row > :last-child { justify-self: start; }
+      .catalog-filter-row { grid-template-columns: 1fr 1fr; }
+      .catalog-filter-row > :nth-child(1) { grid-column: span 2; }
+      .catalog-filter-row > :nth-child(5), .catalog-filter-row > :last-child { grid-column: auto; grid-row: auto; }
+    }
+    @media (max-width: 520px) {
+      .shell { width: calc(100% - 22px); padding-bottom: 44px; }
+      h1 { font-size: 37px; }
+      .hero-card { padding: 22px; }
+      .hero-number strong { font-size: 65px; }
+      .metric-stack { gap: 9px; }
+      .metric-card { min-height: 110px; padding: 15px; }
+      .metric-value { font-size: 28px; }
+      .tabs { width: 100%; overflow-x: auto; }
+      .tab { flex: 1 0 auto; }
+      .bar-row { grid-template-columns: 112px minmax(50px, 1fr) 42px; gap: 7px; }
+      .category-grid { grid-template-columns: 1fr; }
+      .filter-row { grid-template-columns: 1fr; }
+      .filter-row > :nth-child(1) { grid-column: auto; }
+      .file-dock { grid-template-columns: 1fr; }
+      .catalog-filter-row { grid-template-columns: 1fr; }
+      .catalog-filter-row > :nth-child(1) { grid-column: auto; }
+      .source-strip { align-items: flex-start; }
+      .load-state { width: 100%; margin-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Data audit / standard ingredients</p>
+        <h1>USDA 目录<br>v25 审阅台</h1>
+        <p class="lede">核对机器直译清理和同种食材合并；在正式目录中直接标记要去掉的食材，或填写需要重写的名称。</p>
+      </div>
+      <div class="head-actions">
+        <button class="button button--primary" type="button" id="exportDecisions">导出审核标记</button>
+        <button class="button button--primary" type="button" id="exportCatalogActions">导出目录整理标记</button>
+        <button class="button button--quiet" type="button" id="clearDecisions">清空本地标记</button>
+        <button class="button button--quiet" type="button" id="clearCatalogActions">清空整理标记</button>
+      </div>
+    </header>
+
+    <div class="source-strip" aria-live="polite">
+      <span><strong id="previousVersion">v24</strong> 基线</span>
+      <span class="dot">/</span>
+      <span><strong id="currentVersion">v25</strong> 待审核</span>
+      <span class="dot">/</span>
+      <span>严格模式 · 来源报告已接入</span>
+      <span class="load-state" id="loadState" data-kind="ok">正在读取本地快照…</span>
+    </div>
+
+    <div class="notice" id="loadNotice">
+      <div>
+        <strong>浏览器没有直接读取本地 JSON</strong>
+        <p>如果你是双击打开本页，请在下方选择 v24、v25 和报告文件；用本地静态服务器打开时，页面会自动读取仓库中的默认路径。</p>
+      </div>
+      <button class="button button--quiet" id="dismissNotice" type="button">知道了</button>
+    </div>
+
+    <section class="hero-grid" aria-label="目录概览">
+      <article class="panel hero-card">
+        <div class="hero-kicker">CURRENT CATALOG / 2026-08-19-v25</div>
+        <div class="hero-number"><strong id="heroCount">—</strong><span>个标准概念</span></div>
+        <p class="hero-copy" id="heroCopy">正在计算 v24 与 v25 的概念差异。</p>
+      </article>
+      <div class="metric-stack">
+        <article class="panel metric-card">
+          <div class="metric-label">对比上一版</div>
+          <div class="metric-value num" id="netChange">—</div>
+          <div class="metric-note" id="netChangeNote">v24 基线载入后计算</div>
+        </article>
+        <article class="panel metric-card metric-card--risk">
+          <div class="metric-label">本批名称整理 / 合并</div>
+          <div class="metric-value num" id="isolatedCount">—</div>
+          <div class="metric-note" id="aggregationNote">等待名称整理报告</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="file-dock" aria-label="数据文件">
+      <label class="file-card" id="fileCardPrevious"><strong>v24 目录</strong><span>自动路径失败时，选择 2026-08-19-v24.json</span><input type="file" data-file="previous" accept="application/json,.json"></label>
+      <label class="file-card" id="fileCardCurrent"><strong>v25 目录</strong><span>选择正式目录，而不是 candidates 文件</span><input type="file" data-file="current" accept="application/json,.json"></label>
+      <label class="file-card" id="fileCardCoverage"><strong>USDA 覆盖报告</strong><span>提供 1,952 条细粒度隔离和分类统计</span><input type="file" data-file="coverage" accept="application/json,.json"></label>
+      <label class="file-card" id="fileCardSelection"><strong>来源选择报告</strong><span>查看候选数、选中的 FDC 和英文来源</span><input type="file" data-file="selection" accept="application/json,.json"></label>
+      <label class="file-card" id="fileCardReview"><strong>安全审核队列</strong><span>确认新增 / 换源项仍保持 pending / unknown</span><input type="file" data-file="review" accept="application/json,.json"></label>
+      <label class="file-card" id="fileCardAggregation"><strong>名称整理报告</strong><span>查看改名、同种食材合并和剩余边界项</span><input type="file" data-file="aggregation" accept="application/json,.json"></label>
+      <label class="file-card" id="fileCardCuration"><strong>人工整理标记</strong><span>载入之前导出的去掉 / 重写名称 JSON</span><input type="file" data-file="curation" accept="application/json,.json"></label>
+    </section>
+
+    <nav class="tabs" aria-label="审核视图" role="tablist">
+      <button class="tab" type="button" role="tab" aria-selected="true" data-view="overview">总览</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-view="changes">变化清单 <span id="changesTabCount"></span></button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-view="catalog">v25 目录 <span id="catalogTabCount"></span></button>
+    </nav>
+
+    <section class="view is-active" id="view-overview" role="tabpanel">
+      <div id="regressionNotice" class="notice"></div>
+      <div class="section-head">
+        <div><h2>先看清洗边界</h2><p>自动规则已经完成归类，人工只需要确认结果是否符合产品范围。</p></div>
+        <div class="section-meta">审核标记仅保存在当前浏览器</div>
+      </div>
+      <div class="overview-grid">
+        <article class="panel card-pad">
+          <div class="card-title"><h3>USDA 来源归类</h3><span id="coverageMeta">等待覆盖报告</span></div>
+          <div id="coverageBars"></div>
+          <div class="audit-note" id="sourceAuditNote">“隔离”表示来源被留在审计报告中，没有作为用户可选的标准概念发布；它不等于犬食安全结论。</div>
+        </article>
+        <article class="panel card-pad">
+          <div class="card-title"><h3>目录类别分布</h3><span>概念数</span></div>
+          <div class="category-grid" id="categoryGrid"></div>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>v24 概念保留率</span><strong id="retentionRate">—</strong></div>
+            <div class="progress"><span id="retentionProgress" style="width:0%"></span></div>
+          </div>
+        </article>
+      </div>
+      <div class="section-head"><div><h2>审核队列</h2><p>按优先级处理删除、业务回归和来源变化。</p></div></div>
+      <div class="overview-grid">
+        <article class="panel card-pad">
+          <div class="card-title"><h3>变化分布</h3><span id="diffMeta">—</span></div>
+          <div id="diffBars"></div>
+        </article>
+        <article class="panel card-pad">
+          <div class="card-title"><h3>本地审核进度</h3><span id="decisionMeta">0 条已标记</span></div>
+          <div class="progress-label"><span>已处理变化条目</span><strong id="decisionRate">0%</strong></div>
+          <div class="progress"><span id="decisionProgress" style="width:0%"></span></div>
+          <div class="detail-section"><h4>建议顺序</h4><ul class="detail-list" id="priorityList"></ul></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" id="view-changes" role="tabpanel">
+      <div class="section-head">
+        <div><h2>v24 → v25 变化清单</h2><p>点击任意行，在右侧查看完整字段和来源。</p></div>
+        <div class="section-meta" id="changesSummary">—</div>
+      </div>
+      <div class="panel filter-panel">
+        <div class="filter-row">
+          <label class="search-wrap"><span class="sr-only">搜索变化</span><input class="search-field" id="changeSearch" type="search" placeholder="搜索名称、别名或概念 ID"></label>
+          <label><span class="sr-only">变化类型</span><select class="field" id="changeType"><option value="all">全部变化</option><option value="removed">v24 有 · v25 无</option><option value="added">v25 新增</option><option value="changed">保留但字段变化</option></select></label>
+          <label><span class="sr-only">审核优先级</span><select class="field" id="changePriority"><option value="all">全部优先级</option><option value="risk">优先核实</option><option value="strict">严格清洗移除</option><option value="normal">普通变化</option></select></label>
+          <label><span class="sr-only">审核标记</span><select class="field" id="changeDecision"><option value="all">全部审核状态</option><option value="pending">未标记</option><option value="keep">已通过</option><option value="review">需复查</option><option value="skip">已跳过</option></select></label>
+          <button class="button button--quiet" type="button" id="resetChangeFilters">重置</button>
+        </div>
+        <div class="filter-hint">优先核实会包含非 USDA 业务概念的删除项，以及名称或营养来源发生变化的保留项。</div>
+      </div>
+      <div class="audit-layout">
+        <article class="panel table-shell">
+          <div class="table-scroll"><table><thead><tr><th>概念</th><th>变化</th><th>类别</th><th>营养来源</th><th>审核</th></tr></thead><tbody id="changeRows"></tbody></table></div>
+          <div class="empty" id="changeEmpty">没有符合当前筛选条件的变化。</div>
+          <div class="table-footer"><span id="changeResultCount">—</span><span>点击行查看详情</span></div>
+        </article>
+        <aside class="panel detail-panel" id="detailPanel"><div class="detail-empty">从左侧选择一条变化，开始审核。</div></aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-catalog" role="tabpanel">
+      <div class="section-head">
+        <div><h2>v25 正式目录</h2><p>只展示正式快照中的 945 个概念；可逐条标记保留、去掉或重写名称。</p></div>
+        <div class="section-meta" id="catalogSummary">—</div>
+      </div>
+      <div class="panel filter-panel">
+        <div class="filter-row catalog-filter-row">
+          <label class="search-wrap"><span class="sr-only">搜索 v25 目录</span><input class="search-field" id="catalogSearch" type="search" placeholder="搜索名称、别名、英文来源或 FDC ID"></label>
+          <label><span class="sr-only">目录类别</span><select class="field" id="catalogCategory"><option value="all">全部类别</option></select></label>
+          <label><span class="sr-only">安全审核状态</span><select class="field" id="catalogSafety"><option value="all">全部安全状态</option><option value="pending">pending / unknown</option><option value="existing">已有审核记录</option></select></label>
+          <label><span class="sr-only">来源版本</span><select class="field" id="catalogSource"><option value="all">全部来源</option><option value="foundation">Foundation</option><option value="sr_legacy_2018_04">SR Legacy</option><option value="cfct">CFCT / 其他</option></select></label>
+          <label><span class="sr-only">目录动作</span><select class="field" id="catalogAction"><option value="all">全部目录动作</option><option value="pending">未标记</option><option value="keep">标记保留</option><option value="remove">标记去掉</option><option value="rename">标记重写名称</option></select></label>
+          <button class="button button--quiet" type="button" id="resetCatalogFilters">重置</button>
+        </div>
+        <div class="filter-hint">目录动作会单独保存，不会改变当前 v25 文件；导出后由整理脚本写入下一版标准目录。</div>
+      </div>
+      <article class="panel table-shell">
+        <div class="table-scroll"><table><thead><tr><th>概念</th><th>类别</th><th>默认形态</th><th>营养来源</th><th>安全审核</th><th class="catalog-action-cell">目录动作</th></tr></thead><tbody id="catalogRows"></tbody></table></div>
+        <div class="empty" id="catalogEmpty">没有符合当前筛选条件的目录项。</div>
+        <div class="table-footer"><span id="catalogResultCount">—</span><span>目录数据只读；动作标记仅写入浏览器本地</span></div>
+      </article>
+    </section>
+
+    <p class="footer-note">本页读取本地 JSON 快照；安全审核仍以 <span class="code">unknown / pending</span> 为默认。目录动作只作为人工整理输入，不会由页面自动修改标准目录。</p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const DEFAULT_PATHS = {
+        previous: '../data/ingredient-catalog/releases/2026-08-19-v24.json',
+        current: '../data/ingredient-catalog/releases/2026-08-19-v25.json',
+        coverage: '../data/ingredient-catalog/releases/2026-08-19-v25-usda-coverage-report.json',
+        selection: '../data/ingredient-catalog/releases/2026-08-19-v25-selection-report.json',
+        review: '../data/canine-ingredient-policies/reviews/2026-08-19-v25-usda-review-queue.json',
+        aggregation: '../data/ingredient-catalog/releases/2026-08-19-v25-catalog-curation-report.json'
+      };
+      const CATEGORY_LABELS = {
+        meat: '肉类', seafood: '海鲜', fish: '鱼类', organ: '内脏', vegetable: '蔬菜', fruit: '水果',
+        dairy: '奶制品', legume: '豆类/坚果', carb: '主食/碳水', oil: '油脂', egg: '蛋类'
+      };
+      const REASON_LABELS = {
+        granular_animal_cut_or_by_product: '动物切块 / 副产品',
+        unsupported_or_composite_category: '复合或不支持类别',
+        composite_sweet_food: '复合甜食品',
+        composite_food_identity: '复合食品身份',
+        catalog_name_quality_gate: '名称质量门禁',
+        missing_nutrients: '缺少营养明细',
+        catalog_candidate_source: '进入标准候选',
+        existing_catalog_source: '已有目录来源'
+      };
+      const STORAGE_KEY = 'usda-catalog-review:v25';
+      const CATALOG_ACTION_STORAGE_KEY = 'usda-catalog-curation:v25';
+      const CATALOG_ACTION_CONTRACT = 'ingredientCatalogCurationReview/v1';
+      const state = {
+        previous: null, current: null, coverage: null, selection: null, review: null, aggregation: null,
+        changes: [], selectedId: null, decisions: loadDecisions(), catalogActions: loadCatalogActions(), activeView: 'overview'
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
+      const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+      const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+      const getVariant = (item) => (item && Array.isArray(item.variants) ? item.variants.find((variant) => variant.is_default) || item.variants[0] : null);
+      const sourceVersion = (item) => getVariant(item)?.source_version || '—';
+      const sourceLabel = (value) => value === 'sr_legacy_2018_04' ? 'SR Legacy' : value === 'foundation' ? 'Foundation' : value === 'cfct' ? 'CFCT' : value || '—';
+      const isUsda = (item) => Boolean(item && (String(item.concept_id || '').includes('_usda_') || ['foundation', 'sr_legacy_2018_04'].includes(sourceVersion(item))));
+      const isBusinessRegression = (item) => Boolean(item && (String(item.concept_id || '').includes('cfct') || sourceVersion(item) === 'cfct' || item.canonical_name_zh === '粉条'));
+      const normalize = (value) => String(value || '').toLowerCase().replace(/[\s·，,。；;（）()\[\]【】]/g, '');
+
+      function loadDecisions() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (_) { return {}; }
+      }
+      function saveDecisions() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.decisions)); }
+      function loadCatalogActions() {
+        try {
+          const value = JSON.parse(localStorage.getItem(CATALOG_ACTION_STORAGE_KEY) || '{}');
+          return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+        } catch (_) { return {}; }
+      }
+      function saveCatalogActions() { localStorage.setItem(CATALOG_ACTION_STORAGE_KEY, JSON.stringify(state.catalogActions)); }
+      function decisionFor(id) { return state.decisions[id] || 'pending'; }
+      function decisionLabel(value) { return ({ keep: '已通过', review: '需复查', skip: '已跳过', pending: '未标记' })[value] || '未标记'; }
+      function decisionTag(value) {
+        return `<span class="tag tag--${value === 'keep' ? 'done' : value === 'review' ? 'review' : value === 'skip' ? 'skip' : 'pending'}">${decisionLabel(value)}</span>`;
+      }
+      function catalogActionFor(id) { return state.catalogActions[id]?.action || 'pending'; }
+      function catalogActionLabel(value) { return ({ keep: '标记保留', remove: '标记去掉', rename: '标记重写名称', pending: '未标记' })[value] || '未标记'; }
+      function catalogActionTag(id) {
+        const action = catalogActionFor(id), entry = state.catalogActions[id];
+        const label = action === 'rename' && entry?.new_name && entry.new_name !== entry.current_name ? `${catalogActionLabel(action)}：${entry.new_name}` : catalogActionLabel(action);
+        return `<span class="tag tag--action-${action}">${esc(label)}</span>`;
+      }
+      function catalogItemFor(id) { return (state.current?.items || []).find((item) => item.concept_id === id) || null; }
+      function catalogActionCounts() {
+        return Object.values(state.catalogActions).reduce((counts, entry) => {
+          const action = entry?.action;
+          if (action && Object.prototype.hasOwnProperty.call(counts, action)) counts[action] += 1;
+          return counts;
+        }, { keep: 0, remove: 0, rename: 0 });
+      }
+      function normalizeCatalogActions(payload) {
+        const raw = payload?.actions || payload?.items || {};
+        const entries = Array.isArray(raw)
+          ? raw.map((entry) => [entry?.concept_id, entry])
+          : Object.entries(raw);
+        const normalized = {};
+        for (const [conceptId, entry] of entries) {
+          if (!conceptId || !entry || typeof entry !== 'object') continue;
+          const action = String(entry.action || '').trim();
+          if (!['keep', 'remove', 'rename'].includes(action)) continue;
+          normalized[conceptId] = {
+            action,
+            current_name: String(entry.current_name || catalogItemFor(conceptId)?.canonical_name_zh || '').trim(),
+            new_name: action === 'rename' ? String(entry.new_name || '').trim() : '',
+            updated_at: String(entry.updated_at || new Date().toISOString())
+          };
+        }
+        return normalized;
+      }
+
+      async function readJsonFile(file) {
+        return JSON.parse(await file.text());
+      }
+      async function tryAutoLoad() {
+        const entries = Object.entries(DEFAULT_PATHS);
+        await Promise.all(entries.map(async ([key, path]) => {
+          try {
+            const response = await fetch(path, { cache: 'no-store' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            state[key] = await response.json();
+            markFileLoaded(key);
+          } catch (_) { /* file:// 浏览器会走手动选择 */ }
+        }));
+        refreshLoadState();
+        render();
+        if (!state.previous || !state.current) $('loadNotice').classList.add('is-visible');
+      }
+      function markFileLoaded(key) {
+        const card = $(`fileCard${key[0].toUpperCase()}${key.slice(1)}`);
+        if (card) card.classList.add('is-loaded');
+      }
+      function refreshLoadState() {
+        const loaded = ['previous', 'current'].filter((key) => state[key]).length;
+        const reportLoaded = ['coverage', 'selection', 'review', 'aggregation'].filter((key) => state[key]).length;
+        $('loadState').textContent = loaded === 2 ? `已读取目录 · 报告 ${reportLoaded}/4` : `等待目录文件 ${loaded}/2`;
+        $('loadState').dataset.kind = loaded === 2 ? 'ok' : 'warn';
+      }
+
+      function buildChanges() {
+        if (!state.previous || !state.current) { state.changes = []; return; }
+        const oldMap = new Map((state.previous.items || []).map((item) => [item.concept_id, item]));
+        const newMap = new Map((state.current.items || []).map((item) => [item.concept_id, item]));
+        const changes = [];
+        for (const item of state.previous.items || []) {
+          if (!newMap.has(item.concept_id)) changes.push(makeChange('removed', item, null));
+        }
+        for (const item of state.current.items || []) {
+          if (!oldMap.has(item.concept_id)) changes.push(makeChange('added', null, item));
+          else if (!deepEqual(compareShape(oldMap.get(item.concept_id)), compareShape(item))) changes.push(makeChange('changed', oldMap.get(item.concept_id), item));
+        }
+        state.changes = changes.sort((a, b) => priorityRank(a) - priorityRank(b) || a.name.localeCompare(b.name, 'zh-CN'));
+      }
+      function compareShape(item) {
+        if (!item) return null;
+        return { canonical_name_zh: item.canonical_name_zh, category_code: item.category_code, subcategory_code: item.subcategory_code, aliases: item.aliases || [], variants: item.variants || [] };
+      }
+      function isSelectionAggregationRemoval(item) {
+        return Boolean(item && (state.aggregation?.removed_concepts || []).some((entry) => String(entry.concept_id || entry) === String(item.concept_id)));
+      }
+      function makeChange(type, previous, current) {
+        const item = current || previous;
+        const businessRisk = type === 'removed' && isBusinessRegression(item);
+        const aggregationRemoval = type === 'removed' && isSelectionAggregationRemoval(item);
+        return {
+          id: item.concept_id, type, previous, current, item, name: item.canonical_name_zh || item.concept_id,
+          businessRisk, aggregationRemoval, strictRemoval: type === 'removed' && isUsda(item) && !aggregationRemoval,
+          priority: businessRisk ? 'risk' : aggregationRemoval || type === 'removed' && isUsda(item) ? 'strict' : 'normal'
+        };
+      }
+      function priorityRank(change) { return change.businessRisk ? 0 : change.type === 'changed' ? 1 : change.strictRemoval ? 2 : 3; }
+      function changedFields(change) {
+        if (change.type !== 'changed') return [];
+        const a = change.previous, b = change.current, fields = [];
+        if (a.canonical_name_zh !== b.canonical_name_zh) fields.push('名称');
+        if (a.category_code !== b.category_code) fields.push('类别');
+        if (a.subcategory_code !== b.subcategory_code) fields.push('子类');
+        if (!deepEqual(a.aliases || [], b.aliases || [])) fields.push('别名');
+        if (!deepEqual(a.variants || [], b.variants || [])) fields.push('营养来源');
+        return fields;
+      }
+      function changeTag(change) {
+        if (change.type === 'removed') return `<span class="tag tag--remove">${change.businessRisk ? '业务回归风险' : change.aggregationRemoval ? '产品聚合下线' : change.strictRemoval ? '严格清洗移除' : 'v24 移除'}</span>`;
+        if (change.type === 'added') return '<span class="tag tag--add">v25 新增</span>';
+        return `<span class="tag tag--change">变更：${esc(changedFields(change).join('、') || '字段')}</span>`;
+      }
+      function getSelection(id) { return (state.selection?.items || []).find((item) => item.concept_id === id) || null; }
+      function getSafetyReview(id) { return (state.review?.items || []).find((item) => item.concept_id === id) || null; }
+
+      function render() {
+        buildChanges();
+        renderHeader(); renderOverview(); renderFilters(); renderChanges(); renderCatalog(); renderDetail();
+      }
+      function renderHeader() {
+        const previousVersion = state.previous?.catalog_version || 'v24';
+        const currentVersion = state.current?.catalog_version || 'v25';
+        $('previousVersion').textContent = previousVersion;
+        $('currentVersion').textContent = currentVersion;
+        const currentCount = state.current?.items?.length || 0;
+        const previousCount = state.previous?.items?.length || 0;
+        const diff = currentCount - previousCount;
+        $('heroCount').textContent = state.current ? fmt(currentCount) : '—';
+        $('heroCopy').textContent = state.current && state.previous ? `比 ${previousVersion} 少 ${fmt(Math.abs(diff))} 个概念；页面会同时展示人工去掉、名称重写和营养来源重定向。` : '请先载入 v24 和 v25 两个目录快照。';
+        $('netChange').textContent = state.current && state.previous ? `${diff > 0 ? '+' : ''}${fmt(diff)}` : '—';
+        $('netChangeNote').textContent = state.current && state.previous ? `新增 ${fmt(state.changes.filter((item) => item.type === 'added').length)} · 移除 ${fmt(state.changes.filter((item) => item.type === 'removed').length)}` : 'v24 基线载入后计算';
+        $('isolatedCount').textContent = state.aggregation ? `${fmt(state.aggregation.changed_name_count || 0)} / ${fmt(state.aggregation.merged_concept_count || 0)}` : '—';
+        $('aggregationNote').textContent = state.aggregation ? `改名 / 合并 · 剩余边界 ${fmt(state.aggregation.unmodified_machine_translation_candidates?.length || 0)}` : '等待名称整理报告';
+        $('changesTabCount').textContent = state.changes.length ? `(${fmt(state.changes.length)})` : '';
+        $('catalogTabCount').textContent = state.current ? `(${fmt(currentCount)})` : '';
+      }
+      function renderOverview() {
+        const coverage = state.coverage;
+        $('coverageMeta').textContent = coverage ? `${fmt(coverage.source_food_count)} 条来源 · ${fmt(coverage.source_cluster_count)} 个身份簇` : '等待覆盖报告';
+        $('sourceAuditNote').innerHTML = `名称整理优先依据英文来源身份；同一基础食材仅因烹饪、保存或来源词序不同才合并，营养身份不同的项目仍保留独立概念。${state.aggregation ? `<br><strong>本批名称整理：</strong> ${fmt(state.aggregation.changed_name_count)} 个名称改写，${fmt(state.aggregation.merged_concept_count)} 个概念合并；仍有 ${fmt(state.aggregation.unmodified_machine_translation_candidates?.length || 0)} 个边界项需要人工确认。` : ''}${state.review ? `<br><strong>安全审核队列：</strong> ${fmt(state.review.items?.length || 0)} 条，默认保持 pending / unknown。` : '<br>请载入安全审核队列，核对新增和换源项的 unknown 状态。'}`;
+        const coverageCounts = coverage?.classification_counts || {};
+        const coverageEntries = Object.entries(coverageCounts).sort((a, b) => b[1] - a[1]);
+        const maxCoverage = Math.max(...coverageEntries.map((entry) => entry[1]), 1);
+        $('coverageBars').innerHTML = coverageEntries.length ? coverageEntries.map(([key, count]) => `<div class="bar-row"><span class="bar-label" title="${esc(REASON_LABELS[key] || key)}">${esc(REASON_LABELS[key] || key)}</span><span class="bar-track"><span class="bar-fill ${key.includes('granular') || key.includes('unsupported') ? 'bar-fill--risk' : key.includes('candidate') ? 'bar-fill--soft' : ''}" style="width:${Math.max(2, count / maxCoverage * 100)}%"></span></span><strong class="bar-count">${fmt(count)}</strong></div>`).join('') : '<div class="empty is-visible">载入覆盖报告后显示来源归类。</div>';
+
+        const categories = countCategories(state.current?.items || []);
+        $('categoryGrid').innerHTML = Object.entries(categories).sort((a, b) => b[1] - a[1]).map(([key, count]) => `<div class="category-item"><span>${esc(CATEGORY_LABELS[key] || key)}</span><strong>${fmt(count)}</strong></div>`).join('') || '<div class="empty is-visible">载入 v25 后显示类别。</div>';
+        const previousCount = state.previous?.items?.length || 0, removedCount = state.changes.filter((item) => item.type === 'removed').length, sharedCount = Math.max(0, previousCount - removedCount);
+        const retention = previousCount ? Math.round(sharedCount / previousCount * 100) : 0;
+        $('retentionRate').textContent = `${retention}%`;
+        $('retentionProgress').style.width = `${retention}%`;
+
+        const diffEntries = [
+          ['严格清洗移除', state.changes.filter((item) => item.strictRemoval).length, 'risk'],
+          ['业务回归风险', state.changes.filter((item) => item.businessRisk).length, 'risk'],
+          ['保留但字段变化', state.changes.filter((item) => item.type === 'changed').length, 'soft'],
+          ['v25 新增', state.changes.filter((item) => item.type === 'added').length, 'soft']
+        ];
+        const maxDiff = Math.max(...diffEntries.map((entry) => entry[1]), 1);
+        $('diffMeta').textContent = `${fmt(state.changes.length)} 条变化`;
+        $('diffBars').innerHTML = diffEntries.map(([label, count, kind]) => `<div class="bar-row"><span class="bar-label">${label}</span><span class="bar-track"><span class="bar-fill ${kind === 'risk' ? 'bar-fill--risk' : 'bar-fill--soft'}" style="width:${Math.max(count ? 3 : 0, count / maxDiff * 100)}%"></span></span><strong class="bar-count">${fmt(count)}</strong></div>`).join('');
+
+        const marked = state.changes.filter((change) => decisionFor(change.id) !== 'pending').length;
+        const rate = state.changes.length ? Math.round(marked / state.changes.length * 100) : 0;
+        $('decisionMeta').textContent = `${fmt(marked)} 条已标记`;
+        $('decisionRate').textContent = `${rate}%`;
+        $('decisionProgress').style.width = `${rate}%`;
+        $('priorityList').innerHTML = [
+          ['先看业务回归', state.changes.filter((item) => item.businessRisk).length],
+          ['再看来源字段变化', state.changes.filter((item) => item.type === 'changed').length],
+          ['最后抽查严格清洗', state.changes.filter((item) => item.strictRemoval).length]
+        ].map(([label, count]) => `<li><span>${label}</span><strong class="num">${fmt(count)}</strong></li>`).join('');
+        const regressions = state.changes.filter((item) => item.businessRisk);
+        const regressionNotice = $('regressionNotice');
+        if (regressions.length) {
+          regressionNotice.innerHTML = `<div><strong>先核实 ${fmt(regressions.length)} 个非 USDA / 业务概念删除项</strong><p>${regressions.slice(0, 4).map((item) => esc(item.name)).join('、')}${regressions.length > 4 ? ' 等' : ''}。v25 名称整理目标是修复目录名称并合并同种食材，这些项目需要确认是否应从上一版规则链迁移回来。</p></div><button class="button button--quiet" type="button" data-open-risk>查看变化</button>`;
+          regressionNotice.classList.add('is-visible');
+        } else regressionNotice.classList.remove('is-visible');
+      }
+      function countCategories(items) { return items.reduce((result, item) => { const key = item.category_code || 'unknown'; result[key] = (result[key] || 0) + 1; return result; }, {}); }
+
+      function renderFilters() {
+        const currentCategories = Object.keys(countCategories(state.current?.items || [])).sort();
+        const select = $('catalogCategory');
+        const current = select.value;
+        select.innerHTML = '<option value="all">全部类别</option>' + currentCategories.map((key) => `<option value="${esc(key)}">${esc(CATEGORY_LABELS[key] || key)}</option>`).join('');
+        select.value = currentCategories.includes(current) ? current : 'all';
+      }
+      function matchText(item, query) {
+        if (!query) return true;
+        const haystack = [item.name, item.id, item.current?.canonical_name_zh, item.previous?.canonical_name_zh, ...(item.current?.aliases || []), ...(item.previous?.aliases || []), getVariant(item.current || item.previous)?.description_contains].filter(Boolean).join(' ');
+        return normalize(haystack).includes(normalize(query));
+      }
+      function renderChanges() {
+        const type = $('changeType').value, priority = $('changePriority').value, decision = $('changeDecision').value, query = $('changeSearch').value.trim();
+        const rows = state.changes.filter((change) => (type === 'all' || change.type === type) && (priority === 'all' || change.priority === priority) && (decision === 'all' || decisionFor(change.id) === decision) && matchText(change, query));
+        $('changesSummary').textContent = `${fmt(state.changes.length)} 条总变化 · 当前显示 ${fmt(rows.length)}`;
+        $('changeResultCount').textContent = `显示 ${fmt(rows.length)} / ${fmt(state.changes.length)}`;
+        $('changeEmpty').classList.toggle('is-visible', !rows.length);
+        $('changeRows').innerHTML = rows.map((change) => {
+          const item = change.current || change.previous, variant = getVariant(item), oldVariant = getVariant(change.previous), newVariant = getVariant(change.current);
+          const variantText = change.type === 'changed' ? `${esc(oldVariant?.display_name_zh || '—')} <span class="diff-arrow">→</span> ${esc(newVariant?.display_name_zh || '—')}` : esc(variant?.display_name_zh || '—');
+          return `<tr data-select-id="${esc(change.id)}" class="${state.selectedId === change.id ? 'is-selected' : ''}"><td><div class="item-name">${esc(change.name)}</div><span class="item-id">${esc(change.id)}</span></td><td>${changeTag(change)}</td><td>${esc(CATEGORY_LABELS[item.category_code] || item.category_code || '—')}</td><td><div class="variant-text">${variantText}<br><span class="item-id">${esc(sourceLabel(sourceVersion(item)))}</span></div></td><td>${decisionTag(decisionFor(change.id))}</td></tr>`;
+        }).join('');
+      }
+      function renderCatalog() {
+        const query = $('catalogSearch').value.trim(), category = $('catalogCategory').value, safety = $('catalogSafety').value, source = $('catalogSource').value, actionFilter = $('catalogAction').value;
+        const rows = (state.current?.items || []).filter((item) => {
+          const variant = getVariant(item), safetyReview = getSafetyReview(item.concept_id), pending = state.review ? Boolean(safetyReview) : String(item.concept_id).startsWith('ingredient_usda_');
+          const haystack = [item.canonical_name_zh, item.concept_id, ...(item.aliases || []), variant?.display_name_zh, variant?.description_contains, variant?.fdc_id].filter(Boolean).join(' ');
+          const action = catalogActionFor(item.concept_id);
+          return (!query || normalize(haystack).includes(normalize(query))) && (category === 'all' || item.category_code === category) && (safety === 'all' || (safety === 'pending' ? pending : !pending)) && (source === 'all' || (source === 'cfct' ? !['foundation', 'sr_legacy_2018_04'].includes(sourceVersion(item)) : sourceVersion(item) === source)) && (actionFilter === 'all' || action === actionFilter);
+        });
+        const actionCounts = catalogActionCounts();
+        $('catalogSummary').textContent = `${fmt(state.current?.items?.length || 0)} 个正式概念 · 当前显示 ${fmt(rows.length)} · 去掉 ${fmt(actionCounts.remove)} · 重写 ${fmt(actionCounts.rename)}`;
+        $('catalogResultCount').textContent = `显示 ${fmt(rows.length)} / ${fmt(state.current?.items?.length || 0)}`;
+        $('catalogEmpty').classList.toggle('is-visible', !rows.length);
+        $('catalogRows').innerHTML = rows.map((item) => {
+          const variant = getVariant(item), safetyReview = getSafetyReview(item.concept_id), safetyPending = state.review ? Boolean(safetyReview) : String(item.concept_id).startsWith('ingredient_usda_'), action = catalogActionFor(item.concept_id), entry = state.catalogActions[item.concept_id];
+          const safetyLabel = state.review ? (safetyPending ? 'pending / unknown' : '已有记录') : (safetyPending ? '待载入队列' : '未载入');
+          const renameEditor = action === 'rename' ? `<div class="rename-editor"><input class="rename-field" data-catalog-rename-input="${esc(item.concept_id)}" value="${esc(entry?.new_name || item.canonical_name_zh)}" aria-label="${esc(item.canonical_name_zh)} 的新名称"><button class="rename-save" type="button" data-save-catalog-rename="${esc(item.concept_id)}">保存</button></div>` : '';
+          const actionButtons = `<div class="action-buttons"><button class="action-button" type="button" data-catalog-action="keep" data-catalog-id="${esc(item.concept_id)}" data-active="${action === 'keep'}">保留</button><button class="action-button" type="button" data-action="remove" data-catalog-action="remove" data-catalog-id="${esc(item.concept_id)}" data-active="${action === 'remove'}">去掉</button><button class="action-button" type="button" data-action="rename" data-catalog-action="rename" data-catalog-id="${esc(item.concept_id)}" data-active="${action === 'rename'}">重写名称</button>${action !== 'pending' ? `<button class="action-button action-button--clear" type="button" data-clear-catalog-action="${esc(item.concept_id)}">清除</button>` : ''}${renameEditor}${action === 'rename' ? '<span class="action-hint">填写后点击保存，导出时会作为人工改名输入</span>' : ''}</div>`;
+          return `<tr data-select-catalog-id="${esc(item.concept_id)}"><td><div class="item-name">${esc(item.canonical_name_zh)}</div><span class="item-id">${esc(item.concept_id)}</span></td><td>${esc(CATEGORY_LABELS[item.category_code] || item.category_code || '—')}</td><td><div class="variant-text">${esc(variant?.display_name_zh || '—')}<br><span class="item-id">${fmt(item.aliases?.length || 0)} 个别名</span></div></td><td><div class="variant-text">${esc(variant?.description_contains || '—')}<br><span class="item-id">${esc(sourceLabel(sourceVersion(item)))} · FDC ${esc(variant?.fdc_id || '—')}</span></div></td><td>${safetyPending ? `<span class="tag tag--pending">${safetyLabel}</span>` : `<span class="tag tag--done">${safetyLabel}</span>`}</td><td class="catalog-action-cell">${catalogActionTag(item.concept_id)}${actionButtons}</td></tr>`;
+        }).join('');
+      }
+
+      function renderDetail() {
+        const change = state.changes.find((item) => item.id === state.selectedId);
+        const catalogItem = !change ? (state.current?.items || []).find((item) => item.concept_id === state.selectedId) : null;
+        if (!change && !catalogItem) { $('detailPanel').innerHTML = '<div class="detail-empty">从左侧选择一条变化，开始审核。</div>'; return; }
+        const detail = change || { id: catalogItem.concept_id, type: 'catalog', item: catalogItem, current: catalogItem, previous: null, name: catalogItem.canonical_name_zh, businessRisk: false, strictRemoval: false };
+        const item = detail.current || detail.previous, old = detail.previous, current = detail.current, variant = getVariant(item), selection = getSelection(detail.id), safetyReview = getSafetyReview(detail.id), decision = decisionFor(detail.id);
+        const compare = (label, value, kind) => `<div class="compare-col ${kind ? `compare-col--${kind}` : ''}"><div class="compare-label">${label}</div><div class="compare-value">${esc(value || '—')}</div></div>`;
+        const aliases = (value) => (value || []).length ? value.map((alias) => `<span class="tag tag--keep" style="margin:0 4px 4px 0">${esc(alias)}</span>`).join('') : '<span class="muted">无</span>';
+        let reason = '';
+        if (detail.businessRisk) reason = '<div class="audit-note"><div><strong>业务回归风险</strong><br>这不是典型 USDA 细粒度条目。请确认 v23 是否应该迁移上一版的受控业务概念或别名。</div></div>';
+        else if (detail.aggregationRemoval) reason = '<div class="audit-note"><div><strong>同种食材合并</strong><br>该条目与 v25 中的保留概念属于同一基础食材，差异仅在烹饪、保存或来源表述；营养来源仍保留在原始 USDA 营养档案中。</div></div>';
+        else if (detail.strictRemoval) reason = '<div class="audit-note"><div><strong>目录移除</strong><br>该条目没有进入 v25 正式目录。请结合英文来源确认它是否是重复身份、无法安全归一化的复合食品，或仍需人工补充名称。</div></div>';
+        const typeBadge = detail.type === 'catalog' ? '<span class="tag tag--keep">v25 正式目录</span>' : changeTag(detail);
+        const compareBlock = detail.type === 'catalog' ? '' : `<div class="detail-section"><h4>概念差异</h4><div class="compare-grid">${compare('v24', old?.canonical_name_zh, old && !current ? 'removed' : '')}${compare('v25', current?.canonical_name_zh, current && !old ? 'new' : current ? '' : 'removed')}</div></div>`;
+        const safetyBlock = safetyReview ? `<div class="detail-section"><h4>犬食安全审核</h4><div class="source-box"><div class="source-label">${esc(safetyReview.review_status)} · 默认 ${esc(safetyReview.default_decision)}</div><p>${esc(safetyReview.reason || '仍需完成证据复核。')}</p></div></div>` : '';
+        $('detailPanel').innerHTML = `<div class="detail-head"><div><h3>${esc(item.canonical_name_zh)}</h3><div class="detail-id">${esc(item.concept_id)}</div></div>${typeBadge}</div><div class="detail-body"><div class="decision-row"><button class="decision" type="button" data-decision="keep" data-active="${decision === 'keep'}">通过</button><button class="decision" type="button" data-decision="review" data-active="${decision === 'review'}">需复查</button><button class="decision" type="button" data-decision="skip" data-active="${decision === 'skip'}">跳过</button></div>${reason}${compareBlock}<div class="detail-section"><h4>类别</h4><p>${esc(CATEGORY_LABELS[item.category_code] || item.category_code || '—')}${item.subcategory_code ? ` · ${esc(item.subcategory_code)}` : ''}</p></div><div class="detail-section"><h4>别名</h4><p>${aliases(current?.aliases || old?.aliases)}</p></div><div class="detail-section"><h4>默认营养来源</h4><div class="source-box"><div class="source-label">${esc(sourceLabel(sourceVersion(item)))} · FDC ${esc(variant?.fdc_id || '—')}</div><p>${esc(variant?.display_name_zh || '—')}<br>${esc(variant?.description_contains || '—')}</p></div></div>${selection ? `<div class="detail-section"><h4>来源选择记录</h4><ul class="detail-list"><li><span class="muted">候选来源</span> <strong>${fmt(selection.candidate_count)}</strong></li><li><span class="muted">选择策略得分</span> <strong>${esc(JSON.stringify(selection.selected_score || {}))}</strong></li></ul></div>` : ''}${safetyBlock}<div class="detail-footer"><button class="button button--quiet" type="button" data-copy-id="${esc(detail.id)}">复制概念 ID</button><button class="button button--primary" type="button" data-next-item>下一条优先项</button></div></div>`;
+      }
+
+      function selectChange(id) {
+        state.selectedId = id;
+        renderChanges(); renderDetail();
+        $('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      function setCatalogAction(id, action) {
+        const item = catalogItemFor(id);
+        if (!item) return;
+        if (catalogActionFor(id) === action && action !== 'rename') {
+          delete state.catalogActions[id];
+        } else {
+          const previous = state.catalogActions[id] || {};
+          state.catalogActions[id] = {
+            action,
+            current_name: item.canonical_name_zh,
+            new_name: action === 'rename' ? (previous.new_name || item.canonical_name_zh) : '',
+            updated_at: new Date().toISOString()
+          };
+        }
+        saveCatalogActions();
+        render();
+        if (action === 'rename') {
+          const input = document.querySelector(`[data-catalog-rename-input="${CSS.escape(id)}"]`);
+          input?.focus(); input?.select();
+        }
+      }
+      function clearCatalogAction(id) {
+        delete state.catalogActions[id];
+        saveCatalogActions();
+        render();
+      }
+      function saveCatalogRename(id, value) {
+        const item = catalogItemFor(id), newName = String(value || '').trim();
+        if (!item || !newName) { alert('请填写新的食材名称。'); return; }
+        state.catalogActions[id] = {
+          action: 'rename',
+          current_name: item.canonical_name_zh,
+          new_name: newName,
+          updated_at: new Date().toISOString()
+        };
+        saveCatalogActions();
+        render();
+      }
+      function setDecision(id, decision) {
+        state.decisions[id] = state.decisions[id] === decision ? 'pending' : decision;
+        saveDecisions(); render();
+      }
+      function nextPriorityItem() {
+        const candidates = state.changes.filter((change) => decisionFor(change.id) === 'pending');
+        const next = candidates[0];
+        if (next) selectChange(next.id);
+      }
+      function exportDecisions() {
+        const payload = { contract: 'usdaCatalogLocalReview/v1', catalog_version: state.current?.catalog_version || '2026-08-19-v25', baseline_catalog_version: state.previous?.catalog_version || '2026-08-19-v24', exported_at: new Date().toISOString(), decisions: state.decisions };
+        const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
+        const link = document.createElement('a'); link.href = url; link.download = `${payload.catalog_version}-local-review-decisions.json`; link.click(); URL.revokeObjectURL(url);
+      }
+      function exportCatalogActions() {
+        const actionCounts = catalogActionCounts();
+        const payload = {
+          contract: CATALOG_ACTION_CONTRACT,
+          catalog_version: state.current?.catalog_version || '2026-08-19-v25',
+          exported_at: new Date().toISOString(),
+          action_count: Object.values(actionCounts).reduce((sum, count) => sum + count, 0),
+          counts: actionCounts,
+          actions: state.catalogActions
+        };
+        const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
+        const link = document.createElement('a'); link.href = url; link.download = `${payload.catalog_version}-catalog-curation-review.json`; link.click(); URL.revokeObjectURL(url);
+      }
+      async function loadCatalogActionsFile(file) {
+        const payload = await readJsonFile(file);
+        if (payload.contract && payload.contract !== CATALOG_ACTION_CONTRACT) throw new Error(`不支持的标记合同：${payload.contract}`);
+        state.catalogActions = normalizeCatalogActions(payload);
+        saveCatalogActions();
+      }
+
+      document.addEventListener('click', (event) => {
+        const tab = event.target.closest('[data-view]');
+        if (tab) {
+          state.activeView = tab.dataset.view;
+          document.querySelectorAll('.tab').forEach((button) => button.setAttribute('aria-selected', String(button === tab)));
+          document.querySelectorAll('.view').forEach((view) => view.classList.toggle('is-active', view.id === `view-${state.activeView}`));
+          return;
+        }
+        const saveRename = event.target.closest('[data-save-catalog-rename]');
+        if (saveRename) {
+          event.stopPropagation();
+          const id = saveRename.dataset.saveCatalogRename;
+          const input = document.querySelector(`[data-catalog-rename-input="${CSS.escape(id)}"]`);
+          saveCatalogRename(id, input?.value);
+          return;
+        }
+        const catalogAction = event.target.closest('[data-catalog-action]');
+        if (catalogAction) {
+          event.stopPropagation();
+          setCatalogAction(catalogAction.dataset.catalogId, catalogAction.dataset.catalogAction);
+          return;
+        }
+        const clearCatalog = event.target.closest('[data-clear-catalog-action]');
+        if (clearCatalog) {
+          event.stopPropagation();
+          clearCatalogAction(clearCatalog.dataset.clearCatalogAction);
+          return;
+        }
+        if (event.target.closest('[data-catalog-rename-input]')) return;
+        const row = event.target.closest('[data-select-id]');
+        if (row) { selectChange(row.dataset.selectId); return; }
+        const catalogRow = event.target.closest('[data-select-catalog-id]');
+        if (catalogRow) { state.activeView = 'changes'; document.querySelector('[data-view="changes"]').click(); selectChange(catalogRow.dataset.selectCatalogId); return; }
+        const decision = event.target.closest('[data-decision]');
+        if (decision && state.selectedId) { setDecision(state.selectedId, decision.dataset.decision); return; }
+        if (event.target.closest('[data-next-item]')) { nextPriorityItem(); return; }
+        if (event.target.closest('[data-open-risk]')) { document.querySelector('[data-view="changes"]').click(); $('changePriority').value = 'risk'; renderChanges(); return; }
+        const copy = event.target.closest('[data-copy-id]');
+        if (copy) { navigator.clipboard?.writeText(copy.dataset.copyId); copy.textContent = '已复制'; setTimeout(() => { copy.textContent = '复制概念 ID'; }, 1200); return; }
+      });
+      ['changeSearch', 'changeType', 'changePriority', 'changeDecision', 'catalogSearch', 'catalogCategory', 'catalogSafety', 'catalogSource', 'catalogAction'].forEach((id) => $(id).addEventListener('input', () => { renderChanges(); renderCatalog(); }));
+      $('resetChangeFilters').addEventListener('click', () => { $('changeSearch').value = ''; $('changeType').value = 'all'; $('changePriority').value = 'all'; $('changeDecision').value = 'all'; renderChanges(); });
+      $('resetCatalogFilters').addEventListener('click', () => { $('catalogSearch').value = ''; $('catalogCategory').value = 'all'; $('catalogSafety').value = 'all'; $('catalogSource').value = 'all'; $('catalogAction').value = 'all'; renderCatalog(); });
+      $('exportDecisions').addEventListener('click', exportDecisions);
+      $('exportCatalogActions').addEventListener('click', exportCatalogActions);
+      $('clearDecisions').addEventListener('click', () => { if (confirm('清空当前浏览器保存的全部审核标记？')) { state.decisions = {}; saveDecisions(); render(); } });
+      $('clearCatalogActions').addEventListener('click', () => { if (confirm('清空当前浏览器保存的全部目录整理标记？')) { state.catalogActions = {}; saveCatalogActions(); render(); } });
+      $('dismissNotice').addEventListener('click', () => $('loadNotice').classList.remove('is-visible'));
+      document.querySelectorAll('input[type="file"]').forEach((input) => input.addEventListener('change', async () => {
+        const file = input.files?.[0]; if (!file) return;
+        try {
+          if (input.dataset.file === 'curation') await loadCatalogActionsFile(file);
+          else state[input.dataset.file] = await readJsonFile(file);
+          markFileLoaded(input.dataset.file); refreshLoadState(); render();
+        } catch (error) { alert(`读取 ${file.name} 失败：${error.message}`); }
+      }));
+
+      tryAutoLoad();
+    })();
+  </script>
+</body>
+</html>
