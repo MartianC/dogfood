@@ -20,7 +20,7 @@ function loadFeedbackPage({
     require(request) {
       if (request === '../../../services/feedbackQrService') {
         return {
-          getFeedbackQrFallbackImage: () => '/assets/profile/feedback-qr-fallback.webp',
+          getFeedbackQrFallbackImage: () => '/assets/profile/feedback-qr-fallback.jpg',
           resolveFeedbackQrImage: async () => ({
             imageUrl: feedbackQrImage,
             source: feedbackQrSource,
@@ -50,8 +50,8 @@ test('反馈二维码配置集中在单一入口，并注册相关页面', () =>
   const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
 
   assert.match(config.feedbackQrFileId, /^cloud:\/\//)
-  assert.equal(config.feedbackQrFallbackImage, '/assets/profile/feedback-qr-fallback.webp')
-  assert.ok(fs.existsSync(path.join(root, 'assets/profile/feedback-qr-fallback.webp')))
+  assert.equal(config.feedbackQrFallbackImage, '/assets/profile/feedback-qr-fallback.jpg')
+  assert.ok(fs.existsSync(path.join(root, 'assets/profile/feedback-qr-fallback.jpg')))
   assert.ok(appConfig.pages.includes('pages/profile/help/index'))
   assert.ok(appConfig.pages.includes('pages/profile/privacy/index'))
   assert.ok(appConfig.pages.includes('pages/profile/feedback/index'))
@@ -81,7 +81,7 @@ test('反馈二维码页使用配置图片并支持点击预览', () => {
       state = { ...state, ...next }
     }
   })
-  assert.equal(state.feedbackQrImage, '/assets/profile/feedback-qr-fallback.webp')
+  assert.equal(state.feedbackQrImage, '/assets/profile/feedback-qr-fallback.jpg')
   assert.equal(state.qrUsingFallback, true)
   assert.equal(state.qrLoadError, false)
 

@@ -6,11 +6,11 @@ const { resolveFeedbackQrImage } = require('../services/feedbackQrService')
 test('未配置 CloudBase fileID 时使用本地回退二维码', async () => {
   const result = await resolveFeedbackQrImage({
     fileId: '',
-    fallbackImage: '/assets/profile/feedback-qr-fallback.webp'
+    fallbackImage: '/assets/profile/feedback-qr-fallback.jpg'
   })
 
   assert.deepEqual(result, {
-    imageUrl: '/assets/profile/feedback-qr-fallback.webp',
+    imageUrl: '/assets/profile/feedback-qr-fallback.jpg',
     source: 'fallback',
     error: null
   })
@@ -42,7 +42,7 @@ test('通过 CloudBase fileID 换取二维码临时链接', async () => {
 test('CloudBase 文件不可用时使用本地回退二维码并保留错误状态', async () => {
   const result = await resolveFeedbackQrImage({
     fileId: 'cloud://env.bucket/profile/feedback-qr.png',
-    fallbackImage: '/assets/profile/feedback-qr-fallback.webp',
+    fallbackImage: '/assets/profile/feedback-qr-fallback.jpg',
     cloud: {
       async getTempFileURL() {
         return {
@@ -52,7 +52,7 @@ test('CloudBase 文件不可用时使用本地回退二维码并保留错误状�
     }
   })
 
-  assert.equal(result.imageUrl, '/assets/profile/feedback-qr-fallback.webp')
+  assert.equal(result.imageUrl, '/assets/profile/feedback-qr-fallback.jpg')
   assert.equal(result.source, 'fallback')
   assert.equal(result.error.message, 'file not found')
 })

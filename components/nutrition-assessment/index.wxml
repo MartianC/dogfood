@@ -1,6 +1,5 @@
 <view class="nutrition-assessment">
   <view
-    wx:if="{{!expanded}}"
     class="nutrition-assessment__summary {{compact ? 'nutrition-assessment__summary--compact' : ''}}"
     hover-class="nutrition-assessment__summary--pressed"
     aria-role="button"
@@ -32,21 +31,49 @@
     </block>
   </view>
 
-  <view wx:else class="nutrition-assessment__expanded">
-    <scroll-view class="nutrition-assessment__scroll" scroll-y enable-flex>
+  <view
+    wx:if="{{expandedMounted}}"
+    class="nutrition-assessment__expanded-backdrop"
+    catchtap="onToggle"
+    aria-role="button"
+    aria-label="收起本餐评估"
+  ></view>
+
+  <view
+    wx:if="{{expandedMounted}}"
+    class="nutrition-assessment__expanded nutrition-assessment__expanded--{{expandedPhase}}"
+    bindtouchstart="onExpandedTouchStart"
+    bindtouchmove="onExpandedTouchMove"
+    bindtouchend="onExpandedTouchEnd"
+    bindtouchcancel="onExpandedTouchCancel"
+  >
+    <view
+      class="nutrition-assessment__expanded-grabber"
+      bindtouchstart="onExpandedTouchStart"
+      bindtouchmove="onExpandedTouchMove"
+      bindtouchend="onExpandedTouchEnd"
+      bindtouchcancel="onExpandedTouchCancel"
+      aria-role="button"
+      aria-label="在页面顶部向下滑动收起本餐评估"
+    >
+      <view class="nutrition-assessment__handle"></view>
+    </view>
+    <scroll-view
+      class="nutrition-assessment__scroll"
+      scroll-y
+      enable-flex
+      bindscroll="onExpandedScroll"
+      bindtouchstart="onExpandedTouchStart"
+      bindtouchmove="onExpandedTouchMove"
+      bindtouchend="onExpandedTouchEnd"
+      bindtouchcancel="onExpandedTouchCancel"
+    >
       <view class="nutrition-assessment__expanded-content">
         <view class="nutrition-assessment__expanded-head">
           <view>
             <view class="nutrition-assessment__expanded-title">本餐评估</view>
             <view wx:if="{{viewAssessment}}" class="nutrition-assessment__expanded-context">{{viewAssessment.contextText}}</view>
           </view>
-          <view
-            class="nutrition-assessment__collapse"
-            hover-class="nutrition-assessment__collapse--pressed"
-            aria-role="button"
-            aria-label="收起本餐评估"
-            bindtap="onToggle"
-          >收起</view>
         </view>
 
         <view wx:if="{{loading}}" class="nutrition-assessment__loading">正在读取能量、营养数据和参考标准</view>

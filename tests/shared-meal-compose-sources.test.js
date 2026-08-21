@@ -341,3 +341,49 @@ test('伪造 blocked 来源操作仍由草稿服务拒绝且页面不产生绕�
 
   storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
 })
+
+test('共享本餐应用国标和 FEDIAF 档案后保存选择并重新评估', () => {
+  const template = fs.readFileSync(
+    path.join(root, 'subpackages/shared-meal/compose/index.wxml'),
+    'utf8'
+  )
+  const pageSource = fs.readFileSync(
+    path.join(root, 'subpackages/shared-meal/compose/index.js'),
+    'utf8'
+  )
+  assert.match(template, /bind:profilechange="onNutritionProfileChange"/)
+  assert.match(pageSource, /profileOverrides: draft\.nutritionStandardProfiles \|\| \{\}/)
+
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  const draft = createDraftFromMenus({
+    id: 'draft-profile-selection',
+    dog,
+    humanMenus: [],
+    sourceIngredientSelections: [],
+    dataVersions: null
+  })
+  saveDraft(draft)
+  const { definition } = loadComposePage()
+  const page = createPageContext(definition, draft)
+
+  page.onNutritionProfileChange({
+    detail: { key: 'gb', profileCode: 'adult' }
+  })
+  page.onNutritionProfileChange({
+    detail: { key: 'fediaf', profileCode: 'fediaf_2025_dog_adult_mer_95' }
+  })
+
+  assert.deepEqual(
+    storage.getSync(SHARED_MEAL_DRAFT_STORAGE_KEY).nutritionStandardProfiles,
+    {
+      gb: 'adult',
+      fediaf: 'fediaf_2025_dog_adult_mer_95'
+    }
+  )
+  assert.deepEqual(page.data.nutritionStandardProfiles, {
+    gb: 'adult',
+    fediaf: 'fediaf_2025_dog_adult_mer_95'
+  })
+  assert.equal(page.assessmentRefreshCount(), 2)
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+})

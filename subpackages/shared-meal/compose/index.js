@@ -177,6 +177,7 @@ Page({
     mealAssessment: null,
     nutritionLoading: false,
     nutritionExpanded: false,
+    nutritionStandardProfiles: {},
     saving: false,
     errorText: ''
   },
@@ -228,6 +229,7 @@ Page({
       mealAssessment: draft.latestAssessment && draft.latestAssessment.energy
         ? draft.latestAssessment
         : null,
+      nutritionStandardProfiles: draft.nutritionStandardProfiles || {},
       errorText: ''
     }, () => this.refreshMealAssessment())
   },
@@ -253,6 +255,7 @@ Page({
     const assessment = mealAssessmentService.buildMealAssessment({
       ingredients: draft.ingredients,
       dog: draft.dog,
+      profileOverrides: draft.nutritionStandardProfiles || {},
       ...assessmentData
     })
     const snapshot = buildAssessmentSnapshot(draft, assessment)
@@ -354,6 +357,27 @@ Page({
 
   onNutritionToggle(event) {
     this.setData({ nutritionExpanded: event.detail.expanded })
+  },
+
+  onNutritionProfileChange(event) {
+    const detail = event && event.detail || {}
+    const key = String(detail.key || '')
+    const profileCode = String(detail.profileCode || '')
+    if (!['gb', 'fediaf'].includes(key) || !profileCode) return
+
+    const restored = restoreDraft(this.data.draftId)
+    if (restored.status !== 'restored') return
+    const nutritionStandardProfiles = {
+      ...(restored.draft.nutritionStandardProfiles || {}),
+      [key]: profileCode
+    }
+    saveDraft({
+      ...restored.draft,
+      nutritionStandardProfiles,
+      latestAssessment: null,
+      saveIntent: 'editing'
+    })
+    this.setData({ nutritionStandardProfiles, mealAssessment: null }, () => this.refreshMealAssessment())
   },
 
   onNutritionNutrientSelect(event) {

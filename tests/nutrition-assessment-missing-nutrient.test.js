@@ -144,10 +144,35 @@ test('条件化营养要求缺少同名记录时仍标记为无法评估', () =>
     ]
   })
 
-  const wetDietSelenium = assessment.elements.find((item) => item.code === 'selenium_wet_diets')
-  const dryDietSelenium = assessment.elements.find((item) => item.code === 'selenium_dry_diets')
+  const selenium = assessment.elements.find((item) => item.code === 'selenium')
 
-  assert.equal(wetDietSelenium.gb.status, 'unavailable')
-  assert.equal(dryDietSelenium.gb.status, 'unavailable')
-  assert.deepEqual(assessment.counts, { adjust: 0, met: 0, unavailable: 2 })
+  assert.equal(selenium.name, '硒（湿粮）')
+  assert.equal(selenium.gb.status, 'unavailable')
+  assert.equal(assessment.elements.some((item) => item.code === 'selenium_dry_diets'), false)
+  assert.deepEqual(assessment.counts, { adjust: 0, met: 0, unavailable: 1 })
+})
+
+test('通用硒记录按湿粮口径评估且不显示干粮口径', () => {
+  const assessment = nutritionAssessmentService.buildAssessment({
+    ingredients,
+    dog: { id: 'dog_1', name: '布丁', ageStage: 'adult', activityLevel: 'normal', dailyMeals: 2 },
+    lifeStage: adultLifeStage,
+    standards: standardsForRequirements([
+      { pet_nutrient_code: 'selenium_wet_diets', name_zh: null, category: 'other', nutrient_kind: 'atomic', requirement_type: 'min', value: 20, unit: 'µg', basis: 'dry_matter' },
+      { pet_nutrient_code: 'selenium_dry_diets', name_zh: null, category: 'other', nutrient_kind: 'atomic', requirement_type: 'min', value: 30, unit: 'µg', basis: 'dry_matter' }
+    ]),
+    nutrientRecords: [
+      { food_id: 'food_a', nutrient_code: 'water', unit_name: 'G', amount: 50 },
+      { food_id: 'food_b', nutrient_code: 'water', unit_name: 'G', amount: 50 },
+      { food_id: 'food_a', nutrient_code: 'selenium', unit_name: 'UG', amount: 100 },
+      { food_id: 'food_b', nutrient_code: 'selenium', unit_name: 'UG', amount: 100 }
+    ]
+  })
+
+  const selenium = assessment.elements.find((item) => item.code === 'selenium')
+
+  assert.equal(selenium.name, '硒')
+  assert.equal(selenium.currentValue, 200)
+  assert.equal(selenium.gb.status, 'met')
+  assert.equal(assessment.elements.some((item) => item.code === 'selenium_dry_diets'), false)
 })

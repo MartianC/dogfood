@@ -69,14 +69,17 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
 | prop | `assessment` | 双轴本餐评估结果 |
-| prop | `expanded` | 是否展示全屏详情，默认 `false` |
+| prop | `expanded` | 是否展示接近全屏的弹出详情，顶部保留页面露出区，默认 `false` |
 | prop | `loading` | 是否正在读取评估数据，默认 `false` |
 | prop | `compact` | 是否使用 `280rpx` 起始高度的紧凑收起态，默认 `false`；共享本餐创建页使用 |
 | event | `toggle` | 切换收起/展开态 |
+| event | `profilechange` | 应用国标或 FEDIAF 参考档案 |
 | event | `nutrientselect` | 选择需要补充的营养项 |
 | event | `scaleconfirm` | 确认按目标等比例调整整餐 |
 
 `compact` 只收紧摘要的间距和点击行，不删减能量、营养密度两轴内容；默认形态继续供自定义食谱页使用。
+
+展开详情从底部以 ease-out 动画进入，点击顶部未覆盖区域或在详情内容已滚到顶部时向下滑动超过阈值会触发 `toggle`；摘要卡片始终保持挂载，组件仅在收起动画完成后卸载详情层。
 
 ## ui-tag
 

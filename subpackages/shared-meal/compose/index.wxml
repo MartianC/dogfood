@@ -139,6 +139,7 @@
       expanded="{{nutritionExpanded}}"
       compact="{{true}}"
       bind:toggle="onNutritionToggle"
+      bind:profilechange="onNutritionProfileChange"
       bind:nutrientselect="onNutritionNutrientSelect"
       bind:scaleconfirm="onMealScaleConfirm"
     />

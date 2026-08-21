@@ -149,18 +149,63 @@
 
 .nutrition-assessment__expanded {
   position: fixed;
-  inset: 0;
+  top: 96rpx;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--df-radius-xl) var(--df-radius-xl) 0 0;
   background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-sheet);
+  transform: translateY(100%);
+  transition: transform 320ms ease-out;
+  will-change: transform;
+}
+
+.nutrition-assessment__expanded-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 49;
+}
+
+.nutrition-assessment__expanded--open {
+  transform: translateY(0);
+}
+
+.nutrition-assessment__expanded--closing {
+  transform: translateY(100%);
+}
+
+.nutrition-assessment__expanded-grabber {
+  display: flex;
+  height: 72rpx;
+  flex: 0 0 72rpx;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--df-space-2);
+}
+
+.nutrition-assessment__expanded-grabber .nutrition-assessment__handle {
+  margin: 0;
 }
 
 .nutrition-assessment__scroll {
-  height: 100%;
+  display: block;
+  height: 0;
+  min-height: 0;
+  flex: 1;
 }
 
 .nutrition-assessment__expanded-content {
   box-sizing: border-box;
-  padding: var(--df-space-5) var(--df-space-6) calc(var(--df-space-6) + env(safe-area-inset-bottom));
+  padding: 0 var(--df-space-6) calc(var(--df-space-6) + env(safe-area-inset-bottom));
 }
 
 .nutrition-assessment__expanded-context,
@@ -179,25 +224,6 @@
 
 .nutrition-assessment__basis {
   margin-top: var(--df-space-2);
-}
-
-.nutrition-assessment__collapse {
-  min-width: var(--df-touch-min);
-  min-height: var(--df-touch-min);
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 var(--df-space-3);
-  border: 1rpx solid var(--df-color-line-strong);
-  border-radius: var(--df-radius-lg);
-  color: var(--df-color-primary);
-  font-size: var(--df-font-sm);
-  font-weight: 700;
-}
-
-.nutrition-assessment__collapse--pressed {
-  background: var(--df-color-surface-pressed);
 }
 
 .nutrition-assessment__loading {

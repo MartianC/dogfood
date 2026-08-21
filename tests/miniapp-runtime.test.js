@@ -387,13 +387,14 @@ test('营养评估组件提供双标准、档案切换、建议入口和进阶�
   assert.ok(Object.values(config.usingComponents).every((value) => !value.includes('tdesign-miniprogram')))
 })
 
-test('营养评估的收起操作只有单一点击事件且箭头不会显示为实体文本', () => {
+test('营养评估通过顶部点击和顶部下滑收起，详情不显示收起按钮', () => {
   const wxml = fs.readFileSync(
     path.join(__dirname, '..', 'components', 'nutrition-assessment', 'index.wxml'),
     'utf8'
   )
 
-  assert.match(wxml, /class="nutrition-assessment__collapse"[^>]*bindtap="onToggle"/)
-  assert.doesNotMatch(wxml, /<ui-button[^>]*bind:tap="onToggle"/)
+  assert.match(wxml, /class="nutrition-assessment__expanded-backdrop"[^>]*catchtap="onToggle"/)
+  assert.match(wxml, /bindscroll="onExpandedScroll"/)
+  assert.doesNotMatch(wxml, /nutrition-assessment__collapse/)
   assert.doesNotMatch(wxml, /&gt;/)
 })

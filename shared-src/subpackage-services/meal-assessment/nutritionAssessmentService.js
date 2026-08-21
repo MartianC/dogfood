@@ -50,6 +50,10 @@ const CODE_ALIASES = {
   phosphorus_total: 'phosphorus'
 }
 
+const DISPLAY_NAMES_BY_CODE = {
+  selenium: '硒'
+}
+
 const CATEGORY_LABELS = {
   proximate: '宏量营养',
   mineral: '矿物质',
@@ -67,6 +71,13 @@ function round(value, digits = 2) {
 function normalizeCode(value) {
   const code = String(value || '')
   return CODE_ALIASES[code] || code
+}
+
+function assessmentCodeOf(value) {
+  const code = normalizeCode(value)
+  if (code === 'selenium_dry_diets') return ''
+  if (code === 'selenium_wet_diets') return 'selenium'
+  return code
 }
 
 function normalizeUnit(value) {
@@ -240,12 +251,21 @@ function evaluateRequirements(requirements, currentValue) {
   return 'met'
 }
 
+function formatRequirementValue(value, unit) {
+  if (unit === '%') return `${value}%`
+  return `${value} ${unit}`.trim()
+}
+
 function formatRequirement(requirements) {
   const { minimum, maximum } = requirementLimits(requirements)
   const unit = requirements[0] && requirements[0].unit || ''
-  if (minimum !== null && maximum !== null) return `${minimum}–${maximum} ${unit}`.trim()
-  if (minimum !== null) return `≥ ${minimum} ${unit}`.trim()
-  if (maximum !== null) return `≤ ${maximum} ${unit}`.trim()
+  if (minimum !== null && maximum !== null) {
+    const minimumText = formatRequirementValue(minimum, unit)
+    const maximumText = formatRequirementValue(maximum, unit)
+    return `下限 ${minimumText}，上限 ${maximumText}`
+  }
+  if (minimum !== null) return `≥ ${formatRequirementValue(minimum, unit)}`
+  if (maximum !== null) return `≤ ${formatRequirementValue(maximum, unit)}`
   return '未规定'
 }
 
@@ -278,7 +298,8 @@ function buildElementData(selectedStandards, ingredients, recordsByFood, dryMatt
   const requirementGroups = {}
   selectedStandards.forEach(({ key, profile }) => {
     ;(profile && profile.requirements || []).forEach((requirement) => {
-      const code = normalizeCode(requirement.pet_nutrient_code)
+      const code = assessmentCodeOf(requirement.pet_nutrient_code)
+      if (!code) return
       if (!requirementGroups[code]) requirementGroups[code] = { code, requirements: {} }
       if (!requirementGroups[code].requirements[key]) requirementGroups[code].requirements[key] = []
       requirementGroups[code].requirements[key].push(requirement)
@@ -317,6 +338,7 @@ function buildElementData(selectedStandards, ingredients, recordsByFood, dryMatt
         status,
         currentValue: Number.isFinite(currentValue) ? round(currentValue) : null,
         unit: requirements[0].unit,
+        basis: requirements[0].basis || '',
         requirementText: formatRequirement(requirements),
         minimumValue: minimum,
         maximumValue: maximum,
@@ -332,11 +354,12 @@ function buildElementData(selectedStandards, ingredients, recordsByFood, dryMatt
 
     return {
       code: group.code,
-      name: first.name_zh || group.code,
+      name: first.name_zh || DISPLAY_NAMES_BY_CODE[group.code] || group.code,
       category: first.category || 'other',
       categoryLabel: CATEGORY_LABELS[first.category] || CATEGORY_LABELS.other,
       currentValue: displayValue,
       currentUnit: displayUnit,
+      basis: first.basis || '',
       contributors,
       gb: evaluation.gb || { status: 'not_specified', requirementText: '未规定' },
       fediaf: evaluation.fediaf || { status: 'not_specified', requirementText: '未规定' }
@@ -352,6 +375,7 @@ function buildStandardResult(selected, elements) {
     name: item.name,
     currentValue: item[key].currentValue,
     unit: item[key].unit,
+    basis: item[key].basis,
     requirementText: item[key].requirementText,
     gapDisplayValue: item[key].gapDisplayValue,
     gapDisplayUnit: item[key].gapDisplayUnit,
@@ -362,6 +386,7 @@ function buildStandardResult(selected, elements) {
     name: item.name,
     currentValue: item[key].currentValue,
     unit: item[key].unit,
+    basis: item[key].basis,
     requirementText: item[key].requirementText,
     contributors: item.contributors,
     actionText: '查看并调整相关食材'
@@ -524,7 +549,7 @@ function buildAssessment({ ingredients = [], dog = {}, lifeStage, standards = []
     statusLabel: status === 'needs_adjustment' ? '需要调整' : status === 'suggest_adjustment' ? '建议调整' : '基本合适',
     primaryAdvice,
     contextText: contextTextOf(dog, lifeStage),
-    basisText: `本餐按每日 ${Number(dog.dailyMeals || 0)} 餐等额评估；标准按干物质密度换算`,
+    basisText: `本餐按每日 ${Number(dog.dailyMeals || 0)} 餐等额评估；营养密度按每 100 g 干物质比较`,
     coverageText: `${validIngredients.length} 种食材均已读取水分数据`,
     missingIngredients: [],
     standards: standardResults,

@@ -458,3 +458,61 @@ test('FEDIAF 未设置数值上限时不应把纯鸡胸肉的钠判定为超标'
   assert.equal(sodium.fediaf.requirementText, '≥ 0.1 g')
   assert.equal(assessment.standards[1].highItems.some((item) => item.code === 'sodium'), false)
 })
+
+test('钙标准要求明确展示下限、上限和每 100 g 干物质口径', () => {
+  const gbCalciumStandard = {
+    standard_code: 'GB/T 31216-2014',
+    authority: 'GB/T',
+    profiles: [{
+      profile_code: 'adult',
+      profile_name: '成年犬粮',
+      requirements: [{
+        pet_nutrient_code: 'calcium',
+        name_zh: '钙',
+        category: 'mineral',
+        requirement_type: 'min',
+        value: 0.6,
+        unit: '%',
+        basis: 'dry_matter'
+      }]
+    }]
+  }
+  const fediafCalciumStandard = {
+    standard_code: 'FEDIAF Nutritional Guidelines 2025',
+    authority: 'FEDIAF',
+    profiles: [{
+      profile_code: 'fediaf_2025_dog_adult_mer_110',
+      profile_name: '成年犬完整食品（MER 110）',
+      requirements: [{
+        pet_nutrient_code: 'calcium',
+        name_zh: '钙',
+        category: 'mineral',
+        requirement_type: 'min',
+        value: 0.5,
+        unit: 'g',
+        basis: 'dry_matter'
+      }, {
+        pet_nutrient_code: 'calcium',
+        name_zh: '钙',
+        category: 'mineral',
+        requirement_type: 'max',
+        value: 2.5,
+        unit: 'g',
+        basis: 'dry_matter'
+      }]
+    }]
+  }
+  const assessment = nutritionAssessmentService.buildAssessment({
+    ingredients,
+    dog: { id: 'dog_1', name: '布丁', activityLevel: 'normal', dailyMeals: 2 },
+    lifeStage: adultLifeStage,
+    standards: [gbCalciumStandard, fediafCalciumStandard],
+    nutrientRecords
+  })
+  const calcium = assessment.elements.find((item) => item.code === 'calcium')
+
+  assert.equal(calcium.gb.requirementText, '≥ 0.6%')
+  assert.equal(calcium.fediaf.requirementText, '下限 0.5 g，上限 2.5 g')
+  assert.equal(calcium.basis, 'dry_matter')
+  assert.equal(assessment.basisText, '本餐按每日 2 餐等额评估；营养密度按每 100 g 干物质比较')
+})

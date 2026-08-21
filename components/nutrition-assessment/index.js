@@ -6,6 +6,16 @@ const STATUS_LABELS = {
   not_specified: '未规定'
 }
 
+const EXPANDED_PANEL_ANIMATION_MS = 320
+const SWIPE_CLOSE_DISTANCE = 48
+const SCROLL_TOP_THRESHOLD = 2
+
+function touchYOf(touch) {
+  if (!touch) return NaN
+  const clientY = Number(touch.clientY)
+  return Number.isFinite(clientY) ? clientY : Number(touch.pageY)
+}
+
 function shortProfileName(standard) {
   const name = String(standard.profileName || '')
   if (standard.key === 'gb' && standard.profileCode === 'growth_gestation_lactation') return '幼犬及繁殖期犬粮'
@@ -19,7 +29,12 @@ function shortProfileName(standard) {
 }
 
 function formatValue(value, unit) {
-  return Number.isFinite(value) ? `${value} ${unit || ''}`.trim() : '数据不足'
+  if (!Number.isFinite(value)) return '数据不足'
+  const normalizedUnit = String(unit || '').trim()
+  const valueText = normalizedUnit === '%'
+    ? `${value}%`
+    : `${value} ${normalizedUnit}`.trim()
+  return valueText
 }
 
 function formatNumber(value) {
@@ -118,6 +133,8 @@ Component({
 
   data: {
     viewAssessment: null,
+    expandedMounted: false,
+    expandedPhase: 'closed',
     profileSelectorVisible: false,
     profileSelectorKey: '',
     profileSelectorTitle: '',
@@ -130,6 +147,43 @@ Component({
   },
 
   observers: {
+    expanded(value) {
+      if (this.expandedCloseTimer) {
+        clearTimeout(this.expandedCloseTimer)
+        this.expandedCloseTimer = null
+      }
+
+      if (value) {
+        this.expandedScrollTop = 0
+        this.expandedTouchStartY = 0
+        this.expandedTouchStartScrollTop = 0
+        this.expandedTouchCloseTriggered = false
+        this.setData({
+          expandedMounted: true,
+          expandedPhase: 'opening'
+        }, () => {
+          if (this.properties.expanded) this.setData({ expandedPhase: 'open' })
+        })
+        return
+      }
+
+      if (!this.data.expandedMounted) return
+      this.setData({ expandedPhase: 'closing' })
+      this.expandedCloseTimer = setTimeout(() => {
+        if (!this.properties.expanded) {
+          this.expandedScrollTop = 0
+          this.expandedTouchStartY = 0
+          this.expandedTouchStartScrollTop = 0
+          this.expandedTouchCloseTriggered = false
+          this.setData({
+            expandedMounted: false,
+            expandedPhase: 'closed'
+          })
+        }
+        this.expandedCloseTimer = null
+      }, EXPANDED_PANEL_ANIMATION_MS)
+    },
+
     assessment(value) {
       if (!value) {
         this.setData({ viewAssessment: null, filteredElements: [], scalePreviewVisible: false })
@@ -168,6 +222,46 @@ Component({
 
     onToggle() {
       this.triggerEvent('toggle', { expanded: !this.properties.expanded })
+    },
+
+    onExpandedScroll(event) {
+      const scrollTop = Number(event.detail && event.detail.scrollTop)
+      this.expandedScrollTop = Number.isFinite(scrollTop) ? Math.max(0, scrollTop) : 0
+    },
+
+    onExpandedTouchStart(event) {
+      const touch = event.touches && event.touches[0]
+      if (!touch) return
+      this.expandedTouchStartY = touchYOf(touch)
+      this.expandedTouchStartScrollTop = this.expandedScrollTop || 0
+      this.expandedTouchCloseTriggered = false
+    },
+
+    onExpandedTouchMove(event) {
+      const touch = event.touches && event.touches[0]
+      const startY = Number(this.expandedTouchStartY)
+      const startScrollTop = Number(this.expandedTouchStartScrollTop)
+      if (!touch || !Number.isFinite(startY) || this.expandedTouchCloseTriggered) return
+
+      if (
+        startScrollTop <= SCROLL_TOP_THRESHOLD
+        && touchYOf(touch) - startY >= SWIPE_CLOSE_DISTANCE
+      ) {
+        this.expandedTouchCloseTriggered = true
+        this.onToggle()
+      }
+    },
+
+    onExpandedTouchEnd() {
+      this.expandedTouchStartY = 0
+      this.expandedTouchStartScrollTop = 0
+      this.expandedTouchCloseTriggered = false
+    },
+
+    onExpandedTouchCancel() {
+      this.expandedTouchStartY = 0
+      this.expandedTouchStartScrollTop = 0
+      this.expandedTouchCloseTriggered = false
     },
 
     onOpenProfileSelector(event) {
@@ -264,6 +358,25 @@ Component({
         return true
       })
       this.setData({ filteredElements })
+    }
+  },
+
+  lifetimes: {
+    attached() {
+      if (this.properties.expanded) {
+        this.expandedScrollTop = 0
+        this.expandedTouchStartY = 0
+        this.expandedTouchStartScrollTop = 0
+        this.expandedTouchCloseTriggered = false
+        this.setData({
+          expandedMounted: true,
+          expandedPhase: 'open'
+        })
+      }
+    },
+
+    detached() {
+      if (this.expandedCloseTimer) clearTimeout(this.expandedCloseTimer)
     }
   }
 })

@@ -143,6 +143,122 @@ test('食谱编辑页使用组合评估、缓存和档案恢复路径', () => {
   assert.doesNotMatch(js, /nutritionAssessmentService\.buildAssessment/)
 })
 
+test('营养评估展开为保留顶部露出区的弹出层并支持下滑收起', () => {
+  const definition = loadComponentDefinition()
+  const wxml = read('components/nutrition-assessment/index.wxml')
+  const wxss = read('components/nutrition-assessment/index.wxss')
+
+  assert.match(wxml, /expandedMounted/)
+  assert.match(wxml, /nutrition-assessment__expanded-grabber/)
+  assert.match(wxml, /class="nutrition-assessment__summary[^"]*"/)
+  assert.match(wxml, /class="nutrition-assessment__expanded-backdrop"/)
+  assert.match(wxml, /bindtouchstart="onExpandedTouchStart"/)
+  assert.match(wxml, /bindtouchmove="onExpandedTouchMove"/)
+  assert.match(wxml, /bindtouchend="onExpandedTouchEnd"/)
+  assert.match(wxml, /bindscroll="onExpandedScroll"/)
+  assert.doesNotMatch(wxml, /nutrition-assessment__collapse/)
+  assert.match(wxss, /top:\s*96rpx;/)
+  assert.match(wxss, /transition:\s*transform\s+320ms\s+ease-out;/)
+  assert.match(wxss, /transform:\s*translateY\(100%\)/)
+  assert.equal(typeof definition.observers.expanded, 'function')
+  assert.equal(typeof definition.methods.onExpandedScroll, 'function')
+  assert.equal(typeof definition.methods.onExpandedTouchStart, 'function')
+  assert.equal(typeof definition.methods.onExpandedTouchMove, 'function')
+  assert.equal(typeof definition.methods.onExpandedTouchEnd, 'function')
+})
+
+test('营养评估下滑超过阈值时在 touchmove 阶段收起', () => {
+  const definition = loadComponentDefinition()
+  const events = []
+  const context = {
+    properties: { expanded: true },
+    expandedScrollTop: 0,
+    triggerEvent(name, detail) { events.push({ name, detail }) },
+    onToggle: definition.methods.onToggle
+  }
+
+  definition.methods.onExpandedTouchStart.call(context, {
+    touches: [{ clientY: 120 }]
+  })
+  definition.methods.onExpandedTouchMove.call(context, {
+    touches: [{ clientY: 180 }]
+  })
+
+  assert.deepEqual(events, [{ name: 'toggle', detail: { expanded: false } }])
+  assert.equal(context.expandedTouchCloseTriggered, true)
+})
+
+test('营养评估手指向上滑动时不触发收起', () => {
+  const definition = loadComponentDefinition()
+  const events = []
+  const context = {
+    properties: { expanded: true },
+    expandedScrollTop: 0,
+    triggerEvent(name, detail) { events.push({ name, detail }) },
+    onToggle: definition.methods.onToggle
+  }
+
+  definition.methods.onExpandedTouchStart.call(context, {
+    touches: [{ clientY: 240 }]
+  })
+  definition.methods.onExpandedTouchMove.call(context, {
+    touches: [{ clientY: 180 }]
+  })
+
+  assert.deepEqual(events, [])
+})
+
+test('营养评估只有在详情已滚到顶部时才允许下滑收起', () => {
+  const definition = loadComponentDefinition()
+  const events = []
+  const context = {
+    properties: { expanded: true },
+    expandedScrollTop: 80,
+    triggerEvent(name, detail) { events.push({ name, detail }) },
+    onToggle: definition.methods.onToggle
+  }
+
+  definition.methods.onExpandedTouchStart.call(context, {
+    touches: [{ clientY: 120 }]
+  })
+  definition.methods.onExpandedTouchMove.call(context, {
+    touches: [{ clientY: 180 }]
+  })
+
+  assert.deepEqual(events, [])
+})
+
+test('营养评估滚动时只更新实例滚动位置，不触发视图数据更新', () => {
+  const definition = loadComponentDefinition()
+  const context = {
+    expandedScrollTop: 0,
+    setData() {
+      throw new Error('滚动过程中不应触发 setData')
+    }
+  }
+
+  definition.methods.onExpandedScroll.call(context, {
+    detail: { scrollTop: 36 }
+  })
+
+  assert.equal(context.expandedScrollTop, 36)
+})
+
+test('营养评估取消触摸时清理下滑状态', () => {
+  const definition = loadComponentDefinition()
+  const context = {
+    expandedTouchStartY: 120,
+    expandedTouchStartScrollTop: 10,
+    expandedTouchCloseTriggered: true
+  }
+
+  definition.methods.onExpandedTouchCancel.call(context)
+
+  assert.equal(context.expandedTouchStartY, 0)
+  assert.equal(context.expandedTouchStartScrollTop, 0)
+  assert.equal(context.expandedTouchCloseTriggered, false)
+})
+
 test('本餐评估展开时的父级堆叠层覆盖保存操作', () => {
   const wxml = read('subpackages/custom-recipe/edit/index.wxml')
   const wxss = read('subpackages/custom-recipe/edit/index.wxss')
