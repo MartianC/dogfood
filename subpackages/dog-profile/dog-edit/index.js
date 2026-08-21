@@ -215,10 +215,6 @@ Page({
   },
 
   onChooseAllergens() {
-    if (!this.data.id) {
-      wx.showToast({ title: '请先保存狗狗档案', icon: 'none' })
-      return
-    }
     wx.navigateTo({
       url: '/subpackages/custom-recipe/allergy-select/index',
       events: {
@@ -234,7 +230,8 @@ Page({
         if (eventChannel && typeof eventChannel.emit === 'function') {
           eventChannel.emit('allergySelectionInit', {
             dogId: this.data.id,
-            allergens: this.data.form.allergens || []
+            allergens: this.data.form.allergens || [],
+            deferSave: !this.data.id
           })
         }
       }

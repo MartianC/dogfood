@@ -65,6 +65,7 @@ Page({
     activeTab: ALL_TAB,
     tabItems: createTabItems(0),
     dogId: '',
+    deferSave: false,
     searchValue: '',
     ingredients: [],
     loading: false,
@@ -80,10 +81,11 @@ Page({
       ? this.getOpenerEventChannel()
       : null
     if (this.openerEventChannel && typeof this.openerEventChannel.on === 'function') {
-      this.openerEventChannel.on('allergySelectionInit', ({ dogId, allergens }) => {
+      this.openerEventChannel.on('allergySelectionInit', ({ dogId, allergens, deferSave }) => {
         const next = Array.isArray(allergens) ? allergens : []
         this.setData({
           dogId: String(dogId || ''),
+          deferSave: Boolean(deferSave),
           activeTab: next.length ? SELECTED_TAB : ALL_TAB,
           ...selectionPatch(next, this.data.ingredients)
         })
@@ -183,11 +185,21 @@ Page({
 
   async onConfirm() {
     if (this.data.confirming) return
-    if (!this.data.dogId) {
+    if (!this.data.deferSave && !this.data.dogId) {
       wx.showToast({ title: '请先保存狗狗档案', icon: 'none' })
       return
     }
     this.setData({ confirming: true })
+
+    if (this.data.deferSave) {
+      if (this.openerEventChannel && typeof this.openerEventChannel.emit === 'function') {
+        this.openerEventChannel.emit('allergensSelected', { allergens: this.data.selectedEntries })
+      }
+      wx.showToast({ title: '已选择', icon: 'success' })
+      wx.navigateBack()
+      return
+    }
+
     try {
       await dogService.updateDogAllergens(this.data.dogId, this.data.selectedEntries)
       if (this.openerEventChannel && typeof this.openerEventChannel.emit === 'function') {

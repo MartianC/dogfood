@@ -1,7 +1,8 @@
 <view class="page allergy-select-page with-bottom-action">
   <view class="allergy-select-intro">
     <view class="allergy-select-intro__title">选择确认会过敏的食材</view>
-    <view class="allergy-select-intro__desc">确认后会立即保存，并阻止这些食材用于这只狗狗的配餐。</view>
+    <view wx:if="{{deferSave}}" class="allergy-select-intro__desc">选择后会返回档案，点击“保存档案”后才会生效。</view>
+    <view wx:else class="allergy-select-intro__desc">确认后会立即保存，并阻止这些食材用于这只狗狗的配餐。</view>
   </view>
 
   <recipe-filter-tabs

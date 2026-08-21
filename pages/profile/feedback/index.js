@@ -4,7 +4,8 @@ Page({
   data: {
     feedbackQrImage: '',
     qrLoadError: false,
-    qrLoading: true
+    qrLoading: true,
+    qrUsingFallback: false
   },
 
   onShow() {
@@ -17,20 +18,32 @@ Page({
     this.setData({
       feedbackQrImage: '',
       qrLoadError: false,
-      qrLoading: true
+      qrLoading: true,
+      qrUsingFallback: false
     })
 
     const result = await feedbackQrService.resolveFeedbackQrImage()
     if (requestId !== this._feedbackQrRequestId) return
     this.setData({
       feedbackQrImage: result.imageUrl,
-      qrLoadError: Boolean(result.error || !result.imageUrl),
+      qrLoadError: !result.imageUrl,
+      qrUsingFallback: result.source === 'fallback',
       qrLoading: false
     })
   },
 
   onQrError() {
-    this.setData({ qrLoadError: true, qrLoading: false })
+    if (this.data.qrUsingFallback) {
+      this.setData({ qrLoadError: true, qrLoading: false })
+      return
+    }
+
+    this.setData({
+      feedbackQrImage: feedbackQrService.getFeedbackQrFallbackImage(),
+      qrLoadError: false,
+      qrLoading: false,
+      qrUsingFallback: true
+    })
   },
 
   onPreviewQr() {

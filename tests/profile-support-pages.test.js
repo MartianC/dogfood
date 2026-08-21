@@ -6,7 +6,10 @@ const vm = require('node:vm')
 
 const root = path.join(__dirname, '..')
 
-function loadFeedbackPage({ feedbackQrImage = 'https://example.com/feedback-qr.png' } = {}) {
+function loadFeedbackPage({
+  feedbackQrImage = 'https://example.com/feedback-qr.png',
+  feedbackQrSource = 'cloud'
+} = {}) {
   const source = fs.readFileSync(path.join(root, 'pages/profile/feedback/index.js'), 'utf8')
   let definition
   const previewCalls = []
@@ -17,7 +20,12 @@ function loadFeedbackPage({ feedbackQrImage = 'https://example.com/feedback-qr.p
     require(request) {
       if (request === '../../../services/feedbackQrService') {
         return {
-          resolveFeedbackQrImage: async () => ({ imageUrl: feedbackQrImage, error: null })
+          getFeedbackQrFallbackImage: () => '/assets/profile/feedback-qr-fallback.webp',
+          resolveFeedbackQrImage: async () => ({
+            imageUrl: feedbackQrImage,
+            source: feedbackQrSource,
+            error: null
+          })
         }
       }
       throw new Error(`测试未提供依赖：${request}`)
@@ -41,9 +49,9 @@ test('反馈二维码配置集中在单一入口，并注册相关页面', () =>
   const config = require('../config/profile')
   const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
 
-  assert.equal(config.feedbackQrFileId, '')
-  assert.equal(config.feedbackQrFallbackImage, '/assets/profile/feedback-qr-placeholder.svg')
-  assert.ok(fs.existsSync(path.join(root, 'assets/profile/feedback-qr-placeholder.svg')))
+  assert.match(config.feedbackQrFileId, /^cloud:\/\//)
+  assert.equal(config.feedbackQrFallbackImage, '/assets/profile/feedback-qr-fallback.webp')
+  assert.ok(fs.existsSync(path.join(root, 'assets/profile/feedback-qr-fallback.webp')))
   assert.ok(appConfig.pages.includes('pages/profile/help/index'))
   assert.ok(appConfig.pages.includes('pages/profile/privacy/index'))
   assert.ok(appConfig.pages.includes('pages/profile/feedback/index'))
@@ -68,6 +76,17 @@ test('反馈二维码页使用配置图片并支持点击预览', () => {
   assert.equal(previewCalls[0].urls[0], 'https://example.com/feedback-qr.png')
 
   definition.onQrError.call({
+    data: state,
+    setData(next) {
+      state = { ...state, ...next }
+    }
+  })
+  assert.equal(state.feedbackQrImage, '/assets/profile/feedback-qr-fallback.webp')
+  assert.equal(state.qrUsingFallback, true)
+  assert.equal(state.qrLoadError, false)
+
+  definition.onQrError.call({
+    data: state,
     setData(next) {
       state = { ...state, ...next }
     }

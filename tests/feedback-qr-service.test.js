@@ -3,14 +3,14 @@ const assert = require('node:assert/strict')
 
 const { resolveFeedbackQrImage } = require('../services/feedbackQrService')
 
-test('未配置 CloudBase fileID 时使用占位图', async () => {
+test('未配置 CloudBase fileID 时使用本地回退二维码', async () => {
   const result = await resolveFeedbackQrImage({
     fileId: '',
-    fallbackImage: '/assets/profile/feedback-qr-placeholder.svg'
+    fallbackImage: '/assets/profile/feedback-qr-fallback.webp'
   })
 
   assert.deepEqual(result, {
-    imageUrl: '/assets/profile/feedback-qr-placeholder.svg',
+    imageUrl: '/assets/profile/feedback-qr-fallback.webp',
     source: 'fallback',
     error: null
   })
@@ -39,9 +39,10 @@ test('通过 CloudBase fileID 换取二维码临时链接', async () => {
   assert.equal(result.error, null)
 })
 
-test('CloudBase 文件不可用时返回错误状态，不显示旧二维码', async () => {
+test('CloudBase 文件不可用时使用本地回退二维码并保留错误状态', async () => {
   const result = await resolveFeedbackQrImage({
     fileId: 'cloud://env.bucket/profile/feedback-qr.png',
+    fallbackImage: '/assets/profile/feedback-qr-fallback.webp',
     cloud: {
       async getTempFileURL() {
         return {
@@ -51,7 +52,7 @@ test('CloudBase 文件不可用时返回错误状态，不显示旧二维码', a
     }
   })
 
-  assert.equal(result.imageUrl, '')
-  assert.equal(result.source, 'cloud')
+  assert.equal(result.imageUrl, '/assets/profile/feedback-qr-fallback.webp')
+  assert.equal(result.source, 'fallback')
   assert.equal(result.error.message, 'file not found')
 })

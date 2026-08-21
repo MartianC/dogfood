@@ -5,6 +5,7 @@ const path = require('node:path')
 const vm = require('node:vm')
 
 const root = path.resolve(__dirname, '..')
+const { breedAdultWeightCatalog } = require('../data/breedAdultWeightCatalog')
 
 function loadDogsPage({
   authService,
@@ -17,7 +18,8 @@ function loadDogsPage({
     '../../services/authService': authService,
     '../../services/dogService': dogService,
     '../../utils/risk': { dietGoalLabels: { daily: '日常' } },
-    '../../utils/assets': assets
+    '../../utils/assets': assets,
+    '../../data/breedAdultWeightCatalog': { breedAdultWeightCatalog }
   }
   let definition
   const context = {
@@ -39,7 +41,7 @@ function loadDogsPage({
 
 test('狗狗页显示时加载最新档案并同步狗狗 Tab 选中态', async () => {
   const authService = { getAuthState: () => 'authenticated' }
-  const dogs = [{ id: 'dog-1', name: '布丁' }]
+  const dogs = [{ id: 'dog-1', name: '布丁', breed: 'shiba-inu' }]
   const dogService = { listDogs: async () => dogs }
   const definition = loadDogsPage({ authService, dogService })
   let viewData
@@ -53,6 +55,7 @@ test('狗狗页显示时加载最新档案并同步狗狗 Tab 选中态', async 
   assert.equal(selected, 'dogs')
   assert.equal(viewData.authState, 'authenticated')
   assert.deepEqual(viewData.dogs, dogs)
+  assert.equal(definition.data.breedLabels['shiba-inu'], '柴犬')
 })
 
 test('狗狗页的游客登录、添加、体重和护理入口都进入对应页面', async () => {
@@ -96,6 +99,8 @@ test('狗狗页提供体重和护理入口，但不提前接入统一时间轴',
   assert.match(wxml, /catch:tap="onViewWeight"/)
   assert.match(wxml, /catch:tap="onViewCare"/)
   assert.match(wxml, /<text class="edit-link">修改<\/text>/)
+  assert.match(wxml, /item\.breedLabel \|\| breedLabels\[item\.breed\] \|\| '品种待完善'/)
+  assert.doesNotMatch(wxml, /item\.lifeStageLabel \|\| '档案待完善'/)
   assert.doesNotMatch(wxml, /class="edit-link"[^>]+bind(?:tap|:tap)=/)
   assert.doesNotMatch(`${js}\n${wxml}`, /疫苗|驱虫|统一时间轴/)
   assert.doesNotMatch(wxml, /navigator[^>]+pages\/dogs|bind:tap="onViewDog"/)

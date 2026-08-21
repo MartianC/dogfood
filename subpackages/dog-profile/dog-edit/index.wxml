@@ -47,10 +47,6 @@
           </view>
         </ui-field>
 
-      <ui-field variant="profile-stage" label="系统估算阶段">
-        <view class="dog-profile-readonly">{{lifeStageLabel}}</view>
-      </ui-field>
-
       <view class="dog-profile-pair">
         <ui-field variant="profile" label="当前体重">
           <view class="dog-profile-value-row">
@@ -134,10 +130,9 @@
             variant="secondary"
             size="small"
             block="{{false}}"
-            disabled="{{!id}}"
-            ariaLabel="{{id ? '选择过敏食材' : '保存档案后设置过敏食材'}}"
+            ariaLabel="选择过敏食材"
             bind:tap="onChooseAllergens"
-          >{{id ? '选择食材' : '保存档案后设置'}}</ui-button>
+          >选择食材</ui-button>
         </view>
       </ui-field>
 

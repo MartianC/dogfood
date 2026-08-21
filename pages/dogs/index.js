@@ -2,12 +2,18 @@ const authService = require('../../services/authService')
 const dogService = require('../../services/dogService')
 const { dietGoalLabels } = require('../../utils/risk')
 const assets = require('../../utils/assets')
+const { breedAdultWeightCatalog } = require('../../data/breedAdultWeightCatalog')
+
+const breedLabels = Object.fromEntries(
+  breedAdultWeightCatalog.map(({ value, label }) => [value, label])
+)
 
 Page({
   data: {
     authState: 'guest',
     dogs: [],
     dietGoalLabels,
+    breedLabels,
     defaultDogAvatar: assets.defaultDogAvatar
   },
 

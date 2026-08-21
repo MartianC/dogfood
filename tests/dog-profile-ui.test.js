@@ -55,6 +55,7 @@ test('完整与快速建档只收集出生日期、品种和日均活动时长',
     assert.match(wxml, /mode="date"/)
     assert.match(wxml, /label="出生日期"/)
     assert.match(wxml, /label="(?:爱宠|狗狗)品种"/)
+    assert.doesNotMatch(wxml, /系统估算阶段|lifeStageLabel/)
     assert.match(wxml, /<slider[^>]*min="0"[^>]*max="6"[^>]*step="0\.5"/)
     assert.match(wxml, /dog-profile-activity-slider__band--low/)
     assert.match(wxml, /dog-profile-activity-slider__band--general/)
@@ -87,6 +88,44 @@ test('档案界面不展示实现备注且编辑页可选择并保存过敏食�
   assert.match(allWxml, /选择食材/)
   assert.match(editJs, /avoidIngredients:\s*Array\.isArray\(dog\.avoidIngredients\)/)
   assert.doesNotMatch(editJs, /allergens:\s*splitText|avoidIngredients:\s*splitText/)
+})
+
+test('新增档案允许选择过敏食材并将结果暂存回表单', () => {
+  const previousWx = global.wx
+  let navigateOptions
+  let initPayload
+  global.wx = {
+    navigateTo(options) {
+      navigateOptions = options
+      options.success({
+        eventChannel: {
+          emit(name, payload) {
+            if (name === 'allergySelectionInit') initPayload = payload
+          }
+        }
+      })
+    }
+  }
+
+  try {
+    const definition = loadPageDefinition(profilePages[0])
+    const context = pageContext(definition)
+    definition.onChooseAllergens.call(context)
+
+    assert.ok(navigateOptions)
+    assert.deepEqual(initPayload, {
+      dogId: '',
+      allergens: [],
+      deferSave: true
+    })
+
+    const allergens = ['concept:food-egg|鸡蛋']
+    navigateOptions.events.allergensSelected({ allergens })
+    assert.deepEqual(context.data.form.allergens, allergens)
+    assert.deepEqual(context.data.allergyDisplayItems.map((item) => item.name), ['鸡蛋'])
+  } finally {
+    global.wx = previousWx
+  }
 })
 
 test('通用按钮阻止原生 tap 穿透组件边界', () => {
@@ -160,6 +199,43 @@ test('过敏食材云端保存失败时停留当前页并恢复确认按钮', as
     assert.equal(context.data.confirming, false)
     assert.equal(navigateBackCalls, 0)
     assert.match(toast.title, /保存失败/)
+  } finally {
+    dogService.updateDogAllergens = originalUpdate
+    global.wx = previousWx
+  }
+})
+
+test('新增档案的过敏选择只回传结果，不提前更新档案', async () => {
+  const dogService = require('../services/dogService')
+  const originalUpdate = dogService.updateDogAllergens
+  const previousWx = global.wx
+  let updateCalls = 0
+  let selectedAllergens
+  let navigateBackCalls = 0
+  dogService.updateDogAllergens = async () => {
+    updateCalls += 1
+  }
+  global.wx = {
+    showToast() {},
+    navigateBack() { navigateBackCalls += 1 }
+  }
+
+  try {
+    const definition = loadPageDefinition('subpackages/custom-recipe/allergy-select')
+    const context = pageContext(definition)
+    context.data.deferSave = true
+    context.data.selectedEntries = ['concept:food-egg|鸡蛋']
+    context.openerEventChannel = {
+      emit(name, payload) {
+        if (name === 'allergensSelected') selectedAllergens = payload.allergens
+      }
+    }
+
+    await definition.onConfirm.call(context)
+
+    assert.equal(updateCalls, 0)
+    assert.deepEqual(selectedAllergens, ['concept:food-egg|鸡蛋'])
+    assert.equal(navigateBackCalls, 1)
   } finally {
     dogService.updateDogAllergens = originalUpdate
     global.wx = previousWx
@@ -413,6 +489,44 @@ test('新建档案保存请求进行中时重复触发不会再次创建', async
     dogService.normalizeDog = originalNormalize
     dogService.validateDog = originalValidate
     dogService.createDog = originalCreateDog
+    global.wx = previousWx
+    global.setTimeout = previousSetTimeout
+  }
+})
+
+test('新增档案最终保存时携带暂存的过敏食材', async () => {
+  const dogService = require('../services/dogService')
+  const authService = require('../services/authService')
+  const originalNormalize = dogService.normalizeDog
+  const originalValidate = dogService.validateDog
+  const originalCreateDog = dogService.createDog
+  const originalAuthState = authService.getAuthState
+  const previousWx = global.wx
+  const previousSetTimeout = global.setTimeout
+  let savedPayload
+  dogService.normalizeDog = (payload) => payload
+  dogService.validateDog = () => {}
+  dogService.createDog = async (payload) => {
+    savedPayload = payload
+    return { id: 'dog-1' }
+  }
+  authService.getAuthState = () => 'authenticated'
+  global.wx = { showToast() {}, navigateBack() {} }
+  global.setTimeout = (callback) => callback()
+
+  try {
+    const definition = loadPageDefinition(profilePages[0])
+    const context = pageContext(definition)
+    context.data.form.allergens = ['concept:food-egg|鸡蛋']
+
+    await definition.onSave.call(context)
+
+    assert.deepEqual(savedPayload.allergens, ['concept:food-egg|鸡蛋'])
+  } finally {
+    dogService.normalizeDog = originalNormalize
+    dogService.validateDog = originalValidate
+    dogService.createDog = originalCreateDog
+    authService.getAuthState = originalAuthState
     global.wx = previousWx
     global.setTimeout = previousSetTimeout
   }

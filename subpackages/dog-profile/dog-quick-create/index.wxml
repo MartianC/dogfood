@@ -33,10 +33,6 @@
           </view>
         </ui-field>
 
-        <ui-field label="系统估算阶段">
-          <view class="dog-profile-readonly">{{lifeStageLabel}}</view>
-        </ui-field>
-
         <view class="dog-profile-pair">
           <ui-field label="当前体重 kg">
             <input class="dog-profile-control" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
