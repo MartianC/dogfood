@@ -34,7 +34,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 | 类型 | 名称 | 取值/说明 |
 | --- | --- | --- |
-| prop | `variant` | `primary | secondary | outline | warning | warning-outline | ghost | avatar`，默认 `primary`；`outline` 为主题色描边操作，`warning-outline` 为警示色描边操作；`avatar` 为 `96rpx` 方形头像选择按钮 |
+| prop | `variant` | `primary | secondary | outline | warning | warning-outline | ghost | avatar | bare`，默认 `primary`；`outline` 为主题色描边操作，`warning-outline` 为警示色描边操作；`avatar` 为 `96rpx` 方形头像选择按钮；`bare` 为无视觉样式的透明容器按钮，仅保留按钮语义与 `open-type` 能力，内容由页面 slot 自绘 |
 | prop | `size` | `small | medium | large | xlarge`，默认 `large`；`xlarge` 高度为 `96rpx`，用于设计稿明确要求的 48pt 主操作 |
 | prop | `disabled` | 禁用态，默认 `false` |
 | prop | `loading` | 加载态，默认 `false` |
@@ -48,6 +48,7 @@ vendor 适配层只负责第三方 API、主题和基础状态转换，不读取
 
 `ui-button` 的组件 host 为块级；默认 `block=true` 时内部按钮撑满父容器。需要“删除”“修改”这类窄操作时使用 `block=false`，不要用外层固定宽度强行覆盖按钮宽度。
 头像选择使用 `variant="avatar"`、`block="{{false}}"` 和 `openType="chooseAvatar"`，页面监听 `chooseavatar`，不得绕过 UI Kernel 直接声明原生按钮。
+分享给微信好友使用 `variant="bare"` 和 `openType="share"`，页面在默认 slot 里自绘行内容（如 `profile-item` 行布局），分享文案由页面 `onShareAppMessage` 提供；同样不得绕过 UI Kernel 直接声明原生按钮。
 
 ## ui-card
 

@@ -57,6 +57,20 @@
   border-color: var(--df-color-line-strong);
 }
 
+.ui-button--bare {
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  border-color: transparent;
+  font-weight: 400;
+  justify-content: flex-start;
+}
+
+.ui-button--pressed.ui-button--bare {
+  background: var(--df-color-surface-pressed);
+}
+
 .ui-button--xlarge {
   min-height: max(96rpx, 48px);
   border-radius: max(var(--df-radius-lg), 12px);

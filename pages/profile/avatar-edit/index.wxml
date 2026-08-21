@@ -1,0 +1,43 @@
+<view class="page avatar-editor-page">
+  <view class="avatar-editor__intro">
+    <view class="avatar-editor__heading">调整头像</view>
+    <view class="avatar-editor__description">拖动图片调整位置，双指或滑杆缩放</view>
+  </view>
+
+  <view class="avatar-editor__canvas-wrap" style="width: {{canvasSize}}px; height: {{canvasSize}}px;" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchEnd">
+    <canvas
+      class="avatar-editor__canvas"
+      canvas-id="avatar-editor-canvas"
+      width="{{canvasSize}}"
+      height="{{canvasSize}}"
+      style="width: {{canvasSize}}px; height: {{canvasSize}}px;"
+    />
+    <view class="avatar-editor__crop-frame" aria-hidden="true">
+      <view class="avatar-editor__crop-line avatar-editor__crop-line--vertical"></view>
+      <view class="avatar-editor__crop-line avatar-editor__crop-line--horizontal"></view>
+    </view>
+  </view>
+
+  <view wx:if="{{imageReady}}" class="avatar-editor__controls">
+    <view class="avatar-editor__scale-label">
+      <text>缩放</text>
+      <text>{{scalePercent}}%</text>
+    </view>
+    <slider
+      class="avatar-editor__slider"
+      min="{{minScalePercent}}"
+      max="{{maxScalePercent}}"
+      value="{{scalePercent}}"
+      step="1"
+      activeColor="{{sliderActiveColor}}"
+      backgroundColor="{{sliderBackgroundColor}}"
+      block-color="{{sliderBlockColor}}"
+      bindchanging="onScaleChange"
+      bindchange="onScaleChange"
+    />
+  </view>
+
+  <view wx:if="{{imageReady}}" class="bottom-action bottom-action--surface avatar-editor__action">
+    <ui-button loading="{{processing}}" disabled="{{processing}}" bind:tap="onConfirm">使用此头像</ui-button>
+  </view>
+</view>

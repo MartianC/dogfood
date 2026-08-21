@@ -51,6 +51,16 @@
     <view class="profile-section profile-section--about">
       <view class="profile-section__heading">关于爪饭</view>
       <ui-card padding="none">
+        <ui-button variant="bare" openType="share" ariaLabel="分享爪饭">
+          <view class="profile-item">
+            <view class="profile-item__content">
+              <view class="profile-item__title">分享爪饭</view>
+              <view class="profile-item__description">推荐给养狗的朋友，一起把每顿饭记清楚</view>
+            </view>
+            <view class="profile-item__chevron" aria-hidden="true">›</view>
+          </view>
+        </ui-button>
+        <view class="profile-item__divider" aria-hidden="true"></view>
         <navigator class="profile-item" url="/pages/profile/feedback/index" aria-label="交流与反馈">
           <view class="profile-item__content">
             <view class="profile-item__title">交流与反馈</view>

@@ -1,6 +1,7 @@
 const authService = require('../../../services/authService')
 const userProfileService = require('../../../services/userProfileService')
 const assets = require('../../../utils/assets')
+const { openAvatarEditor } = require('../../../utils/avatarEditor')
 
 function getDisplayNickname(user) {
   const nickname = user && user.nickname
@@ -43,9 +44,11 @@ Page({
     if (this.data.authState === 'guest') return
     const tempFilePath = event && event.detail && event.detail.avatarUrl
     if (!tempFilePath) return
-    this.setData({
-      avatarTempFilePath: tempFilePath,
-      avatarUrl: tempFilePath
+    openAvatarEditor(tempFilePath, (editedFilePath) => {
+      this.setData({
+        avatarTempFilePath: editedFilePath,
+        avatarUrl: editedFilePath
+      })
     })
   },
 

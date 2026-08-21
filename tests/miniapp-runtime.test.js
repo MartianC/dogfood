@@ -105,6 +105,17 @@ test('开发者工具按根目录配置构建 TDesign npm 包', () => {
   ])
 })
 
+test('首页运行时依赖的合同目录不会被开发者工具排除', () => {
+  const projectRoot = path.join(__dirname, '..')
+  const projectConfig = JSON.parse(fs.readFileSync(path.join(projectRoot, 'project.config.json'), 'utf8'))
+  const ignoredContractsFolder = (projectConfig.packOptions.ignore || []).some((item) => (
+    item.type === 'folder' && item.value === 'contracts'
+  ))
+
+  assert.equal(ignoredContractsFolder, false)
+  assert.ok(fs.existsSync(path.join(projectRoot, 'contracts/care/careRecordContract.js')))
+})
+
 test('小程序图片兜底资源存在', () => {
   const expected = [
     'assets/recipes/chicken-pumpkin.jpg',

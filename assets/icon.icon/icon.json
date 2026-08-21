@@ -1,0 +1,125 @@
+{
+  "features" : [
+    "refractivity"
+  ],
+  "fill" : {
+    "solid" : "display-p3:0.99900,0.99540,0.85271,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.08673,0.24914,0.04721,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : "automatic"
+            }
+          ],
+          "glass" : true,
+          "hidden" : true,
+          "image-name" : "paw-svgrepo-com (1).svg",
+          "name" : "paw-svgrepo-com (1)",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0.030769230769237765
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.6
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.2
+      }
+    },
+    {
+      "blur-material" : 0.5,
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "display-p3:0.08673,0.24914,0.04721,1.00000"
+          },
+          "hidden" : false,
+          "image-name" : "paw-3-svgrepo-com.svg",
+          "name" : "paw-3-svgrepo-com",
+          "position" : {
+            "scale" : 1.22,
+            "translation-in-points" : [
+              -11.57241101750219,
+              164.0060697125832
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "refractivity" : {
+        "depth" : 0,
+        "enabled" : true,
+        "strength" : 0.5344140625
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.6
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.2
+      }
+    },
+    {
+      "blur-material" : 0.5,
+      "hidden" : true,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "display-p3:0.08673,0.24914,0.04721,1.00000"
+          },
+          "hidden" : false,
+          "image-name" : "paw-3-svgrepo-com.svg",
+          "name" : "paw-3-svgrepo-com",
+          "position" : {
+            "scale" : 0.78,
+            "translation-in-points" : [
+              25.224022078466533,
+              0.0016754980141513443
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "refractivity" : {
+        "depth" : 0,
+        "enabled" : true,
+        "strength" : 0.5344140625
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.6
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.2
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

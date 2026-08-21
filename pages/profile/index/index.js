@@ -33,5 +33,12 @@ Page({
 
   onAvatarError() {
     this.setData({ avatarUrl: '' })
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '爪饭，帮你把每一顿记清楚',
+      path: '/pages/home/index'
+    }
   }
 })
