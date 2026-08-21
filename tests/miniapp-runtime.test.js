@@ -27,14 +27,9 @@ test('app.js 不直接 require JSON 数据文件', () => {
   assert.match(appSource, /require\(['"]\.\/data\/recipes['"]\)/)
 })
 
-test('应用认证完成后启动记录页当月后台预取，且不等待预取请求完成', async () => {
+test('应用启动只完成认证快照，不在首屏路由期间启动远端后台任务', async () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8')
   let definition
-  let loadCall = null
-  let resolvePrefetch
-  const prefetch = new Promise((resolve) => {
-    resolvePrefetch = resolve
-  })
   const context = {
     App(app) { definition = app },
     require(request) {
@@ -42,21 +37,6 @@ test('应用认证完成后启动记录页当月后台预取，且不等待预�
         return {
           async initAuth() {
             return { authState: 'has-profile', user: { id: 'user-1' }, dogs: [{ id: 'dog-1' }] }
-          }
-        }
-      }
-      if (request === './services/mealPlanService') {
-        return { syncPendingPlans: async () => ({ syncedCount: 0, remainingCount: 0 }) }
-      }
-      if (request === './services/unifiedRecordTimelineService') {
-        return {
-          createUnifiedRecordTimelineState() {
-            return {
-              load(monthKey, options) {
-                loadCall = { monthKey, options }
-                return prefetch
-              }
-            }
           }
         }
       }
@@ -73,18 +53,13 @@ test('应用认证完成后启动记录页当月后台预取，且不等待预�
   vm.runInNewContext(source, context, { filename: 'app.js' })
 
   const instance = {
-    globalData: { ...definition.globalData },
-    startRecordTimelinePrefetch: definition.startRecordTimelinePrefetch
+    globalData: { ...definition.globalData }
   }
   const auth = await definition.initApp.call(instance)
 
   assert.equal(auth.authState, 'has-profile')
-  assert.ok(loadCall)
-  assert.match(loadCall.monthKey, /^\d{4}-\d{2}$/)
-  assert.match(loadCall.options.selectedDateKey, /^\d{4}-\d{2}-\d{2}$/)
-  assert.equal(instance.globalData.recordTimelineState != null, true)
-  resolvePrefetch({ cached: false })
-  await instance.globalData.recordTimelinePrefetch
+  assert.equal(instance.globalData.recordTimelineState, undefined)
+  assert.equal(instance.globalData.recordTimelinePrefetch, undefined)
 })
 
 test('app.json 启用组件按需注入', () => {

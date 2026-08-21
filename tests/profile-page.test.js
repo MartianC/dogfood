@@ -88,6 +88,7 @@ test('微信头像加载失败时回退到默认用户 SVG', () => {
 
 test('我的页面按使用帮助、账号与数据、关于爪饭分组，不暴露狗狗或旧兼容入口', () => {
   const root = path.join(__dirname, '..', 'pages/profile/index')
+  const buttonStyles = fs.readFileSync(path.join(__dirname, '..', 'components/ui/ui-button/index.wxss'), 'utf8')
   const js = fs.readFileSync(path.join(root, 'index.js'), 'utf8')
   const wxml = fs.readFileSync(path.join(root, 'index.wxml'), 'utf8')
   const json = JSON.parse(fs.readFileSync(path.join(root, 'index.json'), 'utf8'))
@@ -113,6 +114,8 @@ test('我的页面按使用帮助、账号与数据、关于爪饭分组，不�
   assert.match(wxml, /url="\/pages\/profile\/feedback\/index"/)
   assert.match(wxml, /分享爪饭/)
   assert.match(wxml, /openType="share"/)
+  assert.match(buttonStyles, /\.ui-button--bare\s*\{[\s\S]*text-align:\s*left;/)
+  assert.match(buttonStyles, /\.ui-button--bare\.ui-button--block\s*\{[\s\S]*display:\s*block;/)
   assert.ok(wxml.indexOf('分享爪饭') < wxml.indexOf('交流与反馈'))
   assert.match(js, /onShareAppMessage/)
   assert.match(js, /path: '\/pages\/home\/index'/)

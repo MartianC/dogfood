@@ -65,6 +65,11 @@
   border-color: transparent;
   font-weight: 400;
   justify-content: flex-start;
+  text-align: left;
+}
+
+.ui-button--bare.ui-button--block {
+  display: block;
 }
 
 .ui-button--pressed.ui-button--bare {
