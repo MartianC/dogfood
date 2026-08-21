@@ -2,8 +2,16 @@
   <view class="dog-profile-section">
     <view class="dog-profile-form">
       <view class="dog-profile-avatar-row">
-        <view class="dog-profile-avatar" aria-role="button" aria-label="选择爱宠头像" bindtap="onChooseAvatar">
-          <image class="dog-profile-avatar__image" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+        <view class="dog-profile-avatar">
+          <ui-button
+            variant="avatar"
+            block="{{false}}"
+            openType="chooseAvatar"
+            bind:chooseavatar="onChooseAvatar"
+            ariaLabel="选择爱宠头像"
+          >
+            <image class="dog-profile-avatar__image" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+          </ui-button>
         </view>
         <view wx:if="{{id}}" class="dog-profile-delete-action">
           <ui-button

@@ -37,30 +37,7 @@ async function saveLocalImage(tempFilePath) {
   return saveFileByManager(tempFilePath)
 }
 
-function chooseLocalImage() {
-  if (typeof wx === 'undefined') return Promise.resolve('')
-  return new Promise((resolve, reject) => {
-    if (typeof wx.chooseMedia === 'function') {
-      wx.chooseMedia({
-        count: 1,
-        mediaType: ['image'],
-        sourceType: ['album', 'camera'],
-        success: (res) => resolve(res.tempFiles && res.tempFiles[0] ? res.tempFiles[0].tempFilePath : ''),
-        fail: reject
-      })
-      return
-    }
-    wx.chooseImage({
-      count: 1,
-      sourceType: ['album', 'camera'],
-      success: (res) => resolve(res.tempFilePaths && res.tempFilePaths[0] ? res.tempFilePaths[0] : ''),
-      fail: reject
-    })
-  })
-}
-
 module.exports = {
   getTempUrl,
-  saveLocalImage,
-  chooseLocalImage
+  saveLocalImage
 }

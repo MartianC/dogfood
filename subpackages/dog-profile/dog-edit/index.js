@@ -2,7 +2,6 @@ const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
 const assets = require('../../../utils/assets')
 const fileService = require('../services/fileService')
-const { openAvatarEditor } = require('../../../utils/avatarEditor')
 const {
   dietGoalOptions,
   breedOptions,
@@ -242,20 +241,14 @@ Page({
     })
   },
 
-  async onChooseAvatar() {
+  async onChooseAvatar(event) {
+    const tempFilePath = event && event.detail && event.detail.avatarUrl
+    if (!tempFilePath) return
     try {
-      const tempFilePath = await fileService.chooseLocalImage()
-      if (!tempFilePath) return
-      openAvatarEditor(tempFilePath, async (editedFilePath) => {
-        try {
-          const avatarUrl = await fileService.saveLocalImage(editedFilePath)
-          this.setData({ 'form.avatarUrl': avatarUrl })
-        } catch (error) {
-          wx.showToast({ title: '头像保存失败，请重试', icon: 'none' })
-        }
-      })
+      const avatarUrl = await fileService.saveLocalImage(tempFilePath)
+      this.setData({ 'form.avatarUrl': avatarUrl })
     } catch (error) {
-      wx.showToast({ title: '未选择头像', icon: 'none' })
+      wx.showToast({ title: '头像保存失败，请重试', icon: 'none' })
     }
   },
 

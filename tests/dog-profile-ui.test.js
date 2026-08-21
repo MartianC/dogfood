@@ -265,6 +265,17 @@ test('编辑档案头像沿用狗狗列表的默认 SVG 和圆角矩形规格', 
   assert.doesNotMatch(wxml, /dog-profile-avatar__fallback|avatarInitial/)
 })
 
+test('完整与快速建档头像都使用微信 chooseAvatar，并不再调用普通图片选择 API', () => {
+  profilePages.forEach((page) => {
+    const js = readPage(page, 'js')
+    const wxml = readPage(page, 'wxml')
+
+    assert.match(wxml, /openType="chooseAvatar"/)
+    assert.match(wxml, /bind:chooseavatar="onChooseAvatar"/)
+    assert.doesNotMatch(js, /chooseLocalImage|openAvatarEditor|chooseMedia|chooseImage/)
+  })
+})
+
 test('档案页所有选择项使用浅灰未选中态和绿色选中态', () => {
   const wxml = readPage(profilePages[0], 'wxml')
   const wxss = readPage('components/ui/ui-tag', 'wxss')

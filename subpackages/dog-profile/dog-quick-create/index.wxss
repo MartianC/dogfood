@@ -24,8 +24,8 @@
 }
 
 .dog-profile-avatar__image {
-  width: 104rpx;
-  height: 104rpx;
+  width: 96rpx;
+  height: 96rpx;
   display: block;
   border: 1rpx solid var(--df-color-line-strong);
   border-radius: var(--df-radius-xl);

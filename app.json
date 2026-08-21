@@ -5,7 +5,6 @@
     "pages/dogs/index",
     "pages/profile/index/index",
     "pages/profile/account/index",
-    "pages/profile/avatar-edit/index",
     "pages/profile/help/index",
     "pages/profile/privacy/index",
     "pages/profile/feedback/index",

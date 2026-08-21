@@ -11,8 +11,7 @@ function loadAccountPage({
   user = { id: 'user-1', nickname: '小明', avatarUrl: '/assets/profile/user.jpg' },
   saveAvatar = async () => '/assets/profile/new-avatar.jpg',
   updateCurrentUserProfile = async (profile) => ({ ...user, ...profile }),
-  login = async () => true,
-  openAvatarEditor = () => true
+  login = async () => true
 } = {}) {
   const source = fs.readFileSync(path.join(root, 'pages/profile/account/index.js'), 'utf8')
   let definition
@@ -34,7 +33,6 @@ function loadAccountPage({
         }
       }
       if (request === '../../../services/userProfileService') return { saveAvatar }
-      if (request === '../../../utils/avatarEditor') return { openAvatarEditor }
       if (request === '../../../utils/assets') {
         return { defaultUserAvatar: '/assets/profile/default-user-avatar.svg' }
       }
@@ -128,14 +126,8 @@ test('账号二级页包含头像选择、昵称输入和保存入口', () => {
   assert.match(wxml, /bind:tap="onSave"/)
 })
 
-test('账号头像选择后进入编辑页，只有收到裁剪结果才更新预览', () => {
-  let editorCallback
-  const { definition } = loadAccountPage({
-    openAvatarEditor(tempFilePath, callback) {
-      assert.equal(tempFilePath, 'wxfile://wechat-avatar')
-      editorCallback = callback
-    }
-  })
+test('账号头像选择后直接使用微信返回的裁剪结果', () => {
+  const { definition } = loadAccountPage()
   const viewData = {
     ...definition.data,
     authState: 'logged-in',
@@ -147,9 +139,6 @@ test('账号头像选择后进入编辑页，只有收到裁剪结果才更新�
   }
 
   definition.onChooseAvatar.call(context, { detail: { avatarUrl: 'wxfile://wechat-avatar' } })
-  assert.equal(viewData.avatarUrl, '/assets/profile/old-avatar.jpg')
-
-  editorCallback('wxfile://cropped-avatar')
-  assert.equal(viewData.avatarUrl, 'wxfile://cropped-avatar')
-  assert.equal(viewData.avatarTempFilePath, 'wxfile://cropped-avatar')
+  assert.equal(viewData.avatarUrl, 'wxfile://wechat-avatar')
+  assert.equal(viewData.avatarTempFilePath, 'wxfile://wechat-avatar')
 })
