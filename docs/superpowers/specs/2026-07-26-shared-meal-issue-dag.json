@@ -328,13 +328,13 @@
   },
   {
     "id": "SHARED-MEAL-004",
-    "title": "交付鉴权幂等记录与不可变快照回看",
-    "objective": "通过单一多 action 记录云函数安全、幂等地保存本餐快照，并让用户按狗狗和用餐时间查看只属于自己的记录列表与不可变详情。",
+    "title": "交付鉴权幂等记录与当天可编辑快照回看",
+    "objective": "通过单一多 action 记录云函数安全、幂等地保存本餐快照，并让用户按狗狗和用餐时间查看自己的记录；当天记录可更新，历史记录保持只读。",
     "acceptanceCriteria": [
-      "cloudfunctions/sharedMealRecord 只暴露 action=save|list|get；services/adapters/cloudbase.js、mock.js 和 sharedMealRecordService 完整实现三种调用，compose 保存、records 列表和 record-detail 均通过 adapter 调用云函数而不直读业务集合。",
+      "cloudfunctions/sharedMealRecord 暴露 action=save|update|list|get；services/adapters/cloudbase.js、mock.js 和 sharedMealRecordService 完整实现四种调用，compose 保存/更新、records 列表和 record-detail 均通过 adapter 调用云函数而不直读业务集合。",
       "save 从 wxContext.OPENID 取得身份并验证 dogs._id+_openid 归属、payload schema、active recipe/catalog/policy/standard 版本和每个食材当前 policy_status；复用 ingredientOperationRules/v1 语义，blocked、伪造 dogId、catalogId 或版本均拒绝。",
       "save payload、record schema、requestFingerprint 和服务端校验都通过 $ref/等价机器引用逐字段消费 canonical sharedMealIngredient/v1：强制 ingredientId===foodId，以 foodId 查询 food_nutrition_profiles，以 conceptId+variantId 匹配目录，并校验 policyStatus、sourceRefs 与 dataVersions.runtimeReleaseId/recipeVersion/mappingVersion/catalogVersion/policyVersion/nutritionSourceReleaseId；不得另定义别名或扁平版本字段。",
-      "sharedMealRecord/schema/record.schema.json 可机器校验 dog、人饭及来源原料、最终食材克重、assessment、备注/照片引用、recipe/mapping/catalog/policy/standard/algorithm 版本快照；保存后业务快照字段不可更新。",
+      "sharedMealRecord/schema/record.schema.json 可机器校验 dog、人饭及来源原料、最终食材克重、assessment、备注/照片引用、recipe/mapping/catalog/policy/standard/algorithm 版本快照；历史记录字段不可更新，当天更新原记录并递增 revision。",
       "sharedMealRecord/schema/indexes.json 声明并由检查脚本验证唯一索引 (_openid ASC,idempotencyKey ASC) 和列表索引 (_openid ASC,targetDogId ASC,mealTime DESC,_id DESC)；缺失或顺序错误检查失败。",
       "并发原子策略为“唯一索引抢占 + requestFingerprint”：同一用户同一 idempotencyKey 的并发写只有一个成功创建，重复请求读取并返回同一记录；同 key 不同 fingerprint 明确冲突，不产生第二条记录。",
       "requestFingerprint 使用与 Issue 3 相同的 canonicalization fixture；服务端对字段缺失、重命名、ingredientId/foodId 分裂、版本伪造、sourceRefs 与 recipe/mapping 不一致全部拒绝，同一 canonical payload 在草稿、saveIntent 和云函数得到相同 fingerprint。",
@@ -342,7 +342,7 @@
       "保存失败保留 draft/saveIntent 可重试；保存成功只生成一条记录、清除对应 draft/saveIntent 并进入详情。最高优先级/关键缺失确认沿用 Issue 3 的一次确认状态，普通缺口不阻断。",
       "详情只渲染保存快照中的狗狗、人饭、来源原料、狗饭克重、单餐评估、备注/照片和全部版本；修改 active 数据 fixture 后历史详情不重算、不重写。",
       "记录列表与详情仅表达单餐；可按 dogId+mealTime 检索并保留未来聚合字段，但不展示每日、连续多日或长期完整性结论。营养不足、品类单一或普通数据缺失记录仍可保存并持续展示缺口、覆盖和专业边界。",
-      "隔离数据库测试覆盖同 key 并发、重复重试、同 key 异 payload、越权 dogId/recordId、blocked/版本伪造、稳定分页和快照不可变；schema/index 检查、UI、主包与相关回归测试通过。",
+      "隔离数据库测试覆盖同 key 并发、重复重试、同 key 异 payload、当天更新、历史更新拒绝、revision 冲突、越权 dogId/recordId、blocked/版本伪造、稳定分页和历史快照不可变；schema/index 检查、UI、主包与相关回归测试通过。",
       "只提交云函数、机器契约、客户端与测试；不部署、不创建/修改生产集合或索引、不迁移生产数据、不访问秘密。"
     ],
     "nonGoals": [

@@ -6,7 +6,7 @@
 
 ## 1. 冻结契约
 
-- 云函数：`cloudfunctions/sharedMealRecord`，只接受 `save | list | get`。
+- 云函数：`cloudfunctions/sharedMealRecord`，接受 `save | update | list | get`；`update` 只允许按上海自然日更新当天记录。
 - 记录 schema：`cloudfunctions/sharedMealRecord/schema/record.schema.json`。
 - 访问规则：`cloudfunctions/sharedMealRecord/schema/access.json`，固定为 `ADMINONLY`；小程序客户端不可直读或直写，所有访问必须经过云函数及 `OPENID` 归属校验。
 - 索引：`cloudfunctions/sharedMealRecord/schema/indexes.json`，字段顺序和唯一性必须完全一致：
@@ -14,6 +14,7 @@
   2. `owner_meal_time`：`(_openid ASC, mealTime DESC, _id DESC)`，支持首页最近一顿和全部记录列表。
   3. `owner_dog_meal_time`：`(_openid ASC, targetDogId ASC, mealTime DESC, _id DESC)`，支持按狗狗筛选。
 - 照片：`photoFileIds` 仅兼容空数组；schema 和云函数都会拒绝非空数组。
+- 更新：当天更新原记录 ID，使用 `revision` 乐观锁和 `updateKey + updateFingerprint` 幂等；跨日后服务端返回 `EDIT_WINDOW_EXPIRED`。
 
 原计划只列了唯一索引和按狗列表索引，但首页、记录页当前都不传 `targetDogId`。因此部署前补充 `owner_meal_time`，避免全量记录查询因缺少匹配索引失败。
 
@@ -68,6 +69,8 @@
 3. `list` 能且只能看到当前用户范围内的记录。
 4. `get` 读回的狗狗、人饭、克重、评估和版本快照与保存候选一致。
 5. 另一测试用户无法读取该记录。
+
+编辑烟测在取得单独授权后补充：当天 `update` 保持记录 ID、递增 `revision`，重复更新返回同一版本；跨过上海自然日后更新被拒绝。
 
 测试数据不自动删除；清理需要另行授权。
 

@@ -16,6 +16,31 @@ function touchYOf(touch) {
   return Number.isFinite(clientY) ? clientY : Number(touch.pageY)
 }
 
+function normalizedScrollTop(value, fallback = 0) {
+  const scrollTop = Number(value)
+  return Number.isFinite(scrollTop) ? Math.max(0, scrollTop) : fallback
+}
+
+function maybeCloseExpandedTouch(component) {
+  if (
+    component.expandedTouchStartScrollTopResolved !== true
+    || component.expandedTouchCloseTriggered
+  ) return
+
+  const startY = Number(component.expandedTouchStartY)
+  const currentY = Number(component.expandedTouchCurrentY)
+  const startScrollTop = Number(component.expandedTouchStartScrollTop)
+  if (!Number.isFinite(startY) || !Number.isFinite(currentY) || !Number.isFinite(startScrollTop)) return
+
+  if (
+    startScrollTop <= SCROLL_TOP_THRESHOLD
+    && currentY - startY >= SWIPE_CLOSE_DISTANCE
+  ) {
+    component.expandedTouchCloseTriggered = true
+    component.onToggle()
+  }
+}
+
 function shortProfileName(standard) {
   const name = String(standard.profileName || '')
   if (standard.key === 'gb' && standard.profileCode === 'growth_gestation_lactation') return '幼犬及繁殖期犬粮'
@@ -226,41 +251,79 @@ Component({
 
     onExpandedScroll(event) {
       const scrollTop = Number(event.detail && event.detail.scrollTop)
-      this.expandedScrollTop = Number.isFinite(scrollTop) ? Math.max(0, scrollTop) : 0
+      this.expandedScrollTop = normalizedScrollTop(scrollTop)
+    },
+
+    onExpandedScrollToUpper() {
+      this.expandedScrollTop = 0
+    },
+
+    readExpandedScrollTop(callback) {
+      const fallback = normalizedScrollTop(this.expandedScrollTop)
+      const query = typeof this.createSelectorQuery === 'function'
+        ? this.createSelectorQuery()
+        : null
+      const wxApi = typeof wx === 'undefined' ? null : wx
+      if (!query && (!wxApi || typeof wxApi.createSelectorQuery !== 'function')) {
+        callback(fallback)
+        return
+      }
+
+      try {
+        const scopedQuery = query || wxApi.createSelectorQuery().in(this)
+        scopedQuery
+          .select('.nutrition-assessment__scroll')
+          .scrollOffset((offset) => {
+            const scrollTop = normalizedScrollTop(offset && offset.scrollTop, fallback)
+            this.expandedScrollTop = scrollTop
+            callback(scrollTop)
+          })
+          .exec()
+      } catch (error) {
+        callback(fallback)
+      }
     },
 
     onExpandedTouchStart(event) {
       const touch = event.touches && event.touches[0]
       if (!touch) return
+      const gestureId = Number(this.expandedTouchGestureId || 0) + 1
+      this.expandedTouchGestureId = gestureId
       this.expandedTouchStartY = touchYOf(touch)
+      this.expandedTouchCurrentY = this.expandedTouchStartY
       this.expandedTouchStartScrollTop = this.expandedScrollTop || 0
+      this.expandedTouchStartScrollTopResolved = false
       this.expandedTouchCloseTriggered = false
+      this.readExpandedScrollTop((scrollTop) => {
+        if (this.expandedTouchGestureId !== gestureId) return
+        this.expandedTouchStartScrollTop = scrollTop
+        this.expandedTouchStartScrollTopResolved = true
+        maybeCloseExpandedTouch(this)
+      })
     },
 
     onExpandedTouchMove(event) {
       const touch = event.touches && event.touches[0]
-      const startY = Number(this.expandedTouchStartY)
-      const startScrollTop = Number(this.expandedTouchStartScrollTop)
-      if (!touch || !Number.isFinite(startY) || this.expandedTouchCloseTriggered) return
-
-      if (
-        startScrollTop <= SCROLL_TOP_THRESHOLD
-        && touchYOf(touch) - startY >= SWIPE_CLOSE_DISTANCE
-      ) {
-        this.expandedTouchCloseTriggered = true
-        this.onToggle()
-      }
+      if (!touch || this.expandedTouchCloseTriggered) return
+      this.expandedTouchCurrentY = touchYOf(touch)
+      maybeCloseExpandedTouch(this)
     },
 
     onExpandedTouchEnd() {
+      this.expandedTouchGestureId = Number(this.expandedTouchGestureId || 0) + 1
       this.expandedTouchStartY = 0
+      this.expandedTouchCurrentY = 0
       this.expandedTouchStartScrollTop = 0
+      this.expandedTouchStartScrollTopResolved = false
       this.expandedTouchCloseTriggered = false
     },
 
     onExpandedTouchCancel() {
+      this.expandedTouchGestureId = Number(this.expandedTouchGestureId || 0) + 1
       this.expandedTouchStartY = 0
+      this.expandedTouchCurrentY = 0
       this.expandedTouchStartScrollTop = 0
+      this.expandedTouchStartScrollTopResolved = false
       this.expandedTouchCloseTriggered = false
     },
 

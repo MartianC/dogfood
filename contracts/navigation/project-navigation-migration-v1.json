@@ -150,7 +150,7 @@
     { "path": "subpackages/shared-meal/menu-search/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealMenu", "targetHandling": "保留 canonical 菜单选择页及 draftId 参数" },
     { "path": "subpackages/shared-meal/dog-select/menu-search/index", "package": "subpackages/shared-meal", "classification": "compatibility", "canonicalId": null, "dependencyProfile": "redirectShell", "targetHandling": "保留旧嵌套路由跳转壳，透传参数到 canonical 菜单页" },
     { "path": "subpackages/shared-meal/compose/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealCompose", "targetHandling": "保留 draftId、编辑、评估和幂等保存闭环" },
-    { "path": "subpackages/shared-meal/record-detail/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealRecordDetail", "targetHandling": "保留 recordId 与不可变快照详情" }
+    { "path": "subpackages/shared-meal/record-detail/index", "package": "subpackages/shared-meal", "classification": "retain", "canonicalId": null, "dependencyProfile": "sharedMealRecordDetail", "targetHandling": "保留 recordId；当天记录可进入编辑，历史记录只读快照" }
   ],
   "legacyDeepLinks": [
     { "path": "pages/recipes/list/index", "queryKeys": [], "handling": "retain-direct" },

@@ -142,6 +142,11 @@ async function saveSharedMealRecord(saveIntent) {
   return callRecordFunction({ action: 'save', payload: saveIntent })
 }
 
+async function updateSharedMealRecord(updateIntent) {
+  if (!canUseCloud()) return mock.updateSharedMealRecord(updateIntent)
+  return callRecordFunction({ action: 'update', payload: updateIntent })
+}
+
 async function listSharedMealRecords(options = {}) {
   if (!canUseCloud()) return mock.listSharedMealRecords(options)
   return callRecordFunction({ action: 'list', ...options })
@@ -177,6 +182,7 @@ module.exports = {
   searchHumanRecipes,
   getHumanRecipe,
   saveSharedMealRecord,
+  updateSharedMealRecord,
   listSharedMealRecords,
   getSharedMealRecord,
   listWeightMeasurements,

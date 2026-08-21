@@ -23,6 +23,13 @@ if (schema.properties.photoFileIds.maxItems !== 0) {
   throw new Error('本餐记录照片字段必须只兼容空数组')
 }
 if (
+  schema.properties.revision.type !== 'integer'
+  || schema.properties.revision.minimum !== 1
+  || schema.properties.updatedAt.type !== 'string'
+) {
+  throw new Error('本餐记录缺少当天编辑所需的 revision/updatedAt 字段合同')
+}
+if (
   access.collection !== 'shared_meal_records'
   || access.aclTag !== 'ADMINONLY'
   || access.clientRead !== false

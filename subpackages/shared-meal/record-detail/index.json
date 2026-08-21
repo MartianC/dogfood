@@ -2,6 +2,8 @@
   "navigationBarTitleText": "本餐详情",
   "usingComponents": {
     "ui-card": "../../../components/ui/ui-card/index",
-    "ui-notice": "../../../components/ui/ui-notice/index"
+    "ui-notice": "../../../components/ui/ui-notice/index",
+    "ui-button": "../../../components/ui/ui-button/index",
+    "nutrition-assessment": "../../../components/nutrition-assessment/index"
   }
 }

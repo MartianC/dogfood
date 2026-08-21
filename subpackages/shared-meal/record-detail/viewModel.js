@@ -256,6 +256,7 @@ function createSharedMealRecordDetailModel(record = {}) {
     id: String(record.id || record._id || ''),
     dog: dogModel(record),
     assessment: assessmentModel(record),
+    assessmentSnapshot: record.assessment || {},
     humanMenus,
     dogMealItems: dogMealModels(record, humanMenus),
     snapshot: snapshotModel(record),

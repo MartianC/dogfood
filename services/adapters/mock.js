@@ -7,6 +7,7 @@ const {
 } = require('../dogProfileContract')
 const weightContract = require('../weightContract')
 const careContract = require('../../contracts/care/careRecordContract')
+const { isSharedMealRecordEditableToday } = require('../sharedMealRecordEditability')
 
 function now() {
   return new Date().toISOString()
@@ -315,11 +316,53 @@ async function saveSharedMealRecord(saveIntent) {
     id: `shared_${saveIntent.requestFingerprint.replace(/[^a-z0-9]/gi, '')}`,
     idempotencyKey: saveIntent.idempotencyKey,
     requestFingerprint: saveIntent.requestFingerprint,
+    ...candidate,
     createdAt: now(),
-    ...candidate
+    updatedAt: now(),
+    revision: 1
   }
   storage.setSync('mockSharedMealRecords', list.concat(record))
   return record
+}
+
+async function updateSharedMealRecord(updateIntent) {
+  const list = storage.getSync('mockSharedMealRecords', [])
+  const index = list.findIndex((item) => item.id === updateIntent.recordId)
+  if (index < 0) throw new Error('未找到本餐记录')
+  const current = list[index]
+  if (current.lastUpdateKey === updateIntent.updateKey) {
+    if (current.lastUpdateFingerprint !== updateIntent.updateFingerprint) {
+      throw new Error('相同更新请求包含不同内容')
+    }
+    return JSON.parse(JSON.stringify(current))
+  }
+  if (!isSharedMealRecordEditableToday(current, new Date())) {
+    throw new Error('这顿饭已进入历史，只能查看')
+  }
+  if ((Number(current.revision) || 1) !== Number(updateIntent.expectedRevision)) {
+    throw new Error('这顿饭已被更新，请重新读取后再修改')
+  }
+  if (updateIntent.candidate.targetDogId !== current.targetDogId) {
+    throw new Error('本餐记录不能更换狗狗')
+  }
+  if (updateIntent.candidate.mealTime !== current.mealTime) {
+    throw new Error('本餐记录不能更改用餐时间')
+  }
+  const updated = {
+    ...current,
+    ...JSON.parse(JSON.stringify(updateIntent.candidate)),
+    id: current.id,
+    targetDogId: current.targetDogId,
+    mealTime: current.mealTime,
+    createdAt: current.createdAt,
+    updatedAt: now(),
+    revision: (Number(current.revision) || 1) + 1,
+    lastUpdateKey: updateIntent.updateKey,
+    lastUpdateFingerprint: updateIntent.updateFingerprint
+  }
+  list[index] = updated
+  storage.setSync('mockSharedMealRecords', list)
+  return JSON.parse(JSON.stringify(updated))
 }
 
 async function listSharedMealRecords(options = {}) {
@@ -417,6 +460,7 @@ module.exports = {
   searchHumanRecipes,
   getHumanRecipe,
   saveSharedMealRecord,
+  updateSharedMealRecord,
   listSharedMealRecords,
   getSharedMealRecord,
   listWeightMeasurements,

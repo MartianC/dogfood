@@ -114,6 +114,7 @@ test('完整详情模型从不可变快照生成狗狗、人饭、狗饭、双�
     },
     coverageText: '数据覆盖 · 能量与营养数据完整'
   })
+  assert.deepEqual(model.assessmentSnapshot, fullRecord().assessment)
   assert.equal(model.snapshot.versionText, 'record v1 · policy 2026.07 · nutrition CN-2026.1')
   assert.equal(model.snapshot.coverageText, '能量数据完整 · 营养数据完整')
   assert.equal(model.hasNote, true)

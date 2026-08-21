@@ -109,7 +109,7 @@ subpackages/shared-meal
 | 保留 | `subpackages/shared-meal/dog-select/index` | 作为统一入口守卫后的现有选狗页；支持既有草稿恢复流程和中央动作的空白狗饭直达模式 |
 | 保留 | `subpackages/shared-meal/menu-search/index` | canonical 人饭菜单选择页 |
 | 保留 | `subpackages/shared-meal/compose/index` | 当前编辑、评估和保存闭环 |
-| 保留 | `subpackages/shared-meal/record-detail/index` | 当前不可变快照详情 |
+| 保留 | `subpackages/shared-meal/record-detail/index` | 当天记录可编辑；历史记录只读快照详情 |
 | 保留 | `subpackages/custom-recipe/ingredient-search/index` | 继续由共享本餐与旧自定义食谱共同复用 |
 | 兼容 | `pages/recipes/list/index` | 保留直接深链，不进入 TabBar、首页或“我的” |
 | 兼容 | `pages/recipes/detail/index` | 保留 `id` 深链与旧制作周期往返 |

@@ -156,12 +156,15 @@ test('营养评估展开为保留顶部露出区的弹出层并支持下滑收�
   assert.match(wxml, /bindtouchmove="onExpandedTouchMove"/)
   assert.match(wxml, /bindtouchend="onExpandedTouchEnd"/)
   assert.match(wxml, /bindscroll="onExpandedScroll"/)
+  assert.match(wxml, /upper-threshold="0"/)
+  assert.match(wxml, /bindscrolltoupper="onExpandedScrollToUpper"/)
   assert.doesNotMatch(wxml, /nutrition-assessment__collapse/)
   assert.match(wxss, /top:\s*96rpx;/)
   assert.match(wxss, /transition:\s*transform\s+320ms\s+ease-out;/)
   assert.match(wxss, /transform:\s*translateY\(100%\)/)
   assert.equal(typeof definition.observers.expanded, 'function')
   assert.equal(typeof definition.methods.onExpandedScroll, 'function')
+  assert.equal(typeof definition.methods.onExpandedScrollToUpper, 'function')
   assert.equal(typeof definition.methods.onExpandedTouchStart, 'function')
   assert.equal(typeof definition.methods.onExpandedTouchMove, 'function')
   assert.equal(typeof definition.methods.onExpandedTouchEnd, 'function')
@@ -174,7 +177,8 @@ test('营养评估下滑超过阈值时在 touchmove 阶段收起', () => {
     properties: { expanded: true },
     expandedScrollTop: 0,
     triggerEvent(name, detail) { events.push({ name, detail }) },
-    onToggle: definition.methods.onToggle
+    onToggle: definition.methods.onToggle,
+    readExpandedScrollTop(callback) { callback(this.expandedScrollTop) }
   }
 
   definition.methods.onExpandedTouchStart.call(context, {
@@ -195,7 +199,8 @@ test('营养评估手指向上滑动时不触发收起', () => {
     properties: { expanded: true },
     expandedScrollTop: 0,
     triggerEvent(name, detail) { events.push({ name, detail }) },
-    onToggle: definition.methods.onToggle
+    onToggle: definition.methods.onToggle,
+    readExpandedScrollTop(callback) { callback(this.expandedScrollTop) }
   }
 
   definition.methods.onExpandedTouchStart.call(context, {
@@ -215,7 +220,8 @@ test('营养评估只有在详情已滚到顶部时才允许下滑收起', () =>
     properties: { expanded: true },
     expandedScrollTop: 80,
     triggerEvent(name, detail) { events.push({ name, detail }) },
-    onToggle: definition.methods.onToggle
+    onToggle: definition.methods.onToggle,
+    readExpandedScrollTop(callback) { callback(this.expandedScrollTop) }
   }
 
   definition.methods.onExpandedTouchStart.call(context, {
@@ -242,6 +248,59 @@ test('营养评估滚动时只更新实例滚动位置，不触发视图数据�
   })
 
   assert.equal(context.expandedScrollTop, 36)
+})
+
+test('营养评估惯性滚动到顶部后仍允许下滑收起', () => {
+  const definition = loadComponentDefinition()
+  const events = []
+  const context = {
+    properties: { expanded: true },
+    expandedScrollTop: 80,
+    triggerEvent(name, detail) { events.push({ name, detail }) },
+    onToggle: definition.methods.onToggle,
+    readExpandedScrollTop(callback) { callback(this.expandedScrollTop) }
+  }
+
+  definition.methods.onExpandedScrollToUpper.call(context)
+  definition.methods.onExpandedTouchStart.call(context, {
+    touches: [{ clientY: 120 }]
+  })
+  definition.methods.onExpandedTouchMove.call(context, {
+    touches: [{ clientY: 180 }]
+  })
+
+  assert.deepEqual(events, [{ name: 'toggle', detail: { expanded: false } }])
+})
+
+test('营养评估以原生 scrollTop 为准，不被过期缓存阻止下滑收起', async () => {
+  const definition = loadComponentDefinition()
+  const events = []
+  const selectorQuery = {
+    select() { return this },
+    scrollOffset(callback) {
+      callback({ scrollTop: 0 })
+      return this
+    },
+    exec() {}
+  }
+  const context = {
+    properties: { expanded: true },
+    expandedScrollTop: 80,
+    createSelectorQuery: () => selectorQuery,
+    triggerEvent(name, detail) { events.push({ name, detail }) },
+    onToggle: definition.methods.onToggle,
+    readExpandedScrollTop: definition.methods.readExpandedScrollTop
+  }
+
+  definition.methods.onExpandedTouchStart.call(context, {
+    touches: [{ clientY: 120 }]
+  })
+  definition.methods.onExpandedTouchMove.call(context, {
+    touches: [{ clientY: 180 }]
+  })
+  await Promise.resolve()
+
+  assert.deepEqual(events, [{ name: 'toggle', detail: { expanded: false } }])
 })
 
 test('营养评估取消触摸时清理下滑状态', () => {

@@ -16,7 +16,6 @@
       binderror="onQrError"
     />
     <view wx:else class="profile-feedback__error">二维码暂时无法显示，请稍后再试。</view>
-    <view class="profile-feedback__hint">长按或点击二维码即可识别</view>
   </ui-card>
 
   <view class="profile-feedback__footer">感谢你的反馈，爪饭会认真看每一条建议。</view>

@@ -61,8 +61,10 @@
     <scroll-view
       class="nutrition-assessment__scroll"
       scroll-y
+      upper-threshold="0"
       enable-flex
       bindscroll="onExpandedScroll"
+      bindscrolltoupper="onExpandedScrollToUpper"
       bindtouchstart="onExpandedTouchStart"
       bindtouchmove="onExpandedTouchMove"
       bindtouchend="onExpandedTouchEnd"

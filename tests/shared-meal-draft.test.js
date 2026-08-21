@@ -8,6 +8,7 @@ const fixture = require('./fixtures/shared-meal-ingredient-v1.json')
 const {
   SHARED_MEAL_DRAFT_STORAGE_KEY,
   createDraftFromMenus,
+  createDraftFromRecord,
   normalizeHumanRecipeDetail,
   saveDraft,
   restoreDraft,
@@ -297,6 +298,30 @@ test('同一 fixture 经草稿序列化和恢复后保持完整结构', () => {
     status: 'restored',
     draft
   })
+})
+
+test('当天记录可以转换为编辑草稿并保留原记录版本与快照字段', () => {
+  const record = {
+    id: 'record-edit-1',
+    revision: 3,
+    targetDogId: dog.id,
+    mealTime: new Date().toISOString(),
+    dogSnapshot: dog,
+    humanMenu: [menu()],
+    sourceIngredientSelections: [sourceSelection()],
+    dogMealItems: [{ ...fixture, perMealAmountGram: 80 }],
+    assessment: { energy: { available: true } },
+    note: '原备注',
+    photoFileIds: [],
+    versions: dataVersions
+  }
+  const draft = createDraftFromRecord(record)
+  assert.equal(draft.draftMode, 'edit')
+  assert.equal(draft.sourceRecordId, record.id)
+  assert.equal(draft.baseRevision, 3)
+  assert.equal(draft.mealTime, record.mealTime)
+  assert.equal(draft.ingredients[0].perMealAmountGram, 80)
+  assert.equal(draft.note, '原备注')
 })
 
 test('旧版或损坏草稿显式失效，只有明确 reset 才清除', () => {

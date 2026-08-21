@@ -41,6 +41,24 @@ const ERROR_DEFINITIONS = [
     matches: (text) => /\bNOT_FOUND\b|未找到本餐记录|record[^\n]*not found/i.test(text)
   },
   {
+    code: 'EDIT_WINDOW_EXPIRED',
+    message: '这顿饭已进入历史，只能查看',
+    retryable: false,
+    matches: (text) => /EDIT_WINDOW_EXPIRED|已进入历史|只能查看/i.test(text)
+  },
+  {
+    code: 'REVISION_CONFLICT',
+    message: '这顿饭已被更新，请重新读取后再修改',
+    retryable: false,
+    matches: (text) => /REVISION_CONFLICT|版本冲突|已被更新/i.test(text)
+  },
+  {
+    code: 'IDEMPOTENCY_CONFLICT',
+    message: '相同更新请求包含不同内容',
+    retryable: false,
+    matches: (text) => /IDEMPOTENCY_CONFLICT|相同更新请求包含不同内容/i.test(text)
+  },
+  {
     code: 'NETWORK_ERROR',
     message: '网络连接失败，请稍后重试',
     retryable: true,
@@ -99,6 +117,17 @@ async function save(saveIntent) {
   return result
 }
 
+async function update(updateIntent) {
+  if (!updateIntent || updateIntent.operation !== 'update' || !updateIntent.updateKey) {
+    throw new Error('本餐更新意图无效')
+  }
+  const result = await executeRecordOperation('update', () => (
+    adapter.updateSharedMealRecord(updateIntent)
+  ))
+  dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.MEALS)
+  return result
+}
+
 function list(options = {}) {
   return executeRecordOperation('list', () => adapter.listSharedMealRecords(options))
 }
@@ -129,6 +158,7 @@ function createUnifiedRecordTimelineState(options) {
 
 module.exports = {
   save,
+  update,
   list,
   get,
   createMonthState,

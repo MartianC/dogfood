@@ -6,6 +6,7 @@ const { canAddIngredient } = require('./ingredientOperationRules')
 const { isIngredientAllergen } = require('./dogIngredientPolicy')
 
 const MAX_PAGE_SIZE = 20
+const SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000
 
 function fail(code, message) {
   const error = new Error(message)
@@ -14,7 +15,31 @@ function fail(code, message) {
 }
 
 function normalizeRecord(document) {
-  return { ...document, id: String(document.id || document._id || '') }
+  return {
+    ...document,
+    id: String(document.id || document._id || ''),
+    revision: Number(document.revision) || 1,
+    updatedAt: document.updatedAt || document.createdAt || null
+  }
+}
+
+function shanghaiDateKey(value) {
+  const timestamp = value instanceof Date ? value.getTime() : new Date(value).getTime()
+  if (!Number.isFinite(timestamp)) return ''
+  const date = new Date(timestamp + SHANGHAI_OFFSET_MS)
+  return [
+    date.getUTCFullYear(),
+    String(date.getUTCMonth() + 1).padStart(2, '0'),
+    String(date.getUTCDate()).padStart(2, '0')
+  ].join('-')
+}
+
+function isEditableToday(record, now = new Date()) {
+  return Boolean(
+    record
+    && shanghaiDateKey(record.mealTime)
+    && shanghaiDateKey(record.mealTime) === shanghaiDateKey(now)
+  )
 }
 
 function validateSourceRefs(candidate, ingredients) {
@@ -132,6 +157,34 @@ function assertSameRequest(existed, saveIntent) {
   return normalizeRecord(existed)
 }
 
+function validateUpdateIntent(updateIntent) {
+  if (!updateIntent || updateIntent.schemaVersion !== 1) {
+    fail('INVALID_PAYLOAD', '更新数据格式无效')
+  }
+  const recordId = String(updateIntent.recordId || '').trim()
+  const expectedRevision = Number(updateIntent.expectedRevision)
+  if (!recordId) fail('INVALID_PAYLOAD', '更新记录 ID 缺失')
+  if (!Number.isInteger(expectedRevision) || expectedRevision < 1) {
+    fail('INVALID_PAYLOAD', '更新版本字段无效')
+  }
+  if (!updateIntent.updateKey || !updateIntent.updateFingerprint) {
+    fail('INVALID_PAYLOAD', '更新幂等字段缺失')
+  }
+  const validated = validateSaveIntent({
+    schemaVersion: 1,
+    idempotencyKey: updateIntent.updateKey,
+    requestFingerprint: updateIntent.updateFingerprint,
+    candidate: updateIntent.candidate
+  })
+  return {
+    ...validated,
+    recordId,
+    expectedRevision,
+    updateKey: String(updateIntent.updateKey),
+    updateFingerprint: String(updateIntent.updateFingerprint)
+  }
+}
+
 function decodeCursor(value) {
   if (!value) return null
   try {
@@ -147,7 +200,42 @@ function encodeCursor(record) {
   return encodeURIComponent(JSON.stringify({ mealTime: record.mealTime, id: record._id || record.id }))
 }
 
-function createSharedMealRecordGateway({ database, openId }) {
+async function runAtomic(database, operation) {
+  if (typeof database.runTransaction === 'function') {
+    return database.runTransaction(operation)
+  }
+  if (typeof database.startTransaction !== 'function') {
+    throw new Error('本餐记录服务缺少事务能力')
+  }
+  const transaction = await database.startTransaction()
+  try {
+    const result = await operation(transaction)
+    await transaction.commit()
+    return result
+  } catch (error) {
+    await transaction.rollback()
+    throw error
+  }
+}
+
+function buildUpdatedRecord(current, candidate, updateIntent, updatedAt) {
+  return normalizeRecord({
+    ...current,
+    ...candidate,
+    _openid: current._openid,
+    _id: current._id,
+    id: current.id,
+    targetDogId: current.targetDogId,
+    mealTime: current.mealTime,
+    createdAt: current.createdAt,
+    updatedAt,
+    revision: (Number(current.revision) || 1) + 1,
+    lastUpdateKey: updateIntent.updateKey,
+    lastUpdateFingerprint: updateIntent.updateFingerprint
+  })
+}
+
+function createSharedMealRecordGateway({ database, openId, now = () => new Date() }) {
   const collection = database.collection('shared_meal_records')
   return async function gateway(event = {}) {
     if (!openId) fail('UNAUTHENTICATED', '请先登录')
@@ -161,7 +249,9 @@ function createSharedMealRecordGateway({ database, openId }) {
         _openid: openId,
         idempotencyKey: validated.saveIntent.idempotencyKey,
         requestFingerprint: validated.saveIntent.requestFingerprint,
-        createdAt: new Date()
+        createdAt: now(),
+        updatedAt: now(),
+        revision: 1
       }
       try {
         const result = await collection.add({ data: record })
@@ -171,6 +261,48 @@ function createSharedMealRecordGateway({ database, openId }) {
         if (raced) return assertSameRequest(raced, validated.saveIntent)
         throw error
       }
+    }
+    if (event.action === 'update') {
+      const validated = validateUpdateIntent(event.payload)
+      return runAtomic(database, async (transaction) => {
+        const currentResult = await transaction.collection('shared_meal_records')
+          .doc(validated.recordId)
+          .get()
+        const current = currentResult && currentResult.data
+        if (!current || current._openid !== openId) fail('NOT_FOUND', '未找到本餐记录')
+
+        if (current.lastUpdateKey === validated.updateKey) {
+          if (current.lastUpdateFingerprint !== validated.updateFingerprint) {
+            fail('IDEMPOTENCY_CONFLICT', '相同更新请求包含不同内容')
+          }
+          return normalizeRecord(current)
+        }
+        if (!isEditableToday(current, now())) {
+          fail('EDIT_WINDOW_EXPIRED', '这顿饭已进入历史，只能查看')
+        }
+        if ((Number(current.revision) || 1) !== validated.expectedRevision) {
+          fail('REVISION_CONFLICT', '这顿饭已被更新，请重新读取后再修改')
+        }
+        if (validated.candidate.targetDogId !== current.targetDogId) {
+          fail('DOG_IMMUTABLE', '本餐记录不能更换狗狗')
+        }
+        if (validated.candidate.mealTime !== current.mealTime) {
+          fail('MEAL_TIME_IMMUTABLE', '本餐记录不能更改用餐时间')
+        }
+
+        await validateOwnershipAndCatalog(transaction, openId, validated)
+        const updatedAt = now()
+        const updated = buildUpdatedRecord(current, validated.candidate, validated, updatedAt)
+        const { _id, _openid, id, ...data } = updated
+        await transaction.collection('shared_meal_records').doc(validated.recordId).update({
+          data: {
+            ...data,
+            _openid,
+            id
+          }
+        })
+        return normalizeRecord(updated)
+      })
     }
     if (event.action === 'list') {
       const limit = Math.min(Math.max(Number(event.limit) || 20, 1), MAX_PAGE_SIZE)
@@ -215,6 +347,10 @@ module.exports = {
   main,
   createSharedMealRecordGateway,
   validateSaveIntent,
+  validateUpdateIntent,
+  isEditableToday,
+  shanghaiDateKey,
+  runAtomic,
   encodeCursor,
   decodeCursor
 }

@@ -165,6 +165,7 @@ function sourceSelectionFromDataset(dataset = {}) {
 Page({
   data: {
     draftId: '',
+    draftMode: 'create',
     dog: null,
     humanMenus: [],
     humanMenuGroups: [],
@@ -219,6 +220,7 @@ Page({
     )
     this.setData({
       dog: draft.dog,
+      draftMode: draft.draftMode || 'create',
       humanMenus: draft.humanMenus,
       humanMenuGroups: groups,
       humanMealSummary: humanMealSummary(groups),
@@ -407,7 +409,9 @@ Page({
   async persistRecord(saveIntent) {
     this.setData({ saving: true })
     try {
-      const record = await sharedMealRecordService.save(saveIntent)
+      const record = saveIntent.operation === 'update'
+        ? await sharedMealRecordService.update(saveIntent)
+        : await sharedMealRecordService.save(saveIntent)
       resetDraft(this.data.draftId)
       wx.redirectTo({
         url: `/subpackages/shared-meal/record-detail/index?recordId=${encodeURIComponent(record.id)}`

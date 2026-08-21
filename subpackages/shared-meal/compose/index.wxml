@@ -165,6 +165,6 @@
         />
       </view>
     </view>
-    <ui-button disabled="{{!ingredients.length}}" loading="{{saving}}" bind:tap="onSave">保存这顿</ui-button>
+    <ui-button disabled="{{!ingredients.length}}" loading="{{saving}}" bind:tap="onSave">{{draftMode === 'edit' ? '保存修改' : '保存这顿'}}</ui-button>
   </view>
 </view>

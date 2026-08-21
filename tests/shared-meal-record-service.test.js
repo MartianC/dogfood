@@ -50,6 +50,43 @@ test('Mock 记录保存幂等、同 key 异内容冲突并可稳定回看快照'
   assert.equal((await recordService.get(first.id)).dogSnapshot.name, '布丁')
 })
 
+test('Mock 当天更新保留记录 ID并递增版本，历史记录不可修改', async () => {
+  storage.removeSync('mockSharedMealRecords')
+  const mealTime = new Date().toISOString()
+  const saveIntent = intent()
+  saveIntent.candidate.mealTime = mealTime
+  const current = await recordService.save(saveIntent)
+  const updateIntent = {
+    schemaVersion: 1,
+    operation: 'update',
+    recordId: current.id,
+    expectedRevision: current.revision,
+    updateKey: `${current.id}:1:edit`,
+    updateFingerprint: 'fnv1a32:edit',
+    candidate: { ...saveIntent.candidate, note: '今天修改' }
+  }
+  const updated = await recordService.update(updateIntent)
+  assert.equal(updated.id, current.id)
+  assert.equal(updated.revision, 2)
+  assert.equal(updated.note, '今天修改')
+  assert.equal(updated.createdAt, current.createdAt)
+
+  const historicalIntent = intent()
+  historicalIntent.candidate.note = '历史记录'
+  historicalIntent.idempotencyKey = 'historical-draft'
+  historicalIntent.requestFingerprint = fingerprint(historicalIntent.candidate)
+  const historical = await recordService.save(historicalIntent)
+  await assert.rejects(
+    () => recordService.update({
+      ...updateIntent,
+      recordId: historical.id,
+      expectedRevision: historical.revision,
+      candidate: { ...historicalIntent.candidate, note: '历史修改' }
+    }),
+    /这顿饭已进入历史/
+  )
+})
+
 async function withCloudFailure(rawError, run) {
   const originalWx = global.wx
   global.wx = {

@@ -322,11 +322,17 @@ function createDraftFromMenus({
   mealTime = new Date().toISOString(),
   note = '',
   photoFileIds = [],
-  dataVersions
+  dataVersions,
+  draftMode = 'create',
+  sourceRecordId = null,
+  baseRevision = null
 } = {}) {
   const draft = {
     schemaVersion: SHARED_MEAL_DRAFT_SCHEMA_VERSION,
     id,
+    draftMode,
+    sourceRecordId,
+    baseRevision,
     dog,
     humanMenus,
     sourceIngredientSelections,
@@ -350,6 +356,14 @@ function validateDraft(draft) {
     throw new Error('共享本餐草稿 schemaVersion 无效')
   }
   if (!isNonEmptyString(draft.id)) throw new Error('共享本餐草稿 ID 无效')
+  const draftMode = draft.draftMode || 'create'
+  if (!['create', 'edit'].includes(draftMode)) throw new Error('共享本餐草稿模式无效')
+  if (draftMode === 'edit') {
+    if (!isNonEmptyString(draft.sourceRecordId)) throw new Error('共享本餐编辑草稿缺少记录 ID')
+    if (!Number.isInteger(Number(draft.baseRevision)) || Number(draft.baseRevision) < 1) {
+      throw new Error('共享本餐编辑草稿版本无效')
+    }
+  }
   if (!draft.dog || !isNonEmptyString(draft.dog.id)) throw new Error('共享本餐草稿狗狗无效')
   if (!Array.isArray(draft.humanMenus)) throw new Error('共享本餐草稿人饭菜单无效')
   if (!Array.isArray(draft.sourceIngredientSelections)) {
@@ -512,6 +526,9 @@ function saveDogSelectionDraft(dog, id = `shared-meal-${Date.now()}`) {
     : {
         schemaVersion: SHARED_MEAL_DRAFT_SCHEMA_VERSION,
         id,
+        draftMode: 'create',
+        sourceRecordId: null,
+        baseRevision: null,
         dog,
         humanMenus: [],
         sourceIngredientSelections: [],
@@ -524,6 +541,73 @@ function saveDogSelectionDraft(dog, id = `shared-meal-${Date.now()}`) {
         dataVersions: null
       }
   saveDraft(draft)
+  return draft
+}
+
+function dataVersionsFromRecord(record, ingredients) {
+  const firstIngredientVersions = ingredients.find((ingredient) => ingredient.dataVersions)
+    && ingredients.find((ingredient) => ingredient.dataVersions).dataVersions
+  const versions = record && record.versions || {}
+  return {
+    runtimeReleaseId: String(
+      firstIngredientVersions && firstIngredientVersions.runtimeReleaseId
+      || versions.runtimeReleaseId
+      || ''
+    ),
+    recipeVersion: firstIngredientVersions
+      ? firstIngredientVersions.recipeVersion
+      : versions.recipeVersion == null ? null : String(versions.recipeVersion),
+    mappingVersion: firstIngredientVersions
+      ? firstIngredientVersions.mappingVersion
+      : versions.mappingVersion == null ? null : String(versions.mappingVersion),
+    catalogVersion: String(
+      firstIngredientVersions && firstIngredientVersions.catalogVersion
+      || versions.catalogVersion
+      || ''
+    ),
+    policyVersion: String(
+      firstIngredientVersions && firstIngredientVersions.policyVersion
+      || versions.policyVersion
+      || ''
+    ),
+    nutritionSourceReleaseId: String(
+      firstIngredientVersions && firstIngredientVersions.nutritionSourceReleaseId
+      || versions.nutritionSourceReleaseId
+      || ''
+    )
+  }
+}
+
+function createDraftFromRecord(record, id = `shared-meal-edit-${record && (record.id || record._id) || Date.now()}`) {
+  const recordId = String(record && (record.id || record._id) || '')
+  if (!recordId) throw new Error('共享本餐记录 ID 无效')
+  const ingredients = canonicalizeIngredients(
+    Array.isArray(record.dogMealItems) ? record.dogMealItems : []
+  ).map((ingredient) => ({ ...ingredient }))
+  const dogSnapshot = {
+    ...(record.dogSnapshot || {}),
+    id: String(record.targetDogId || record.dogSnapshot && record.dogSnapshot.id || '')
+  }
+  const draft = {
+    schemaVersion: SHARED_MEAL_DRAFT_SCHEMA_VERSION,
+    id,
+    draftMode: 'edit',
+    sourceRecordId: recordId,
+    baseRevision: Number(record.revision) || 1,
+    dog: dogSnapshot,
+    humanMenus: JSON.parse(JSON.stringify(Array.isArray(record.humanMenu) ? record.humanMenu : [])),
+    sourceIngredientSelections: JSON.parse(JSON.stringify(
+      Array.isArray(record.sourceIngredientSelections) ? record.sourceIngredientSelections : []
+    )),
+    ingredients,
+    latestAssessment: record.assessment ? JSON.parse(JSON.stringify(record.assessment)) : null,
+    saveIntent: 'editing',
+    mealTime: record.mealTime,
+    note: String(record.note || ''),
+    photoFileIds: Array.isArray(record.photoFileIds) ? record.photoFileIds.slice() : [],
+    dataVersions: dataVersionsFromRecord(record, ingredients)
+  }
+  validateDraft(draft)
   return draft
 }
 
@@ -617,8 +701,28 @@ function buildSaveIntent(draftId, assessment) {
     draftVersion: draft.schemaVersion,
     candidate
   }
+  if (draft.draftMode === 'edit') {
+    return buildUpdateIntentFromDraft(draft, assessmentSnapshot, candidate)
+  }
   saveDraft({ ...draft, latestAssessment: assessmentSnapshot, saveIntent })
   return saveIntent
+}
+
+function buildUpdateIntentFromDraft(draft, assessmentSnapshot, candidate) {
+  const updateFingerprint = fingerprint(candidate)
+  const updateIntent = {
+    schemaVersion: 1,
+    operation: 'update',
+    recordId: draft.sourceRecordId,
+    expectedRevision: Number(draft.baseRevision) || 1,
+    updateKey: `${draft.sourceRecordId}:${Number(draft.baseRevision) || 1}:${updateFingerprint}`,
+    updateFingerprint,
+    warningConfirmation: assessmentSnapshot.warningLevel === 'confirm' ? 'required' : 'not_required',
+    draftVersion: draft.schemaVersion,
+    candidate
+  }
+  saveDraft({ ...draft, latestAssessment: assessmentSnapshot, saveIntent: updateIntent })
+  return updateIntent
 }
 
 function confirmSaveIntent(draftId) {
@@ -639,6 +743,7 @@ module.exports = {
   validateDraftAgainstTrustedMenus,
   normalizeHumanRecipeDetail,
   createDraftFromMenus,
+  createDraftFromRecord,
   includeSourceIngredient,
   removeSourceIngredient,
   reincludeSourceIngredient,
