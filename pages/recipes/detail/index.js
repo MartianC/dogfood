@@ -1,6 +1,6 @@
 const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
-const recipeUtils = require('../../../utils/recipe')
+const bundledRecipeService = require('../../../services/bundledRecipeService')
 const risk = require('../../../utils/risk')
 const assets = require('../../../utils/assets')
 
@@ -27,7 +27,7 @@ Page({
   async load() {
     const app = getApp()
     if (app.globalData.authReady) await app.globalData.authReady
-    const recipe = recipeUtils.findRecipeById(app.globalData.recipes, this.recipeId)
+    const recipe = bundledRecipeService.findRecipeById(this.recipeId)
     const dogs = await dogService.listDogs()
     const riskWarnings = risk.checkRisksForDogs(recipe, dogs)
     this.setData({

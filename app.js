@@ -1,14 +1,11 @@
 const authService = require('./services/authService')
 const env = require('./config/env')
-const recipes = require('./data/recipes')
 
 App({
   globalData: {
     authState: 'guest',
     userInfo: null,
     dogs: [],
-    recipes,
-    recipeVersion: 'bundled-v1',
     authReady: null,
     redirectFrom: null,
     latestPlan: null

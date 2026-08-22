@@ -2,7 +2,7 @@ const dogService = require('../../../services/dogService')
 const planCalculatorService = require('../services/planCalculatorService')
 const mealPlanService = require('../../../services/mealPlanService')
 const customRecipeService = require('../services/customRecipeService')
-const recipeUtils = require('../../../utils/recipe')
+const bundledRecipeService = require('../../../services/bundledRecipeService')
 const calculator = require('../../../utils/calculator')
 
 function withDisplay(items) {
@@ -21,7 +21,6 @@ Page({
   },
 
   async onLoad(options) {
-    const app = getApp()
     const dogs = await dogService.listDogs()
     let recipe
     if (options.source === 'custom') {
@@ -48,7 +47,7 @@ Page({
         steps: ['食材清洗并切成适合入口的小块', '肉类和蔬菜分别蒸熟或煮熟', '将食材混合均匀', '按每餐重量分装并标注日期']
       }
     } else {
-      recipe = recipeUtils.findRecipeById(app.globalData.recipes, options.recipeId)
+      recipe = bundledRecipeService.findRecipeById(options.recipeId)
     }
     const selectedDogIds = dogs.length === 1 ? [dogs[0].id] : dogs.map((dog) => dog.id)
     this.setData({ recipe, dogs, selectedDogIds }, this.updatePreview)

@@ -20,11 +20,13 @@ test('小程序运行时食谱数据通过 JS 模块加载', () => {
   })
 })
 
-test('app.js 不直接 require JSON 数据文件', () => {
+test('app.js 不在冷启动路径加载食谱数据文件', () => {
   const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8')
 
   assert.doesNotMatch(appSource, /require\(['"].*\.json['"]\)/)
-  assert.match(appSource, /require\(['"]\.\/data\/recipes['"]\)/)
+  assert.doesNotMatch(appSource, /data\/recipes|globalData\.recipes|\brecipes\s*,/)
+  const recipeService = require('../services/bundledRecipeService')
+  assert.ok(recipeService.findRecipeById('chicken-pumpkin'))
 })
 
 test('应用启动只完成认证快照，不在首屏路由期间启动远端后台任务', async () => {
@@ -41,7 +43,6 @@ test('应用启动只完成认证快照，不在首屏路由期间启动远端�
         }
       }
       if (request === './config/env') return { useCloudBase: false }
-      if (request === './data/recipes') return []
       throw new Error(`测试未提供依赖：${request}`)
     },
     Date,
