@@ -11,6 +11,7 @@ const {
   restoreDraft,
   saveDraft
 } = require('../subpackages/shared-meal/services/sharedMealDraftService')
+const nutritionDataService = require('../subpackages/shared-meal/services/nutritionDataService')
 
 const root = path.resolve(__dirname, '..')
 const dog = { id: 'dog-source-panel', name: '布丁' }
@@ -294,6 +295,54 @@ test('来源面板移除和重新加入后立即同步狗饭条目、克重与�
   assert.equal(page.assessmentRefreshCount(), 4)
 
   storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+})
+
+test('共享本餐只在食材身份变化时重新读取营养档案', async () => {
+  storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  const draft = createDraftFromMenus({
+    id: 'draft-assessment-cache',
+    dog,
+    humanMenus: [menu()],
+    sourceIngredientSelections: [selection()],
+    dataVersions: fixture.dataVersions
+  })
+  draft.ingredients[0].perMealAmountGram = 80
+  saveDraft(draft)
+  const originalLoad = nutritionDataService.loadMealAssessmentData
+  let loadCount = 0
+  nutritionDataService.loadMealAssessmentData = async () => {
+    loadCount += 1
+    return {
+      standards: [],
+      nutrientRecords: [{ food_id: fixture.foodId, nutrient_id: 1008, amount: 120 }],
+      dataErrors: { standards: null, nutrients: null }
+    }
+  }
+
+  try {
+    const { definition, moduleExports } = loadComposePage()
+    const page = {
+      ...definition,
+      data: {
+        ...structuredClone(definition.data),
+        draftId: draft.id,
+        humanMenus: structuredClone(draft.humanMenus)
+      },
+      setData(patch) { Object.assign(this.data, patch) }
+    }
+    await page.refreshMealAssessment()
+    const changed = restoreDraft(draft.id).draft
+    changed.ingredients[0].perMealAmountGram = 120
+    saveDraft(changed)
+    await page.refreshMealAssessment()
+
+    assert.equal(loadCount, 1)
+    assert.equal(moduleExports.ingredientDataSignature(changed.ingredients), fixture.foodId)
+    assert.equal(page.data.ingredients[0].amountInput, '120')
+  } finally {
+    nutritionDataService.loadMealAssessmentData = originalLoad
+    storage.removeSync(SHARED_MEAL_DRAFT_STORAGE_KEY)
+  }
 })
 
 test('伪造 blocked 来源操作仍由草稿服务拒绝且页面不产生绕过状态', () => {

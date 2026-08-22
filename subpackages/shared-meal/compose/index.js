@@ -38,6 +38,14 @@ function formatEnergyValue(value) {
   return Number.isInteger(value) ? String(value) : String(Math.round(value * 10) / 10)
 }
 
+function ingredientDataSignature(ingredients = []) {
+  return ingredients
+    .map((item) => String(item && (item.ingredientId || item.id) || ''))
+    .filter(Boolean)
+    .sort()
+    .join('|')
+}
+
 function preparationStateByVariantId(humanMenus = []) {
   const states = new Map()
   humanMenus.forEach((menu) => {
@@ -243,14 +251,20 @@ Page({
     const requestId = (this.assessmentRequestId || 0) + 1
     this.assessmentRequestId = requestId
     this.setData({ nutritionLoading: true })
-    let assessmentData
-    try {
-      assessmentData = await nutritionDataService.loadMealAssessmentData(draft.ingredients)
-    } catch (error) {
-      assessmentData = {
-        standards: [],
-        nutrientRecords: [],
-        dataErrors: { standards: error, nutrients: error }
+    const signature = ingredientDataSignature(draft.ingredients)
+    let assessmentData = this.mealAssessmentDataCache
+    if (!assessmentData || this.mealAssessmentDataSignature !== signature) {
+      try {
+        assessmentData = await nutritionDataService.loadMealAssessmentData(draft.ingredients)
+        if (requestId !== this.assessmentRequestId) return
+        this.mealAssessmentDataCache = assessmentData
+        this.mealAssessmentDataSignature = signature
+      } catch (error) {
+        assessmentData = {
+          standards: [],
+          nutrientRecords: [],
+          dataErrors: { standards: error, nutrients: error }
+        }
       }
     }
     if (requestId !== this.assessmentRequestId) return
@@ -262,16 +276,20 @@ Page({
     })
     const snapshot = buildAssessmentSnapshot(draft, assessment)
     updateDraftAssessment(draft.id, snapshot)
-    this.setData({
+    const nextData = {
       ingredients: ingredientRows(
         draft.ingredients,
         assessmentData.nutrientRecords,
         draft.humanMenus
       ),
-      nutrientRecords: assessmentData.nutrientRecords,
       mealAssessment: assessment,
       nutritionLoading: false
-    })
+    }
+    if (this.appliedNutrientRecords !== assessmentData.nutrientRecords) {
+      nextData.nutrientRecords = assessmentData.nutrientRecords
+      this.appliedNutrientRecords = assessmentData.nutrientRecords
+    }
+    this.setData(nextData)
   },
 
   onIngredientAmountInput(event) {
@@ -448,5 +466,6 @@ module.exports = {
   ingredientRows,
   humanMealGroups,
   humanMealSummary,
-  sourceSelectionFromDataset
+  sourceSelectionFromDataset,
+  ingredientDataSignature
 }
