@@ -7,6 +7,7 @@ const {
 
 const COLLECTION_NAME = 'care_records'
 const MAX_PAGE_SIZE = 20
+const DEFAULT_UPCOMING_LIMIT = 3
 
 function fail(code, message) {
   const error = new Error(message)
@@ -99,6 +100,15 @@ function pageLimit(value) {
   return Number.isFinite(requested)
     ? Math.min(Math.max(Math.floor(requested), 1), MAX_PAGE_SIZE)
     : MAX_PAGE_SIZE
+}
+
+function normalizeDogIds(value) {
+  if (!Array.isArray(value)) fail('INVALID_PAYLOAD', '首页护理事项缺少目标狗狗')
+  const dogIds = [...new Set(value.map((item) => String(item || '').trim()).filter(Boolean))]
+  if (!dogIds.length || dogIds.length > MAX_PAGE_SIZE) {
+    fail('INVALID_PAYLOAD', '首页护理事项目标狗狗无效')
+  }
+  return dogIds
 }
 
 function validDateText(value) {
@@ -195,6 +205,23 @@ function createCareRecordGateway({ database, openId }) {
       }
     }
 
+    if (event.action === 'listUpcoming') {
+      const dogIds = normalizeDogIds(event.dogIds)
+      const limit = event.limit == null ? DEFAULT_UPCOMING_LIMIT : pageLimit(event.limit)
+      const result = await collection.where(database.command.and([
+        { _openid: openId },
+        { dogId: database.command.in(dogIds) },
+        { nextDate: database.command.gte('0000-01-01') }
+      ]))
+        .orderBy('nextDate', 'asc')
+        .orderBy('_id', 'asc')
+        .limit(limit)
+        .get()
+      return {
+        items: (result.data || []).map(normalizeStoredRecord)
+      }
+    }
+
     if (event.action === 'get') {
       const document = await getOwnedDocument(collection, openId, event.recordId)
       return normalizeStoredRecord(document)
@@ -218,5 +245,6 @@ module.exports = {
   createCareRecordGateway,
   validateWritePayload,
   encodeCursor,
-  decodeCursor
+  decodeCursor,
+  normalizeDogIds
 }

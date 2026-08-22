@@ -445,6 +445,22 @@ async function listCareRecords(options = {}) {
   }
 }
 
+async function listUpcomingCareRecords(options = {}) {
+  const dogIds = new Set((Array.isArray(options.dogIds) ? options.dogIds : [])
+    .map((item) => String(item || '').trim())
+    .filter(Boolean))
+  const limit = Math.min(Math.max(Number(options.limit) || 3, 1), 20)
+  const items = storage.getSync('mockCareRecords', [])
+    .filter((item) => dogIds.has(String(item.dogId || '')) && String(item.nextDate || ''))
+    .map((item) => careContract.normalizeCareRecord(item))
+    .sort((left, right) => (
+      String(left.nextDate || '').localeCompare(String(right.nextDate || ''))
+      || String(left.id || '').localeCompare(String(right.id || ''))
+    ))
+    .slice(0, limit)
+  return { items: JSON.parse(JSON.stringify(items)) }
+}
+
 module.exports = {
   login,
   updateUserProfile,
@@ -464,5 +480,6 @@ module.exports = {
   listSharedMealRecords,
   getSharedMealRecord,
   listWeightMeasurements,
-  listCareRecords
+  listCareRecords,
+  listUpcomingCareRecords
 }

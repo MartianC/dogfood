@@ -59,7 +59,8 @@ const expectedStorageKeys = [
 
 const expectedIndexes = [
   ['_openid:asc', 'dogId:asc', 'occurredOn:desc', '_id:desc'],
-  ['_openid:asc', 'dogId:asc', 'type:asc', 'occurredOn:desc', '_id:desc']
+  ['_openid:asc', 'dogId:asc', 'type:asc', 'occurredOn:desc', '_id:desc'],
+  ['_openid:asc', 'dogId:asc', 'nextDate:asc', '_id:asc']
 ]
 
 function assert(condition, message) {

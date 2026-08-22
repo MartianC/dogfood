@@ -41,6 +41,9 @@ function fakeDatabase({ rejectMissingDocs = false } = {}) {
       if (expected && typeof expected === 'object' && '$gte' in expected) {
         return document[key] >= expected.$gte
       }
+      if (expected && typeof expected === 'object' && '$in' in expected) {
+        return expected.$in.includes(document[key])
+      }
       return document[key] === expected
     })
   }
@@ -103,7 +106,8 @@ function fakeDatabase({ rejectMissingDocs = false } = {}) {
       and: (items) => ({ $and: items }),
       or: (items) => ({ $or: items }),
       lt: (value) => ({ $lt: value }),
-      gte: (value) => ({ $gte: value })
+      gte: (value) => ({ $gte: value }),
+      in: (values) => ({ $in: values })
     }
   }
 }
@@ -159,6 +163,9 @@ test('护理云函数创建、列表筛选、游标分页、更新和删除遵�
   const filtered = await gateway({ action: 'list', dogId: 'dog-1', type: 'vaccine' })
   assert.deepEqual(filtered.items.map((item) => item.id), ['care-1'])
 
+  const upcoming = await gateway({ action: 'listUpcoming', dogIds: ['dog-1'], limit: 3 })
+  assert.deepEqual(upcoming.items.map((item) => item.id), ['care-1'])
+
   const updated = await gateway({
     action: 'update',
     recordId: first.id,
@@ -205,6 +212,10 @@ test('护理云函数拒绝跨用户、跨狗更新和无效查询，不泄漏�
   await assert.rejects(
     () => ownerGateway({ action: 'list', dogId: '' }),
     /缺少目标狗狗/
+  )
+  await assert.rejects(
+    () => ownerGateway({ action: 'listUpcoming', dogIds: [] }),
+    /目标狗狗无效/
   )
   assert.throws(() => decodeCursor('not-a-cursor'), /分页游标无效/)
 })

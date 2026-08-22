@@ -8,8 +8,7 @@ const {
 } = require('./weightContract')
 const careContract = require('../contracts/care/careRecordContract')
 
-const DEFAULT_CARE_PAGE_SIZE = 20
-const MAX_CARE_PAGES = 100
+const HOME_ITEM_LIMIT = 3
 
 let adapter = env.useCloudBase ? cloudAdapter : mockAdapter
 
@@ -98,37 +97,11 @@ function careItem(dog, record, now) {
   }
 }
 
-async function listAllCareRecords(dogId) {
-  const items = []
-  let cursor = null
-  const cursors = new Set()
-
-  for (let page = 0; page < MAX_CARE_PAGES; page += 1) {
-    const result = await adapter.listCareRecords({
-      dogId,
-      limit: DEFAULT_CARE_PAGE_SIZE,
-      cursor
-    })
-    const pageItems = asArray(result && result.items)
-    items.push(...pageItems)
-
-    const nextCursor = text(result && result.nextCursor)
-    if (!nextCursor || !pageItems.length || cursors.has(nextCursor)) break
-    cursors.add(nextCursor)
-    cursor = nextCursor
-  }
-
-  return items
-}
-
-async function itemsForDog(dog, now) {
+async function weightItemsForDog(dog, now) {
   const dogId = dogIdOf(dog)
   if (!dogId) return []
 
-  const [weightResult, careRecords] = await Promise.all([
-    adapter.listWeightMeasurements({ dogId, limit: 1 }),
-    listAllCareRecords(dogId)
-  ])
+  const weightResult = await adapter.listWeightMeasurements({ dogId, limit: 1 })
 
   const latestMeasurement = selectLatestValidWeightMeasurement(
     asArray(weightResult && weightResult.items)
@@ -140,11 +113,6 @@ async function itemsForDog(dog, now) {
     const item = weightItem(dog, latestMeasurement, now)
     if (item) items.push(item)
   }
-
-  careRecords.forEach((record) => {
-    const item = careItem(dog, record, now)
-    if (item) items.push(item)
-  })
   return items
 }
 
@@ -161,8 +129,20 @@ function compareHomeItems(left, right) {
 
 async function listForDogs(dogs, { now = new Date() } = {}) {
   const dogList = asArray(dogs).filter((dog) => dogIdOf(dog))
-  const items = (await Promise.all(dogList.map((dog) => itemsForDog(dog, now))))
-    .flat()
+  if (!dogList.length) return []
+  const dogsById = new Map(dogList.map((dog) => [dogIdOf(dog), dog]))
+  const [weightGroups, careResult] = await Promise.all([
+    Promise.all(dogList.map((dog) => weightItemsForDog(dog, now))),
+    adapter.listUpcomingCareRecords({
+      dogIds: dogList.map((dog) => dogIdOf(dog)),
+      limit: HOME_ITEM_LIMIT
+    })
+  ])
+  const careItems = asArray(careResult && careResult.items).map((record) => {
+    const dog = dogsById.get(text(record && record.dogId))
+    return dog ? careItem(dog, record, now) : null
+  }).filter(Boolean)
+  const items = weightGroups.flat().concat(careItems)
   return items.sort(compareHomeItems)
 }
 
@@ -175,10 +155,9 @@ function __resetAdapterForTest() {
 }
 
 module.exports = {
-  DEFAULT_CARE_PAGE_SIZE,
+  HOME_ITEM_LIMIT,
   formatWeightAge,
   formatUserDate,
-  listAllCareRecords,
   listForDogs,
   __setAdapterForTest,
   __resetAdapterForTest

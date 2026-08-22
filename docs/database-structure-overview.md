@@ -126,9 +126,9 @@ CloudBase 公共只读投影
 | `createdAt` | Date | 服务端创建时间 |
 | `updatedAt` | Date | 服务端最后更新时间 |
 
-存储 schema 位于 `cloudfunctions/careRecord/schema/record.schema.json`，实体与写入字段合同位于 `contracts/care/`。列表索引位于 `cloudfunctions/careRecord/schema/indexes.json`：`_openid ASC, dogId ASC, occurredOn DESC, _id DESC` 支持全部记录分页，`_openid ASC, dogId ASC, type ASC, occurredOn DESC, _id DESC` 支持类型筛选；权限位于同目录 `access.json`，固定为 `ADMINONLY`。
+存储 schema 位于 `cloudfunctions/careRecord/schema/record.schema.json`，实体与写入字段合同位于 `contracts/care/`。列表索引位于 `cloudfunctions/careRecord/schema/indexes.json`：`_openid ASC, dogId ASC, occurredOn DESC, _id DESC` 支持全部记录分页，`_openid ASC, dogId ASC, type ASC, occurredOn DESC, _id DESC` 支持类型筛选，`_openid ASC, dogId ASC, nextDate ASC, _id ASC` 支持首页一次读取多只狗最靠前的护理安排；权限位于同目录 `access.json`，固定为 `ADMINONLY`。
 
-护理列表只按 `occurredOn DESC → _id DESC` 稳定排序。下次日期只作为事实记录字段保存，没有下次日期就不生成提醒，不根据类型、名称、日期或备注推导医疗周期或健康结论。
+护理历史列表只按 `occurredOn DESC → _id DESC` 稳定排序；首页护理事项按 `nextDate ASC → _id ASC` 最多读取 3 条。下次日期只作为事实记录字段保存，没有下次日期就不生成提醒，不根据类型、名称、日期或备注推导医疗周期或健康结论。
 
 ### `customRecipes`
 

@@ -6,12 +6,13 @@
 
 ## 1. 冻结契约
 
-- 云函数：`cloudfunctions/careRecord`，接受 `create | update | delete | list | get`。
+- 云函数：`cloudfunctions/careRecord`，接受 `create | update | delete | list | listUpcoming | get`。
 - 存储 schema：`cloudfunctions/careRecord/schema/record.schema.json`。
 - 访问规则：`cloudfunctions/careRecord/schema/access.json`，固定为 `ADMINONLY`；小程序客户端不可直读或直写，所有访问必须经过云函数及 `_openid`/狗狗归属校验。
 - 索引：`cloudfunctions/careRecord/schema/indexes.json`，字段顺序必须完全一致：
   1. `owner_dog_occurred_on`：`(_openid ASC, dogId ASC, occurredOn DESC, _id DESC)`。
   2. `owner_dog_type_occurred_on`：`(_openid ASC, dogId ASC, type ASC, occurredOn DESC, _id DESC)`。
+  3. `owner_dog_next_date`：`(_openid ASC, dogId ASC, nextDate ASC, _id ASC)`。
 - 列表排序：`occurredOn DESC → _id DESC`；分类筛选只接受 `vaccine`、`internal_deworming`、`external_deworming`、`other`。
 - 写入重试：创建没有幂等命令字段，线上烟测和客户端不得把超时后的 `create` 自动重放为第二条护理记录。
 
@@ -23,7 +24,7 @@
 2. 目标环境状态为 `NORMAL`，环境 ID 与 `config/env.js` 一致。
 3. `dogs` 集合可由管理端只读查询，且用于烟测的测试狗狗归属于授权测试用户。
 4. 云函数清单中 `careRecord` 的存在状态和修改时间已记录。
-5. `care_records` 集合存在时只读核对权限、两条索引和记录数；集合不存在时只记录 `NamespaceNotFound`，不借探针创建集合。
+5. `care_records` 集合存在时只读核对权限、三条索引和记录数；集合不存在时只记录 `NamespaceNotFound`，不借探针创建集合。
 
 ## 3. 部署顺序
 
@@ -49,7 +50,8 @@
 2. 立即设置 `ADMINONLY`，在权限确认前不写入数据。
 3. 创建 `owner_dog_occurred_on` 索引。
 4. 创建 `owner_dog_type_occurred_on` 索引。
-5. 等待全部索引就绪，再运行空集合 `list` 和不存在 ID 的 `get` 只读探针。
+5. 创建 `owner_dog_next_date` 索引。
+6. 等待全部索引就绪，再运行空集合 `list`、`listUpcoming` 和不存在 ID 的 `get` 只读探针。
 
 空集合 `list` 应返回 `items=[]`、`nextCursor=null`；不存在 ID 的 `get` 应受控返回 `NOT_FOUND`。不允许客户端直读集合来替代这两项验证。
 

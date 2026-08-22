@@ -1,5 +1,5 @@
 {
-  "contract": "careRecordIndexes/v1",
+  "contract": "careRecordIndexes/v2",
   "collection": "care_records",
   "indexes": [
     {
@@ -21,6 +21,16 @@
         { "field": "type", "order": "asc" },
         { "field": "occurredOn", "order": "desc" },
         { "field": "_id", "order": "desc" }
+      ]
+    },
+    {
+      "name": "owner_dog_next_date",
+      "unique": false,
+      "fields": [
+        { "field": "_openid", "order": "asc" },
+        { "field": "dogId", "order": "asc" },
+        { "field": "nextDate", "order": "asc" },
+        { "field": "_id", "order": "asc" }
       ]
     }
   ]

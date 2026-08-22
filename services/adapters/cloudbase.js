@@ -167,6 +167,11 @@ async function listCareRecords(options = {}) {
   return callFunction('careRecord', { action: 'list', ...options })
 }
 
+async function listUpcomingCareRecords(options = {}) {
+  if (!canUseCloud()) return mock.listUpcomingCareRecords(options)
+  return callFunction('careRecord', { action: 'listUpcoming', ...options })
+}
+
 module.exports = {
   login,
   updateUserProfile,
@@ -187,6 +192,7 @@ module.exports = {
   getSharedMealRecord,
   listWeightMeasurements,
   listCareRecords,
+  listUpcomingCareRecords,
   CloudFunctionCallError,
   collectCloudErrorText
 }

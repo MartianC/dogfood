@@ -37,27 +37,21 @@ test.afterEach(() => {
   homeItemService.__resetAdapterForTest()
 })
 
-test('首页事项只读取真实体重和用户填写的护理日期，并支持护理分页', async () => {
+test('首页事项只用一次定向查询读取最多三条护理安排', async () => {
   const calls = []
   homeItemService.__setAdapterForTest({
     async listWeightMeasurements(options) {
       calls.push({ kind: 'weight', options })
       return { items: [measurement()] }
     },
-    async listCareRecords(options) {
+    async listUpcomingCareRecords(options) {
       calls.push({ kind: 'care', options })
-      if (options.cursor) {
-        return {
-          items: [careRecord({ id: 'care-2', name: '', nextDate: '2026-08-06' })],
-          nextCursor: null
-        }
-      }
       return {
         items: [
+          careRecord({ id: 'care-2', name: '', nextDate: '2026-08-06' }),
           careRecord({ id: 'care-1', nextDate: '2026-08-08' }),
-          careRecord({ id: 'care-no-date', nextDate: null })
-        ],
-        nextCursor: 'care-page-2'
+          careRecord({ id: 'care-dog-2', dogId: 'dog-2', nextDate: '2026-08-09' })
+        ]
       }
     }
   })
@@ -70,17 +64,21 @@ test('首页事项只读取真实体重和用户填写的护理日期，并支�
   assert.deepEqual(items.map((item) => item.key), [
     'care:dog-1:care-2',
     'care:dog-1:care-1',
+    'care:dog-2:care-dog-2',
     'weight:dog-1:weight-1'
   ])
   assert.equal(items[0].title, '计划中的下次「疫苗」：2026年8月6日')
   assert.equal(items[0].description, '布丁')
   assert.equal(items[1].title, '计划中的下次「疫苗」：2026年8月8日')
   assert.equal(items[1].description, '布丁 · 狂犬病疫苗')
-  assert.equal(items[2].description, '上次记录于 1 天前')
   assert.equal(
-    calls.filter((call) => call.kind === 'care' && call.options.dogId === 'dog-1').length,
-    2
+    items.find((item) => item.key === 'weight:dog-1:weight-1').description,
+    '上次记录于 1 天前'
   )
+  assert.deepEqual(calls.filter((call) => call.kind === 'care'), [{
+    kind: 'care',
+    options: { dogIds: ['dog-1', 'dog-2'], limit: 3 }
+  }])
   assert.deepEqual(calls.find((call) => call.kind === 'weight').options, {
     dogId: 'dog-1',
     limit: 1
