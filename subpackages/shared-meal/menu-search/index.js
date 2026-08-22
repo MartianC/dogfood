@@ -24,8 +24,12 @@ const {
   serializeMenuSearchSession,
   restoreMenuSearchSession
 } = require('../services/menuSearchSessionService')
+const {
+  createDebouncedRequestCoordinator
+} = require('../services/debouncedRequestCoordinator')
 
 const SEARCH_PAGE_LIMIT = 20
+const SEARCH_DEBOUNCE_MS = 300
 const MENU_SEARCH_STATE_VERSION = 1
 
 function prepareRecipeForSearchDisplay(recipe = {}) {
@@ -282,7 +286,18 @@ Page({
   },
 
   onUnload() {
+    if (this.searchRequestCoordinator) this.searchRequestCoordinator.cancel()
+    this.activeSearchToken = {}
     this.persistMenuSearchState()
+  },
+
+  ensureSearchRequestCoordinator() {
+    if (!this.searchRequestCoordinator) {
+      this.searchRequestCoordinator = createDebouncedRequestCoordinator({
+        delay: Number.isFinite(this.searchDebounceMs) ? this.searchDebounceMs : SEARCH_DEBOUNCE_MS
+      })
+    }
+    return this.searchRequestCoordinator
   },
 
   ensureSelectedRecipeSummaries() {
@@ -463,12 +478,17 @@ Page({
   onSearchChange(event) {
     const searchValue = String(event.detail.value || '')
     this.setData({ searchValue })
-    this.searchRecipes(searchValue.trim())
+    const keyword = searchValue.trim()
+    return this.ensureSearchRequestCoordinator().schedule(
+      `menu:${keyword}`,
+      () => this.searchRecipes(keyword)
+    )
   },
 
   onSearchAction() {
+    if (this.searchRequestCoordinator) this.searchRequestCoordinator.cancel()
     this.setData({ searchValue: '' })
-    this.searchRecipes('')
+    return this.searchRecipes('')
   },
 
   onToggleRecipeSelection(event) {

@@ -35,6 +35,16 @@ const groups = [
       'subpackages/custom-recipe/services',
       'subpackages/shared-meal/services'
     ]
+  },
+  {
+    sourceDirectory: 'search',
+    files: [
+      'debouncedRequestCoordinator.js'
+    ],
+    targetDirectories: [
+      'subpackages/custom-recipe/services',
+      'subpackages/shared-meal/services'
+    ]
   }
 ]
 

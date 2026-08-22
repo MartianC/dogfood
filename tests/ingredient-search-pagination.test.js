@@ -19,6 +19,7 @@ function loadPageDefinition() {
 function createPageInstance(definition) {
   const instance = {
     data: JSON.parse(JSON.stringify(definition.data)),
+    searchDebounceMs: 0,
     setData(patch, callback) {
       Object.assign(this.data, patch)
       if (typeof callback === 'function') callback()
@@ -65,6 +66,26 @@ test('食材页首屏读取 20 条，触底后再追加下一页', async () => {
       { keyword: '', offset: 0, limit: 20 },
       { keyword: '', offset: 20, limit: 20 }
     ])
+  } finally {
+    ingredientService.loadIngredientPage = originalLoadPage
+  }
+})
+
+test('连续输入只请求防抖窗口内的最终食材关键词', async () => {
+  const originalLoadPage = ingredientService.loadIngredientPage
+  const calls = []
+  ingredientService.loadIngredientPage = async ({ keyword = '' }) => {
+    calls.push(keyword)
+    return { items: [ingredient(1, keyword)], hasMore: false }
+  }
+
+  try {
+    const page = createPageInstance(loadPageDefinition())
+    const first = page.onSearchChange({ detail: { value: '鸡' } })
+    const second = page.onSearchChange({ detail: { value: '鸡肉' } })
+    assert.equal(await first, false)
+    await second
+    assert.deepEqual(calls, ['鸡肉'])
   } finally {
     ingredientService.loadIngredientPage = originalLoadPage
   }

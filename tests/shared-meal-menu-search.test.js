@@ -33,6 +33,7 @@ function loadPageModule(relativePath) {
 function createPageInstance(definition) {
   const instance = {
     data: JSON.parse(JSON.stringify(definition.data)),
+    searchDebounceMs: 0,
     setData(patch) {
       Object.entries(patch).forEach(([key, value]) => {
         this.data[key] = value
@@ -351,6 +352,28 @@ test('菜单页合并同关键词进行中的重复首屏请求', async () => {
 
     assert.deepEqual(page.data.recipes.map((recipe) => recipe.id), ['recipe-1'])
     assert.equal(page.data.loading, false)
+  } finally {
+    humanRecipeService.__setAdapterForTest(mock)
+  }
+})
+
+test('连续输入只请求防抖窗口内的最终菜单关键词', async () => {
+  const calls = []
+  humanRecipeService.__setAdapterForTest({
+    async searchHumanRecipes(options) {
+      calls.push(options.query)
+      return { items: [], nextCursor: null }
+    }
+  })
+
+  try {
+    const { definition } = loadPageModule('subpackages/shared-meal/menu-search/index.js')
+    const page = createPageInstance(definition)
+    const first = page.onSearchChange({ detail: { value: '番' } })
+    const second = page.onSearchChange({ detail: { value: '番茄' } })
+    assert.equal(await first, false)
+    await second
+    assert.deepEqual(calls, ['番茄'])
   } finally {
     humanRecipeService.__setAdapterForTest(mock)
   }

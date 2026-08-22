@@ -8,8 +8,12 @@ const {
   applyDogAllergyPolicy,
   applyDogAllergyPolicies
 } = require('../../../services/dogIngredientPolicy')
+const {
+  createDebouncedRequestCoordinator
+} = require('../services/debouncedRequestCoordinator')
 
 const INGREDIENT_PAGE_SIZE = 20
+const SEARCH_DEBOUNCE_MS = 300
 
 function findRecipe(draftKind, recipeId) {
   return draftAdapters.getDraft(draftKind, recipeId)
@@ -180,6 +184,20 @@ Page({
     })
   },
 
+  onUnload() {
+    if (this.searchRequestCoordinator) this.searchRequestCoordinator.cancel()
+    this.searchRequestId = (this.searchRequestId || 0) + 1
+  },
+
+  ensureSearchRequestCoordinator() {
+    if (!this.searchRequestCoordinator) {
+      this.searchRequestCoordinator = createDebouncedRequestCoordinator({
+        delay: Number.isFinite(this.searchDebounceMs) ? this.searchDebounceMs : SEARCH_DEBOUNCE_MS
+      })
+    }
+    return this.searchRequestCoordinator
+  },
+
   async loadCatalogIngredients({ append = false } = {}) {
     const offset = append ? this.data.catalogIngredients.length : 0
     this.setData(append
@@ -342,7 +360,9 @@ Page({
     const requestId = (this.searchRequestId || 0) + 1
     this.searchRequestId = requestId
     this.searchPageRequest = null
+    this.setData({ searchValue })
     if (!query) {
+      if (this.searchRequestCoordinator) this.searchRequestCoordinator.cancel()
       if (this.data.isNutrientMode) {
         if (this.data.nutrientDefaultLoaded) {
           this.setData({
@@ -374,6 +394,14 @@ Page({
       })
       return
     }
+    return this.ensureSearchRequestCoordinator().schedule(
+      `ingredient:${this.data.isNutrientMode ? 'nutrient' : 'catalog'}:${query}`,
+      () => this.executeSearch(query, searchValue, requestId)
+    )
+  },
+
+  async executeSearch(query, searchValue, requestId) {
+    if (requestId !== this.searchRequestId) return false
     if (!this.data.isNutrientMode) {
       return this.loadIngredientSearchResults(query, searchValue, requestId)
     }
@@ -403,6 +431,7 @@ Page({
   onSearchAction() {
     this.searchRequestId = (this.searchRequestId || 0) + 1
     this.searchPageRequest = null
+    if (this.searchRequestCoordinator) this.searchRequestCoordinator.cancel()
     if (this.data.isNutrientMode) {
       if (this.data.nutrientDefaultLoaded) {
         this.setData({
