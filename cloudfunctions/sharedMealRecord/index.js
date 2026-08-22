@@ -200,6 +200,24 @@ function encodeCursor(record) {
   return encodeURIComponent(JSON.stringify({ mealTime: record.mealTime, id: record._id || record.id }))
 }
 
+function normalizeTimeBoundary(value) {
+  const text = String(value || '').trim()
+  if (!text) return ''
+  const timestamp = new Date(text).getTime()
+  if (!Number.isFinite(timestamp)) fail('INVALID_DATE_RANGE', '本餐记录查询时间范围无效')
+  return new Date(timestamp).toISOString()
+}
+
+function appendMealTimeRangeConditions(database, event, conditions) {
+  const startTime = normalizeTimeBoundary(event.startTime)
+  const endTime = normalizeTimeBoundary(event.endTime)
+  if (startTime && endTime && startTime >= endTime) {
+    fail('INVALID_DATE_RANGE', '本餐记录查询时间范围无效')
+  }
+  if (startTime) conditions.push({ mealTime: database.command.gte(startTime) })
+  if (endTime) conditions.push({ mealTime: database.command.lt(endTime) })
+}
+
 async function runAtomic(database, operation) {
   if (typeof database.runTransaction === 'function') {
     return database.runTransaction(operation)
@@ -309,6 +327,7 @@ function createSharedMealRecordGateway({ database, openId, now = () => new Date(
       const cursor = decodeCursor(event.cursor)
       const conditions = [{ _openid: openId }]
       if (event.targetDogId) conditions.push({ targetDogId: String(event.targetDogId) })
+      appendMealTimeRangeConditions(database, event, conditions)
       if (cursor) {
         conditions.push(database.command.or([
           { mealTime: database.command.lt(cursor.mealTime) },
@@ -352,5 +371,6 @@ module.exports = {
   shanghaiDateKey,
   runAtomic,
   encodeCursor,
-  decodeCursor
+  decodeCursor,
+  appendMealTimeRangeConditions
 }

@@ -123,7 +123,15 @@ function fakeDatabase() {
   }
 
   function matches(document, condition) {
-    return Object.entries(condition || {}).every(([key, value]) => document[key] === value)
+    return Object.entries(condition || {}).every(([key, value]) => {
+      if (key === '$and') return value.every((item) => matches(document, item))
+      if (key === '$or') return value.some((item) => matches(document, item))
+      if (value && typeof value === 'object') {
+        if (Object.prototype.hasOwnProperty.call(value, '$lt')) return document[key] < value.$lt
+        if (Object.prototype.hasOwnProperty.call(value, '$gte')) return document[key] >= value.$gte
+      }
+      return document[key] === value
+    })
   }
 
   function query(name, condition = null, limit = Infinity) {
@@ -164,9 +172,10 @@ function fakeDatabase() {
     collections,
     collection(name) { return query(name) },
     command: {
-      and: (items) => items.reduce((result, item) => ({ ...result, ...item }), {}),
+      and: (items) => ({ $and: items }),
       or: (items) => ({ $or: items }),
-      lt: (value) => ({ $lt: value })
+      lt: (value) => ({ $lt: value }),
+      gte: (value) => ({ $gte: value })
     },
     runTransaction: async (operation) => operation(database)
   }
@@ -195,6 +204,34 @@ test('隔离数据库验证原子幂等、归属隔离和单记录回看', async
   outsiderIntent.idempotencyKey = 'owner-2-key'
   await assert.rejects(() => outsider({ action: 'save', payload: outsiderIntent }), /无权使用该狗狗档案/)
   await assert.rejects(() => outsider({ action: 'get', recordId: first.id }), /未找到本餐记录/)
+})
+
+test('云端列表消费月份时间范围，不扫描并返回范围外记录', async () => {
+  const database = fakeDatabase()
+  const gateway = createSharedMealRecordGateway({ database, openId: 'owner-1' })
+  const times = [
+    '2026-06-30T15:59:59.999Z',
+    '2026-07-10T12:00:00.000Z',
+    '2026-07-31T15:59:59.999Z',
+    '2026-07-31T16:00:00.000Z'
+  ]
+  for (const [index, mealTime] of times.entries()) {
+    const intent = makeIntent({ ...fixture, perMealAmountGram: 100 }, mealTime)
+    intent.idempotencyKey = `range-key-${index}`
+    await gateway({ action: 'save', payload: intent })
+  }
+
+  const result = await gateway({
+    action: 'list',
+    startTime: '2026-06-30T16:00:00.000Z',
+    endTime: '2026-07-31T16:00:00.000Z'
+  })
+  assert.deepEqual(result.items.map((item) => item.mealTime), times.slice(1, 3))
+  await assert.rejects(() => gateway({
+    action: 'list',
+    startTime: '2026-07-31T16:00:00.000Z',
+    endTime: '2026-06-30T16:00:00.000Z'
+  }), /查询时间范围无效/)
 })
 
 test('当天更新原记录、重复更新幂等，历史记录和过期版本均拒绝', async () => {
