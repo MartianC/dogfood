@@ -45,6 +45,7 @@ function fakeDatabase(initial = {}, { rejectMissingDocs = false } = {}) {
   }
   let nextId = 1
   let failDogUpdate = false
+  const queryLog = []
 
   function apiFor(target) {
     function collection(name) {
@@ -69,6 +70,11 @@ function fakeDatabase(initial = {}, { rejectMissingDocs = false } = {}) {
               return chain
             },
             async get() {
+              queryLog.push({
+                collection: name,
+                orders: query.orders.map((item) => ({ ...item })),
+                limit: query.limitValue
+              })
               let rows = target[name].filter((item) => matches(item, query.condition))
               query.orders.slice().reverse().forEach(({ field, direction }) => {
                 rows.sort((left, right) => {
@@ -133,6 +139,7 @@ function fakeDatabase(initial = {}, { rejectMissingDocs = false } = {}) {
     return result
   }
   database.state = state
+  database.queryLog = queryLog
   database.setFailDogUpdate = (value) => { failDogUpdate = value }
   return database
 }
@@ -249,6 +256,36 @@ test('云函数删除最新测量回退上一条，删除最后一条清空档�
   assert.equal(unrecorded.outcome, 'unrecorded')
   assert.equal(unrecorded.currentWeight.weightKg, null)
   assert.equal(database.state.dogs[0].weightKg, null)
+})
+
+test('体重写入只通过复合索引读取一条最新记录', async () => {
+  const measurements = Array.from({ length: 100 }, (_, index) => ({
+    _id: `history-${String(index).padStart(3, '0')}`,
+    _openid: 'owner-1',
+    schemaVersion: 1,
+    dogId: 'dog-1',
+    weightKg: 9 + index / 100,
+    measuredOn: '2026-08-01',
+    createdAt: `2026-08-01T${String(Math.floor(index / 60)).padStart(2, '0')}:${String(index % 60).padStart(2, '0')}:00.000Z`
+  }))
+  const database = fakeDatabase({
+    dogs: [{ _id: 'dog-1', _openid: 'owner-1', name: '布丁', weightKg: 9.99 }],
+    weight_measurements: measurements
+  })
+  const gateway = createWeightRecordGateway({ database, openId: 'owner-1', now: fixedNow })
+
+  await gateway({ action: 'delete', recordId: 'history-099' })
+  const latestQueries = database.queryLog.filter((query) => (
+    query.collection === 'weight_measurements' && query.orders.length
+  ))
+  assert.equal(latestQueries.length, 2)
+  assert.equal(latestQueries.every((query) => query.limit === 1), true)
+  assert.deepEqual(latestQueries[0].orders, [
+    { field: 'measuredOn', direction: 'desc' },
+    { field: 'createdAt', direction: 'desc' },
+    { field: '_id', direction: 'desc' }
+  ])
+  assert.equal(database.state.dogs[0].weightKg, 9.98)
 })
 
 test('云函数编辑体重以事务替换旧记录并保持狗狗归属', async () => {

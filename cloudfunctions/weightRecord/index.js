@@ -162,9 +162,13 @@ async function getOwnedMeasurement(collection, openId, recordId) {
   return result.data
 }
 
-async function listStoredMeasurements(database, openId, dogId, options = {}) {
+async function findLatestMeasurement(database, openId, dogId, options = {}, extra = []) {
   const result = await database.collection(COLLECTION_NAME)
     .where({ _openid: openId, dogId })
+    .orderBy('measuredOn', 'desc')
+    .orderBy('createdAt', 'desc')
+    .orderBy('_id', 'desc')
+    .limit(1)
     .get()
   const records = (result.data || []).map((document) => {
     try {
@@ -173,11 +177,6 @@ async function listStoredMeasurements(database, openId, dogId, options = {}) {
       return null
     }
   }).filter(Boolean)
-  return records
-}
-
-async function findLatestMeasurement(database, openId, dogId, options = {}, extra = []) {
-  const records = await listStoredMeasurements(database, openId, dogId, options)
   return selectLatestValidWeightMeasurement(records.concat(extra), options)
 }
 
@@ -404,5 +403,6 @@ module.exports = {
   decodeCursor,
   normalizeStoredMeasurement,
   runAtomic,
-  currentWeightFromMeasurement
+  currentWeightFromMeasurement,
+  findLatestMeasurement
 }
