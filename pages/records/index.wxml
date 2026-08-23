@@ -67,7 +67,6 @@
             >
               <view class="records-dog-group__identity">
                 <view class="records-dog-group__name">{{item.dogName}}</view>
-                <view class="records-dog-group__count">{{item.recordCountText}}</view>
               </view>
               <view class="records-dog-group__toggle">{{item.toggleText}}</view>
             </view>

@@ -95,9 +95,9 @@ test('统一记录模型按上海自然日和来源规则排序，并把三类�
   assert.equal(JSON.stringify(model.records).includes('dogSnapshot'), false)
 })
 
-test('多狗默认只展开选中日期下有记录的第一只狗，单狗直接返回记录列表', () => {
+test('多狗只生成有记录的分组并默认展开第一组，单狗直接返回记录列表', () => {
   const multiDog = createUnifiedRecordTimelineModel({
-    dogs,
+    dogs: [...dogs, { id: 'dog-3', name: '阿福' }],
     sources: { meal: sourceItems.meal },
     monthKey: '2026-08',
     selectedDateKey: '2026-08-05'
@@ -110,6 +110,13 @@ test('多狗默认只展开选中日期下有记录的第一只狗，单狗直�
     { dogId: 'dog-1', recordCount: 1, expanded: true },
     { dogId: 'dog-2', recordCount: 1, expanded: false }
   ])
+  assert.equal(multiDog.dogGroups.some((group) => group.dogId === 'dog-3'), false)
+  assert.equal('recordCountText' in multiDog.dogGroups[0], false)
+
+  const emptyDate = selectUnifiedRecordTimelineModel(multiDog, {
+    selectedDateKey: '2026-08-06'
+  })
+  assert.deepEqual(emptyDate.dogGroups, [])
 
   const singleDog = createUnifiedRecordTimelineModel({
     dogs: [dogs[0]],
@@ -139,7 +146,7 @@ test('显式展开状态只影响狗狗分组，不改变记录排序', () => {
   ])
 })
 
-test('明确全部收起后切换日期仍保留收起意图，默认策略使用 null', () => {
+test('明确全部收起后切换日期仍保留收起意图，空日期不生成狗狗分组', () => {
   const model = createUnifiedRecordTimelineModel({
     dogs,
     sources: { meal: sourceItems.meal },
@@ -149,7 +156,7 @@ test('明确全部收起后切换日期仍保留收起意图，默认策略使�
   assert.equal(model.expandedDogIds, null)
   const collapsed = selectUnifiedRecordTimelineModel(model, { expandedDogIds: [] })
   const nextDate = selectUnifiedRecordTimelineModel(collapsed, { selectedDateKey: '2026-08-04' })
-  assert.deepEqual(nextDate.dogGroups.map((group) => group.expanded), [false, false])
+  assert.deepEqual(nextDate.dogGroups, [])
   assert.deepEqual(nextDate.expandedDogIds, [])
 })
 
