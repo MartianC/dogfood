@@ -29,7 +29,6 @@
 
 .records-state__description,
 .records-day-heading__description,
-.records-dog-group__count,
 .records-entry__summary {
   color: var(--df-color-muted);
   font-size: var(--df-font-sm);
@@ -91,10 +90,6 @@
   font-weight: 800;
   line-height: 1.35;
   overflow-wrap: anywhere;
-}
-
-.records-dog-group__count {
-  margin-top: var(--df-space-1);
 }
 
 .records-dog-group__toggle {

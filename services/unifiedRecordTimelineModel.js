@@ -295,21 +295,22 @@ function buildDogGroups(dogs, records, selectedDateKey, expandedDogIds) {
     : null
   const firstWithRecords = orderedDogs.find((dog) => (selectedRecordsByDog.get(dog.id) || []).length)
 
-  return orderedDogs.map((dog) => {
-    const selected = selectedRecordsByDog.get(dog.id) || []
-    const expanded = explicitExpanded
-      ? explicitExpanded.has(dog.id)
-      : Boolean(firstWithRecords && firstWithRecords.id === dog.id)
-    return {
-      dogId: dog.id,
-      dogName: dog.name,
-      recordCount: selected.length,
-      recordCountText: `${selected.length} 条记录`,
-      hasRecords: selected.length > 0,
-      expanded,
-      records: selected.slice()
-    }
-  })
+  return orderedDogs
+    .map((dog) => {
+      const selected = selectedRecordsByDog.get(dog.id) || []
+      const expanded = explicitExpanded
+        ? explicitExpanded.has(dog.id)
+        : Boolean(firstWithRecords && firstWithRecords.id === dog.id)
+      return {
+        dogId: dog.id,
+        dogName: dog.name,
+        recordCount: selected.length,
+        hasRecords: selected.length > 0,
+        expanded,
+        records: selected.slice()
+      }
+    })
+    .filter((group) => group.hasRecords)
 }
 
 function buildDerivedView({ dogs, sourceItems, monthKey, selectedDateKey, expandedDogIds }) {

@@ -159,6 +159,7 @@ test('记录页结构覆盖 L01–L06 的有记录、当天空、加载、失败
   assert.match(wxml, /ui-tag/)
   assert.match(wxml, /records-dog-group__header/)
   assert.match(wxml, /bindtap="onToggleDog"/)
+  assert.doesNotMatch(wxml, /recordCountText|records-dog-group__count/)
   assert.match(wxss, /overflow-wrap: anywhere/)
   assert.doesNotMatch(`${wxml}${read('components/vendor/record-calendar/index.js')}`, /已记/)
   assert.doesNotMatch(wxml, /连续打卡|每日趋势|营养完整|狗狗筛选|来源筛选/)
