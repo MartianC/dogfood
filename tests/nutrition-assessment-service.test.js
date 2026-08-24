@@ -356,6 +356,30 @@ test('按食谱干物质密度独立评估国标与 FEDIAF', () => {
   assert.deepEqual(assessment.counts, { adjust: 2, met: 1, unavailable: 0 })
 })
 
+test('成年妊娠或哺乳犬自动选择国标和 FEDIAF 繁殖期档案', () => {
+  ;['pregnant', 'lactating'].forEach((reproductiveStatus) => {
+    const assessment = nutritionAssessmentService.buildAssessment({
+      ingredients,
+      dog: {
+        id: 'dog_1',
+        name: '布丁',
+        activityLevel: 'low',
+        dailyMeals: 2,
+        specialNutritionNeeds: { reproductiveStatus }
+      },
+      lifeStage: adultLifeStage,
+      standards,
+      nutrientRecords
+    })
+
+    assert.equal(assessment.standards[0].profileCode, 'growth_gestation_lactation')
+    assert.equal(
+      assessment.standards[1].profileCode,
+      'fediaf_2025_dog_early_growth_reproduction'
+    )
+  })
+})
+
 test('偏高项列出贡献最高的食材来源', () => {
   const assessment = nutritionAssessmentService.buildAssessment({
     ingredients,

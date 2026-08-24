@@ -215,6 +215,24 @@ test('跳过人饭菜单入口选定狗狗后直接进入空白狗饭创建', as
   })
 })
 
+test('妊娠犬可以从选狗页进入空白狗饭创建', async () => {
+  await withDogSelectPage({
+    dogs: [createDog({
+      specialNutritionNeeds: {
+        hasDisease: false,
+        reproductiveStatus: 'pregnant',
+        therapeuticWeightManagement: 'none'
+      }
+    })]
+  }, async ({ definition, context, navigations }) => {
+    definition.onLoad.call(context, { skipHumanMenu: '1' })
+    await definition.onShow.call(context)
+
+    assert.equal(context.data.dogs[0].eligibility.status, 'eligible')
+    assert.match(navigations[0], /shared-meal\/compose\/index\?draftId=/)
+  })
+})
+
 test('有效草稿显示恢复选择，未选择前不导航、不写回且单狗不会抢先继续', async () => {
   const savedDog = createDog({ name: '旧名字' })
   const latestDog = createDog({ name: '新名字' })

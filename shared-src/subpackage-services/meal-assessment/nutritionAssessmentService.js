@@ -116,14 +116,24 @@ function firstProfileCode(profiles, pattern) {
   return profile && profile.profile_code
 }
 
+function isReproductiveDog(dog) {
+  const reproductiveStatus = dog
+    && dog.specialNutritionNeeds
+    && dog.specialNutritionNeeds.reproductiveStatus
+  return reproductiveStatus === 'pregnant' || reproductiveStatus === 'lactating'
+}
+
 function autoProfileCode(key, dog, lifeStage, profiles) {
   const nutritionStage = lifeStage && lifeStage.nutritionStage
+  const reproductiveDog = isReproductiveDog(dog)
   if (key === 'gb') {
+    if (reproductiveDog) return firstProfileCode(profiles, /growth_gestation_lactation/)
     if (nutritionStage === 'early_growth' || nutritionStage === 'late_growth') {
       return firstProfileCode(profiles, /growth_gestation_lactation/)
     }
     return firstProfileCode(profiles, /(^|_)adult$/)
   }
+  if (reproductiveDog) return firstProfileCode(profiles, /early_growth_reproduction/)
   if (nutritionStage === 'early_growth') return firstProfileCode(profiles, /early_growth/)
   if (nutritionStage === 'late_growth') return firstProfileCode(profiles, /late_growth/)
   const useLowEnergyProfile = dog.activityLevel === 'low'

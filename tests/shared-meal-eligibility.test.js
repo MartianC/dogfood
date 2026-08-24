@@ -21,11 +21,9 @@ const eligibleDog = {
   }
 }
 
-test('疾病、生殖状态和治疗性体重管理逐项阻断共享本餐', () => {
+test('疾病和治疗性体重管理阻断共享本餐', () => {
   const cases = [
     [{ hasDisease: true }, 'diagnosed_disease'],
-    [{ reproductiveStatus: 'pregnant' }, 'pregnant'],
-    [{ reproductiveStatus: 'lactating' }, 'lactating'],
     [{ therapeuticWeightManagement: 'loss' }, 'therapeutic_weight_loss'],
     [{ therapeuticWeightManagement: 'gain' }, 'therapeutic_weight_gain']
   ]
@@ -40,6 +38,20 @@ test('疾病、生殖状态和治疗性体重管理逐项阻断共享本餐', ()
     }, { today: '2026-07-27' })
     assert.equal(result.status, 'blocked')
     assert.ok(result.reasonCodes.includes(reasonCode))
+  })
+})
+
+test('妊娠和哺乳犬使用繁殖期营养标准时可以建立共享本餐', () => {
+  ;['pregnant', 'lactating'].forEach((reproductiveStatus) => {
+    const result = evaluateSharedMealDogEligibility({
+      ...eligibleDog,
+      specialNutritionNeeds: {
+        ...eligibleDog.specialNutritionNeeds,
+        reproductiveStatus
+      }
+    }, { today: '2026-07-27' })
+
+    assert.deepEqual(result, { status: 'eligible', reasonCodes: [] })
   })
 })
 

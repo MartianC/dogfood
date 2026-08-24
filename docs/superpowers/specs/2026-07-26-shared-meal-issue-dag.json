@@ -112,7 +112,7 @@
       "dog-edit 与 dog-quick-create 均显式采集上述字段；dogService create/update/list/cache、mock adapter、dogProfile 云函数 DTO 白名单与 normalizeProfileDocument 全程保留并验证该结构，云端 create/update 继续按 _openid 隔离归属。",
       "dogService 与 authService 只从 services/dogProfileContract.js 读取同一个 DOGS_CACHE_SCHEMA_VERSION=3；initAuth 接受 v3 缓存、显式拒绝旧版缓存，listDogs 回写 v3，档案完善往返后 specialNutritionNeeds 与草稿选择均不丢失，仓库不存在第二个可漂移的缓存版本常量。",
       "历史档案缺字段归一为 null 并判定 incomplete；不得从 healthNotes、bodyCondition 或普通 dietGoal 推断疾病、生殖状态或治疗性体重管理，普通体况管理不会被误判为治疗需求。",
-      "门禁测试证明疾病、妊娠、哺乳、治疗性减重和治疗性增重均 blocked；8 周以下 blocked；任一计算必需或特殊状态字段未确认均 incomplete；只有完整、8 周以上且所有特殊状态为 none/false 的档案 eligible。",
+      "门禁测试证明疾病、治疗性减重和治疗性增重均 blocked；妊娠和哺乳犬使用繁殖期营养标准并保持 eligible；8 周以下 blocked；任一计算必需或特殊状态字段未确认均 incomplete。",
       "完整档案的单狗用户自动选中，多狗用户必须显式单选；不存在静默默认犬只。incomplete 时保存当前草稿并往返档案完善页，blocked 时不生成创建结果并显示适用范围和专业咨询提示。",
       "用户可连续完成选狗、调用 Issue 1 搜索并选择至少一道既有人饭菜谱、查看来源原料、进入 compose；非 blocked 映射项按来源合并进入 ingredients，blocked 与未映射项不能通过路由参数或缓存篡改进入可编辑列表。",
       "唯一 sharedMealIngredient/v1 由 contracts/shared-meal/shared-meal-ingredient-v1.schema.json 和同名 fixture 定义：ingredientId:string 是既有评估链兼容键，已发布食材必须 ingredientId===foodId；foodId:string 是 food_nutrition_profiles.food_id 营养查询键；conceptId/variantId 是目录身份；另含 name、category、policyStatus、perMealAmountGram:number|null、sourceRefs[]；dataVersions 必须且只能嵌套 runtimeReleaseId:string、recipeVersion:string|null、mappingVersion:string|null、catalogVersion:string、policyVersion:string、nutritionSourceReleaseId:string，不允许扁平 catalogVersion/policyVersion/sourceReleaseId。",
@@ -122,7 +122,7 @@
     ],
     "nonGoals": [
       "不从 healthNotes 自由文本推断任何医学或营养状态。",
-      "不提供疾病、妊娠、哺乳或治疗性体重管理方案。",
+      "不提供疾病或治疗性体重管理方案；妊娠和哺乳只复用已有繁殖期营养标准。",
       "不实现等比例缩放、双轴评估或云端记录保存。",
       "不自动生成食材克重、比例或菜单外补充食材。",
       "不迁移生产 dogs 数据；不访问秘密、不部署、不发布、不删除历史档案。"
@@ -192,7 +192,7 @@
     "slice": {
       "prdCriteria": [
         "SC1（G1）：符合适用条件的用户可以完成“选择单只狗狗 → 搜索并选择至少一道既有人饭菜谱 → 查看来源原料 → 进入狗饭创建”的连续路径；单狗自动选中，多狗必须单选。",
-        "SC3（G1）：档案缺少计算必需字段时保留草稿并引导完善；小于 8 周或存在疾病、妊娠、哺乳、治疗性减重或增重需求时，不生成狗饭创建结果，并展示适用范围及专业咨询提示。",
+        "SC3（G1）：档案缺少计算必需字段时保留草稿并引导完善；小于 8 周或存在疾病、治疗性减重或增重需求时，不生成狗饭创建结果，并展示适用范围及专业咨询提示；妊娠和哺乳犬使用对应繁殖期营养标准。",
         "SC5（G2）：进入狗饭创建页时，系统自动带入非 blocked 食材并显示目标狗狗的本餐能量目标，但所有单项克重保持待用户填写；系统不使用人饭分量、等质量、等能量、类别启发式或营养优化算法自动生成食材比例。",
         "SC10（G5）：中途退出、登录建档往返或页面返回后，目标狗狗、人饭菜单、来源食材选择、用户已填克重和最近一次可用评估均可恢复；用户主动重新开始时才清除当前草稿。"
       ],

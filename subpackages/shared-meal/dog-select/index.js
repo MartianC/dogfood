@@ -15,8 +15,6 @@ const {
 const REASON_TEXT = {
   under_eight_weeks: '爱宠还不到 8 周，不适合使用当前自动创建流程。',
   diagnosed_disease: '已确诊疾病需要兽医或宠物营养专业人士提供针对性建议。',
-  pregnant: '妊娠期需要兽医或宠物营养专业人士提供针对性建议。',
-  lactating: '哺乳期需要兽医或宠物营养专业人士提供针对性建议。',
   therapeutic_weight_loss: '治疗性减重需要专业人士制定方案。',
   therapeutic_weight_gain: '治疗性增重需要专业人士制定方案。'
 }

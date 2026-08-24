@@ -35,8 +35,6 @@ function evaluateSharedMealDogEligibility(dog = {}, { today } = {}) {
   if (lifeStage.reason === 'under_minimum_age') blockedReasons.push('under_eight_weeks')
   if (needs) {
     if (needs.hasDisease === true) blockedReasons.push('diagnosed_disease')
-    if (needs.reproductiveStatus === 'pregnant') blockedReasons.push('pregnant')
-    if (needs.reproductiveStatus === 'lactating') blockedReasons.push('lactating')
     if (needs.therapeuticWeightManagement === 'loss') {
       blockedReasons.push('therapeutic_weight_loss')
     }
