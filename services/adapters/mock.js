@@ -71,6 +71,19 @@ async function getDogProfileContract() {
   }
 }
 
+async function getWeightRecordContract() {
+  return {
+    contract: 'weightRecord/v1',
+    schemaVersion: weightContract.WEIGHT_MEASUREMENT_SCHEMA_VERSION,
+    measurementContract: weightContract.WEIGHT_MEASUREMENT_CONTRACT,
+    collection: 'weight_measurements',
+    supportsHistory: true,
+    supportsProfileSync: true,
+    supportsDelete: true,
+    maxPageSize: 50
+  }
+}
+
 async function createDog(payload) {
   validateHiddenArrays(payload)
   const dogs = await listDogs()
@@ -89,6 +102,40 @@ async function createDog(payload) {
   }
   storage.setSync('mockDogs', dogs.concat(dog))
   return dog
+}
+
+async function createWeightMeasurement(payload) {
+  const input = weightContract.normalizeWeightMeasurementInput(payload, {
+    today: weightContract.dateTextInShanghai()
+  })
+  const dogs = await listDogs()
+  const dog = dogs.find((item) => (
+    item.id === input.dogId
+    && (item.userId === env.mockUser.id || item._openid === env.mockUser.id)
+  ))
+  if (!dog) throw new Error('无权使用该狗狗档案')
+
+  const createdAt = now()
+  const measurement = weightContract.normalizeWeightMeasurement({
+    ...input,
+    id: uid('weight'),
+    createdAt
+  }, { today: weightContract.dateTextInShanghai(createdAt) })
+  const measurements = storage.getSync('mockWeightMeasurements', [])
+  storage.setSync('mockWeightMeasurements', measurements.concat({
+    userId: env.mockUser.id,
+    ...measurement
+  }))
+  storage.setSync('mockDogs', dogs.map((item) => item.id === dog.id
+    ? { ...item, weightKg: measurement.weightKg, updatedAt: createdAt }
+    : item))
+
+  return {
+    contract: 'weightRecord/v1',
+    schemaVersion: weightContract.WEIGHT_MEASUREMENT_SCHEMA_VERSION,
+    measurement,
+    currentWeight: weightContract.currentWeightFromMeasurement(measurement)
+  }
 }
 
 async function updateDog(id, payload) {
@@ -464,9 +511,11 @@ async function listUpcomingCareRecords(options = {}) {
 module.exports = {
   login,
   updateUserProfile,
+  getWeightRecordContract,
   getDogProfileContract,
   listDogs,
   createDog,
+  createWeightMeasurement,
   updateDog,
   updateDogAllergens,
   deleteDog,

@@ -143,6 +143,12 @@ function parseDateText(value) {
   return { stamp }
 }
 
+function isAtMostTwoDecimalPlaces(value) {
+  const number = Number(value)
+  if (!Number.isFinite(number)) return false
+  return Math.abs(number * 100 - Math.round(number * 100)) <= 1e-8
+}
+
 function deriveActivityLevel(hours) {
   if (!Number.isFinite(hours) || hours < 0 || hours > 6) return ''
   if (hours < 1) return 'low'
@@ -234,6 +240,7 @@ function validateProfilePayload(profile, { today, now } = {}) {
 
   if (!BREEDS.has(profile.breed)) throw new Error('请选择狗狗品种')
   if (!(profile.weightKg > 0)) throw new Error('请填写狗狗体重')
+  if (!isAtMostTwoDecimalPlaces(profile.weightKg)) throw new Error('体重最多保留两位小数')
   if (!(profile.dailyMeals > 0)) throw new Error('请填写每日餐数')
   if (
     !Number.isFinite(profile.dailyActivityHours)

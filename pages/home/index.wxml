@@ -23,11 +23,11 @@
       >{{homeState.primaryTask.label}}</ui-button>
     </view>
   </ui-card>
-
+<!--.
   <ui-notice wx:if="{{homeRefreshing}}" variant="neutral">
     正在更新首页内容
   </ui-notice>
-
+-->
   <ui-notice wx:if="{{homeRefreshError}}" variant="warning">
     <view class="home-error">
       <view class="home-error__description">{{homeRefreshError}}</view>

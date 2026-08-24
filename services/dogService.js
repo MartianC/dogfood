@@ -5,8 +5,9 @@ const adapter = env.useCloudBase ? require('./adapters/cloudbase') : require('./
 const { breedAdultWeightCatalog } = require('../data/breedAdultWeightCatalog')
 const { deriveActivityLevel, estimateExpectedAdultWeight } = require('./dogProfileDerivations')
 const { estimateLifeStage, decorateDog } = require('./lifeStageEstimator')
-const { normalizeLegacyWeightKg } = require('./weightContract')
+const { normalizeLegacyWeightKg, validateWeightKg } = require('./weightContract')
 const dataInvalidationService = require('./dataInvalidationService')
+const initialWeightRecordService = require('./initialWeightRecordService')
 const {
   DOG_PROFILE_SCHEMA_VERSION,
   DOGS_CACHE_SCHEMA_VERSION,
@@ -64,6 +65,7 @@ function validateDog(dog, today) {
   if (stage.reason === 'future_birth_date') throw new Error('出生日期不能晚于今天')
   if (!BREEDS.has(dog.breed)) throw new Error('请选择狗狗品种')
   if (!(dog.weightKg > 0)) throw new Error('请填写狗狗体重')
+  validateWeightKg(dog.weightKg)
   if (!(dog.dailyMeals > 0)) throw new Error('请填写每日餐数')
   if (
     !Number.isFinite(dog.dailyActivityHours)
@@ -191,20 +193,46 @@ async function createDog(payload) {
   const dog = normalizeDog(payload)
   validateDog(dog)
   await ensureDogProfileWriteCapability()
+  const weightRecordContract = await initialWeightRecordService.ensureCapability()
   const saved = await adapter.createDog(dog)
   assertSavedProfileContract(saved, dog)
+  await initialWeightRecordService.createWeightRecord({
+    dogId: saved.id,
+    weightKg: saved.weightKg
+  }, { contract: weightRecordContract })
   const dogs = await listDogs()
   authService.refreshState(dogs)
   dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)
   return decorateSavedDog(saved)
 }
 
+async function getDogForUpdate(id) {
+  const dogId = String(id || '').trim()
+  if (!dogId) throw new Error('未找到狗狗档案')
+  const dogs = await adapter.listDogs()
+  const dog = (Array.isArray(dogs) ? dogs : []).find((item) => item && item.id === dogId)
+  if (!dog) throw new Error('未找到狗狗档案')
+  return dog
+}
+
 async function updateDog(id, payload) {
   const dog = normalizeDog(payload)
   validateDog(dog)
   await ensureDogProfileWriteCapability()
+  const previousDog = await getDogForUpdate(id)
+  const previousWeightKg = normalizeLegacyWeightKg(previousDog.weightKg)
+  const weightChanged = previousWeightKg !== dog.weightKg
+  const weightRecordContract = weightChanged
+    ? await initialWeightRecordService.ensureCapability()
+    : null
   const saved = await adapter.updateDog(id, dog)
   assertSavedProfileContract(saved, dog)
+  if (weightChanged) {
+    await initialWeightRecordService.createWeightRecord({
+      dogId: saved.id,
+      weightKg: saved.weightKg
+    }, { contract: weightRecordContract })
+  }
   const dogs = await listDogs()
   authService.refreshState(dogs)
   dataInvalidationService.markDirty(dataInvalidationService.DATA_SCOPE.PROFILE)

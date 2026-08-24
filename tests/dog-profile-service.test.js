@@ -7,6 +7,7 @@ const cloudbaseAdapter = require('../services/adapters/cloudbase')
 const storage = require('../utils/storage')
 const authService = require('../services/authService')
 const energyRequirementService = require('../subpackages/custom-recipe/services/energyRequirementService')
+const { dateTextInShanghai } = require('../services/weightContract')
 const {
   fieldsForWrite: cloudFieldsForWrite,
   allergensForWrite,
@@ -194,6 +195,55 @@ test('保存与读取返回运行时派生字段且编辑不会清空隐藏数�
   const [listed] = await dogService.listDogs()
   assert.equal(listed.ageStage, 'senior')
   assert.equal(listed.expectedAdultWeightKg, 10.5)
+})
+
+test('新增狗狗会创建当天初始体重记录，编辑档案不会重复创建', async () => {
+  storage.removeSync('mockDogs')
+  storage.removeSync('mockWeightMeasurements')
+  storage.removeSync('dogsCache')
+
+  const created = await dogService.createDog(puppy)
+  const [initialWeight] = storage.getSync('mockWeightMeasurements', [])
+
+  assert.equal(storage.getSync('mockWeightMeasurements', []).length, 1)
+  assert.equal(initialWeight.schemaVersion, 1)
+  assert.equal(initialWeight.dogId, created.id)
+  assert.equal(initialWeight.weightKg, puppy.weightKg)
+  assert.equal(initialWeight.measuredOn, dateTextInShanghai())
+  assert.ok(Number.isFinite(new Date(initialWeight.createdAt).getTime()))
+
+  await dogService.updateDog(created.id, { ...puppy, name: '布丁更新' })
+  assert.equal(storage.getSync('mockWeightMeasurements', []).length, 1)
+
+  storage.removeSync('mockDogs')
+  storage.removeSync('mockWeightMeasurements')
+  storage.removeSync('dogsCache')
+})
+
+test('编辑狗狗体重会创建新的当天体重记录，编辑其他资料不会重复创建', async () => {
+  storage.removeSync('mockDogs')
+  storage.removeSync('mockWeightMeasurements')
+  storage.removeSync('dogsCache')
+
+  const created = await dogService.createDog(puppy)
+  await dogService.updateDog(created.id, { ...puppy, weightKg: 8.5 })
+
+  const measurements = storage.getSync('mockWeightMeasurements', [])
+  assert.equal(measurements.length, 2)
+  assert.deepEqual(
+    measurements.map((item) => item.weightKg).sort((left, right) => left - right),
+    [8, 8.5]
+  )
+  assert.equal(measurements[1].dogId, created.id)
+  assert.equal(measurements[1].measuredOn, dateTextInShanghai())
+  assert.equal(storage.getSync('mockDogs', [])[0].weightKg, 8.5)
+
+  await dogService.updateDog(created.id, { ...puppy, name: '布丁仅改名字', weightKg: 8.5 })
+  assert.equal(storage.getSync('mockWeightMeasurements', []).length, 2)
+
+  storage.removeSync('mockDogs')
+  storage.removeSync('mockWeightMeasurements')
+  storage.removeSync('dogsCache')
 })
 
 test('并发读取狗狗档案共享 in-flight 请求，避免冷启动重复访问', async () => {

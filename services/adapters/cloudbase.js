@@ -88,9 +88,19 @@ async function getDogProfileContract() {
   return callFunction('dogProfile', { action: 'contract' })
 }
 
+async function getWeightRecordContract() {
+  if (!canUseCloud()) return mock.getWeightRecordContract()
+  return callFunction('weightRecord', { action: 'contract' })
+}
+
 async function createDog(payload) {
   if (!canUseCloud()) return mock.createDog(payload)
   return callFunction('dogProfile', { action: 'create', payload })
+}
+
+async function createWeightMeasurement(payload) {
+  if (!canUseCloud()) return mock.createWeightMeasurement(payload)
+  return callFunction('weightRecord', { action: 'create', payload })
 }
 
 async function updateDog(id, payload) {
@@ -176,8 +186,10 @@ module.exports = {
   login,
   updateUserProfile,
   getDogProfileContract,
+  getWeightRecordContract,
   listDogs,
   createDog,
+  createWeightMeasurement,
   updateDog,
   updateDogAllergens,
   deleteDog,
