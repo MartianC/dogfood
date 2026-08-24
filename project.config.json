@@ -59,6 +59,30 @@
         "type": "folder"
       },
       {
+        "value": ".claude",
+        "type": "folder"
+      },
+      {
+        "value": ".superpowers",
+        "type": "folder"
+      },
+      {
+        "value": ".tmp",
+        "type": "folder"
+      },
+      {
+        "value": ".impeccable.md",
+        "type": "file"
+      },
+      {
+        "value": ".pad.toml",
+        "type": "file"
+      },
+      {
+        "value": "CLAUDE.md",
+        "type": "file"
+      },
+      {
         "value": "shared-src",
         "type": "folder"
       },
