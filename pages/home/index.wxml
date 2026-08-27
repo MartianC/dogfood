@@ -111,6 +111,7 @@
         <view wx:for="{{homeState.profileIssues}}" wx:key="key" class="home-issue home-issue--compact" data-dog-id="{{item.dogId}}" data-action="{{item.action}}" aria-role="button" bind:tap="onOpenProfileIssue">
           <view class="home-issue__copy">
             <view wx:if="{{item.kind === 'care'}}" class="home-issue__title">{{item.title}}</view>
+            <view wx:elif="{{item.kind === 'weight'}}" class="home-issue__title">{{item.title}}</view>
             <view wx:else class="home-issue__title">{{item.dogName}} · {{item.title}}</view>
             <view class="home-issue__description">{{item.description}}</view>
           </view>

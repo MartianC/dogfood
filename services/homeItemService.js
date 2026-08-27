@@ -44,6 +44,11 @@ function formatWeightAge(measuredOn, now = new Date()) {
     : `上次记录于 ${days} 天前`
 }
 
+function formatWeightValue(weightKg) {
+  const value = Number(weightKg)
+  return Number.isFinite(value) && value > 0 ? `${value} kg` : ''
+}
+
 function formatUserDate(dateTextValue) {
   const value = text(dateTextValue)
   if (!careContract.parseDateText(value)) return ''
@@ -53,7 +58,8 @@ function formatUserDate(dateTextValue) {
 
 function weightItem(dog, measurement, now) {
   const ageText = formatWeightAge(measurement.measuredOn, now)
-  if (!ageText) return null
+  const weightText = formatWeightValue(measurement.weightKg)
+  if (!ageText || !weightText) return null
   const dogId = dogIdOf(dog)
   return {
     key: `weight:${dogId}:${measurement.id}`,
@@ -61,8 +67,8 @@ function weightItem(dog, measurement, now) {
     action: 'open-weight',
     dogId,
     dogName: dogNameOf(dog),
-    title: '体重记录',
-    description: ageText,
+    title: `给 ${dogNameOf(dog)} 量体重`,
+    description: `${ageText.replace('上次记录于 ', '上次记录：')} · ${weightText}`,
     recordId: measurement.id,
     measuredOn: measurement.measuredOn
   }
@@ -157,6 +163,7 @@ function __resetAdapterForTest() {
 module.exports = {
   HOME_ITEM_LIMIT,
   formatWeightAge,
+  formatWeightValue,
   formatUserDate,
   listForDogs,
   __setAdapterForTest,

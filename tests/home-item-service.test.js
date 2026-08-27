@@ -73,7 +73,11 @@ test('首页事项只用一次定向查询读取最多三条护理安排', async
   assert.equal(items[1].description, '布丁 · 狂犬病疫苗')
   assert.equal(
     items.find((item) => item.key === 'weight:dog-1:weight-1').description,
-    '上次记录于 1 天前'
+    '上次记录：1 天前 · 10.2 kg'
+  )
+  assert.equal(
+    items.find((item) => item.key === 'weight:dog-1:weight-1').title,
+    '给 布丁 量体重'
   )
   assert.deepEqual(calls.filter((call) => call.kind === 'care'), [{
     kind: 'care',
@@ -95,4 +99,7 @@ test('体重事项使用上海自然日计算相对时间，不把旧档案体�
     '上次记录于 1 天前'
   )
   assert.equal(homeItemService.formatWeightAge('2026-08-06', NOW), '')
+  assert.equal(homeItemService.formatWeightValue(10), '10 kg')
+  assert.equal(homeItemService.formatWeightValue(10.25), '10.25 kg')
+  assert.equal(homeItemService.formatWeightValue('invalid'), '')
 })

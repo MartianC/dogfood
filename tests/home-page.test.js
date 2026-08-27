@@ -249,8 +249,8 @@ test('主页将体重与护理事项交给首页模型，并保持狗狗身份',
           action: 'open-weight',
           dogId: 'dog-1',
           dogName: '布丁',
-          title: '体重记录',
-          description: '上次记录于 1 天前',
+          title: '给 布丁 量体重',
+          description: '上次记录：1 天前 · 10.2 kg',
           recordId: 'weight-1',
           measuredOn: '2026-08-01'
         }]
@@ -444,6 +444,7 @@ test('首页 WXML 覆盖六类模型状态并保留 UI Kernel 与底部安全区
   assert.match(wxml, /homeState\.draft/)
   assert.match(wxml, /homeState\.profileIssues/)
   assert.match(wxml, /data-action="\{\{item\.action\}\}"/)
+  assert.match(wxml, /item\.kind === 'weight'/)
   assert.match(wxml, /homeState\.recentRecord/)
   assert.match(wxml, /homeRefreshing/)
   assert.match(wxml, /homeRefreshError/)
