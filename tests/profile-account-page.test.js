@@ -11,17 +11,24 @@ function loadAccountPage({
   user = { id: 'user-1', nickname: '小明', avatarUrl: '/assets/profile/user.jpg' },
   saveAvatar = async () => '/assets/profile/new-avatar.jpg',
   updateCurrentUserProfile = async (profile) => ({ ...user, ...profile }),
-  login = async () => true
+  login = async () => true,
+  logout = () => {},
+  refreshAuthState = async () => {},
+  modalResult = { confirm: true, cancel: false }
 } = {}) {
   const source = fs.readFileSync(path.join(root, 'pages/profile/account/index.js'), 'utf8')
   let definition
   const calls = []
+  const app = {
+    globalData: { authReady: Promise.resolve() },
+    refreshAuthState
+  }
   const context = {
     Page(page) {
       definition = page
     },
     getApp() {
-      return { globalData: { authReady: Promise.resolve() } }
+      return app
     },
     require(request) {
       if (request === '../../../services/authService') {
@@ -29,7 +36,8 @@ function loadAccountPage({
           getAuthState: () => authState,
           getCurrentUser: () => user,
           updateCurrentUserProfile,
-          login
+          login,
+          logout
         }
       }
       if (request === '../../../services/userProfileService') return { saveAvatar }
@@ -44,6 +52,13 @@ function loadAccountPage({
       },
       navigateBack(options) {
         calls.push(['back', options])
+      },
+      showModal(options) {
+        calls.push(['modal', options])
+        options.success(modalResult)
+      },
+      switchTab(options) {
+        calls.push(['switchTab', options])
       }
     },
     module: { exports: {} },
@@ -112,6 +127,50 @@ test('账号二级页保存昵称和新头像，并返回我的页面', async ()
   assert.equal(wxCalls[1][1].delta, 1)
 })
 
+test('账号二级页确认退出登录后清理认证状态并回到我的页面', async () => {
+  let loggedOut = false
+  let refreshed = false
+  const { definition, calls } = loadAccountPage({
+    logout() {
+      loggedOut = true
+    },
+    async refreshAuthState() {
+      refreshed = true
+    }
+  })
+
+  const result = await definition.onLogout.call({
+    data: { ...definition.data, authState: 'logged-in', saving: false }
+  })
+
+  assert.equal(result, true)
+  assert.equal(loggedOut, true)
+  assert.equal(refreshed, true)
+  assert.equal(calls[0][0], 'modal')
+  assert.equal(calls[0][1].confirmText, '退出登录')
+  assert.equal(calls[1][0], 'switchTab')
+  assert.equal(calls[1][1].url, '/pages/profile/index/index')
+})
+
+test('账号二级页取消退出登录时保留当前登录态', async () => {
+  let loggedOut = false
+  const { definition, calls } = loadAccountPage({
+    modalResult: { confirm: false, cancel: true },
+    logout() {
+      loggedOut = true
+    }
+  })
+
+  const result = await definition.onLogout.call({
+    data: { ...definition.data, authState: 'logged-in', saving: false }
+  })
+
+  assert.equal(result, false)
+  assert.equal(loggedOut, false)
+  assert.equal(calls.length, 1)
+  assert.equal(calls[0][0], 'modal')
+})
+
 test('账号二级页包含头像选择、昵称输入和保存入口', () => {
   const pageRoot = path.join(root, 'pages/profile/account')
   const wxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
@@ -124,6 +183,8 @@ test('账号二级页包含头像选择、昵称输入和保存入口', () => {
   assert.match(wxml, /bind:chooseavatar="onChooseAvatar"/)
   assert.match(wxml, /bindinput="onNicknameInput"/)
   assert.match(wxml, /bind:tap="onSave"/)
+  assert.match(wxml, /variant="warning-outline"/)
+  assert.match(wxml, /bind:tap="onLogout"/)
 })
 
 test('账号头像选择后直接使用微信返回的裁剪结果', () => {

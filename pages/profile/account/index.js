@@ -88,5 +88,33 @@ Page({
       this.setData({ saving: false })
       wx.showToast({ title: '保存失败，请稍后再试', icon: 'none' })
     }
+  },
+
+  async onLogout() {
+    if (this.data.authState === 'guest' || this.data.saving) return false
+
+    const confirmed = await new Promise((resolve) => {
+      wx.showModal({
+        title: '退出登录',
+        content: '退出后将回到游客模式，确定要退出当前账号吗？',
+        cancelText: '取消',
+        confirmText: '退出登录',
+        success: (result) => resolve(Boolean(result && result.confirm)),
+        fail: () => resolve(false)
+      })
+    })
+    if (!confirmed) return false
+
+    authService.logout()
+    const app = typeof getApp === 'function' ? getApp() : null
+    if (app && typeof app.refreshAuthState === 'function') {
+      await app.refreshAuthState()
+    } else if (app && app.globalData) {
+      app.globalData.authState = 'guest'
+      app.globalData.userInfo = null
+      app.globalData.dogs = []
+    }
+    wx.switchTab({ url: '/pages/profile/index/index' })
+    return true
   }
 })

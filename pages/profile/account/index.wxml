@@ -47,5 +47,9 @@
     <view class="profile-account__save-action">
       <ui-button loading="{{saving}}" disabled="{{saving}}" bind:tap="onSave">保存修改</ui-button>
     </view>
+
+    <view class="profile-account__logout-action">
+      <ui-button variant="warning-outline" disabled="{{saving}}" bind:tap="onLogout">退出登录</ui-button>
+    </view>
   </block>
 </view>

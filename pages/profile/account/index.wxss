@@ -58,3 +58,7 @@
 .profile-account__save-action {
   margin-top: 24rpx;
 }
+
+.profile-account__logout-action {
+  margin-top: 16rpx;
+}

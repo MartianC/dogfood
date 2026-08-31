@@ -76,6 +76,7 @@ async function updateCurrentUserProfile(profile = {}) {
 function logout() {
   storage.removeSync('access_token')
   storage.removeSync('currentUser')
+  storage.removeSync('dogsCache')
   setAuth(null, [])
   dataInvalidationService.markDirty()
 }

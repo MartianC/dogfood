@@ -99,6 +99,24 @@ test('authService 不展示过期或结构不完整的 dogsCache 快照', async 
   }
 })
 
+test('authService.logout 清除认证信息和狗狗档案缓存', async () => {
+  storage.setSync('access_token', 'token')
+  storage.setSync('currentUser', { id: 'user-1' })
+  storage.setSync('dogsCache', {
+    profileSchemaVersion: 3,
+    items: [{ id: 'dog-1' }],
+    updatedAt: new Date().toISOString()
+  })
+
+  await authService.initAuth()
+  authService.logout()
+
+  assert.equal(storage.getSync('access_token'), null)
+  assert.equal(storage.getSync('currentUser'), null)
+  assert.equal(storage.getSync('dogsCache'), null)
+  assert.equal(authService.getAuthState(), 'guest')
+})
+
 test('远端刷新成功覆盖 dogsCache，失败时保留有效展示快照', async () => {
   const cachedDog = {
     id: 'cached-dog',
