@@ -1,5 +1,15 @@
 # 食谱模块 Figma 实施交接
 
+## 2026-08-28 Hero 与 Onboarding V2 设计交接
+
+- 本轮在 Figma 文件 `CHUlIiWUhuXHA0IUwQe6Qe` 新增页面“狗饭 · Hero 与 Onboarding V2”（Page `20351:2`），未覆盖旧评审稿。页面包含 Hero（`20351:3`）、微信登录（`20351:4`）、宠物身份（`20351:5`）、基础信息（`20351:6`）、完成建档（`20351:7`）、首页落地预览（`20368:2`）和动效 / 组件交接板（`20369:2`）。
+- Onboarding 主路径为 Hero → 微信登录 → 宠物身份 → 基础信息 → 完成建档 → 首页；微信登录页保留“先去逛逛”跳过路径。宠物基本信息录入覆盖头像、姓名、性别、体型和生日，完成页提供结果反馈及进入首页操作。
+- 视觉沿用当前工程语义 token：页面背景、surface、主文字、次文字、弱文字、边框、主操作色、主色浅背景、暖色强调和低状态色均来自本轮隔离的 V2 颜色变量集合 `VariableCollectionId:20349:2`，不修改旧变量。
+- 动效交接：主流程使用 `SMART_ANIMATE + EASE_OUT`，Hero → 登录、登录 → 宠物身份、宠物身份 → 基础信息为 360ms，基础信息 → 完成和完成 → 首页为 420ms；跳过路径使用 `DISSOLVE` 240ms。页面内补充按钮按下态、字段 focus、成功 check 的 scale / opacity 和 `prefers-reduced-motion` 降级说明。
+- 标准组件采用 TDesign 语义映射：Button、Avatar、Input、Radio、Picker、Result；工程不得在页面直接使用 `<t-*>`，分别通过 `components/ui/ui-button`、`ui-field`、Avatar / `chooseAvatar` 能力和 vendor 适配层承接。首页落地按钮继续使用 `ui-button`，业务行为复用 `sharedMealEntryService.startSharedMeal()`。
+- Figma 与工程的差异：当前 Figma 插件环境无法稳定实例化带 `PingFang SC Semibold` 的 TDesign 中文实例，因此 V2 使用可编辑的本地 component mapping，并在组件 description 中记录工程映射；这不改变实现侧必须使用 TDesign 适配契约的约束。
+- 验证：V2 全部流程画板为 375 × 812，无 placeholder；已核验 5 条主流程和 1 条跳过 reaction、首页和交接板截图，以及文字边界。完成页成功说明存在 Figma 的字体渲染包围盒外扩，但未发生画布裁切或视觉重叠。
+
 ## 2026-08-07 TabBar 运行态样式调整
 
 - 用户要求将底部 TabBar 从悬浮胶囊改为贴合底边的普通方形栏；该运行态调整覆盖下方 D1.1 的历史外框尺寸与圆角变体描述。
