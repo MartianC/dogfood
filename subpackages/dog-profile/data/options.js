@@ -15,6 +15,14 @@ const activityDurationBands = [
   { min: 3, maxInclusive: 6, value: 'high', label: '高活动' }
 ]
 
+// 引导页按活动水平选择；代表时长用于兼容现有能量计算字段。
+const activityLevelOptions = [
+  { value: 'low', label: '低活动', description: '以休息为主，只有短距离散步', dailyActivityHours: 0.5 },
+  { value: 'moderateLowImpact', label: '一般活动', description: '每天规律散步，有适度活动', dailyActivityHours: 1.5 },
+  { value: 'moderateHighImpact', label: '较多活动', description: '每天运动时间较长，活动量较多', dailyActivityHours: 2.5 },
+  { value: 'high', label: '高活动', description: '经常奔跑、训练或长时间运动', dailyActivityHours: 4 }
+]
+
 const bodyConditionOptions = [
   { value: 'thin', label: '偏瘦' },
   { value: 'ideal', label: '理想' },
@@ -31,6 +39,7 @@ module.exports = {
   breedOptions,
   genderOptions,
   activityDurationBands,
+  activityLevelOptions,
   bodyConditionOptions,
   reproductiveStatusOptions
 }

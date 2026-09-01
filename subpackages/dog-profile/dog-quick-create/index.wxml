@@ -1,97 +1,119 @@
-<view class="page with-bottom-action dog-profile-page">
-  <view class="section dog-profile-section">
-    <ui-card>
-      <view class="dog-profile-form">
-        <view class="dog-profile-avatar">
-          <ui-button
-            variant="avatar"
-            block="{{false}}"
-            openType="chooseAvatar"
-            bind:chooseavatar="onChooseAvatar"
-            ariaLabel="选择爱宠头像"
-          >
-            <image class="dog-profile-avatar__image" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
-          </ui-button>
-        </view>
-
-        <view class="dog-profile-pair">
-          <ui-field label="爱宠名字">
-            <input class="dog-profile-control" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如 布丁" />
-          </ui-field>
-          <ui-field label="出生日期" errorText="{{birthDateError}}">
-            <picker mode="date" end="{{today}}" value="{{form.birthDate}}" bindchange="onBirthDate">
-              <view class="dog-profile-picker-value {{form.birthDate ? '' : 'dog-profile-picker-value--empty'}}">
-                {{form.birthDate || '请选择'}}
-              </view>
-            </picker>
-          </ui-field>
-        </view>
-
-        <ui-field label="爱宠品种" errorText="{{breedError}}">
-          <view class="dog-profile-picker-value {{form.breed ? '' : 'dog-profile-picker-value--empty'}}" bindtap="onChooseBreed">
-            {{form.breed ? breedLabel : '请选择'}}
-          </view>
-        </ui-field>
-
-        <view class="dog-profile-pair">
-          <ui-field label="当前体重 kg">
-            <input class="dog-profile-control" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如 12" />
-          </ui-field>
-          <ui-field label="每日餐数">
-            <input class="dog-profile-control" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如 2" />
-          </ui-field>
-        </view>
-
-        <ui-field wx:if="{{isPuppy}}" label="预计成年体重">
-          <view wx:if="{{expectedAdultWeightKg}}" class="dog-profile-readonly">系统估算 {{expectedAdultWeightKg}} kg</view>
-          <view wx:else class="dog-profile-readonly dog-profile-readonly--muted">当前品种暂无可靠估算</view>
-        </ui-field>
-
-        <ui-field label="日均活动时长" errorText="{{dailyActivityHoursError}}">
-          <view class="dog-profile-activity-feedback">日均 {{form.dailyActivityHours}} 小时 · {{activityLevelLabel}}</view>
-          <view class="dog-profile-activity-slider">
-            <view class="dog-profile-activity-slider__bands" aria-hidden="true">
-              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--low"></view>
-              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--general"></view>
-              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--active"></view>
-              <view class="dog-profile-activity-slider__band dog-profile-activity-slider__band--high"></view>
-            </view>
-            <view class="dog-profile-activity-slider__thumb" style="left: {{activityThumbLeft}}%;" aria-hidden="true"></view>
-            <slider class="dog-profile-activity-slider__input" aria-role="slider" aria-label="日均活动时长，{{form.dailyActivityHours}} 小时，{{activityLevelLabel}}" aria-valuenow="{{form.dailyActivityHours}}" aria-valuetext="{{form.dailyActivityHours}} 小时，{{activityLevelLabel}}" min="0" max="6" step="0.5" value="{{form.dailyActivityHours}}" show-value="{{false}}" bindchanging="onActivityHours" bindchange="onActivityHours" />
-          </view>
-        </ui-field>
-
-        <ui-field label="体况">
-          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="体况">
-            <view wx:for="{{bodyConditionOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.bodyCondition === item.value}}" data-value="{{item.value}}" bindtap="onBodyCondition">
-              <ui-tag variant="{{form.bodyCondition === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
-            </view>
-          </view>
-        </ui-field>
-
-        <ui-field label="绝育状态">
-          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="绝育状态">
-            <view class="dog-profile-choice" aria-role="radio" aria-label="已绝育" aria-checked="{{form.neutered}}" data-value="true" bindtap="onNeutered">
-              <ui-tag variant="{{form.neutered ? 'good' : 'neutral'}}">已绝育</ui-tag>
-            </view>
-            <view class="dog-profile-choice" aria-role="radio" aria-label="未绝育" aria-checked="{{!form.neutered}}" data-value="false" bindtap="onNeutered">
-              <ui-tag variant="{{!form.neutered ? 'good' : 'neutral'}}">未绝育</ui-tag>
-            </view>
-          </view>
-        </ui-field>
-
-        <ui-field label="生殖状态" helpText="妊娠或哺乳期需要专业营养建议。">
-          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="生殖状态">
-            <view wx:for="{{reproductiveStatusOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.reproductiveStatus === item.value}}" data-key="reproductiveStatus" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">
-              <ui-tag variant="{{form.specialNutritionNeeds.reproductiveStatus === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
-            </view>
-          </view>
-        </ui-field>
-      </view>
-    </ui-card>
+<view class="page with-bottom-action dog-onboarding-page">
+  <view class="dog-onboarding-header">
+    <view class="dog-onboarding-previous" bindtap="onPrevious" aria-role="button" aria-label="上一步">上一步</view>
+    <view class="dog-onboarding-step">{{stepText}}</view>
   </view>
 
-  <view class="bottom-action">
-    <ui-button loading="{{saving}}" disabled="{{saving}}" bind:tap="onSave">保存并选择周期</ui-button>
+  <view wx:if="{{step === 2}}" class="dog-onboarding-content">
+    <view class="dog-onboarding-avatar-block">
+      <ui-button
+        variant="avatar"
+        block="{{false}}"
+        openType="chooseAvatar"
+        bind:chooseavatar="onChooseAvatar"
+        ariaLabel="选择宠物头像"
+      >
+        <image class="dog-onboarding-avatar" src="{{form.avatarUrl || defaultDogAvatar}}" mode="aspectFill" />
+      </ui-button>
+    </view>
+
+    <view class="dog-onboarding-title">它叫什么名字？</view>
+
+    <view class="dog-onboarding-form">
+      <ui-field label="宠物姓名" errorText="{{nameError}}">
+        <input class="dog-onboarding-input" data-key="name" value="{{form.name}}" bindinput="setField" placeholder="例如：团团" maxlength="12" />
+      </ui-field>
+      <ui-field label="品种" errorText="{{breedError}}">
+        <view class="dog-onboarding-select" bindtap="onChooseBreed" aria-role="button" aria-label="选择宠物品种，当前{{form.breed ? breedLabel : '未选择'}}">
+          <view class="dog-onboarding-select-value {{form.breed ? '' : 'dog-onboarding-select-value--empty'}}">{{form.breed ? breedLabel : '请选择品种'}}</view>
+          <view class="dog-onboarding-chevron" aria-hidden="true"></view>
+        </view>
+      </ui-field>
+    </view>
+  </view>
+
+  <view wx:if="{{step === 3}}" class="dog-onboarding-content">
+    <view class="dog-onboarding-title">把基础信息告诉我。</view>
+
+    <view class="dog-onboarding-form">
+      <ui-field label="出生日期" errorText="{{birthDateError}}">
+        <picker mode="date" end="{{today}}" value="{{form.birthDate}}" bindchange="onBirthDate">
+          <view class="dog-onboarding-select-value {{form.birthDate ? '' : 'dog-onboarding-select-value--empty'}}">{{form.birthDate || '请选择出生日期'}}</view>
+        </picker>
+      </ui-field>
+
+      <ui-field label="性别" errorText="{{genderError}}">
+        <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="性别">
+          <view class="dog-onboarding-choice {{form.gender === 'male' ? 'dog-onboarding-choice--selected' : ''}}" data-value="male" bindtap="onGender" aria-role="radio" aria-label="男孩" aria-checked="{{form.gender === 'male'}}">男孩</view>
+          <view class="dog-onboarding-choice {{form.gender === 'female' ? 'dog-onboarding-choice--selected' : ''}}" data-value="female" bindtap="onGender" aria-role="radio" aria-label="女孩" aria-checked="{{form.gender === 'female'}}">女孩</view>
+        </view>
+      </ui-field>
+
+      <ui-field label="当前体重（kg）" errorText="{{weightError}}">
+        <input class="dog-onboarding-input" type="digit" data-key="weightKg" value="{{form.weightKg}}" bindinput="setField" placeholder="例如：12" />
+      </ui-field>
+
+      <ui-field label="绝育状态" errorText="{{neuteredError}}">
+        <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="绝育状态">
+          <view class="dog-onboarding-choice {{form.neutered === true ? 'dog-onboarding-choice--selected' : ''}}" data-value="true" bindtap="onNeutered" aria-role="radio" aria-label="已绝育" aria-checked="{{form.neutered === true}}">已绝育</view>
+          <view class="dog-onboarding-choice {{form.neutered === false ? 'dog-onboarding-choice--selected' : ''}}" data-value="false" bindtap="onNeutered" aria-role="radio" aria-label="未绝育" aria-checked="{{form.neutered === false}}">未绝育</view>
+        </view>
+      </ui-field>
+    </view>
+  </view>
+
+  <view wx:if="{{step === 4}}" class="dog-onboarding-content">
+    <view class="dog-onboarding-title">它的日常状态是？</view>
+
+    <view class="dog-onboarding-form">
+      <view class="dog-onboarding-activity-field">
+        <view class="dog-onboarding-field-label">活动水平</view>
+        <view class="dog-onboarding-activity-feedback">日均 {{form.dailyActivityHours}} 小时 · {{activityLevelLabel}}</view>
+        <view class="dog-onboarding-activity-slider">
+          <view class="dog-onboarding-activity-slider__bands" aria-hidden="true">
+            <view class="dog-onboarding-activity-slider__band dog-onboarding-activity-slider__band--low"></view>
+            <view class="dog-onboarding-activity-slider__band dog-onboarding-activity-slider__band--general"></view>
+            <view class="dog-onboarding-activity-slider__band dog-onboarding-activity-slider__band--active"></view>
+            <view class="dog-onboarding-activity-slider__band dog-onboarding-activity-slider__band--high"></view>
+          </view>
+          <view class="dog-onboarding-activity-slider__thumb" style="left: {{activityThumbLeft}}%;" aria-hidden="true"></view>
+          <slider class="dog-onboarding-activity-slider__input" aria-role="slider" aria-label="日均活动时长，{{form.dailyActivityHours}} 小时，{{activityLevelLabel}}" aria-valuenow="{{form.dailyActivityHours}}" aria-valuetext="{{form.dailyActivityHours}} 小时，{{activityLevelLabel}}" min="0" max="6" step="0.5" value="{{form.dailyActivityHours}}" show-value="{{false}}" bindchanging="onActivityHours" bindchange="onActivityHours" />
+          <view class="dog-onboarding-activity-slider__scale" aria-hidden="true">
+            <text>0 小时</text>
+            <text>6 小时</text>
+          </view>
+        </view>
+        <view wx:if="{{dailyActivityHoursError}}" class="dog-onboarding-error">{{dailyActivityHoursError}}</view>
+      </view>
+
+      <ui-field label="每日餐数" errorText="{{dailyMealsError}}">
+        <input class="dog-onboarding-input" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如：2" />
+      </ui-field>
+
+      <ui-field label="体况" errorText="{{bodyConditionError}}">
+        <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="体况">
+          <view wx:for="{{bodyConditionOptions}}" wx:key="value" class="dog-onboarding-choice dog-onboarding-choice--compact {{form.bodyCondition === item.value ? 'dog-onboarding-choice--selected' : ''}}" data-value="{{item.value}}" bindtap="onBodyCondition" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.bodyCondition === item.value}}">
+            <ui-tag variant="{{form.bodyCondition === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+          </view>
+        </view>
+      </ui-field>
+
+      <ui-field label="生殖状态" errorText="{{reproductiveStatusError}}">
+        <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="生殖状态">
+          <view wx:for="{{reproductiveStatusOptions}}" wx:key="value" class="dog-onboarding-choice dog-onboarding-choice--compact" data-key="reproductiveStatus" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.reproductiveStatus === item.value}}">
+            <ui-tag variant="{{form.specialNutritionNeeds.reproductiveStatus === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
+          </view>
+        </view>
+      </ui-field>
+    </view>
+  </view>
+
+  <view wx:if="{{step === 5}}" class="dog-onboarding-content dog-onboarding-login-content">
+    <view class="dog-onboarding-login-mark" aria-hidden="true">微</view>
+    <view class="dog-onboarding-title">微信登录</view>
+  </view>
+
+  <view wx:if="{{step >= 2 && step <= 5}}" class="bottom-action">
+    <ui-button loading="{{saving}}" disabled="{{saving}}" bind:tap="onNext">{{step === 5 ? '微信登录并完成建档' : '下一步'}}</ui-button>
   </view>
 </view>

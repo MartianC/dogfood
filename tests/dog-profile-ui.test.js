@@ -41,39 +41,65 @@ function pageContext(definition) {
   }
 }
 
-test('完整与快速建档只收集出生日期、品种和日均活动时长', () => {
-  profilePages.forEach((page) => {
-    const js = readPage(page, 'js')
-    const wxml = readPage(page, 'wxml')
+test('完整档案页保留基础档案字段和活动时长编辑能力', () => {
+  const js = readPage('subpackages/dog-profile/dog-edit', 'js')
+  const wxml = readPage('subpackages/dog-profile/dog-edit', 'wxml')
 
-    assert.doesNotMatch(js, /ageStageOptions|onAge|allergenText|avoidText/)
-    assert.doesNotMatch(wxml, /年龄阶段[^<]*<picker|活动强度|忌口/)
-    if (page.endsWith('dog-edit')) assert.match(wxml, /label="过敏食材"/)
-    else assert.doesNotMatch(wxml, /过敏食材/)
-    assert.doesNotMatch(wxml, /预计成年体重[\s\S]{0,240}<input/)
+  assert.doesNotMatch(js, /ageStageOptions|onAge|allergenText|avoidText/)
+  assert.doesNotMatch(wxml, /年龄阶段[^<]*<picker|活动强度|忌口/)
+  assert.match(wxml, /label="过敏食材"/)
+  assert.doesNotMatch(wxml, /预计成年体重[\s\S]{0,240}<input/)
+  assert.match(wxml, /mode="date"/)
+  assert.match(wxml, /label="出生日期"/)
+  assert.match(wxml, /label="狗狗品种"/)
+  assert.doesNotMatch(wxml, /系统估算阶段|lifeStageLabel/)
+  assert.match(wxml, /<slider[^>]*min="0"[^>]*max="6"[^>]*step="0\.5"/)
+  assert.match(wxml, /dog-profile-activity-slider__band--low/)
+  assert.match(wxml, /dog-profile-activity-slider__band--general/)
+  assert.match(wxml, /dog-profile-activity-slider__band--active/)
+  assert.match(wxml, /dog-profile-activity-slider__band--high/)
+  assert.match(wxml, /日均活动时长/)
+  assert.match(wxml, /form\.dailyActivityHours/)
+  assert.match(wxml, /activityLevelLabel/)
+  assert.match(wxml, /label="体况"/)
+  assert.match(wxml, /wx:if="\{\{isPuppy\}\}"[^>]*label="预计成年体重"/)
+  assert.match(js, /estimateLifeStage/)
+  assert.match(js, /estimateExpectedAdultWeight/)
+  assert.match(js, /deriveActivityLevel/)
+  assert.match(js, /defaultActivityHours:\s*1\.5/)
+  assert.match(js, /allergens:/)
+  assert.match(js, /avoidIngredients:/)
+})
 
-    assert.match(wxml, /mode="date"/)
-    assert.match(wxml, /label="出生日期"/)
-    assert.match(wxml, /label="(?:爱宠|狗狗)品种"/)
-    assert.doesNotMatch(wxml, /系统估算阶段|lifeStageLabel/)
-    assert.match(wxml, /<slider[^>]*min="0"[^>]*max="6"[^>]*step="0\.5"/)
-    assert.match(wxml, /dog-profile-activity-slider__band--low/)
-    assert.match(wxml, /dog-profile-activity-slider__band--general/)
-    assert.match(wxml, /dog-profile-activity-slider__band--active/)
-    assert.match(wxml, /dog-profile-activity-slider__band--high/)
-    assert.match(wxml, /日均活动时长/)
-    assert.match(wxml, /form\.dailyActivityHours/)
-    assert.match(wxml, /activityLevelLabel/)
-    assert.match(wxml, /label="体况"/)
-    assert.match(wxml, /wx:if="\{\{isPuppy\}\}"[^>]*label="预计成年体重"/)
+test('快速建档按 02 至 05 步骤收集档案并在登录后直接进入首页', () => {
+  const js = readPage('subpackages/dog-profile/dog-quick-create', 'js')
+  const wxml = readPage('subpackages/dog-profile/dog-quick-create', 'wxml')
 
-    assert.match(js, /estimateLifeStage/)
-    assert.match(js, /estimateExpectedAdultWeight/)
-    assert.match(js, /deriveActivityLevel/)
-    assert.match(js, /defaultActivityHours:\s*1\.5|dailyActivityHours:\s*1\.5/)
-    assert.match(js, /allergens:/)
-    assert.match(js, /avoidIngredients:/)
-  })
+  assert.match(js, /initialStep = 2/)
+  assert.match(js, /step === 5.*onLoginAndCreate/s)
+  assert.match(js, /await authService\.login\(\)/)
+  assert.match(js, /await dogService\.createDog\(payload\)/)
+  assert.match(wxml, /step === 2/)
+  assert.match(wxml, /openType="chooseAvatar"/)
+  assert.match(wxml, /bind:chooseavatar="onChooseAvatar"/)
+  assert.match(wxml, /label="宠物姓名"/)
+  assert.match(wxml, /label="品种"/)
+  assert.match(wxml, /step === 3/)
+  assert.match(wxml, /label="出生日期"/)
+  assert.match(wxml, /label="性别"/)
+  assert.match(wxml, /label="当前体重（kg）"/)
+  assert.match(wxml, /label="绝育状态"/)
+  assert.match(wxml, /step === 4/)
+  assert.match(wxml, /<slider[^>]*aria-label="日均活动时长/)
+  assert.match(wxml, /label="每日餐数"/)
+  assert.match(wxml, /label="体况"/)
+  assert.match(wxml, /label="生殖状态"/)
+  assert.match(wxml, /step === 5/)
+  assert.match(wxml, /微信登录并完成建档/)
+  assert.doesNotMatch(wxml, /step === 6|狗狗档案已保存|bottom-action--surface/)
+  assert.match(wxml, /class="dog-onboarding-previous"[^>]*bindtap="onPrevious"/)
+  assert.doesNotMatch(wxml, /dog-onboarding-description|dog-onboarding-eyebrow|dog-onboarding-benefits/)
+  assert.doesNotMatch(wxml, /过敏食材|预计成年体重/)
 })
 
 test('档案界面不展示实现备注且编辑页可选择并保存过敏食材', () => {
@@ -430,25 +456,40 @@ test('档案选择胶囊视觉收紧但保留最小点击区域', () => {
   assert.match(profileWxss, /\.dog-profile-choice\s*\{[\s\S]*min-height:\s*88rpx/)
 })
 
-test('建档字段变化实时刷新阶段、品种估算和纯时长活动档位', () => {
-  profilePages.forEach((page) => {
-    const definition = loadPageDefinition(page)
-    const context = pageContext(definition)
+test('完整档案字段变化实时刷新阶段、品种估算和活动档位', () => {
+  const definition = loadPageDefinition(profilePages[0])
+  const context = pageContext(definition)
 
-    definition.onBirthDate.call(context, { detail: { value: '2025-12-18' } })
-    assert.equal(context.data.lifeStageLabel, '幼犬晚期')
-    assert.equal(context.data.isPuppy, true)
+  definition.onBirthDate.call(context, { detail: { value: '2025-12-18' } })
+  assert.equal(context.data.lifeStageLabel, '幼犬晚期')
+  assert.equal(context.data.isPuppy, true)
 
-    definition.applyBreed.call(context, 'shiba-inu')
-    assert.equal(context.data.form.breed, 'shiba-inu')
-    assert.equal(context.data.breedLabel, '柴犬')
-    assert.equal(context.data.expectedAdultWeightKg, 10.5)
+  definition.applyBreed.call(context, 'shiba-inu')
+  assert.equal(context.data.form.breed, 'shiba-inu')
+  assert.equal(context.data.breedLabel, '柴犬')
+  assert.equal(context.data.expectedAdultWeightKg, 10.5)
 
-    definition.onActivityHours.call(context, { detail: { value: 3 } })
-    assert.equal(context.data.form.dailyActivityHours, 3)
-    assert.equal(context.data.activityLevel, 'high')
-    assert.equal(context.data.activityLevelLabel, '高活动')
-  })
+  definition.onActivityHours.call(context, { detail: { value: 3 } })
+  assert.equal(context.data.form.dailyActivityHours, 3)
+  assert.equal(context.data.activityLevel, 'high')
+  assert.equal(context.data.activityLevelLabel, '高活动')
+})
+
+test('快速建档字段变化更新品种和活动 Slider，但不展示估算字段', () => {
+  const definition = loadPageDefinition(profilePages[1])
+  const context = pageContext(definition)
+
+  definition.onBirthDate.call(context, { detail: { value: '2025-12-18' } })
+  assert.equal(context.data.lifeStageLabel, '幼犬晚期')
+
+  definition.applyBreed.call(context, 'shiba-inu')
+  assert.equal(context.data.form.breed, 'shiba-inu')
+  assert.equal(context.data.breedLabel, '柴犬')
+
+  definition.onActivityHours.call(context, { detail: { value: 4 } })
+  assert.equal(context.data.form.activityLevel, 'high')
+  assert.equal(context.data.form.dailyActivityHours, 4)
+  assert.equal(context.data.activityThumbLeft, 4 / 6 * 100)
 })
 
 test('编辑旧档案不会把缺失活动时长或旧 high 静默改成 1.5 小时', async () => {
@@ -512,7 +553,7 @@ test('保存未主动选择活动时长的旧档案会保留缺失值并显示�
   }
 })
 
-test('新建档案保存请求进行中时重复触发不会再次创建', async () => {
+test('编辑档案保存请求进行中时重复触发不会再次创建', async () => {
   const dogService = require('../services/dogService')
   const originalNormalize = dogService.normalizeDog
   const originalValidate = dogService.validateDog
@@ -525,24 +566,22 @@ test('新建档案保存请求进行中时重复触发不会再次创建', async
   global.setTimeout = (callback) => callback()
 
   try {
-    for (const page of profilePages) {
-      let createCalls = 0
-      let finishCreate
-      const createPending = new Promise((resolve) => { finishCreate = resolve })
-      dogService.createDog = async () => {
-        createCalls += 1
-        await createPending
-      }
-
-      const definition = loadPageDefinition(page)
-      const context = pageContext(definition)
-      const firstSave = definition.onSave.call(context)
-      const repeatedSave = definition.onSave.call(context)
-
-      assert.equal(createCalls, 1, `${page} 不应重复创建档案`)
-      finishCreate()
-      await Promise.all([firstSave, repeatedSave])
+    let createCalls = 0
+    let finishCreate
+    const createPending = new Promise((resolve) => { finishCreate = resolve })
+    dogService.createDog = async () => {
+      createCalls += 1
+      await createPending
     }
+
+    const definition = loadPageDefinition(profilePages[0])
+    const context = pageContext(definition)
+    const firstSave = definition.onSave.call(context)
+    const repeatedSave = definition.onSave.call(context)
+
+    assert.equal(createCalls, 1, '编辑页不应重复创建档案')
+    finishCreate()
+    await Promise.all([firstSave, repeatedSave])
   } finally {
     dogService.normalizeDog = originalNormalize
     dogService.validateDog = originalValidate
@@ -550,6 +589,141 @@ test('新建档案保存请求进行中时重复触发不会再次创建', async
     global.wx = previousWx
     global.setTimeout = previousSetTimeout
   }
+})
+
+test('快速建档登录请求进行中时重复触发不会重复登录或创建', async () => {
+  const dogService = require('../services/dogService')
+  const authService = require('../services/authService')
+  const originalNormalize = dogService.normalizeDog
+  const originalValidate = dogService.validateDog
+  const originalCreateDog = dogService.createDog
+  const originalAuthState = authService.getAuthState
+  const originalLogin = authService.login
+  const previousWx = global.wx
+  let finishCreate
+  let createCalls = 0
+  let loginCalls = 0
+  const navigations = []
+  const createPending = new Promise((resolve) => { finishCreate = resolve })
+
+  dogService.normalizeDog = (payload) => payload
+  dogService.validateDog = () => {}
+  dogService.createDog = async () => {
+    createCalls += 1
+    await createPending
+    return { id: 'dog-1', name: '团团', breed: 'shiba-inu', gender: 'female', weightKg: 10, dailyMeals: 2 }
+  }
+  authService.getAuthState = () => 'guest'
+  authService.login = async () => {
+    loginCalls += 1
+    return true
+  }
+  global.wx = {
+    showToast() {},
+    switchTab({ url }) { navigations.push(url) }
+  }
+
+  try {
+    const definition = loadPageDefinition(profilePages[1])
+    const context = pageContext(definition)
+    context.validateStep = definition.validateStep
+    context.redirectAfterCreation = definition.redirectAfterCreation
+    context.data.step = 5
+    context.data.form = {
+      ...context.data.form,
+      name: '团团',
+      birthDate: '2020-01-01',
+      breed: 'shiba-inu',
+      gender: 'female',
+      weightKg: '10',
+      dailyMeals: 2,
+      activityLevel: 'moderateLowImpact',
+      dailyActivityHours: 1.5,
+      bodyCondition: 'ideal',
+      neutered: true,
+      avatarUrl: '/tmp/avatar.png',
+      specialNutritionNeeds: {
+        ...context.data.form.specialNutritionNeeds,
+        reproductiveStatus: 'none'
+      }
+    }
+
+    const firstSave = definition.onLoginAndCreate.call(context)
+    const repeatedSave = definition.onLoginAndCreate.call(context)
+    await Promise.resolve()
+
+    assert.equal(loginCalls, 1)
+    assert.equal(createCalls, 1)
+    assert.equal(context.data.saving, true)
+
+    finishCreate()
+    await Promise.all([firstSave, repeatedSave])
+    assert.equal(context.data.step, 5)
+    assert.deepEqual(navigations, ['/pages/home/index'])
+    assert.equal(context.data.saving, false)
+  } finally {
+    dogService.normalizeDog = originalNormalize
+    dogService.validateDog = originalValidate
+    dogService.createDog = originalCreateDog
+    authService.getAuthState = originalAuthState
+    authService.login = originalLogin
+    global.wx = previousWx
+  }
+})
+
+test('快速建档按步骤校验字段并在第四页完成后进入微信登录页', () => {
+  const definition = loadPageDefinition(profilePages[1])
+  const context = pageContext(definition)
+  context.validateStep = definition.validateStep
+
+  definition.onNext.call(context)
+  assert.equal(context.data.step, 2)
+  assert.equal(context.data.nameError, '请填写宠物姓名')
+  assert.equal(context.data.breedError, '请选择宠物品种')
+
+  context.data.form.name = '团团'
+  context.data.form.breed = 'shiba-inu'
+  definition.onNext.call(context)
+  assert.equal(context.data.step, 3)
+
+  definition.onNext.call(context)
+  assert.equal(context.data.step, 3)
+  assert.equal(context.data.birthDateError, '请填写正确的出生日期')
+  assert.equal(context.data.genderError, '请选择狗狗性别')
+  assert.equal(context.data.weightError, '请填写狗狗体重')
+  assert.equal(context.data.neuteredError, '请选择绝育状态')
+
+  Object.assign(context.data.form, {
+    birthDate: '2020-01-01',
+    gender: 'female',
+    weightKg: '10',
+    neutered: true,
+    activityLevel: '',
+    dailyActivityHours: '',
+    bodyCondition: '',
+    dailyMeals: '',
+    specialNutritionNeeds: { reproductiveStatus: '' }
+  })
+  definition.onNext.call(context)
+  assert.equal(context.data.step, 4)
+
+  definition.onNext.call(context)
+  assert.equal(context.data.step, 4)
+  assert.equal(context.data.dailyActivityHoursError, '请选择活动水平')
+  assert.equal(context.data.dailyMealsError, '请填写每日餐数')
+  assert.equal(context.data.bodyConditionError, '请选择体况')
+  assert.equal(context.data.reproductiveStatusError, '请选择生殖状态')
+
+  Object.assign(context.data.form, {
+    activityLevel: 'moderateLowImpact',
+    dailyActivityHours: 1.5,
+    dailyMeals: 2,
+    bodyCondition: 'ideal',
+    specialNutritionNeeds: { reproductiveStatus: 'none' }
+  })
+  definition.onNext.call(context)
+  assert.equal(context.data.step, 5)
+  assert.equal(context.data.stepText, '05 / 05')
 })
 
 test('新增档案最终保存时携带暂存的过敏食材', async () => {
@@ -590,16 +764,23 @@ test('新增档案最终保存时携带暂存的过敏食材', async () => {
   }
 })
 
-test('Slider 和档案选择项暴露无障碍名称、角色与当前状态', () => {
-  profilePages.forEach((page) => {
-    const wxml = readPage(page, 'wxml')
+test('完整档案 Slider 和选择项暴露无障碍名称、角色与当前状态', () => {
+  const wxml = readPage(profilePages[0], 'wxml')
 
-    assert.match(wxml, /<slider[^>]*aria-role="slider"[^>]*aria-label=/)
-    assert.match(wxml, /<slider[^>]*aria-valuenow=/)
-    assert.match(wxml, /class="dog-profile-choices"[^>]*aria-role="radiogroup"/)
-    assert.match(wxml, /class="dog-profile-choice"[^>]*aria-role="radio"[^>]*aria-label=/)
-    assert.match(wxml, /class="dog-profile-choice"[^>]*aria-role="radio"[^>]*aria-checked=/)
-  })
+  assert.match(wxml, /<slider[^>]*aria-role="slider"[^>]*aria-label=/)
+  assert.match(wxml, /<slider[^>]*aria-valuenow=/)
+  assert.match(wxml, /class="dog-profile-choices"[^>]*aria-role="radiogroup"/)
+  assert.match(wxml, /class="dog-profile-choice"[^>]*aria-role="radio"[^>]*aria-label=/)
+  assert.match(wxml, /class="dog-profile-choice"[^>]*aria-role="radio"[^>]*aria-checked=/)
+})
+
+test('快速建档 Slider 和选择项暴露无障碍名称、角色与当前状态', () => {
+  const wxml = readPage(profilePages[1], 'wxml')
+
+  assert.match(wxml, /<slider[^>]*aria-role="slider"[^>]*aria-label=/)
+  assert.match(wxml, /<slider[^>]*aria-valuenow=/)
+  assert.match(wxml, /class="dog-onboarding-choices"[^>]*aria-role="radiogroup"[^>]*aria-label="性别"/)
+  assert.match(wxml, /class="dog-onboarding-choice[^>]*aria-role="radio"[^>]*aria-label="男孩"[^>]*aria-checked=/)
 })
 
 test('档案隐藏已移除的三个选项并保留特殊营养需求数据兼容', () => {
@@ -612,11 +793,9 @@ test('档案隐藏已移除的三个选项并保留特殊营养需求数据兼�
     assert.doesNotMatch(js, /dietGoalOptions|diseaseStatusOptions|therapeuticWeightManagementOptions|goalIndex|onGoalTap/)
     assert.doesNotMatch(wxml, /饮食目标|是否有已确诊疾病|治疗性体重管理/)
     assert.equal(context.data.form.dietGoal, 'daily')
-    assert.deepEqual(context.data.form.specialNutritionNeeds, {
-      hasDisease: null,
-      reproductiveStatus: null,
-      therapeuticWeightManagement: null
-    })
+    assert.deepEqual(context.data.form.specialNutritionNeeds, page.endsWith('dog-quick-create')
+      ? { hasDisease: null, reproductiveStatus: 'none', therapeuticWeightManagement: null }
+      : { hasDisease: null, reproductiveStatus: null, therapeuticWeightManagement: null })
     assert.match(wxml, /label="生殖状态"/)
     assert.match(wxml, /aria-label="生殖状态"/)
 

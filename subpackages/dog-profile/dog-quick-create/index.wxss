@@ -1,144 +1,277 @@
 @import "../../../styles/tokens.wxss";
 
-.dog-profile-page {
-  padding-top: 0;
+.dog-onboarding-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-top: 16rpx;
+  background: var(--df-color-bg);
 }
 
-.dog-profile-section {
-  margin-top: 0;
-}
-
-.dog-profile-form {
-  display: grid;
-  gap: var(--df-space-3);
-}
-
-.dog-profile-avatar {
-  width: 112rpx;
-  min-height: var(--df-touch-min);
-  margin: 0 auto;
-  padding: var(--df-space-1) 0;
+.dog-onboarding-header {
+  min-height: 88rpx;
+  margin: 0 24rpx 28rpx;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dog-onboarding-previous {
+  min-width: 112rpx;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  color: var(--df-color-text-secondary);
+  font-size: var(--df-font-sm);
+}
+
+.dog-onboarding-step {
+  min-width: 112rpx;
+  color: var(--df-color-primary);
+  font-size: var(--df-font-xs);
+  line-height: 32rpx;
+  text-align: right;
+}
+
+.dog-onboarding-content {
+  padding: 0 24rpx 32rpx;
+}
+
+.dog-onboarding-avatar-block {
+  min-height: 184rpx;
+  margin-bottom: 28rpx;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.dog-profile-avatar__image {
+.dog-onboarding-avatar {
   width: 96rpx;
   height: 96rpx;
   display: block;
-  border: 1rpx solid var(--df-color-line-strong);
-  border-radius: var(--df-radius-xl);
+  border-radius: 24rpx;
   background: var(--df-color-surface-muted);
 }
 
-.dog-profile-pair {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--df-space-3);
+.dog-onboarding-title {
+  color: var(--df-color-text);
+  font-size: 44rpx;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
-.dog-profile-control,
-.dog-profile-picker-value,
-.dog-profile-readonly {
+.dog-onboarding-form {
+  margin-top: 28rpx;
+  display: grid;
+  gap: 16rpx;
+}
+
+.dog-onboarding-input,
+.dog-onboarding-select-value {
   min-height: 58rpx;
+  box-sizing: border-box;
+  padding: 0;
+  color: var(--df-color-text);
   font-size: var(--df-font-md);
   line-height: 58rpx;
 }
 
-.dog-profile-picker-value--empty,
-.dog-profile-readonly--muted {
+.dog-onboarding-input {
+  width: 100%;
+}
+
+.dog-onboarding-input::placeholder,
+.dog-onboarding-select-value--empty {
   color: var(--df-color-muted);
 }
 
-.dog-profile-activity-feedback {
+.dog-onboarding-select {
+  min-height: 58rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dog-onboarding-select-value {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dog-onboarding-chevron {
+  width: 14rpx;
+  height: 14rpx;
+  margin-right: 8rpx;
+  border-top: 3rpx solid var(--df-color-muted);
+  border-right: 3rpx solid var(--df-color-muted);
+  transform: rotate(45deg);
+}
+
+.dog-onboarding-choices {
+  display: flex;
+  gap: 16rpx;
+}
+
+.dog-onboarding-choice {
+  min-width: 0;
+  min-height: 88rpx;
+  flex: 1;
+  box-sizing: border-box;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-lg);
+  color: var(--df-color-text-secondary);
+  background: var(--df-color-surface);
+  font-size: var(--df-font-md);
+}
+
+.dog-onboarding-choice--selected {
+  border-color: var(--df-color-primary);
+  color: var(--df-color-primary);
+  background: var(--df-color-primary-soft);
+  font-weight: 700;
+}
+
+.dog-onboarding-choice--compact {
+  min-height: 72rpx;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.dog-onboarding-activity-field {
+  min-height: 192rpx;
+  box-sizing: border-box;
+  padding: 24rpx;
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-lg);
+  background: var(--df-color-surface);
+}
+
+.dog-onboarding-field-label {
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  line-height: 32rpx;
+}
+
+.dog-onboarding-activity-feedback {
+  margin-top: 8rpx;
   color: var(--df-color-text);
   font-size: var(--df-font-md);
   font-weight: 700;
   line-height: 40rpx;
 }
 
-.dog-profile-activity-slider {
+.dog-onboarding-activity-slider {
   position: relative;
-  height: var(--df-touch-min);
-  margin-top: var(--df-space-1);
+  height: 142rpx;
+  margin-top: 4rpx;
 }
 
-.dog-profile-activity-slider__bands {
+.dog-onboarding-activity-slider__bands {
   position: absolute;
-  top: 38rpx;
+  top: 46rpx;
   right: 0;
   left: 0;
-  height: 12rpx;
+  height: 8rpx;
   display: flex;
   overflow: hidden;
   border-radius: var(--df-radius-pill);
 }
 
-.dog-profile-activity-slider__band {
-  background: var(--df-color-primary);
-}
-
-.dog-profile-activity-slider__band--low,
-.dog-profile-activity-slider__band--general,
-.dog-profile-activity-slider__band--active {
+.dog-onboarding-activity-slider__band--low,
+.dog-onboarding-activity-slider__band--general,
+.dog-onboarding-activity-slider__band--active {
   flex: 1;
 }
 
-.dog-profile-activity-slider__band--high {
+.dog-onboarding-activity-slider__band--high {
   flex: 3;
 }
 
-.dog-profile-activity-slider__band--low {
-  opacity: 0.18;
+.dog-onboarding-activity-slider__band--low {
+  background: var(--df-profile-color-slider-low);
 }
 
-.dog-profile-activity-slider__band--general {
-  opacity: 0.36;
+.dog-onboarding-activity-slider__band--general {
+  background: var(--df-profile-color-slider-general);
 }
 
-.dog-profile-activity-slider__band--active {
-  opacity: 0.62;
+.dog-onboarding-activity-slider__band--active {
+  background: var(--df-profile-color-slider-active);
 }
 
-.dog-profile-activity-slider__band--high {
-  opacity: 1;
+.dog-onboarding-activity-slider__band--high {
+  background: var(--df-profile-color-primary);
 }
 
-.dog-profile-activity-slider__thumb {
+.dog-onboarding-activity-slider__thumb {
   position: absolute;
   z-index: 1;
-  top: 26rpx;
-  width: 36rpx;
-  height: 36rpx;
+  top: 30rpx;
+  width: 44rpx;
+  height: 44rpx;
   box-sizing: border-box;
-  border: 6rpx solid var(--df-color-surface);
+  border: 4rpx solid var(--df-profile-color-primary);
   border-radius: var(--df-radius-pill);
-  background: var(--df-color-primary);
-  box-shadow: var(--df-shadow-card);
+  background: var(--df-color-surface);
   transform: translateX(-50%);
 }
 
-.dog-profile-activity-slider__input {
+.dog-onboarding-activity-slider__input {
   position: absolute;
   z-index: 2;
-  inset: 0;
+  top: 8rpx;
+  right: 0;
+  left: 0;
   width: 100%;
-  height: var(--df-touch-min);
+  height: 88rpx;
   margin: 0;
   opacity: 0.01;
 }
 
-.dog-profile-choices {
+.dog-onboarding-activity-slider__scale {
+  position: absolute;
+  top: 82rpx;
+  right: 0;
+  left: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--df-space-2);
+  justify-content: space-between;
+  color: var(--df-color-muted);
+  font-size: 20rpx;
+  line-height: 30rpx;
 }
 
-.dog-profile-choice {
-  min-width: 112rpx;
-  min-height: var(--df-touch-min);
+.dog-onboarding-error {
+  margin-top: 6rpx;
+  color: var(--df-color-warning);
+  font-size: var(--df-font-xs);
+  line-height: 1.4;
+}
+
+.dog-onboarding-login-content {
+  text-align: center;
+}
+
+.dog-onboarding-login-mark {
+  width: 192rpx;
+  height: 192rpx;
+  margin: 56rpx auto 48rpx;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--df-radius-pill);
+  color: var(--df-color-on-primary);
+  background: var(--df-color-primary);
+  font-size: 64rpx;
+  font-weight: 700;
+}
+
+.dog-onboarding-login-content .dog-onboarding-title {
+  text-align: center;
 }

@@ -48,7 +48,7 @@ function loadEntryService({ authState = 'guest', login = async () => true, dogs 
   }
 }
 
-test('游客登录成功后恢复原记餐意图并进入现有流程', async () => {
+test('游客直接进入快速建档并保留记餐意图，不提前登录', async () => {
   let loginCalls = 0
   const { service, navigations } = loadEntryService({
     login: async () => {
@@ -60,22 +60,31 @@ test('游客登录成功后恢复原记餐意图并进入现有流程', async ()
 
   const result = await service.startSharedMeal()
 
-  assert.equal(loginCalls, 1)
-  assert.equal(result.status, 'flow-started')
-  assert.deepEqual(navigations, ['/subpackages/shared-meal/dog-select/index'])
+  assert.equal(loginCalls, 0)
+  assert.equal(result.status, 'profile-required')
+  assert.equal(result.navigated, true)
+  assert.equal(
+    decodeURIComponent(navigations[0]),
+    '/subpackages/dog-profile/dog-quick-create/index?redirect=/subpackages/shared-meal/dog-select/index'
+  )
 })
 
-test('登录失败时停留在原页面且不读取档案', async () => {
+test('游客入口不读取档案，也不因登录失败而阻塞建档页', async () => {
+  let loginCalls = 0
   const { service, navigations, getListDogsCalls } = loadEntryService({
-    login: async () => false
+    login: async () => {
+      loginCalls += 1
+      throw new Error('不应提前登录')
+    }
   })
 
   const result = await service.startSharedMeal()
 
-  assert.equal(result.status, 'login-failed')
-  assert.equal(result.navigated, false)
+  assert.equal(result.status, 'profile-required')
+  assert.equal(result.navigated, true)
+  assert.equal(loginCalls, 0)
   assert.equal(getListDogsCalls(), 0)
-  assert.deepEqual(navigations, [])
+  assert.equal(navigations.length, 1)
 })
 
 test('单只狗狗直接进入选菜页并传递狗狗 ID', async () => {
@@ -150,24 +159,22 @@ test('底部圆形入口在无档案时保留跳过人饭菜单的返回意图',
   )
 })
 
-test('连续点击复用同一次入口请求，避免重复登录和重复导航', async () => {
-  let resolveLogin
+test('连续点击复用同一次游客入口请求，避免重复导航', async () => {
   let loginCalls = 0
-  const login = () => {
+  const login = async () => {
     loginCalls += 1
-    return new Promise((resolve) => { resolveLogin = resolve })
+    return true
   }
   const { service, navigations } = loadEntryService({ login, dogs: [{ id: 'dog-1' }, { id: 'dog-2' }] })
 
   const first = service.startSharedMeal()
   const second = service.startSharedMeal()
-  resolveLogin(true)
   const [firstResult, secondResult] = await Promise.all([first, second])
 
-  assert.equal(loginCalls, 1)
-  assert.equal(firstResult.status, 'flow-started')
-  assert.equal(secondResult.status, 'flow-started')
-  assert.deepEqual(navigations, ['/subpackages/shared-meal/dog-select/index'])
+  assert.equal(loginCalls, 0)
+  assert.equal(firstResult.status, 'profile-required')
+  assert.equal(secondResult.status, 'profile-required')
+  assert.equal(navigations.length, 1)
 })
 
 test('首页和记录页只调用同一个入口服务，不复制守卫与草稿判断', () => {

@@ -63,6 +63,86 @@ test('应用启动只完成认证快照，不在首屏路由期间启动远端�
   assert.equal(instance.globalData.recordTimelinePrefetch, undefined)
 })
 
+test('新用户冷启动直接进入 Onboarding，已有用户不被重定向', async () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8')
+  let definition
+  const navigations = []
+  const context = {
+    App(app) { definition = app },
+    require(request) {
+      if (request === './services/authService') {
+        return {
+          async initAuth() {
+            return { authState: 'guest', user: null, dogs: [] }
+          }
+        }
+      }
+      if (request === './config/env') return { useCloudBase: false }
+      throw new Error(`测试未提供依赖：${request}`)
+    },
+    wx: {
+      redirectTo(options) { navigations.push(options.url) }
+    },
+    Date,
+    Promise,
+    Number,
+    String,
+    Boolean,
+    console
+  }
+  vm.runInNewContext(source, context, { filename: 'app.js' })
+
+  const instance = { ...definition, globalData: { ...definition.globalData } }
+  definition.onLaunch.call(instance)
+  await instance.globalData.authReady
+  await Promise.resolve()
+
+  assert.deepEqual(navigations, ['/pages/onboarding/index'])
+  assert.equal(instance.globalData.startupRouteResolved, true)
+
+  navigations.length = 0
+  instance.globalData.startupRouteResolved = false
+  instance.routeInitialPage.call(instance, {
+    authState: 'has-profile',
+    user: { id: 'user-1' },
+    dogs: [{ id: 'dog-1' }]
+  })
+  assert.deepEqual(navigations, [])
+})
+
+test('01 Hero 页面注册并把用户带入 02 宠物身份', () => {
+  const root = path.join(__dirname, '..')
+  const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
+  const pageRoot = path.join(root, 'pages/onboarding')
+  const pageJs = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
+  const pageWxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const pageJson = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
+  const navigations = []
+
+  assert.ok(appConfig.pages.includes('pages/onboarding/index'))
+  assert.equal(pageJson.navigationStyle, 'custom')
+  assert.equal(pageJson.usingComponents['ui-button'], '../../components/ui/ui-button/index')
+  assert.match(pageWxml, /每一顿，<text>都在照顾它。<\/text>/)
+  assert.match(pageWxml, /4 步建好档案 · 立刻开始记录/)
+  assert.match(pageWxml, /开始建立档案/)
+
+  let definition
+  const context = {
+    Page(page) { definition = page },
+    require(request) {
+      if (request === '../../utils/assets') return { defaultDogAvatar: '/assets/dogs/dog-head-profile.svg' }
+      throw new Error(`测试未提供依赖：${request}`)
+    },
+    wx: {
+      navigateTo(options) { navigations.push(options.url) }
+    }
+  }
+  vm.runInNewContext(pageJs, context, { filename: 'pages/onboarding/index.js' })
+  definition.onStart()
+
+  assert.deepEqual(navigations, ['/subpackages/dog-profile/dog-quick-create/index'])
+})
+
 test('app.json 启用组件按需注入', () => {
   const appConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'app.json'), 'utf8'))
 

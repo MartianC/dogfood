@@ -77,7 +77,7 @@ test('狗狗页的游客登录、添加、体重和护理入口都进入对应�
   definition.onViewCare.call({ setData() {} }, { currentTarget: { dataset: { id: 'dog-1' } } })
 
   assert.deepEqual(navigations, [
-    '/subpackages/dog-profile/dog-edit/index',
+    '/subpackages/dog-profile/dog-quick-create/index',
     '/subpackages/dog-profile/dog-edit/index',
     '/subpackages/dog-profile/dog-edit/index?id=dog-1',
     '/subpackages/dog-profile/weight/index?dogId=dog-1',

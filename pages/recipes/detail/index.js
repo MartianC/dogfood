@@ -67,10 +67,6 @@ Page({
   noop() {},
 
   async onAuthAndCreate() {
-    if (authService.getAuthState() === 'guest') {
-      const ok = await authService.login()
-      if (!ok) return
-    }
     this.setData({ showAuthSheet: false })
     const redirect = encodeURIComponent(`/pages/recipes/detail/index?id=${this.data.recipe.id}`)
     wx.navigateTo({ url: `/subpackages/dog-profile/dog-quick-create/index?redirect=${redirect}` })

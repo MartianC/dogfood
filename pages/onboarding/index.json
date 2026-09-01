@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "爪饭",
+  "navigationStyle": "custom",
+  "disableScroll": true,
+  "usingComponents": {
+    "ui-button": "../../components/ui/ui-button/index"
+  }
+}

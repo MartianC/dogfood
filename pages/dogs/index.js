@@ -30,10 +30,7 @@ Page({
   },
 
   async onLogin() {
-    const ok = await authService.login()
-    if (ok) {
-      wx.navigateTo({ url: '/subpackages/dog-profile/dog-edit/index' })
-    }
+    wx.navigateTo({ url: '/subpackages/dog-profile/dog-quick-create/index' })
   },
 
   onAddDog() {

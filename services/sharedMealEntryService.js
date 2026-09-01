@@ -35,8 +35,9 @@ async function runEntry(options = {}) {
   if (authReady && typeof authReady.then === 'function') await authReady
 
   if (authService.getAuthState() === 'guest') {
-    const loggedIn = await authService.login()
-    if (!loggedIn) return { status: 'login-failed', navigated: false }
+    const url = buildQuickCreateUrl(options)
+    navigateTo(url)
+    return { status: 'profile-required', navigated: true, url }
   }
 
   const dogs = await dogService.listDogs()

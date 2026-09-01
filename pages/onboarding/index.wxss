@@ -1,0 +1,113 @@
+@import "../../styles/tokens.wxss";
+
+.onboarding-hero-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: calc(36rpx + constant(safe-area-inset-top)) 32rpx 176rpx;
+  padding-top: calc(36rpx + env(safe-area-inset-top));
+  display: flex;
+  flex-direction: column;
+  background: var(--df-color-bg);
+}
+
+.onboarding-hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.onboarding-hero-art {
+  position: relative;
+  width: 100%;
+  height: 324rpx;
+  margin-bottom: 36rpx;
+  overflow: hidden;
+  border-radius: 140rpx 140rpx 28rpx 28rpx;
+  background: var(--df-color-surface);
+  box-shadow: var(--df-shadow-hero);
+}
+
+.onboarding-hero-art__wash {
+  position: absolute;
+  top: 36rpx;
+  left: 50%;
+  width: 230rpx;
+  height: 230rpx;
+  border-radius: 50%;
+  background: var(--df-color-primary-soft);
+  transform: translateX(-50%);
+}
+
+.onboarding-hero-art__dog {
+  position: absolute;
+  top: 50rpx;
+  left: 50%;
+  width: 250rpx;
+  height: 250rpx;
+  transform: translateX(-50%);
+}
+
+.onboarding-hero-art__label {
+  position: absolute;
+  right: 24rpx;
+  bottom: 20rpx;
+  color: var(--df-color-muted);
+  font-size: var(--df-font-xs);
+  letter-spacing: 0.08em;
+}
+
+.onboarding-hero-eyebrow {
+  color: var(--df-color-primary);
+  font-size: var(--df-font-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 32rpx;
+}
+
+.onboarding-hero-title {
+  margin-top: 16rpx;
+  color: var(--df-color-text);
+  font-size: 52rpx;
+  font-weight: 800;
+  line-height: 1.24;
+}
+
+.onboarding-hero-title text {
+  display: block;
+}
+
+.onboarding-hero-description {
+  max-width: 640rpx;
+  margin-top: 18rpx;
+  color: var(--df-color-text-secondary);
+  font-size: var(--df-font-md);
+  line-height: 1.55;
+}
+
+.onboarding-hero-note {
+  min-height: 72rpx;
+  box-sizing: border-box;
+  margin-top: 28rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  border: 1rpx solid var(--df-color-line);
+  border-radius: var(--df-radius-lg);
+  color: var(--df-color-muted);
+  background: var(--df-color-surface);
+  font-size: var(--df-font-sm);
+}
+
+.onboarding-hero-note__dot {
+  width: 12rpx;
+  height: 12rpx;
+  flex: none;
+  border-radius: 50%;
+  background: var(--df-color-primary);
+}
+
+.onboarding-hero-action {
+  bottom: calc(28rpx + constant(safe-area-inset-bottom));
+  bottom: calc(28rpx + env(safe-area-inset-bottom));
+}

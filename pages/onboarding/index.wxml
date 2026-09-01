@@ -1,0 +1,21 @@
+<view class="page onboarding-hero-page" aria-label="狗饭引导">
+  <view class="onboarding-hero-content">
+    <view class="onboarding-hero-art" aria-hidden="true">
+      <view class="onboarding-hero-art__wash"></view>
+      <image class="onboarding-hero-art__dog" src="{{defaultDogAvatar}}" mode="aspectFit" />
+      <view class="onboarding-hero-art__label">/ DOG PROFILE</view>
+    </view>
+
+    <view class="onboarding-hero-eyebrow">DOGFOOD / 日常照护</view>
+    <view class="onboarding-hero-title">每一顿，<text>都在照顾它。</text></view>
+    <view class="onboarding-hero-description">从第一份档案开始，记录它的饮食与状态，让照护变成安心的日常。</view>
+    <view class="onboarding-hero-note">
+      <view class="onboarding-hero-note__dot" aria-hidden="true"></view>
+      <view>4 步建好档案 · 立刻开始记录</view>
+    </view>
+  </view>
+
+  <view class="bottom-action onboarding-hero-action">
+    <ui-button variant="primary" size="xlarge" bind:tap="onStart" ariaLabel="开始建立档案">开始建立档案</ui-button>
+  </view>
+</view>

@@ -1,8 +1,7 @@
 {
-  "navigationBarTitleText": "快速建档",
+  "navigationBarTitleText": "创建狗狗档案",
   "usingComponents": {
     "ui-button": "../../../components/ui/ui-button/index",
-    "ui-card": "../../../components/ui/ui-card/index",
     "ui-field": "../../../components/ui/ui-field/index",
     "ui-tag": "../../../components/ui/ui-tag/index"
   }
