@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>狗饭 · 首页优化方案</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --studio-bg: #e9eee9;
+      --studio-surface: #f8faf7;
+      --studio-text: #17201b;
+      --studio-muted: #667168;
+      --studio-line: #cad4cc;
+      --green: #246b4b;
+      --green-dark: #164530;
+      --green-soft: #dfece3;
+      --coral: #e97958;
+      --paper: #f7f7ef;
+      --white: #ffffff;
+      --ink: #17201b;
+      --app-bg: #f4f8f3;
+      --app-surface: #ffffff;
+      --app-text: #17201b;
+      --app-text-secondary: #34423a;
+      --app-muted: #6f7b73;
+      --app-primary: #25684a;
+      --app-primary-pressed: #1d523a;
+      --phone-width: 375px;
+      --phone-height: 812px;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--studio-text);
+      background: var(--studio-bg);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .design-studio {
+      min-height: 100vh;
+    }
+
+    .design-studio__header {
+      position: sticky;
+      z-index: 20;
+      top: 0;
+      border-bottom: 1px solid var(--studio-line);
+      background: color-mix(in srgb, var(--studio-surface) 94%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .design-studio__header-inner {
+      width: min(1420px, calc(100% - 40px));
+      min-height: 76px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .design-studio__brand {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+
+    .design-studio__brand strong {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .design-studio__brand span {
+      color: var(--studio-muted);
+      font-size: 13px;
+    }
+
+    .design-studio__filters {
+      display: flex;
+      padding: 4px;
+      gap: 4px;
+      border: 1px solid var(--studio-line);
+      border-radius: 6px;
+      background: var(--white);
+    }
+
+    .design-studio__filter {
+      min-height: 36px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 4px;
+      color: var(--studio-muted);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .design-studio__filter[aria-pressed="true"] {
+      color: var(--white);
+      background: var(--green);
+      font-weight: 700;
+    }
+
+    .design-studio__intro {
+      width: min(1420px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 44px 0 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      align-items: end;
+      gap: 44px;
+    }
+
+    .design-studio__intro h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: 42px;
+      line-height: 1.16;
+      font-weight: 850;
+    }
+
+    .design-studio__intro p {
+      max-width: 520px;
+      margin: 0;
+      color: var(--studio-muted);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .design-studio__grid {
+      width: min(1420px, calc(100% - 40px));
+      margin: 0 auto;
+      padding-bottom: 64px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .concept {
+      min-width: 0;
+      padding: 20px 16px 18px;
+      border: 1px solid var(--studio-line);
+      border-radius: 8px;
+      background: var(--studio-surface);
+      transition: opacity 180ms ease-out, transform 220ms cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .concept[hidden] {
+      display: none;
+    }
+
+    .concept__head {
+      min-height: 74px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .concept__index {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .concept__head h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .concept__head p {
+      max-width: 220px;
+      margin: 4px 0 0;
+      color: var(--studio-muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .concept__badge {
+      flex: none;
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: var(--green-dark);
+      background: var(--green-soft);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .phone-stage {
+      position: relative;
+      width: min(100%, var(--phone-width));
+      aspect-ratio: 375 / 812;
+      margin: 0 auto;
+    }
+
+    .phone {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--phone-width);
+      height: var(--phone-height);
+      overflow: hidden;
+      border: 8px solid #1d211f;
+      border-radius: 42px;
+      background: var(--paper);
+      box-shadow: 0 22px 54px rgba(23, 32, 27, 0.18);
+      transform: scale(var(--phone-scale, 1));
+      transform-origin: top left;
+    }
+
+    .phone__screen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: 33px;
+    }
+
+    .phone__status {
+      position: absolute;
+      z-index: 8;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 47px;
+      padding: 13px 18px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .phone__signals {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phone__signal {
+      width: 16px;
+      height: 10px;
+      border-bottom: 2px solid currentColor;
+      border-radius: 50%;
+    }
+
+    .phone__battery {
+      width: 22px;
+      height: 10px;
+      border: 1.5px solid currentColor;
+      border-radius: 3px;
+      box-shadow: inset -3px 0 currentColor;
+    }
+
+    .phone__capsule {
+      position: absolute;
+      z-index: 9;
+      top: 48px;
+      right: 14px;
+      width: 82px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      border: 1px solid rgba(23, 32, 27, 0.2);
+      border-radius: 18px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.92);
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .phone__capsule span:first-child {
+      transform: translateY(-3px);
+    }
+
+    .phone__capsule span:last-child {
+      width: 18px;
+      height: 18px;
+      border: 3px solid currentColor;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 3px white;
+      background: currentColor;
+    }
+
+    .phone__home {
+      position: absolute;
+      z-index: 10;
+      bottom: 8px;
+      left: 50%;
+      width: 122px;
+      height: 5px;
+      border-radius: 4px;
+      background: #171b18;
+      transform: translateX(-50%);
+    }
+
+    .phone__cta {
+      width: 100%;
+      min-height: 54px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--white);
+      background: var(--green);
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 160ms ease-out, background 160ms ease-out;
+    }
+
+    .phone__cta:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+    }
+
+    .concept__notes {
+      width: min(100%, var(--phone-width));
+      margin: 18px auto 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .concept__note {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 9px;
+      color: var(--studio-muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .concept__note strong {
+      color: var(--studio-text);
+      font-size: 11px;
+    }
+
+    /* A · 陪伴肖像 */
+    .portrait {
+      color: var(--app-text);
+      background: var(--app-bg);
+    }
+
+    .portrait__photo {
+      position: absolute;
+      inset: 0 0 295px;
+      width: 100%;
+      height: calc(100% - 295px);
+      object-fit: cover;
+      object-position: 48% center;
+      filter: saturate(.86) contrast(1.04);
+    }
+
+    .portrait__shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(244, 248, 243, 0) 38%, rgba(244, 248, 243, .38) 54%, var(--app-bg) 68%, var(--app-bg) 100%);
+    }
+
+    .portrait__copy {
+      position: absolute;
+      z-index: 3;
+      right: 24px;
+      bottom: 104px;
+      left: 24px;
+    }
+
+    .portrait__copy h3 {
+      max-width: 310px;
+      margin: 0;
+      color: var(--app-text);
+      font-size: 39px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .portrait__copy p {
+      max-width: 286px;
+      margin: 14px 0 18px;
+      color: var(--app-text-secondary);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .portrait__proof {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--app-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .portrait__proof i {
+      width: 26px;
+      height: 1px;
+      background: var(--app-primary);
+    }
+
+    .portrait .phone__cta {
+      color: var(--app-surface);
+      background: var(--app-primary);
+    }
+
+    .portrait .phone__cta:hover {
+      background: var(--app-primary-pressed);
+    }
+
+    /* B · 照护路径 */
+    .pathway {
+      color: var(--ink);
+      background: #f4f7f1;
+    }
+
+    .pathway__photo {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      object-position: 54% 44%;
+      clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+      filter: saturate(.78) brightness(1.04);
+    }
+
+    .pathway__photo-tint {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 320px;
+      background: rgba(227, 240, 232, .18);
+      clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+    }
+
+    .pathway__body {
+      position: absolute;
+      z-index: 3;
+      top: 283px;
+      right: 24px;
+      bottom: 26px;
+      left: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pathway__eyebrow {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .pathway__body h3 {
+      max-width: 300px;
+      margin: 11px 0 12px;
+      font-size: 34px;
+      line-height: 1.14;
+      font-weight: 900;
+    }
+
+    .pathway__body > p {
+      margin: 0;
+      color: #526057;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .pathway__steps {
+      margin: 22px 0 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid #b8c6bc;
+      border-bottom: 1px solid #b8c6bc;
+    }
+
+    .pathway__step {
+      min-height: 94px;
+      padding: 13px 8px 11px;
+      border-right: 1px solid #b8c6bc;
+    }
+
+    .pathway__step:last-child {
+      border-right: 0;
+    }
+
+    .pathway__step b {
+      display: block;
+      margin-bottom: 16px;
+      color: var(--coral);
+      font-size: 11px;
+    }
+
+    .pathway__step strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .pathway__step span {
+      display: block;
+      margin-top: 3px;
+      color: #748078;
+      font-size: 10px;
+    }
+
+    .pathway__action {
+      margin-top: auto;
+    }
+
+    .pathway__time {
+      margin-bottom: 9px;
+      display: flex;
+      justify-content: space-between;
+      color: #6f7b73;
+      font-size: 11px;
+    }
+
+    /* C · 编辑封面 */
+    .editorial {
+      color: #173325;
+      background: #dfe9dc;
+    }
+
+    .editorial__field {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .editorial__stripe {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 22px;
+      width: 1px;
+      background: rgba(36, 107, 75, .32);
+    }
+
+    .editorial__issue {
+      position: absolute;
+      z-index: 4;
+      top: 98px;
+      left: 38px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .editorial__number {
+      position: absolute;
+      top: 92px;
+      right: 18px;
+      color: rgba(36, 107, 75, .14);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 92px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .editorial__headline {
+      position: absolute;
+      z-index: 3;
+      top: 142px;
+      right: 28px;
+      left: 38px;
+      margin: 0;
+      font-family: "Songti SC", "Noto Serif SC", serif;
+      font-size: 43px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .editorial__photo-wrap {
+      position: absolute;
+      top: 285px;
+      right: -22px;
+      width: 326px;
+      height: 310px;
+      overflow: hidden;
+      border-radius: 160px 0 0 160px;
+      background: #a9c2ae;
+    }
+
+    .editorial__photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 46% center;
+      filter: grayscale(.12) saturate(.72) contrast(1.02);
+    }
+
+    .editorial__caption {
+      position: absolute;
+      z-index: 4;
+      top: 532px;
+      left: 38px;
+      width: 180px;
+      padding: 12px 14px;
+      color: var(--white);
+      background: var(--green-dark);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .editorial__footer {
+      position: absolute;
+      right: 24px;
+      bottom: 26px;
+      left: 38px;
+    }
+
+    .editorial__promise {
+      margin: 0 0 14px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(36, 107, 75, .36);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #4e6658;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .editorial__promise strong {
+      max-width: 180px;
+      color: #173325;
+      font-size: 13px;
+    }
+
+    .editorial .phone__cta {
+      border-radius: 0;
+      color: var(--white);
+      background: var(--green-dark);
+    }
+
+    @media (max-width: 1180px) {
+      .design-studio__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 780px) {
+      .design-studio__header-inner {
+        width: min(100% - 24px, 560px);
+        padding: 12px 0;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .design-studio__brand span {
+        display: none;
+      }
+
+      .design-studio__filters {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .design-studio__filter {
+        flex: 1;
+        white-space: nowrap;
+      }
+
+      .design-studio__intro {
+        width: min(100% - 24px, 560px);
+        padding: 32px 0 24px;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .design-studio__intro h1 {
+        font-size: 32px;
+      }
+
+      .design-studio__grid {
+        width: min(100% - 24px, 560px);
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="design-studio">
+    <header class="design-studio__header">
+      <div class="design-studio__header-inner">
+        <div class="design-studio__brand">
+          <strong>狗饭 · 首页优化</strong>
+          <span>Onboarding Hero / HTML 方向稿</span>
+        </div>
+        <nav class="design-studio__filters" aria-label="筛选设计方案">
+          <button class="design-studio__filter" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="design-studio__filter" type="button" data-filter="a" aria-pressed="false">A 肖像</button>
+          <button class="design-studio__filter" type="button" data-filter="b" aria-pressed="false">B 路径</button>
+          <button class="design-studio__filter" type="button" data-filter="c" aria-pressed="false">C 封面</button>
+        </nav>
+      </div>
+    </header>
+
+    <section class="design-studio__intro">
+      <h1>让第一次打开，就看见“为什么值得建档”。</h1>
+      <p>三套方案都修复顶部素材被微信胶囊干扰、内容区留白失衡和主操作缺少视觉牵引的问题。区别在于情感、效率与品牌记忆点的权重。</p>
+    </section>
+
+    <section class="design-studio__grid" aria-label="首页设计方案">
+      <article class="concept" data-concept="a">
+        <div class="concept__head">
+          <div>
+            <span class="concept__index">DIRECTION A</span>
+            <h2>陪伴肖像</h2>
+            <p>用真实目光建立情感连接，再把建档变成照护的第一步。</p>
+          </div>
+          <span class="concept__badge">情感优先 · 已对齐主题</span>
+        </div>
+
+        <div class="phone-stage">
+          <div class="phone">
+            <div class="phone__screen portrait">
+            <img class="portrait__photo" src="../design-assets/dogs/buding.jpg" alt="金毛犬在秋日阳光下的肖像" />
+            <div class="portrait__shade" aria-hidden="true"></div>
+            <div class="phone__status">
+              <span>20:21</span>
+              <span class="phone__signals"><i class="phone__signal"></i><i class="phone__battery"></i></span>
+            </div>
+            <div class="phone__capsule" aria-hidden="true"><span>•••</span><span></span></div>
+            <div class="portrait__copy">
+              <h3>先认识它，<br />再照顾好每一顿。</h3>
+              <p>建一份狗狗档案，让饮食记录、体重变化和日常状态都有据可循。</p>
+              <div class="portrait__proof"><i></i><span>4 步完成 · 约 1 分钟</span></div>
+              <button class="phone__cta" type="button">开始建立档案</button>
+            </div>
+              <div class="phone__home"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="concept__notes">
+          <div class="concept__note"><strong>适合</strong><span>保留第一眼情感吸引力，同时与现有小程序无缝衔接。</span></div>
+          <div class="concept__note"><strong>色彩</strong><span>浅绿页面、深色文字、主绿 CTA，全部映射现有语义 token。</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-concept="b">
+        <div class="concept__head">
+          <div>
+            <span class="concept__index">DIRECTION B</span>
+            <h2>照护路径</h2>
+            <p>更快解释产品价值，适合重视清晰转化和任务效率的方向。</p>
+          </div>
+          <span class="concept__badge">效率优先</span>
+        </div>
+
+        <div class="phone-stage">
+          <div class="phone">
+            <div class="phone__screen pathway">
+            <img class="pathway__photo" src="../design-assets/dogs/kele.jpg" alt="一只微笑的狗狗站在户外" />
+            <div class="pathway__photo-tint" aria-hidden="true"></div>
+            <div class="phone__status">
+              <span>20:21</span>
+              <span class="phone__signals"><i class="phone__signal"></i><i class="phone__battery"></i></span>
+            </div>
+            <div class="phone__capsule" aria-hidden="true"><span>•••</span><span></span></div>
+            <div class="pathway__body">
+              <span class="pathway__eyebrow">从一份档案开始</span>
+              <h3>把它的日常，<br />照顾得更明白。</h3>
+              <p>先记录基础信息，之后每一顿和每次变化都能找到依据。</p>
+              <div class="pathway__steps" aria-label="建档后的三项用途">
+                <div class="pathway__step"><b>01</b><strong>建档</strong><span>认识它</span></div>
+                <div class="pathway__step"><b>02</b><strong>记一顿</strong><span>吃了什么</span></div>
+                <div class="pathway__step"><b>03</b><strong>看变化</strong><span>状态可追溯</span></div>
+              </div>
+              <div class="pathway__action">
+                <div class="pathway__time"><span>4 个步骤</span><span>约 1 分钟</span></div>
+                <button class="phone__cta" type="button">开始建立档案</button>
+              </div>
+            </div>
+              <div class="phone__home"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="concept__notes">
+          <div class="concept__note"><strong>适合</strong><span>希望用户迅速理解“建档后能做什么”。</span></div>
+          <div class="concept__note"><strong>取舍</strong><span>信息更完整，情绪张力略弱于方案 A。</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-concept="c">
+        <div class="concept__head">
+          <div>
+            <span class="concept__index">DIRECTION C</span>
+            <h2>编辑封面</h2>
+            <p>用不对称排版建立品牌记忆，视觉更独特但仍保持克制。</p>
+          </div>
+          <span class="concept__badge">品牌优先</span>
+        </div>
+
+        <div class="phone-stage">
+          <div class="phone">
+            <div class="phone__screen editorial">
+              <div class="editorial__field">
+              <div class="editorial__stripe" aria-hidden="true"></div>
+              <div class="phone__status">
+                <span>20:21</span>
+                <span class="phone__signals"><i class="phone__signal"></i><i class="phone__battery"></i></span>
+              </div>
+              <div class="phone__capsule" aria-hidden="true"><span>•••</span><span></span></div>
+              <span class="editorial__issue">DOGFOOD / 01</span>
+              <span class="editorial__number" aria-hidden="true">01</span>
+              <h3 class="editorial__headline">它的每一天，<br />值得被记住。</h3>
+              <div class="editorial__photo-wrap">
+                <img class="editorial__photo" src="../design-assets/dogs/buding.jpg" alt="金毛犬在秋日阳光下的肖像" />
+              </div>
+              <div class="editorial__caption">从今天起，饮食、体重和状态不再散落。</div>
+              <div class="editorial__footer">
+                <p class="editorial__promise"><strong>一份档案，串起每一次认真照顾。</strong><span>4 STEP<br />1 MIN</span></p>
+                <button class="phone__cta" type="button">建立它的档案</button>
+              </div>
+                <div class="phone__home"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="concept__notes">
+          <div class="concept__note"><strong>适合</strong><span>希望品牌更有辨识度，不像常见工具型小程序。</span></div>
+          <div class="concept__note"><strong>取舍</strong><span>排版实现要求更高，需要更严格的窄屏复核。</span></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const filters = [...document.querySelectorAll('.design-studio__filter')]
+    const concepts = [...document.querySelectorAll('.concept')]
+    const phoneStages = [...document.querySelectorAll('.phone-stage')]
+
+    const phoneObserver = new ResizeObserver((entries) => {
+      entries.forEach(({ target }) => {
+        target.style.setProperty('--phone-scale', String(target.clientWidth / 375))
+      })
+    })
+
+    phoneStages.forEach((stage) => phoneObserver.observe(stage))
+
+    filters.forEach((filter) => {
+      filter.addEventListener('click', () => {
+        const target = filter.dataset.filter
+        filters.forEach((item) => item.setAttribute('aria-pressed', String(item === filter)))
+        concepts.forEach((concept) => {
+          concept.hidden = target !== 'all' && concept.dataset.concept !== target
+        })
+      })
+    })
+  </script>
+</body>
+</html>

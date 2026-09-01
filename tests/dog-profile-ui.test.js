@@ -71,11 +71,16 @@ test('完整档案页保留基础档案字段和活动时长编辑能力', () =>
   assert.match(js, /avoidIngredients:/)
 })
 
-test('快速建档按 02 至 05 步骤收集档案并在登录后直接进入首页', () => {
+test('快速建档按 1 至 4 的可见进度收集档案并在登录后直接进入首页', () => {
   const js = readPage('subpackages/dog-profile/dog-quick-create', 'js')
   const wxml = readPage('subpackages/dog-profile/dog-quick-create', 'wxml')
+  const wxss = readPage('subpackages/dog-profile/dog-quick-create', 'wxss')
 
   assert.match(js, /initialStep = 2/)
+  assert.match(js, /2:\s*\{ stepText: '1 \/ 4' \}/)
+  assert.match(js, /3:\s*\{ stepText: '2 \/ 4' \}/)
+  assert.match(js, /4:\s*\{ stepText: '3 \/ 4' \}/)
+  assert.match(js, /5:\s*\{ stepText: '4 \/ 4' \}/)
   assert.match(js, /step === 5.*onLoginAndCreate/s)
   assert.match(js, /await authService\.login\(\)/)
   assert.match(js, /await dogService\.createDog\(payload\)/)
@@ -100,6 +105,8 @@ test('快速建档按 02 至 05 步骤收集档案并在登录后直接进入首
   assert.match(wxml, /微信登录并完成建档/)
   assert.doesNotMatch(wxml, /step === 6|狗狗档案已保存|bottom-action--surface/)
   assert.match(wxml, /class="dog-onboarding-previous"[^>]*bindtap="onPrevious"/)
+  assert.match(wxss, /\.dog-onboarding-step[\s\S]*border-radius:\s*var\(--df-radius-pill\)/)
+  assert.match(wxss, /\.dog-onboarding-step[\s\S]*background:\s*var\(--df-color-primary-soft\)/)
   assert.doesNotMatch(wxml, /dog-onboarding-description|dog-onboarding-eyebrow|dog-onboarding-benefits/)
   assert.doesNotMatch(wxml, /过敏食材|预计成年体重/)
 })
@@ -790,7 +797,7 @@ test('快速建档按步骤校验字段并在第四页完成后进入微信登�
   })
   definition.onNext.call(context)
   assert.equal(context.data.step, 5)
-  assert.equal(context.data.stepText, '05 / 05')
+  assert.equal(context.data.stepText, '4 / 4')
 })
 
 test('新增档案最终保存时携带暂存的过敏食材', async () => {

@@ -37,10 +37,10 @@ function profileErrors(message) {
 
 function stepState(step) {
   const states = {
-    2: { stepText: '02 / 05' },
-    3: { stepText: '03 / 05' },
-    4: { stepText: '04 / 05' },
-    5: { stepText: '05 / 05' }
+    2: { stepText: '1 / 4' },
+    3: { stepText: '2 / 4' },
+    4: { stepText: '3 / 4' },
+    5: { stepText: '4 / 4' }
   }
   return states[step] || states[2]
 }

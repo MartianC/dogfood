@@ -26,10 +26,14 @@
 
 .dog-onboarding-step {
   min-width: 112rpx;
+  box-sizing: border-box;
+  padding: 8rpx 20rpx;
+  border-radius: var(--df-radius-pill);
   color: var(--df-color-primary);
+  background: var(--df-color-primary-soft);
   font-size: var(--df-font-xs);
   line-height: 32rpx;
-  text-align: right;
+  text-align: center;
 }
 
 .dog-onboarding-content {
