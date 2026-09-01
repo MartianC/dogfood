@@ -116,21 +116,30 @@ test('01 Hero 页面注册并把用户带入 02 宠物身份', () => {
   const pageRoot = path.join(root, 'pages/onboarding')
   const pageJs = fs.readFileSync(path.join(pageRoot, 'index.js'), 'utf8')
   const pageWxml = fs.readFileSync(path.join(pageRoot, 'index.wxml'), 'utf8')
+  const pageWxss = fs.readFileSync(path.join(pageRoot, 'index.wxss'), 'utf8')
   const pageJson = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
   const navigations = []
 
   assert.ok(appConfig.pages.includes('pages/onboarding/index'))
   assert.equal(pageJson.navigationStyle, 'custom')
   assert.equal(pageJson.usingComponents['ui-button'], '../../components/ui/ui-button/index')
-  assert.match(pageWxml, /每一顿，<text>都在照顾它。<\/text>/)
-  assert.match(pageWxml, /4 步建好档案 · 立刻开始记录/)
+  assert.match(pageWxml, /<text>先认识它，<\/text>\s*<text>再照顾好每一<\/text>\s*<text>顿。<\/text>/)
+  assert.match(pageWxml, /4 步完成 · 约 1 分钟/)
   assert.match(pageWxml, /开始建立档案/)
+  assert.match(pageWxml, /src="\{\{onboardingHeroImage\}\}"[^>]*mode="aspectFill"/)
+  assert.doesNotMatch(pageWxml, /onboarding-hero-art|DOGFOOD \/ 日常照护/)
+  assert.match(pageWxml, /onboarding-hero-meta[\s\S]*onboarding-hero-action/)
+  assert.match(pageWxss, /\.onboarding-hero-copy\s*\{[^}]*bottom:/)
+  assert.match(pageWxss, /\.onboarding-hero-title\s*\{[^}]*max-width:\s*620rpx/)
+  assert.doesNotMatch(pageWxss, /\.onboarding-hero-copy\s*\{[^}]*top:\s*47vh/)
 
   let definition
   const context = {
     Page(page) { definition = page },
     require(request) {
-      if (request === '../../utils/assets') return { defaultDogAvatar: '/assets/dogs/dog-head-profile.svg' }
+      if (request === '../../utils/assets') {
+        return { onboardingHeroImage: '/assets/onboarding/dog-profile-hero.webp' }
+      }
       throw new Error(`测试未提供依赖：${request}`)
     },
     wx: {
@@ -178,7 +187,8 @@ test('小程序图片兜底资源存在', () => {
     'assets/recipes/fish-rice.jpg',
     'assets/recipes/beef-broccoli.jpg',
     'assets/recipes/dog-food-bowl.jpg',
-    'assets/dogs/dog-head-profile.svg'
+    'assets/dogs/dog-head-profile.svg',
+    'assets/onboarding/dog-profile-hero.webp'
   ]
 
   expected.forEach((assetPath) => {

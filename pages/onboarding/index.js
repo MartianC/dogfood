@@ -2,7 +2,7 @@ const assets = require('../../utils/assets')
 
 Page({
   data: {
-    defaultDogAvatar: assets.defaultDogAvatar
+    onboardingHeroImage: assets.onboardingHeroImage
   },
 
   onStart() {

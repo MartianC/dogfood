@@ -1,5 +1,11 @@
 # 食谱模块 Figma 实施交接
 
+## 2026-09-01 Onboarding Hero 陪伴肖像方案落地
+
+- 01 Hero 改用 HTML 评审稿的 A「陪伴肖像」方向：真实狗狗照片全幅铺在上半部，下方自然过渡至项目浅绿页面背景，标题为“先认识它，再照顾好每一顿。”
+- 页面继续使用现有 `bg`、`text`、`text-secondary`、`muted` 和 `primary` 语义 token，底部主操作继续复用 `ui-button` 的 `primary + xlarge`；不显示照片上的品牌浮层，避免遮挡狗狗面部。
+- 新增运行资源 `assets/onboarding/dog-profile-hero.webp`，并把 TabBar PNG 从 81px 缩小为 54px；其实际显示尺寸约 20px，仍保留超过 2 倍像素密度，同时确保全部图片资源不超过项目 200K 门禁。
+
 ## 2026-09-01 Onboarding 精简修订
 
 - 当前小程序主路径为 Hero → 02 宠物身份 → 03 基础信息 → 04 日常状态 → 05 微信登录 → 首页；Figma 中的 06 完成建档画板仅保留为历史评审稿，不再进入实现流程。
