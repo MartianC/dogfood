@@ -5,6 +5,7 @@ const fileService = require('../services/fileService')
 const {
   dietGoalOptions,
   breedOptions,
+  genderOptions,
   activityDurationBands,
   bodyConditionOptions,
   diseaseStatusOptions,
@@ -60,6 +61,7 @@ function formFromDog(dog, { defaultActivityHours = null } = {}) {
     name: dog.name || '',
     birthDate: dog.birthDate || '',
     breed: dog.breed || '',
+    gender: genderOptions.some((item) => item.value === dog.gender) ? dog.gender : '',
     weightKg: dog.weightKg || '',
     dailyMeals: dog.dailyMeals || 2,
     dailyActivityHours: activityHoursValue(dog.dailyActivityHours, defaultActivityHours),
@@ -108,12 +110,14 @@ Page({
     form: initialForm,
     ...profileState(initialForm),
     breedOptions,
+    genderOptions,
     dietGoalOptions,
     bodyConditionOptions,
     diseaseStatusOptions,
     reproductiveStatusOptions,
     therapeuticWeightManagementOptions,
     breedLabel: '',
+    genderIndex: 0,
     goalIndex: 0,
     birthDateError: '',
     breedError: '',
@@ -140,6 +144,7 @@ Page({
       allergyDisplayItems: allergyDisplayItems(form.allergens),
       ...profileState(form),
       breedLabel: breedLabelOf(form.breed),
+      genderIndex: optionIndex(genderOptions, form.gender),
       goalIndex: optionIndex(dietGoalOptions, form.dietGoal)
     })
   },
@@ -181,6 +186,13 @@ Page({
         breedSelected: (payload) => this.applyBreed(payload.value)
       }
     })
+  },
+
+  onGenderChange(event) {
+    const genderIndex = Number(event.detail.value)
+    const option = this.data.genderOptions[genderIndex]
+    if (!option) return
+    this.setData({ genderIndex, 'form.gender': option.value })
   },
 
   onActivityHours(event) {

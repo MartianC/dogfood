@@ -9,6 +9,12 @@ const dietGoalOptions = [
 
 const breedOptions = breedAdultWeightCatalog.map(({ value, label, pinyinInitial }) => ({ value, label, pinyinInitial }))
 
+const genderOptions = [
+  { value: '', label: '未选择' },
+  { value: 'female', label: '女孩' },
+  { value: 'male', label: '男孩' }
+]
+
 const activityDurationBands = [
   { min: 0, maxExclusive: 1, value: 'low', label: '低活动' },
   { min: 1, maxExclusive: 2, value: 'moderateLowImpact', label: '一般活动' },
@@ -42,6 +48,7 @@ const therapeuticWeightManagementOptions = [
 module.exports = {
   dietGoalOptions,
   breedOptions,
+  genderOptions,
   activityDurationBands,
   bodyConditionOptions,
   diseaseStatusOptions,

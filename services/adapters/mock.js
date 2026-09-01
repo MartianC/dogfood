@@ -67,6 +67,7 @@ async function getDogProfileContract() {
     contract: 'dogProfile/v3',
     schemaVersion: DOG_PROFILE_SCHEMA_VERSION,
     supportsSpecialNutritionNeeds: true,
+    supportsGender: true,
     supportsAllergenPatch: true
   }
 }

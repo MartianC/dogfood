@@ -330,6 +330,64 @@ test('编辑档案使用原生导航栏，并把删除入口放在头像右侧',
   assert.doesNotMatch(wxml, /dog-profile-navbar__action|>删除<\/ui-button>/)
 })
 
+test('完整档案在品种右侧提供未选择、女孩和男孩三个性别选项', () => {
+  const definition = loadPageDefinition(profilePages[0])
+  const context = pageContext(definition)
+  const wxml = readPage(profilePages[0], 'wxml')
+  const wxss = readPage(profilePages[0], 'wxss')
+
+  assert.deepEqual(context.data.genderOptions, [
+    { value: '', label: '未选择' },
+    { value: 'female', label: '女孩' },
+    { value: 'male', label: '男孩' }
+  ])
+  assert.equal(context.data.form.gender, '')
+  assert.equal(context.data.genderIndex, 0)
+  assert.match(wxml, /class="dog-profile-pair"[\s\S]*?label="狗狗品种"[\s\S]*?label="狗狗性别"/)
+  assert.match(wxml, /range="\{\{genderOptions\}\}"/)
+  assert.match(wxml, /range-key="label"/)
+  assert.match(wxss, /\.dog-profile-picker-value\s*\{[\s\S]*text-overflow:\s*ellipsis/)
+
+  definition.onGenderChange.call(context, { detail: { value: '1' } })
+  assert.equal(context.data.form.gender, 'female')
+  assert.equal(context.data.genderIndex, 1)
+
+  definition.onGenderChange.call(context, { detail: { value: '2' } })
+  assert.equal(context.data.form.gender, 'male')
+  assert.equal(context.data.genderIndex, 2)
+})
+
+test('编辑档案载入已有性别时回显对应选项', async () => {
+  const dogService = require('../services/dogService')
+  const authService = require('../services/authService')
+  const originalListDogs = dogService.listDogs
+  const originalAuthState = authService.getAuthState
+  dogService.listDogs = async () => [{
+    id: 'female-dog',
+    name: '布丁',
+    birthDate: '2020-01-01',
+    breed: 'shiba-inu',
+    gender: 'female',
+    weightKg: 8,
+    dailyMeals: 2,
+    dailyActivityHours: 1.5,
+    bodyCondition: 'ideal'
+  }]
+  authService.getAuthState = () => 'authenticated'
+
+  try {
+    const definition = loadPageDefinition(profilePages[0])
+    const context = pageContext(definition)
+    await definition.onLoad.call(context, { id: 'female-dog' })
+
+    assert.equal(context.data.form.gender, 'female')
+    assert.equal(context.data.genderIndex, 1)
+  } finally {
+    dogService.listDogs = originalListDogs
+    authService.getAuthState = originalAuthState
+  }
+})
+
 test('编辑档案头像沿用狗狗列表的默认 SVG 和圆角矩形规格', () => {
   const js = readPage(profilePages[0], 'js')
   const wxml = readPage(profilePages[0], 'wxml')

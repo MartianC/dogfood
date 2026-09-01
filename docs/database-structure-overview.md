@@ -74,6 +74,7 @@ CloudBase 公共只读投影
 | `birthDate` | `YYYY-MM-DD`，必填 | 当前实际写入字段；由此派生年龄阶段 |
 | `ageStage` | string | 当前读取/展示字段，写入时由其他服务补齐或历史遗留 |
 | `breed` | `shiba-inu` / `labrador-retriever` / `mixed-or-unknown` | 受控品种 |
+| `gender` | `female` / `male` / 空字符串 | 狗狗性别；空字符串表示用户尚未选择 |
 | `weightKg` | number > 0 或 null | 当前体重；体重历史上线后无有效测量时允许为 null |
 | `dailyMeals` | number > 0 | 每日餐数 |
 | `dailyActivityHours` | number，0–6，0.5 步长 | 当前主输入 |

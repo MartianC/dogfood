@@ -60,10 +60,19 @@ test('写入前要求云端声明 dogProfile/v3 能力', () => {
     () => dogService.assertDogProfileServiceContract({ contract: 'dogProfile/v2', schemaVersion: 2 }),
     /档案服务版本过旧/
   )
+  assert.throws(
+    () => dogService.assertDogProfileServiceContract({
+      contract: 'dogProfile/v3',
+      schemaVersion: 3,
+      supportsSpecialNutritionNeeds: true
+    }),
+    /档案服务版本过旧/
+  )
   assert.doesNotThrow(() => dogService.assertDogProfileServiceContract({
     contract: 'dogProfile/v3',
     schemaVersion: 3,
-    supportsSpecialNutritionNeeds: true
+    supportsSpecialNutritionNeeds: true,
+    supportsGender: true
   }))
 })
 
@@ -186,6 +195,7 @@ test('Mock 适配器公开与云函数一致的 dogProfile/v3 能力', async () 
     contract: 'dogProfile/v3',
     schemaVersion: 3,
     supportsSpecialNutritionNeeds: true,
+    supportsGender: true,
     supportsAllergenPatch: true
   })
 })

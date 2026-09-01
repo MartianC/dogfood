@@ -63,6 +63,23 @@
   line-height: 38rpx;
 }
 
+.dog-profile-picker,
+.dog-profile-select,
+.dog-profile-picker-value {
+  min-width: 0;
+}
+
+.dog-profile-picker {
+  display: block;
+  width: 100%;
+}
+
+.dog-profile-picker-value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .dog-profile-control {
   width: 100%;
   box-sizing: border-box;
@@ -79,6 +96,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.dog-profile-select {
+  width: 100%;
 }
 
 .dog-profile-value-row .dog-profile-control {

@@ -19,6 +19,7 @@ exports.main = async (event) => {
       contract: 'dogProfile/v3',
       schemaVersion: 3,
       supportsSpecialNutritionNeeds: true,
+      supportsGender: true,
       supportsAllergenPatch: true
     }
   }

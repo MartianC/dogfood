@@ -18,6 +18,7 @@ const {
 
 const BREEDS = new Set(breedAdultWeightCatalog.map((item) => item.value))
 const BODY_CONDITIONS = new Set(['thin', 'ideal', 'overweight'])
+const GENDERS = new Set(['', 'female', 'male'])
 
 // 冷启动期间首页与记录时间轴可能同时读取狗狗档案；共享同一个请求，避免重复访问云端。
 let listDogsInFlight = null
@@ -43,6 +44,7 @@ function normalizeDog(payload = {}) {
     name: String(payload.name || '').trim(),
     birthDate: String(payload.birthDate || '').trim(),
     breed: String(payload.breed || '').trim(),
+    gender: String(payload.gender || '').trim(),
     weightKg: normalizeLegacyWeightKg(payload.weightKg) || 0,
     dailyMeals: Number(payload.dailyMeals || 0),
     dailyActivityHours: optionalHalfHour(payload.dailyActivityHours),
@@ -64,6 +66,7 @@ function validateDog(dog, today) {
   if (stage.reason === 'invalid_birth_date') throw new Error('请填写正确的出生日期')
   if (stage.reason === 'future_birth_date') throw new Error('出生日期不能晚于今天')
   if (!BREEDS.has(dog.breed)) throw new Error('请选择狗狗品种')
+  if (!GENDERS.has(dog.gender)) throw new Error('请选择正确的狗狗性别')
   if (!(dog.weightKg > 0)) throw new Error('请填写狗狗体重')
   validateWeightKg(dog.weightKg)
   if (!(dog.dailyMeals > 0)) throw new Error('请填写每日餐数')
@@ -122,6 +125,9 @@ function assertSavedProfileContract(saved, expected = {}) {
   if (JSON.stringify(actualNeeds) !== JSON.stringify(expectedNeeds)) {
     throw new Error('档案保存结果不一致，请重试')
   }
+  if (String(saved.gender || '') !== String(expected.gender || '')) {
+    throw new Error('档案保存结果不一致，请重试')
+  }
   return saved
 }
 
@@ -131,6 +137,7 @@ function assertDogProfileServiceContract(contract) {
     || contract.contract !== 'dogProfile/v3'
     || contract.schemaVersion !== DOG_PROFILE_SCHEMA_VERSION
     || contract.supportsSpecialNutritionNeeds !== true
+    || contract.supportsGender !== true
   ) throw new Error('档案服务版本过旧，请更新 dogProfile 云函数后重试')
   return contract
 }

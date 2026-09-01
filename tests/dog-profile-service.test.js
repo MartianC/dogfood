@@ -66,6 +66,28 @@ test('档案校验拒绝无效日期、品种和 Slider 数值', () => {
   assert.doesNotThrow(() => dogService.validateDog(mixedBreed, '2026-07-18'))
 })
 
+test('狗狗性别允许未选择、女孩和男孩，并在云端 DTO 中对称保留', () => {
+  const unselected = dogService.normalizeDog(puppy)
+  const female = dogService.normalizeDog({ ...puppy, gender: 'female' })
+  const male = dogService.normalizeDog({ ...puppy, gender: 'male' })
+
+  assert.equal(unselected.gender, '')
+  assert.equal(female.gender, 'female')
+  assert.equal(male.gender, 'male')
+  assert.doesNotThrow(() => dogService.validateDog(unselected, '2026-07-18'))
+  assert.doesNotThrow(() => dogService.validateDog(female, '2026-07-18'))
+  assert.doesNotThrow(() => dogService.validateDog(male, '2026-07-18'))
+  assert.throws(
+    () => dogService.validateDog(dogService.normalizeDog({ ...puppy, gender: 'other' }), '2026-07-18'),
+    { message: '请选择正确的狗狗性别' }
+  )
+
+  const fields = cloudFieldsForWrite({ ...puppy, gender: 'female' }, { today: '2026-07-18' })
+  assert.equal(fields.gender, 'female')
+  assert.equal(normalizeCloudProfile({ _id: 'dog-1', _openid: 'user-1', ...fields }).gender, 'female')
+  assert.equal(normalizeCloudProfile({ _id: 'legacy-dog', _openid: 'user-1' }).gender, '')
+})
+
 test('档案过敏食材不设数量上限但仍拒绝损坏条目', () => {
   const allergens = Array.from({ length: 50 }, (_, index) => `concept:ingredient-${index}|食材${index}`)
   assert.doesNotThrow(() => dogService.validateDog(dogService.normalizeDog({
@@ -141,6 +163,7 @@ test('档案服务专用过敏更新校验返回值并刷新档案列表', async
     contract: 'dogProfile/v3',
     schemaVersion: 3,
     supportsSpecialNutritionNeeds: true,
+    supportsGender: true,
     supportsAllergenPatch: true
   })
   cloudbaseAdapter.updateDogAllergens = async (id, allergens) => {
@@ -173,6 +196,7 @@ test('保存与读取返回运行时派生字段且编辑不会清空隐藏数�
   const created = await dogService.createDog({
     ...puppy,
     birthDate: '2010-01-18',
+    gender: 'female',
     allergens: ['鸡蛋'],
     avoidIngredients: ['洋葱']
   })
@@ -181,20 +205,24 @@ test('保存与读取返回运行时派生字段且编辑不会清空隐藏数�
   assert.equal(created.lifeStage.energyStage, 'senior')
   assert.equal(created.expectedAdultWeightKg, 10.5)
   assert.equal(created.breedCatalogVersion, '2026-08-19.v2')
+  assert.equal(created.gender, 'female')
 
   const updated = await dogService.updateDog(created.id, {
     ...puppy,
     birthDate: '2010-01-18',
-    name: '布丁新档案'
+    name: '布丁新档案',
+    gender: 'male'
   })
 
   assert.deepEqual(updated.allergens, ['鸡蛋'])
   assert.deepEqual(updated.avoidIngredients, ['洋葱'])
   assert.equal(updated.name, '布丁新档案')
+  assert.equal(updated.gender, 'male')
 
   const [listed] = await dogService.listDogs()
   assert.equal(listed.ageStage, 'senior')
   assert.equal(listed.expectedAdultWeightKg, 10.5)
+  assert.equal(listed.gender, 'male')
 })
 
 test('新增狗狗会创建当天初始体重记录，编辑档案不会重复创建', async () => {

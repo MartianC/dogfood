@@ -38,14 +38,34 @@
         </ui-field>
       </view>
 
+      <view class="dog-profile-pair">
         <ui-field variant="profile" label="狗狗品种" errorText="{{breedError}}">
-          <view class="dog-profile-select" bindtap="onChooseBreed">
+          <view class="dog-profile-select" bindtap="onChooseBreed" aria-role="button" aria-label="选择狗狗品种，当前{{form.breed ? breedLabel : '未选择'}}">
             <view class="dog-profile-picker-value {{form.breed ? '' : 'dog-profile-picker-value--empty'}}">
               {{form.breed ? breedLabel : '请选择'}}
             </view>
             <view class="dog-profile-chevron" aria-hidden="true"></view>
           </view>
         </ui-field>
+        <ui-field variant="profile" label="狗狗性别">
+          <picker
+            class="dog-profile-picker"
+            mode="selector"
+            range="{{genderOptions}}"
+            range-key="label"
+            value="{{genderIndex}}"
+            bindchange="onGenderChange"
+            aria-label="狗狗性别，当前{{genderOptions[genderIndex].label}}"
+          >
+            <view class="dog-profile-select">
+              <view class="dog-profile-picker-value {{form.gender ? '' : 'dog-profile-picker-value--empty'}}">
+                {{genderOptions[genderIndex].label}}
+              </view>
+              <view class="dog-profile-chevron" aria-hidden="true"></view>
+            </view>
+          </picker>
+        </ui-field>
+      </view>
 
       <view class="dog-profile-pair">
         <ui-field variant="profile" label="当前体重">

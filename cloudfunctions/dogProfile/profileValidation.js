@@ -105,6 +105,7 @@ const SUPPORTED_BREEDS = [
 ]
 const BREEDS = new Set(SUPPORTED_BREEDS)
 const BODY_CONDITIONS = new Set(['thin', 'ideal', 'overweight'])
+const GENDERS = new Set(['', 'female', 'male'])
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 const SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000
 const DOG_PROFILE_SCHEMA_VERSION = 3
@@ -191,6 +192,7 @@ function normalizedFields(payload = {}) {
     name: String(payload.name || '').trim(),
     birthDate: String(payload.birthDate || '').trim(),
     breed: String(payload.breed || '').trim(),
+    gender: String(payload.gender || '').trim(),
     weightKg: Number(payload.weightKg || 0),
     dailyMeals: Number(payload.dailyMeals || 0),
     dailyActivityHours,
@@ -217,6 +219,7 @@ function normalizeProfileDocument(doc = {}) {
     dailyActivityHours: doc.dailyActivityHours,
     avatarUrl: doc.avatarUrl || '',
     breed: doc.breed || '',
+    gender: doc.gender || '',
     neutered: Boolean(doc.neutered),
     ...(hasOwn(doc, 'activityLevel') ? { activityLevel: doc.activityLevel } : {}),
     bodyCondition: doc.bodyCondition || '',
@@ -239,6 +242,7 @@ function validateProfilePayload(profile, { today, now } = {}) {
   if (birth.stamp > current.stamp) throw new Error('出生日期不能晚于今天')
 
   if (!BREEDS.has(profile.breed)) throw new Error('请选择狗狗品种')
+  if (!GENDERS.has(profile.gender)) throw new Error('请选择正确的狗狗性别')
   if (!(profile.weightKg > 0)) throw new Error('请填写狗狗体重')
   if (!isAtMostTwoDecimalPlaces(profile.weightKg)) throw new Error('体重最多保留两位小数')
   if (!(profile.dailyMeals > 0)) throw new Error('请填写每日餐数')
