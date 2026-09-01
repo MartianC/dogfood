@@ -1,4 +1,8 @@
 <view class="page with-bottom-action dog-onboarding-page">
+  <view class="dog-onboarding-navbar" aria-label="创建狗狗档案">
+    <view class="dog-onboarding-navbar__title">创建狗狗档案</view>
+  </view>
+
   <view class="dog-onboarding-header">
     <view class="dog-onboarding-previous" bindtap="onPrevious" aria-role="button" aria-label="上一步">上一步</view>
     <view class="dog-onboarding-step">{{stepText}}</view>

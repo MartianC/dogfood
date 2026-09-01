@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "创建狗狗档案",
+  "navigationStyle": "custom",
   "usingComponents": {
     "ui-button": "../../../components/ui/ui-button/index",
     "ui-field": "../../../components/ui/ui-field/index",

@@ -3,8 +3,39 @@
 .dog-onboarding-page {
   min-height: 100vh;
   box-sizing: border-box;
-  padding-top: 16rpx;
+  padding-top: calc(104rpx + constant(safe-area-inset-top));
+  padding-top: calc(104rpx + env(safe-area-inset-top));
   background: var(--df-color-bg);
+}
+
+.dog-onboarding-navbar {
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: calc(88rpx + constant(safe-area-inset-top));
+  height: calc(88rpx + env(safe-area-inset-top));
+  box-sizing: border-box;
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--df-color-surface);
+  pointer-events: none;
+}
+
+.dog-onboarding-navbar__title {
+  max-width: 360rpx;
+  overflow: hidden;
+  color: var(--df-color-text);
+  font-size: 32rpx;
+  font-weight: 500;
+  line-height: 44rpx;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .dog-onboarding-header {

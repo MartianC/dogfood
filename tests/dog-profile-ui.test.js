@@ -394,6 +394,18 @@ test('编辑档案使用原生导航栏，并把删除入口放在头像右侧',
   assert.doesNotMatch(wxml, /dog-profile-navbar__action|>删除<\/ui-button>/)
 })
 
+test('快速建档使用无返回箭头的自定义导航栏并保留页面内上一步', () => {
+  const wxml = readPage(profilePages[1], 'wxml')
+  const wxss = readPage(profilePages[1], 'wxss')
+  const json = readPage(profilePages[1], 'json')
+
+  assert.match(json, /"navigationStyle"\s*:\s*"custom"/)
+  assert.match(wxml, /class="dog-onboarding-navbar"[\s\S]*创建狗狗档案/)
+  assert.match(wxml, /class="dog-onboarding-previous"[^>]*bindtap="onPrevious"[^>]*>上一步<\/view>/)
+  assert.doesNotMatch(wxml, /dog-onboarding-navbar[^>]*bindtap|dog-onboarding-navbar__back/)
+  assert.match(wxss, /\.dog-onboarding-navbar\s*\{[\s\S]*safe-area-inset-top/)
+})
+
 test('完整档案在品种右侧提供未选择、女孩和男孩三个性别选项', () => {
   const definition = loadPageDefinition(profilePages[0])
   const context = pageContext(definition)
