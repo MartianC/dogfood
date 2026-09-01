@@ -3,6 +3,7 @@ const authService = require('../../../services/authService')
 const fileService = require('../services/fileService')
 const {
   breedOptions,
+  dailyMealOptions,
   activityDurationBands,
   bodyConditionOptions,
   reproductiveStatusOptions
@@ -87,6 +88,7 @@ Page({
     ...stepState(initialStep),
     form: initialForm,
     breedOptions,
+    dailyMealOptions,
     bodyConditionOptions,
     reproductiveStatusOptions,
     breedLabel: '',
@@ -176,6 +178,13 @@ Page({
     })
   },
 
+  onDailyMeals(event) {
+    this.setData({
+      'form.dailyMeals': Number(event.currentTarget.dataset.value),
+      dailyMealsError: ''
+    })
+  },
+
   onBodyCondition(event) {
     this.setData({
       'form.bodyCondition': event.currentTarget.dataset.value,
@@ -229,8 +238,8 @@ Page({
         !Number.isFinite(dailyActivityHours) || dailyActivityHours < 0 || dailyActivityHours > 6) {
         errors.dailyActivityHoursError = '请选择活动水平'
       }
-      if (!(Number.isInteger(Number(form.dailyMeals)) && Number(form.dailyMeals) > 0)) {
-        errors.dailyMealsError = '请填写每日餐数'
+      if (![1, 2].includes(Number(form.dailyMeals))) {
+        errors.dailyMealsError = '请选择每日餐数'
       }
       if (!['thin', 'ideal', 'overweight'].includes(form.bodyCondition)) {
         errors.bodyConditionError = '请选择体况'

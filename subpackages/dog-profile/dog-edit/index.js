@@ -5,6 +5,7 @@ const fileService = require('../services/fileService')
 const {
   breedOptions,
   genderOptions,
+  dailyMealOptions,
   activityDurationBands,
   bodyConditionOptions,
   reproductiveStatusOptions
@@ -60,7 +61,9 @@ function formFromDog(dog, { defaultActivityHours = null } = {}) {
     breed: dog.breed || '',
     gender: genderOptions.some((item) => item.value === dog.gender) ? dog.gender : '',
     weightKg: dog.weightKg || '',
-    dailyMeals: dog.dailyMeals || 2,
+    dailyMeals: dailyMealOptions.some((item) => item.value === Number(dog.dailyMeals))
+      ? Number(dog.dailyMeals)
+      : 2,
     dailyActivityHours: activityHoursValue(dog.dailyActivityHours, defaultActivityHours),
     bodyCondition: dog.bodyCondition || 'ideal',
     neutered: Boolean(dog.neutered),
@@ -108,6 +111,7 @@ Page({
     ...profileState(initialForm),
     breedOptions,
     genderOptions,
+    dailyMealOptions,
     bodyConditionOptions,
     reproductiveStatusOptions,
     breedLabel: '',
@@ -197,6 +201,10 @@ Page({
       activityThumbLeft: dailyActivityHours / 6 * 100,
       dailyActivityHoursError: ''
     })
+  },
+
+  onDailyMeals(event) {
+    this.setData({ 'form.dailyMeals': Number(event.currentTarget.dataset.value) })
   },
 
   onBodyCondition(event) {

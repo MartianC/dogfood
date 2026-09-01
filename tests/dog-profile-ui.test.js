@@ -92,6 +92,8 @@ test('快速建档按 02 至 05 步骤收集档案并在登录后直接进入首
   assert.match(wxml, /step === 4/)
   assert.match(wxml, /<slider[^>]*aria-label="日均活动时长/)
   assert.match(wxml, /label="每日餐数"/)
+  assert.doesNotMatch(wxml, /type="number"[^>]*data-key="dailyMeals"/)
+  assert.match(wxml, /bindtap="onDailyMeals"/)
   assert.match(wxml, /label="体况"/)
   assert.match(wxml, /label="生殖状态"/)
   assert.match(wxml, /step === 5/)
@@ -100,6 +102,35 @@ test('快速建档按 02 至 05 步骤收集档案并在登录后直接进入首
   assert.match(wxml, /class="dog-onboarding-previous"[^>]*bindtap="onPrevious"/)
   assert.doesNotMatch(wxml, /dog-onboarding-description|dog-onboarding-eyebrow|dog-onboarding-benefits/)
   assert.doesNotMatch(wxml, /过敏食材|预计成年体重/)
+})
+
+test('完整档案与快速建档的每日餐数只能选择 1 餐或 2 餐', () => {
+  profilePages.forEach((page) => {
+    const definition = loadPageDefinition(page)
+    const context = pageContext(definition)
+    const wxml = readPage(page, 'wxml')
+
+    assert.deepEqual(context.data.dailyMealOptions, [
+      { value: 1, label: '1 餐' },
+      { value: 2, label: '2 餐' }
+    ])
+    assert.doesNotMatch(wxml, /type="number"[^>]*data-key="dailyMeals"/)
+    assert.match(wxml, /aria-label="每日餐数"/)
+    assert.match(wxml, /bindtap="onDailyMeals"/)
+
+    definition.onDailyMeals.call(context, { currentTarget: { dataset: { value: 1 } } })
+    assert.equal(context.data.form.dailyMeals, 1)
+  })
+})
+
+test('快速建档的体况和生殖状态与其他选项使用同一选择块样式', () => {
+  const wxml = readPage(profilePages[1], 'wxml')
+  const wxss = readPage(profilePages[1], 'wxss')
+
+  assert.doesNotMatch(wxml, /dog-onboarding-choice--compact|<ui-tag/)
+  assert.match(wxml, /bodyConditionOptions[\s\S]*dog-onboarding-choice--selected/)
+  assert.match(wxml, /reproductiveStatusOptions[\s\S]*dog-onboarding-choice--selected/)
+  assert.doesNotMatch(wxss, /\.dog-onboarding-choice--compact/)
 })
 
 test('档案界面不展示实现备注且编辑页可选择并保存过敏食材', () => {
@@ -414,6 +445,35 @@ test('编辑档案载入已有性别时回显对应选项', async () => {
   }
 })
 
+test('编辑旧档案时将超出新选项范围的餐数回显为 2 餐', async () => {
+  const dogService = require('../services/dogService')
+  const authService = require('../services/authService')
+  const originalListDogs = dogService.listDogs
+  const originalAuthState = authService.getAuthState
+  dogService.listDogs = async () => [{
+    id: 'legacy-meals-dog',
+    name: '旧档案',
+    birthDate: '2020-01-01',
+    breed: 'shiba-inu',
+    weightKg: 8,
+    dailyMeals: 3,
+    dailyActivityHours: 1.5,
+    bodyCondition: 'ideal'
+  }]
+  authService.getAuthState = () => 'authenticated'
+
+  try {
+    const definition = loadPageDefinition(profilePages[0])
+    const context = pageContext(definition)
+    await definition.onLoad.call(context, { id: 'legacy-meals-dog' })
+
+    assert.equal(context.data.form.dailyMeals, 2)
+  } finally {
+    dogService.listDogs = originalListDogs
+    authService.getAuthState = originalAuthState
+  }
+})
+
 test('编辑档案头像沿用狗狗列表的默认 SVG 和圆角矩形规格', () => {
   const js = readPage(profilePages[0], 'js')
   const wxml = readPage(profilePages[0], 'wxml')
@@ -473,6 +533,9 @@ test('完整档案字段变化实时刷新阶段、品种估算和活动档位',
   assert.equal(context.data.form.dailyActivityHours, 3)
   assert.equal(context.data.activityLevel, 'high')
   assert.equal(context.data.activityLevelLabel, '高活动')
+
+  definition.onDailyMeals.call(context, { currentTarget: { dataset: { value: 1 } } })
+  assert.equal(context.data.form.dailyMeals, 1)
 })
 
 test('快速建档字段变化更新品种和活动 Slider，但不展示估算字段', () => {
@@ -490,6 +553,10 @@ test('快速建档字段变化更新品种和活动 Slider，但不展示估算�
   assert.equal(context.data.form.activityLevel, 'high')
   assert.equal(context.data.form.dailyActivityHours, 4)
   assert.equal(context.data.activityThumbLeft, 4 / 6 * 100)
+
+  definition.onDailyMeals.call(context, { currentTarget: { dataset: { value: 1 } } })
+  assert.equal(context.data.form.dailyMeals, 1)
+  assert.equal(context.data.dailyMealsError, '')
 })
 
 test('编辑旧档案不会把缺失活动时长或旧 high 静默改成 1.5 小时', async () => {
@@ -710,7 +777,7 @@ test('快速建档按步骤校验字段并在第四页完成后进入微信登�
   definition.onNext.call(context)
   assert.equal(context.data.step, 4)
   assert.equal(context.data.dailyActivityHoursError, '请选择活动水平')
-  assert.equal(context.data.dailyMealsError, '请填写每日餐数')
+  assert.equal(context.data.dailyMealsError, '请选择每日餐数')
   assert.equal(context.data.bodyConditionError, '请选择体况')
   assert.equal(context.data.reproductiveStatusError, '请选择生殖状态')
 

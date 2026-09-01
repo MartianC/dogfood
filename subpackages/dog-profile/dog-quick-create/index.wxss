@@ -136,13 +136,6 @@
   font-weight: 700;
 }
 
-.dog-onboarding-choice--compact {
-  min-height: 72rpx;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-
 .dog-onboarding-activity-field {
   min-height: 192rpx;
   box-sizing: border-box;

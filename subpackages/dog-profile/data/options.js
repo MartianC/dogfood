@@ -8,6 +8,11 @@ const genderOptions = [
   { value: 'male', label: '男孩' }
 ]
 
+const dailyMealOptions = [
+  { value: 1, label: '1 餐' },
+  { value: 2, label: '2 餐' }
+]
+
 const activityDurationBands = [
   { min: 0, maxExclusive: 1, value: 'low', label: '低活动' },
   { min: 1, maxExclusive: 2, value: 'moderateLowImpact', label: '一般活动' },
@@ -38,6 +43,7 @@ const reproductiveStatusOptions = [
 module.exports = {
   breedOptions,
   genderOptions,
+  dailyMealOptions,
   activityDurationBands,
   activityLevelOptions,
   bodyConditionOptions,

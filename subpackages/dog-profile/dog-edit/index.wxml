@@ -75,9 +75,10 @@
           </view>
         </ui-field>
         <ui-field variant="profile" label="每日餐数">
-          <view class="dog-profile-value-row">
-            <input class="dog-profile-control" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如 2" />
-            <text class="dog-profile-value-unit">餐</text>
+          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="每日餐数">
+            <view wx:for="{{dailyMealOptions}}" wx:key="value" class="dog-profile-choice" data-value="{{item.value}}" bindtap="onDailyMeals" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.dailyMeals === item.value}}">
+              <ui-tag variant="{{form.dailyMeals === item.value ? 'profile-choice-selected' : 'profile-choice'}}">{{item.label}}</ui-tag>
+            </view>
           </view>
         </ui-field>
       </view>

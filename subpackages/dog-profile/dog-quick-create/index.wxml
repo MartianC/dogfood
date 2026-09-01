@@ -87,22 +87,20 @@
       </view>
 
       <ui-field label="每日餐数" errorText="{{dailyMealsError}}">
-        <input class="dog-onboarding-input" type="number" data-key="dailyMeals" value="{{form.dailyMeals}}" bindinput="setField" placeholder="例如：2" />
+        <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="每日餐数">
+          <view wx:for="{{dailyMealOptions}}" wx:key="value" class="dog-onboarding-choice {{form.dailyMeals === item.value ? 'dog-onboarding-choice--selected' : ''}}" data-value="{{item.value}}" bindtap="onDailyMeals" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.dailyMeals === item.value}}">{{item.label}}</view>
+        </view>
       </ui-field>
 
       <ui-field label="体况" errorText="{{bodyConditionError}}">
         <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="体况">
-          <view wx:for="{{bodyConditionOptions}}" wx:key="value" class="dog-onboarding-choice dog-onboarding-choice--compact {{form.bodyCondition === item.value ? 'dog-onboarding-choice--selected' : ''}}" data-value="{{item.value}}" bindtap="onBodyCondition" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.bodyCondition === item.value}}">
-            <ui-tag variant="{{form.bodyCondition === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
-          </view>
+          <view wx:for="{{bodyConditionOptions}}" wx:key="value" class="dog-onboarding-choice {{form.bodyCondition === item.value ? 'dog-onboarding-choice--selected' : ''}}" data-value="{{item.value}}" bindtap="onBodyCondition" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.bodyCondition === item.value}}">{{item.label}}</view>
         </view>
       </ui-field>
 
       <ui-field label="生殖状态" errorText="{{reproductiveStatusError}}">
         <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="生殖状态">
-          <view wx:for="{{reproductiveStatusOptions}}" wx:key="value" class="dog-onboarding-choice dog-onboarding-choice--compact" data-key="reproductiveStatus" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.reproductiveStatus === item.value}}">
-            <ui-tag variant="{{form.specialNutritionNeeds.reproductiveStatus === item.value ? 'good' : 'neutral'}}">{{item.label}}</ui-tag>
-          </view>
+          <view wx:for="{{reproductiveStatusOptions}}" wx:key="value" class="dog-onboarding-choice {{form.specialNutritionNeeds.reproductiveStatus === item.value ? 'dog-onboarding-choice--selected' : ''}}" data-key="reproductiveStatus" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.reproductiveStatus === item.value}}">{{item.label}}</view>
         </view>
       </ui-field>
     </view>
