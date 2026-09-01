@@ -602,38 +602,32 @@ test('Slider 和档案选择项暴露无障碍名称、角色与当前状态', (
   })
 })
 
-test('完整与快速建档显式采集三项特殊营养需求且默认未确认', () => {
+test('档案隐藏已移除的三个选项并保留特殊营养需求数据兼容', () => {
   profilePages.forEach((page) => {
     const definition = loadPageDefinition(page)
     const context = pageContext(definition)
+    const js = readPage(page, 'js')
     const wxml = readPage(page, 'wxml')
 
+    assert.doesNotMatch(js, /dietGoalOptions|diseaseStatusOptions|therapeuticWeightManagementOptions|goalIndex|onGoalTap/)
+    assert.doesNotMatch(wxml, /饮食目标|是否有已确诊疾病|治疗性体重管理/)
+    assert.equal(context.data.form.dietGoal, 'daily')
     assert.deepEqual(context.data.form.specialNutritionNeeds, {
       hasDisease: null,
       reproductiveStatus: null,
       therapeuticWeightManagement: null
     })
-    assert.match(wxml, /label="是否有已确诊疾病"/)
     assert.match(wxml, /label="生殖状态"/)
-    assert.match(wxml, /label="治疗性体重管理"/)
-    assert.match(wxml, /aria-label="是否有已确诊疾病"/)
     assert.match(wxml, /aria-label="生殖状态"/)
-    assert.match(wxml, /aria-label="治疗性体重管理"/)
 
-    definition.onSpecialNutritionNeed.call(context, {
-      currentTarget: { dataset: { key: 'hasDisease', value: false } }
-    })
     definition.onSpecialNutritionNeed.call(context, {
       currentTarget: { dataset: { key: 'reproductiveStatus', value: 'none' } }
     })
-    definition.onSpecialNutritionNeed.call(context, {
-      currentTarget: { dataset: { key: 'therapeuticWeightManagement', value: 'loss' } }
-    })
 
     assert.deepEqual(context.data.form.specialNutritionNeeds, {
-      hasDisease: false,
+      hasDisease: null,
       reproductiveStatus: 'none',
-      therapeuticWeightManagement: 'loss'
+      therapeuticWeightManagement: null
     })
   })
 })

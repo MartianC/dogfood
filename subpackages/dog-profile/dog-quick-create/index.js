@@ -2,13 +2,10 @@ const dogService = require('../../../services/dogService')
 const authService = require('../../../services/authService')
 const fileService = require('../services/fileService')
 const {
-  dietGoalOptions,
   breedOptions,
   activityDurationBands,
   bodyConditionOptions,
-  diseaseStatusOptions,
-  reproductiveStatusOptions,
-  therapeuticWeightManagementOptions
+  reproductiveStatusOptions
 } = require('../data/options')
 const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
 const {
@@ -68,13 +65,9 @@ Page({
       avoidIngredients: []
     },
     breedOptions,
-    dietGoalOptions,
     bodyConditionOptions,
-    diseaseStatusOptions,
     reproductiveStatusOptions,
-    therapeuticWeightManagementOptions,
     breedLabel: '',
-    goalIndex: 0,
     lifeStageLabel: '阶段待完善',
     isPuppy: false,
     expectedAdultWeightKg: null,
@@ -151,12 +144,6 @@ Page({
 
   onNeutered(event) {
     this.setData({ 'form.neutered': event.currentTarget.dataset.value === 'true' })
-  },
-
-  onGoalTap(event) {
-    const goalIndex = Number(event.currentTarget.dataset.index)
-    const option = this.data.dietGoalOptions[goalIndex]
-    this.setData({ goalIndex, 'form.dietGoal': option.value })
   },
 
   onSpecialNutritionNeed(event) {

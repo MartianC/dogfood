@@ -3,14 +3,11 @@ const authService = require('../../../services/authService')
 const assets = require('../../../utils/assets')
 const fileService = require('../services/fileService')
 const {
-  dietGoalOptions,
   breedOptions,
   genderOptions,
   activityDurationBands,
   bodyConditionOptions,
-  diseaseStatusOptions,
-  reproductiveStatusOptions,
-  therapeuticWeightManagementOptions
+  reproductiveStatusOptions
 } = require('../data/options')
 const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
 const {
@@ -111,14 +108,10 @@ Page({
     ...profileState(initialForm),
     breedOptions,
     genderOptions,
-    dietGoalOptions,
     bodyConditionOptions,
-    diseaseStatusOptions,
     reproductiveStatusOptions,
-    therapeuticWeightManagementOptions,
     breedLabel: '',
     genderIndex: 0,
-    goalIndex: 0,
     birthDateError: '',
     breedError: '',
     dailyActivityHoursError: '',
@@ -144,8 +137,7 @@ Page({
       allergyDisplayItems: allergyDisplayItems(form.allergens),
       ...profileState(form),
       breedLabel: breedLabelOf(form.breed),
-      genderIndex: optionIndex(genderOptions, form.gender),
-      goalIndex: optionIndex(dietGoalOptions, form.dietGoal)
+      genderIndex: optionIndex(genderOptions, form.gender)
     })
   },
 
@@ -213,12 +205,6 @@ Page({
 
   onNeutered(event) {
     this.setData({ 'form.neutered': event.currentTarget.dataset.value === 'true' })
-  },
-
-  onGoalTap(event) {
-    const goalIndex = Number(event.currentTarget.dataset.index)
-    const option = this.data.dietGoalOptions[goalIndex]
-    this.setData({ goalIndex, 'form.dietGoal': option.value })
   },
 
   onSpecialNutritionNeed(event) {

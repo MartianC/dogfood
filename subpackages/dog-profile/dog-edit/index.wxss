@@ -235,19 +235,11 @@
   margin-top: 8rpx;
 }
 
-.dog-profile-choices--wide {
-  gap: 16rpx;
-}
-
 .dog-profile-choice {
   min-height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.dog-profile-choice-field--wide {
-  min-height: 132rpx;
 }
 
 .dog-profile-allergens {

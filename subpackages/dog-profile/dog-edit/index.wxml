@@ -131,15 +131,6 @@
         </view>
       </view>
 
-      <view class="dog-profile-choice-field dog-profile-choice-field--wide">
-        <view class="dog-profile-choice-label">饮食目标</view>
-        <view class="dog-profile-choices dog-profile-choices--wide" aria-role="radiogroup" aria-label="饮食目标">
-          <view wx:for="{{dietGoalOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{goalIndex === index}}" data-index="{{index}}" bindtap="onGoalTap">
-            <ui-tag variant="{{goalIndex === index ? 'profile-choice-selected' : 'profile-choice'}}" size="medium">{{item.label}}</ui-tag>
-          </view>
-        </view>
-      </view>
-
       <ui-field label="过敏食材">
         <view class="dog-profile-allergens">
           <view wx:if="{{allergyDisplayItems.length}}" class="dog-profile-allergens__list">
@@ -156,26 +147,10 @@
         </view>
       </ui-field>
 
-      <ui-field label="是否有已确诊疾病">
-        <view class="dog-profile-choices" aria-role="radiogroup" aria-label="是否有已确诊疾病">
-          <view wx:for="{{diseaseStatusOptions}}" wx:key="label" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.hasDisease === item.value}}" data-key="hasDisease" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">
-            <ui-tag variant="{{form.specialNutritionNeeds.hasDisease === item.value ? 'profile-choice-selected' : 'profile-choice'}}">{{item.label}}</ui-tag>
-          </view>
-        </view>
-      </ui-field>
-
       <ui-field label="生殖状态">
         <view class="dog-profile-choices" aria-role="radiogroup" aria-label="生殖状态">
           <view wx:for="{{reproductiveStatusOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.reproductiveStatus === item.value}}" data-key="reproductiveStatus" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">
             <ui-tag variant="{{form.specialNutritionNeeds.reproductiveStatus === item.value ? 'profile-choice-selected' : 'profile-choice'}}">{{item.label}}</ui-tag>
-          </view>
-        </view>
-      </ui-field>
-
-      <ui-field label="治疗性体重管理">
-        <view class="dog-profile-choices" aria-role="radiogroup" aria-label="治疗性体重管理">
-          <view wx:for="{{therapeuticWeightManagementOptions}}" wx:key="value" class="dog-profile-choice" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.specialNutritionNeeds.therapeuticWeightManagement === item.value}}" data-key="therapeuticWeightManagement" data-value="{{item.value}}" bindtap="onSpecialNutritionNeed">
-            <ui-tag variant="{{form.specialNutritionNeeds.therapeuticWeightManagement === item.value ? 'profile-choice-selected' : 'profile-choice'}}">{{item.label}}</ui-tag>
           </view>
         </view>
       </ui-field>
