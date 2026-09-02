@@ -131,9 +131,19 @@ test('完整档案与快速建档的每日餐数只能选择 1 餐或 2 餐', ()
 })
 
 test('快速建档的体况和生殖状态与其他选项使用同一选择块样式', () => {
+  const definition = loadPageDefinition(profilePages[1])
+  const context = pageContext(definition)
   const wxml = readPage(profilePages[1], 'wxml')
   const wxss = readPage(profilePages[1], 'wxss')
 
+  assert.equal(context.data.form.gender, 'female')
+  assert.equal(context.data.form.dailyMeals, 1)
+  assert.equal(context.data.form.bodyCondition, 'ideal')
+  assert.deepEqual(
+    context.data.bodyConditionOptions.map((item) => item.value),
+    ['ideal', 'thin', 'overweight']
+  )
+  assert.match(wxml, /aria-label="女孩"[\s\S]*aria-label="男孩"/)
   assert.doesNotMatch(wxml, /dog-onboarding-choice--compact|<ui-tag/)
   assert.match(wxml, /bodyConditionOptions[\s\S]*dog-onboarding-choice--selected/)
   assert.match(wxml, /reproductiveStatusOptions[\s\S]*dog-onboarding-choice--selected/)
@@ -772,6 +782,7 @@ test('快速建档按步骤校验字段并在第四页完成后进入微信登�
   definition.onNext.call(context)
   assert.equal(context.data.step, 3)
 
+  context.data.form.gender = ''
   definition.onNext.call(context)
   assert.equal(context.data.step, 3)
   assert.equal(context.data.birthDateError, '请填写正确的出生日期')

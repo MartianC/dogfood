@@ -48,8 +48,8 @@
 
       <ui-field label="性别" errorText="{{genderError}}">
         <view class="dog-onboarding-choices" aria-role="radiogroup" aria-label="性别">
-          <view class="dog-onboarding-choice {{form.gender === 'male' ? 'dog-onboarding-choice--selected' : ''}}" data-value="male" bindtap="onGender" aria-role="radio" aria-label="男孩" aria-checked="{{form.gender === 'male'}}">男孩</view>
           <view class="dog-onboarding-choice {{form.gender === 'female' ? 'dog-onboarding-choice--selected' : ''}}" data-value="female" bindtap="onGender" aria-role="radio" aria-label="女孩" aria-checked="{{form.gender === 'female'}}">女孩</view>
+          <view class="dog-onboarding-choice {{form.gender === 'male' ? 'dog-onboarding-choice--selected' : ''}}" data-value="male" bindtap="onGender" aria-role="radio" aria-label="男孩" aria-checked="{{form.gender === 'male'}}">男孩</view>
         </view>
       </ui-field>
 

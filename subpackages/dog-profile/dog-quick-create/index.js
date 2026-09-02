@@ -12,6 +12,9 @@ const { estimateLifeStage } = require('../../../services/lifeStageEstimator')
 const { deriveActivityLevel } = require('../../../services/dogProfileDerivations')
 const assets = require('../../../utils/assets')
 
+const onboardingBodyConditionOptions = ['ideal', 'thin', 'overweight']
+  .map((value) => bodyConditionOptions.find((item) => item.value === value))
+
 function localDateText(date = new Date()) {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -63,9 +66,9 @@ const initialForm = {
   name: '',
   birthDate: '',
   breed: '',
-  gender: '',
+  gender: 'female',
   weightKg: '',
-  dailyMeals: 2,
+  dailyMeals: 1,
   dailyActivityHours: 1.5,
   activityLevel: 'moderateLowImpact',
   bodyCondition: 'ideal',
@@ -89,7 +92,7 @@ Page({
     form: initialForm,
     breedOptions,
     dailyMealOptions,
-    bodyConditionOptions,
+    bodyConditionOptions: onboardingBodyConditionOptions,
     reproductiveStatusOptions,
     breedLabel: '',
     activityLevelLabel: activityLabel(initialForm.activityLevel),
