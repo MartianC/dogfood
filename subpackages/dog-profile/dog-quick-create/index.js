@@ -15,6 +15,42 @@ const assets = require('../../../utils/assets')
 const onboardingBodyConditionOptions = ['ideal', 'thin', 'overweight']
   .map((value) => bodyConditionOptions.find((item) => item.value === value))
 
+function navigationMetrics() {
+  const fallbackStatusBarHeight = 20
+  const fallbackNavigationContentHeight = 44
+  let windowInfo = {}
+  let menuButton = {}
+
+  if (typeof wx !== 'undefined') {
+    try {
+      windowInfo = typeof wx.getWindowInfo === 'function'
+        ? wx.getWindowInfo()
+        : (typeof wx.getSystemInfoSync === 'function' ? wx.getSystemInfoSync() : {})
+      menuButton = typeof wx.getMenuButtonBoundingClientRect === 'function'
+        ? wx.getMenuButtonBoundingClientRect()
+        : {}
+    } catch (error) {
+      windowInfo = {}
+      menuButton = {}
+    }
+  }
+
+  const statusBarHeightPx = Number(windowInfo.statusBarHeight) || fallbackStatusBarHeight
+  const menuTop = Number(menuButton.top)
+  const menuHeight = Number(menuButton.height)
+  const hasMenuMetrics = menuTop >= statusBarHeightPx && menuHeight > 0
+  const navigationContentHeight = hasMenuMetrics
+    ? (menuTop - statusBarHeightPx) * 2 + menuHeight
+    : fallbackNavigationContentHeight
+  const navigationBarHeightPx = statusBarHeightPx + navigationContentHeight
+
+  return {
+    statusBarHeightPx,
+    navigationBarHeightPx,
+    pageTopPaddingPx: navigationBarHeightPx + 8
+  }
+}
+
 function localDateText(date = new Date()) {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -86,6 +122,7 @@ const initialForm = {
 
 Page({
   data: {
+    ...navigationMetrics(),
     redirect: '',
     step: initialStep,
     ...stepState(initialStep),

@@ -210,7 +210,8 @@ Page({
     homeStartupTiming.mark('auth-ready')
 
     const now = currentNow(this)
-    const authStateBeforeLoad = app.globalData.authState || authService.getAuthState()
+    // authReady 只代表启动快照已完成；运行期登录后应以认证服务的最新状态为准。
+    const authStateBeforeLoad = authService.getAuthState() || app.globalData.authState
 
     if (authStateBeforeLoad === HOME_STATUS.GUEST) {
       this._homeLoadToken = (this._homeLoadToken || 0) + 1

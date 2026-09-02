@@ -1,5 +1,5 @@
-<view class="page with-bottom-action dog-onboarding-page">
-  <view class="dog-onboarding-navbar" aria-label="创建狗狗档案">
+<view class="page with-bottom-action dog-onboarding-page" style="padding-top: {{pageTopPaddingPx}}px;">
+  <view class="dog-onboarding-navbar" style="height: {{navigationBarHeightPx}}px; padding-top: {{statusBarHeightPx}}px;" aria-label="创建狗狗档案">
     <view class="dog-onboarding-navbar__title">创建狗狗档案</view>
   </view>
 

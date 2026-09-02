@@ -404,16 +404,29 @@ test('编辑档案使用原生导航栏，并把删除入口放在头像右侧',
   assert.doesNotMatch(wxml, /dog-profile-navbar__action|>删除<\/ui-button>/)
 })
 
-test('快速建档使用无返回箭头的自定义导航栏并保留页面内上一步', () => {
+test('快速建档使用无返回箭头和分隔线的拟原生导航栏', () => {
+  const previousWx = global.wx
+  global.wx = {
+    getWindowInfo: () => ({ statusBarHeight: 47 }),
+    getMenuButtonBoundingClientRect: () => ({ top: 51, height: 32 })
+  }
+  const definition = loadPageDefinition(profilePages[1])
+  global.wx = previousWx
   const wxml = readPage(profilePages[1], 'wxml')
   const wxss = readPage(profilePages[1], 'wxss')
   const json = readPage(profilePages[1], 'json')
 
+  assert.equal(definition.data.statusBarHeightPx, 47)
+  assert.equal(definition.data.navigationBarHeightPx, 87)
+  assert.equal(definition.data.pageTopPaddingPx, 95)
   assert.match(json, /"navigationStyle"\s*:\s*"custom"/)
-  assert.match(wxml, /class="dog-onboarding-navbar"[\s\S]*创建狗狗档案/)
+  assert.match(json, /"navigationBarTitleText"\s*:\s*"创建狗狗档案"/)
+  assert.match(wxml, /dog-onboarding-page" style="padding-top: \{\{pageTopPaddingPx\}\}px;/)
+  assert.match(wxml, /class="dog-onboarding-navbar" style="height: \{\{navigationBarHeightPx\}\}px; padding-top: \{\{statusBarHeightPx\}\}px;"[\s\S]*创建狗狗档案/)
   assert.match(wxml, /class="dog-onboarding-previous"[^>]*bindtap="onPrevious"[^>]*>上一步<\/view>/)
   assert.doesNotMatch(wxml, /dog-onboarding-navbar[^>]*bindtap|dog-onboarding-navbar__back/)
-  assert.match(wxss, /\.dog-onboarding-navbar\s*\{[\s\S]*safe-area-inset-top/)
+  assert.match(wxss, /\.dog-onboarding-navbar\s*\{[\s\S]*border:\s*0;[\s\S]*box-shadow:\s*none;/)
+  assert.match(wxss, /\.dog-onboarding-page\s*\{[\s\S]*safe-area-inset-top/)
 })
 
 test('完整档案在品种右侧提供未选择、女孩和男孩三个性别选项', () => {

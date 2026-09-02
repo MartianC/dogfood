@@ -110,7 +110,7 @@ test('新用户冷启动直接进入 Onboarding，已有用户不被重定向', 
   assert.deepEqual(navigations, [])
 })
 
-test('01 Hero 页面注册并把用户带入 02 宠物身份', () => {
+test('01 Hero 页面让新用户进入建档，并让已有档案用户直接登录', async () => {
   const root = path.join(__dirname, '..')
   const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'))
   const pageRoot = path.join(root, 'pages/onboarding')
@@ -119,6 +119,10 @@ test('01 Hero 页面注册并把用户带入 02 宠物身份', () => {
   const pageWxss = fs.readFileSync(path.join(pageRoot, 'index.wxss'), 'utf8')
   const pageJson = JSON.parse(fs.readFileSync(path.join(pageRoot, 'index.json'), 'utf8'))
   const navigations = []
+  const tabNavigations = []
+  let authState = 'guest'
+  let loginCalls = 0
+  let finishLogin
 
   assert.ok(appConfig.pages.includes('pages/onboarding/index'))
   assert.equal(pageJson.navigationStyle, 'custom')
@@ -126,6 +130,8 @@ test('01 Hero 页面注册并把用户带入 02 宠物身份', () => {
   assert.match(pageWxml, /<text>先认识它，<\/text>\s*<text>再照顾好每一<\/text>\s*<text>顿。<\/text>/)
   assert.match(pageWxml, /4 步完成 · 约 1 分钟/)
   assert.match(pageWxml, /开始建立档案/)
+  assert.match(pageWxml, /已有档案？[\s\S]*直接登录/)
+  assert.match(pageWxml, /ariaLabel="已有档案，直接登录"/)
   assert.match(pageWxml, /src="\{\{onboardingHeroImage\}\}"[^>]*mode="aspectFill"/)
   assert.doesNotMatch(pageWxml, /onboarding-hero-art|DOGFOOD \/ 日常照护/)
   assert.match(pageWxml, /onboarding-hero-meta[\s\S]*onboarding-hero-action/)
@@ -140,16 +146,46 @@ test('01 Hero 页面注册并把用户带入 02 宠物身份', () => {
       if (request === '../../utils/assets') {
         return { onboardingHeroImage: '/assets/onboarding/dog-profile-hero.webp' }
       }
+      if (request === '../../services/authService') {
+        return {
+          getAuthState: () => authState,
+          login: () => {
+            loginCalls += 1
+            return new Promise((resolve) => {
+              finishLogin = (result) => {
+                if (result) authState = 'has-profile'
+                resolve(result)
+              }
+            })
+          }
+        }
+      }
       throw new Error(`测试未提供依赖：${request}`)
     },
     wx: {
-      navigateTo(options) { navigations.push(options.url) }
+      navigateTo(options) { navigations.push(options.url) },
+      switchTab(options) { tabNavigations.push(options.url) }
     }
   }
   vm.runInNewContext(pageJs, context, { filename: 'pages/onboarding/index.js' })
   definition.onStart()
 
   assert.deepEqual(navigations, ['/subpackages/dog-profile/dog-quick-create/index'])
+
+  const page = {
+    ...definition,
+    data: { ...definition.data },
+    setData(patch) { Object.assign(this.data, patch) }
+  }
+  const login = definition.onDirectLogin.call(page)
+  const repeatedLogin = definition.onDirectLogin.call(page)
+  assert.equal(loginCalls, 1)
+  assert.equal(page.data.loginLoading, true)
+
+  finishLogin(true)
+  await Promise.all([login, repeatedLogin])
+  assert.deepEqual(tabNavigations, ['/pages/home/index'])
+  assert.equal(page.data.loginLoading, false)
 })
 
 test('app.json 启用组件按需注入', () => {

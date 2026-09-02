@@ -17,6 +17,18 @@
     </view>
     <view class="onboarding-hero-action">
       <ui-button variant="primary" size="xlarge" bind:tap="onStart" ariaLabel="开始建立档案">开始建立档案</ui-button>
+      <view class="onboarding-hero-login">
+        <ui-button
+          variant="bare"
+          block="{{false}}"
+          disabled="{{loginLoading}}"
+          bind:tap="onDirectLogin"
+          ariaLabel="已有档案，直接登录"
+        >
+          <text class="onboarding-hero-login__prompt">已有档案？</text>
+          <text class="onboarding-hero-login__action">{{loginLoading ? '登录中…' : '直接登录'}}</text>
+        </ui-button>
+      </view>
     </view>
   </view>
 </view>

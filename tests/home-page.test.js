@@ -94,6 +94,36 @@ test('游客首页不请求档案、记录或草稿，仍展示登录主任务',
   assert.equal(viewData.latestRecord, null)
 })
 
+test('运行期登录后首页以认证服务最新状态覆盖启动期游客快照', async () => {
+  let listDogsCalls = 0
+  const definition = loadHomePage({
+    authState: 'has-profile',
+    globalData: { authState: 'guest', dogs: [] },
+    dogService: {
+      async listDogs() {
+        listDogsCalls += 1
+        return [{ id: 'dog-login', name: '团团' }]
+      }
+    },
+    recordService: { list: async () => ({ items: [] }) }
+  })
+  const page = {
+    data: definition.data,
+    now: definition.now,
+    getTabBar: () => ({ setData() {} }),
+    setData(data) {
+      this.data = { ...this.data, ...data }
+    }
+  }
+
+  await definition.onShow.call(page)
+
+  assert.equal(listDogsCalls, 1)
+  assert.equal(page.data.authState, 'has-profile')
+  assert.notEqual(page.data.homeState.status, 'guest')
+  assert.notEqual(page.data.homeState.primaryTask.label, '登录并继续')
+})
+
 test('H1：认证未决时首页首帧使用中性加载态', () => {
   let resolveAuth
   const authReady = new Promise((resolve) => { resolveAuth = resolve })
