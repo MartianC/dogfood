@@ -36,6 +36,7 @@
 }
 
 .ui-field--profile,
+.ui-field--profile-choice,
 .ui-field--profile-stage {
   min-height: 112rpx;
   padding: 16rpx 20rpx;
@@ -45,6 +46,7 @@
 }
 
 .ui-field--profile .ui-field__label,
+.ui-field--profile-choice .ui-field__label,
 .ui-field--profile-stage .ui-field__label {
   margin-bottom: 6rpx;
   color: var(--df-profile-color-muted);
@@ -53,6 +55,7 @@
 }
 
 .ui-field--profile .ui-field__body,
+.ui-field--profile-choice .ui-field__body,
 .ui-field--profile-stage .ui-field__body {
   min-height: 38rpx;
   color: var(--df-profile-color-text);
@@ -62,9 +65,26 @@
 
 .ui-field--profile .ui-field__error,
 .ui-field--profile .ui-field__help,
+.ui-field--profile-choice .ui-field__error,
+.ui-field--profile-choice .ui-field__help,
 .ui-field--profile-stage .ui-field__error,
 .ui-field--profile-stage .ui-field__help {
   margin-top: 6rpx;
+}
+
+.ui-field--profile-choice {
+  height: 112rpx;
+  padding-top: 8rpx;
+  padding-bottom: 8rpx;
+}
+
+.ui-field--profile-choice .ui-field__label {
+  margin-bottom: 0;
+}
+
+.ui-field--profile-choice .ui-field__body {
+  height: 64rpx;
+  min-height: 64rpx;
 }
 
 .ui-field--profile-stage {

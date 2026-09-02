@@ -548,7 +548,9 @@ test('档案页所有选择项使用浅灰未选中态和绿色选中态', () =>
 })
 
 test('档案选择胶囊视觉收紧但保留最小点击区域', () => {
+  const wxml = readPage(profilePages[0], 'wxml')
   const tagWxss = readPage('components/ui/ui-tag', 'wxss')
+  const fieldWxss = readPage('components/ui/ui-field', 'wxss')
   const profileWxss = readPage(profilePages[0], 'wxss')
 
   assert.match(tagWxss, /min-height:\s*var\(--df-profile-choice-height\)/)
@@ -556,6 +558,10 @@ test('档案选择胶囊视觉收紧但保留最小点击区域', () => {
   assert.match(tagWxss, /font-size:\s*var\(--df-font-sm\)/)
   assert.match(tagWxss, /border-radius:\s*var\(--df-radius-pill\)/)
   assert.match(profileWxss, /\.dog-profile-choice\s*\{[\s\S]*min-height:\s*88rpx/)
+  assert.match(wxml, /variant="profile-choice" label="每日餐数"/)
+  assert.match(wxml, /dog-profile-choice--compact[\s\S]*size="small"/)
+  assert.match(tagWxss, /\.ui-tag--profile-choice\.ui-tag--small[\s\S]*min-height:\s*48rpx/)
+  assert.match(fieldWxss, /\.ui-field--profile-choice\s*\{[\s\S]*height:\s*112rpx/)
 })
 
 test('完整档案字段变化实时刷新阶段、品种估算和活动档位', () => {

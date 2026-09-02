@@ -242,6 +242,16 @@
   justify-content: center;
 }
 
+.dog-profile-choices--compact {
+  height: 64rpx;
+  margin-top: 0;
+  align-items: center;
+}
+
+.dog-profile-choice--compact {
+  transform: translateY(-4rpx);
+}
+
 .dog-profile-allergens {
   display: flex;
   min-height: 64rpx;

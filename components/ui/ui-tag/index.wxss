@@ -75,6 +75,14 @@
   font-weight: 700;
 }
 
+.ui-tag--profile-choice.ui-tag--small,
+.ui-tag--profile-choice-selected.ui-tag--small {
+  min-height: 48rpx;
+  padding-right: var(--df-space-3);
+  padding-left: var(--df-space-3);
+  font-size: var(--df-font-xs);
+}
+
 .ui-tag-remove-target {
   display: inline-flex;
   min-height: var(--df-touch-min);

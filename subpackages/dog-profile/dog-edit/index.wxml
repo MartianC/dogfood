@@ -74,10 +74,10 @@
             <text class="dog-profile-value-unit">kg</text>
           </view>
         </ui-field>
-        <ui-field variant="profile" label="每日餐数">
-          <view class="dog-profile-choices" aria-role="radiogroup" aria-label="每日餐数">
-            <view wx:for="{{dailyMealOptions}}" wx:key="value" class="dog-profile-choice" data-value="{{item.value}}" bindtap="onDailyMeals" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.dailyMeals === item.value}}">
-              <ui-tag variant="{{form.dailyMeals === item.value ? 'profile-choice-selected' : 'profile-choice'}}">{{item.label}}</ui-tag>
+        <ui-field variant="profile-choice" label="每日餐数">
+          <view class="dog-profile-choices dog-profile-choices--compact" aria-role="radiogroup" aria-label="每日餐数">
+            <view wx:for="{{dailyMealOptions}}" wx:key="value" class="dog-profile-choice dog-profile-choice--compact" data-value="{{item.value}}" bindtap="onDailyMeals" aria-role="radio" aria-label="{{item.label}}" aria-checked="{{form.dailyMeals === item.value}}">
+              <ui-tag variant="{{form.dailyMeals === item.value ? 'profile-choice-selected' : 'profile-choice'}}" size="small">{{item.label}}</ui-tag>
             </view>
           </view>
         </ui-field>
