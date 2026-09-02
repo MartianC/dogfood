@@ -1,7 +1,7 @@
 const defaultRecipeImage = '/assets/recipes/dog-food-bowl.jpg'
 const defaultDogAvatar = '/assets/dogs/dog-head-profile.svg'
 const defaultUserAvatar = '/assets/profile/default-user-avatar.svg'
-const onboardingHeroImage = '/assets/onboarding/dog-profile-hero.webp'
+const onboardingHeroImage = '/assets/onboarding/shuttrjake-dog-7770063.webp'
 
 function recipeImage(recipe) {
   return (recipe && recipe.imageUrl) || defaultRecipeImage
