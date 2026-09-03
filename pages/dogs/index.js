@@ -10,7 +10,7 @@ const breedLabels = Object.fromEntries(
 
 Page({
   data: {
-    authState: 'guest',
+    authState: 'unknown',
     dogs: [],
     dietGoalLabels,
     breedLabels,

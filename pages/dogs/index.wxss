@@ -1,5 +1,88 @@
 @import "../../styles/tokens.wxss";
 
+.dogs-skeleton__heading,
+.dogs-skeleton__add,
+.dogs-skeleton__avatar,
+.dogs-skeleton__name,
+.dogs-skeleton__meta,
+.dogs-skeleton__action {
+  background: var(--df-color-surface-muted);
+  animation: dogs-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.dogs-skeleton__heading {
+  width: 160rpx;
+  height: 40rpx;
+  border-radius: var(--df-radius-sm);
+}
+
+.dogs-skeleton__add {
+  width: 64rpx;
+  height: 32rpx;
+  border-radius: var(--df-radius-sm);
+}
+
+.dogs-skeleton__panel {
+  display: grid;
+  grid-template-columns: 88rpx 1fr;
+  gap: var(--df-space-3);
+  align-items: center;
+}
+
+.dogs-skeleton__avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: var(--df-radius-lg);
+}
+
+.dogs-skeleton__copy {
+  min-width: 0;
+}
+
+.dogs-skeleton__name {
+  width: 35%;
+  height: 32rpx;
+  border-radius: var(--df-radius-sm);
+}
+
+.dogs-skeleton__meta {
+  width: 92%;
+  height: 22rpx;
+  margin-top: var(--df-space-2);
+  border-radius: var(--df-radius-sm);
+}
+
+.dogs-skeleton__meta--short {
+  width: 62%;
+}
+
+.dogs-skeleton__actions {
+  display: flex;
+  gap: var(--df-space-2);
+  margin-top: var(--df-space-3);
+}
+
+.dogs-skeleton__action {
+  width: 176rpx;
+  height: 56rpx;
+  border-radius: var(--df-radius-md);
+}
+
+.dogs-skeleton__action--short {
+  width: 120rpx;
+}
+
+@keyframes dogs-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.56;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
 .panel-action {
   margin-top: 24rpx;
 }

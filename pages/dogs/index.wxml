@@ -1,5 +1,26 @@
 <view class="page with-tab-bar dogs-page" aria-label="爱宠档案中心">
-  <view wx:if="{{authState === 'guest'}}" class="section guest-panel">
+  <view wx:if="{{authState === 'unknown'}}" class="section dogs-skeleton" aria-label="爱宠档案加载中">
+    <view class="section-head">
+      <view class="dogs-skeleton__heading"></view>
+      <view class="dogs-skeleton__add"></view>
+    </view>
+    <ui-card>
+      <view class="dogs-skeleton__panel">
+        <view class="dogs-skeleton__avatar"></view>
+        <view class="dogs-skeleton__copy">
+          <view class="dogs-skeleton__name"></view>
+          <view class="dogs-skeleton__meta"></view>
+          <view class="dogs-skeleton__meta dogs-skeleton__meta--short"></view>
+          <view class="dogs-skeleton__actions">
+            <view class="dogs-skeleton__action"></view>
+            <view class="dogs-skeleton__action dogs-skeleton__action--short"></view>
+          </view>
+        </view>
+      </view>
+    </ui-card>
+  </view>
+
+  <view wx:elif="{{authState === 'guest'}}" class="section guest-panel">
     <ui-card>
       <view class="panel-title">登录后管理狗狗档案</view>
       <view class="panel-desc">开始记录本餐前，需要先登录并添加狗狗档案。</view>

@@ -58,6 +58,19 @@ test('狗狗页显示时加载最新档案并同步狗狗 Tab 选中态', async 
   assert.equal(definition.data.breedLabels['shiba-inu'], '柴犬')
 })
 
+test('狗狗页首次加载时展示骨架屏，不提前显示游客登录引导', () => {
+  const definition = loadDogsPage({
+    authService: { getAuthState: () => 'guest' },
+    dogService: { listDogs: async () => [] }
+  })
+  const wxml = fs.readFileSync(path.join(root, 'pages/dogs/index.wxml'), 'utf8')
+
+  assert.equal(definition.data.authState, 'unknown')
+  assert.match(wxml, /wx:if="\{\{authState === 'unknown'\}\}" class="section dogs-skeleton"/)
+  assert.match(wxml, /aria-label="爱宠档案加载中"/)
+  assert.match(wxml, /wx:elif="\{\{authState === 'guest'\}\}"/)
+})
+
 test('狗狗页的游客登录、添加、体重和护理入口都进入对应页面', async () => {
   const navigations = []
   const authService = {
